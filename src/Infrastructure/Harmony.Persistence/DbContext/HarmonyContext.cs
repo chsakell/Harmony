@@ -12,6 +12,7 @@ namespace Harmony.Persistence.DbContext
     public class HarmonyContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Board> Boards { get; set; }
+        public DbSet<BoardList> BoardLists { get; set; }
 
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {

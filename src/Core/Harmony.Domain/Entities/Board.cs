@@ -15,5 +15,6 @@ namespace Harmony.Domain.Entities
         public string Name { get; set; }
         public string UserId { get; set; }
         public BoardVisibility Visibility { get; set; }
+        public List<BoardList> Lists { get; set; }
     }
 }
