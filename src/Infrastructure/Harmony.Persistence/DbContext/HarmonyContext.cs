@@ -11,6 +11,8 @@ namespace Harmony.Persistence.DbContext
 {
     public class HarmonyContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Board> Boards { get; set; }
+
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {
 
@@ -20,6 +22,11 @@ namespace Harmony.Persistence.DbContext
         {
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(HarmonyContext).Assembly);
+        }
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder.Properties<DateTime>().HaveColumnType("date");
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
