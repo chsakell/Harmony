@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0792C2B-78CD-4594-A6EC-0FCD62D4CC9B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{15D6F646-4699-488A-95A2-198CE47A5C2C}"
+	ProjectSection(SolutionItems) = preProject
+		docs\migrations.md = docs\migrations.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{2187258F-DAAA-4704-8DE8-180E661B81C8}"
 EndProject
