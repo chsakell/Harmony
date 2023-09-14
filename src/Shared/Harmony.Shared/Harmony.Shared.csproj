@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+   <ItemGroup>
+      <PackageReference Include="Slugify.Core" Version="4.0.1" />
+   </ItemGroup>
+
 </Project>

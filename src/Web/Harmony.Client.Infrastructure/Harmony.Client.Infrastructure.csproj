@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.10" />
+    <PackageReference Include="MudBlazor" Version="6.9.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Core\Harmony.Application\Harmony.Application.csproj" />
     <ProjectReference Include="..\..\Shared\Harmony.Shared\Harmony.Shared.csproj" />
   </ItemGroup>
