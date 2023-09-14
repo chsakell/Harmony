@@ -18,7 +18,14 @@ namespace Harmony.Persistence.Configurations
         {
             // A user can create multiple boards and a board belongs to one user (1-M relationship)
             builder.HasMany(user => user.Boards)
-                .WithOne().HasForeignKey(board => board.UserId);
+                .WithOne()
+                .HasForeignKey(board => board.UserId);
+
+            // extra configuration to fullfill the M2M relationship for access, between users and boards
+            builder
+                .HasMany(user => user.AccessBoards)
+                .WithOne()
+                .HasForeignKey(board => board.UserId);
         }
     }
 }
