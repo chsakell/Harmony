@@ -16,5 +16,6 @@ namespace Harmony.Domain.Entities
         public BoardList BoardList { get; set; }
         public Guid BoardListId { get; set; }
         public byte Position { get; set; } // position on the board list
+        public List<Comment> Comments { get; set; }
     }
 }

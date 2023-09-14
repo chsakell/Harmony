@@ -23,6 +23,11 @@ namespace Harmony.Persistence.Configurations
             builder.Property(c => c.Name).IsRequired().HasMaxLength(300);
 
             builder.Property(c => c.Position).IsRequired();
+
+            builder.HasMany(c => c.Comments)
+                .WithOne(c => c.Card)
+                .HasForeignKey(c => c.CardId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
