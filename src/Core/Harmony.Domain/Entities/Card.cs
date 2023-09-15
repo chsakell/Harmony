@@ -19,5 +19,6 @@ namespace Harmony.Domain.Entities
         public List<Comment> Comments { get; set; }
         public List<CheckList> CheckLists { get; set; }
         public List<UserCard> Members { get; set; }
+        public List<CardActivity> Activities { get; set; }
     }
 }

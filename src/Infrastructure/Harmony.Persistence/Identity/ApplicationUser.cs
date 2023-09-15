@@ -18,5 +18,6 @@ namespace Harmony.Domain.Entities
         public List<UserBoard> AccessBoards { get; set; } // Boards that has access to
         public List<Comment> Comments { get; set; }
         public List<UserCard> AccessCards { get; set; }
+        public List<CardActivity> CardActivities { get; set; }
     }
 }

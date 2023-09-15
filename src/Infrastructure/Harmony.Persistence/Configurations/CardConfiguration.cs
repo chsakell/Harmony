@@ -32,6 +32,11 @@ namespace Harmony.Persistence.Configurations
             builder.HasMany(c => c.CheckLists)
                 .WithOne(c => c.Card)
                 .HasForeignKey(c => c.CardId);
+
+            builder.HasMany(c => c.Activities)
+                .WithOne(c => c.Card)
+                .HasForeignKey(c => c.CardId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

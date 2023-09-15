@@ -35,9 +35,13 @@ namespace Harmony.Persistence.Configurations
                 .WithOne()
                 .HasForeignKey(board => board.UserId);
 
-            builder.HasMany(c => c.Comments)
+            builder.HasMany(u => u.Comments)
                 .WithOne()
-                .HasForeignKey(c => c.UserId);
+                .HasForeignKey(u => u.UserId);
+
+            builder.HasMany(u => u.CardActivities)
+                .WithOne()
+                .HasForeignKey(u => u.UserId);
         }
     }
 }
