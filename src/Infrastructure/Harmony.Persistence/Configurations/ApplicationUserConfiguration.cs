@@ -21,9 +21,17 @@ namespace Harmony.Persistence.Configurations
                 .WithOne()
                 .HasForeignKey(board => board.UserId);
 
-            // extra configuration to fullfill the M2M relationship for access, between users and boards
+            // extra configuration to fullfill the M2M relationship for access,
+            // between users and boards
             builder
                 .HasMany(user => user.AccessBoards)
+                .WithOne()
+                .HasForeignKey(board => board.UserId);
+
+            // extra configuration to fullfill the M2M relationship for access,
+            // between users and cards
+            builder
+                .HasMany(user => user.AccessCards)
                 .WithOne()
                 .HasForeignKey(board => board.UserId);
 

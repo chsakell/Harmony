@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace Harmony.Domain.Entities
 {
     /// <summary>
-    /// Class to represent M 2 M relationship between users and boards
+    /// Class to represent M 2 M relationship between users and cards
     /// (intermediate table)
     /// </summary>
-    public class UserBoard
+    public class UserCard
     {
         public string UserId { get; set; }
-        public Board Board { get; set; }
-        public Guid BoardId { get; set; }
+        public Card Card { get; set; }
+        public Guid CardId { get; set; }
     }
 }
