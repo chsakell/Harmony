@@ -1,10 +1,9 @@
 ﻿using Harmony.Domain.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Persistence.DbContext
 {
-    public class HarmonyContext : IdentityDbContext<ApplicationUser>
+    public class HarmonyContext : AppIdentityContext
     {
         public DbSet<Board> Boards { get; set; }
         public DbSet<BoardList> BoardLists { get; set; }

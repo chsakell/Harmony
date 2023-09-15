@@ -1,16 +1,18 @@
-﻿using Harmony.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Harmony.Persistence.Identity;
 
-namespace Harmony.Persistence.Configurations
+namespace Harmony.Persistence.Configurations.Identity
 {
     /// <summary>
-    /// EF Core entity configuration for Board
+    /// EF Core entity configuration for Harmony User
     /// </summary>
-    public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+    public class ApplicationUserConfiguration : IEntityTypeConfiguration<HarmonyUser>
     {
-        public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+        public void Configure(EntityTypeBuilder<HarmonyUser> builder)
         {
+            builder.ToTable("Users", "identity");
+
             // A user can create multiple boards and a board belongs to one user (1-M relationship)
             builder.HasMany(user => user.Boards)
                 .WithOne()

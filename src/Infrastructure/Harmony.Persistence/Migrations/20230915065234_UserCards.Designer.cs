@@ -25,7 +25,7 @@ namespace Harmony.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Harmony.Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("Harmony.Domain.Entities.HarmonyUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -450,7 +450,7 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.Board", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany("Boards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -509,7 +509,7 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -526,7 +526,7 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany("AccessBoards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -543,7 +543,7 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany("AccessCards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -563,7 +563,7 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -572,7 +572,7 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -587,7 +587,7 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -596,14 +596,14 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Harmony.Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("Harmony.Domain.Entities.HarmonyUser", b =>
                 {
                     b.Navigation("AccessBoards");
 

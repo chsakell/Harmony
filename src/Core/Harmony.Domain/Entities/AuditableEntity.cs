@@ -2,6 +2,10 @@
 
 namespace Harmony.Domain.Entities
 {
+    public interface IAuditableEntity<TId> : IAuditableEntity, IEntity<TId>
+    {
+    }
+
     /// <summary>
     /// Auditable entities are automatically update their dates
     /// </summary>

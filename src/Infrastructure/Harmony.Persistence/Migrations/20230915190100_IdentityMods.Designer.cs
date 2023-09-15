@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20230915074743_CardActivity")]
-    partial class CardActivity
+    [Migration("20230915190100_IdentityMods")]
+    partial class IdentityMods
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,75 +25,36 @@ namespace Harmony.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Harmony.Domain.Entities.HarmonyUser", b =>
+            modelBuilder.Entity("Harmony.Domain.Entities.Attachment", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("date");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("date");
 
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
+                    b.HasIndex("CardId");
 
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("Attachments", (string)null);
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.Board", b =>
@@ -125,6 +86,38 @@ namespace Harmony.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Boards", (string)null);
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.BoardLabel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BoardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Colour")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId");
+
+                    b.ToTable("BoardBoardLabels", (string)null);
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.BoardList", b =>
@@ -175,6 +168,14 @@ namespace Harmony.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsArchived")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
@@ -182,6 +183,9 @@ namespace Harmony.Persistence.Migrations
 
                     b.Property<byte>("Position")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("ReminderDate")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
@@ -221,6 +225,21 @@ namespace Harmony.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CardActivities", (string)null);
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.CardLabel", b =>
+                {
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BoardLabelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CardId", "BoardLabelId");
+
+                    b.HasIndex("BoardLabelId");
+
+                    b.ToTable("CardLabels", (string)null);
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.CheckList", b =>
@@ -348,13 +367,22 @@ namespace Harmony.Persistence.Migrations
                     b.ToTable("UserCards", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Harmony.Persistence.Identity.HarmonyRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -372,10 +400,10 @@ namespace Harmony.Persistence.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Roles", "identity");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Harmony.Persistence.Identity.HarmonyRoleClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -389,6 +417,24 @@ namespace Harmony.Persistence.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Group")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RoleId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -397,7 +443,102 @@ namespace Harmony.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims", "identity");
+                });
+
+            modelBuilder.Entity("Harmony.Persistence.Identity.HarmonyUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("date");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("Users", "identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -422,7 +563,7 @@ namespace Harmony.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UserClaims", "identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -444,7 +585,7 @@ namespace Harmony.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UserLogins", "identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -459,7 +600,7 @@ namespace Harmony.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoles", "identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -478,16 +619,38 @@ namespace Harmony.Persistence.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UserTokens", "identity");
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.Attachment", b =>
+                {
+                    b.HasOne("Harmony.Domain.Entities.Card", "Card")
+                        .WithMany("Attachments")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.Board", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("Boards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.BoardLabel", b =>
+                {
+                    b.HasOne("Harmony.Domain.Entities.Board", "Board")
+                        .WithMany("Labels")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.BoardList", b =>
@@ -520,11 +683,30 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("CardActivities")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Card");
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.CardLabel", b =>
+                {
+                    b.HasOne("Harmony.Domain.Entities.BoardLabel", "BoardLabel")
+                        .WithMany("Labels")
+                        .HasForeignKey("BoardLabelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Harmony.Domain.Entities.Card", "Card")
+                        .WithMany("Labels")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("BoardLabel");
 
                     b.Navigation("Card");
                 });
@@ -559,7 +741,7 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -576,7 +758,7 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("AccessBoards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -593,7 +775,7 @@ namespace Harmony.Persistence.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("AccessCards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -602,18 +784,20 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("Card");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Harmony.Persistence.Identity.HarmonyRoleClaim", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyRole", "Role")
+                        .WithMany("RoleClaims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -622,7 +806,7 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -631,13 +815,13 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -646,31 +830,25 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.HarmonyUser", null)
+                    b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Harmony.Domain.Entities.HarmonyUser", b =>
-                {
-                    b.Navigation("AccessBoards");
-
-                    b.Navigation("AccessCards");
-
-                    b.Navigation("Boards");
-
-                    b.Navigation("CardActivities");
-
-                    b.Navigation("Comments");
-                });
-
             modelBuilder.Entity("Harmony.Domain.Entities.Board", b =>
                 {
+                    b.Navigation("Labels");
+
                     b.Navigation("Lists");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.BoardLabel", b =>
+                {
+                    b.Navigation("Labels");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.BoardList", b =>
@@ -682,9 +860,13 @@ namespace Harmony.Persistence.Migrations
                 {
                     b.Navigation("Activities");
 
+                    b.Navigation("Attachments");
+
                     b.Navigation("CheckLists");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("Labels");
 
                     b.Navigation("Members");
                 });
@@ -692,6 +874,24 @@ namespace Harmony.Persistence.Migrations
             modelBuilder.Entity("Harmony.Domain.Entities.CheckList", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Harmony.Persistence.Identity.HarmonyRole", b =>
+                {
+                    b.Navigation("RoleClaims");
+                });
+
+            modelBuilder.Entity("Harmony.Persistence.Identity.HarmonyUser", b =>
+                {
+                    b.Navigation("AccessBoards");
+
+                    b.Navigation("AccessCards");
+
+                    b.Navigation("Boards");
+
+                    b.Navigation("CardActivities");
+
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

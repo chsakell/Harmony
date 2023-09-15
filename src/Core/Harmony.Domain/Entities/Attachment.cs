@@ -1,4 +1,5 @@
-﻿namespace Harmony.Domain.Entities
+﻿
+namespace Harmony.Domain.Entities
 {
     public class Attachment : AuditableEntity<Guid>
     {
