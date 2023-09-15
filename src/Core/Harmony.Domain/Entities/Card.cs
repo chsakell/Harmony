@@ -21,5 +21,6 @@ namespace Harmony.Domain.Entities
         public List<UserCard> Members { get; set; }
         public List<CardActivity> Activities { get; set; }
         public bool IsArchived { get; set; }
+        public List<CardLabel> Labels { get; set; }
     }
 }

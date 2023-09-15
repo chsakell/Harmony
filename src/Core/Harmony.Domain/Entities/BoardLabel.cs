@@ -16,5 +16,6 @@ namespace Harmony.Domain.Entities
         public string Colour { get; set; }
         public Board Board { get; set; }
         public Guid BoardId { get; set; }
+        public List<CardLabel> Labels { get; set; }
     }
 }
