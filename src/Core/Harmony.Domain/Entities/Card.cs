@@ -20,5 +20,6 @@ namespace Harmony.Domain.Entities
         public List<CheckList> CheckLists { get; set; }
         public List<UserCard> Members { get; set; }
         public List<CardActivity> Activities { get; set; }
+        public bool IsArchived { get; set; }
     }
 }
