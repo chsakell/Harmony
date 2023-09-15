@@ -26,7 +26,12 @@ namespace Harmony.Persistence.Configurations
 
             // A board can have multiple lists and a list belongs to one board (1-M relationship)
             builder.HasMany(board => board.Lists)
-                .WithOne(l => l.Board).HasForeignKey(list => list.BoardId);
+                .WithOne(l => l.Board)
+                .HasForeignKey(list => list.BoardId);
+
+            builder.HasMany(board => board.Labels)
+                .WithOne(label => label.Board)
+                .HasForeignKey(label => label.BoardId);
         }
     }
 }
