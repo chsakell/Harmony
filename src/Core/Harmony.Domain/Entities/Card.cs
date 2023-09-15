@@ -22,5 +22,7 @@ namespace Harmony.Domain.Entities
         public List<CardActivity> Activities { get; set; }
         public bool IsArchived { get; set; }
         public List<CardLabel> Labels { get; set; }
+        public DateTime? DueDate { get; set; }
+        public DateTime? ReminderDate { get; set; }
     }
 }
