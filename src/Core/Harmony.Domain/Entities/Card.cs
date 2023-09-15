@@ -24,5 +24,6 @@ namespace Harmony.Domain.Entities
         public List<CardLabel> Labels { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
+        public List<Attachment> Attachments { get; set; }
     }
 }

@@ -39,6 +39,10 @@ namespace Harmony.Persistence.Configurations
                 .WithOne(c => c.Card)
                 .HasForeignKey(c => c.CardId)
                 .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.HasMany(c => c.Attachments)
+                .WithOne(a => a.Card)
+                .HasForeignKey(a => a.CardId);
         }
     }
 }
