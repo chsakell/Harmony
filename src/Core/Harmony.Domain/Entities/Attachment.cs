@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Harmony.Domain.Entities
+﻿namespace Harmony.Domain.Entities
 {
     public class Attachment : AuditableEntity<Guid>
     {

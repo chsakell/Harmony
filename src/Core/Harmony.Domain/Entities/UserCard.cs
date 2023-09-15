@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Harmony.Domain.Entities
+﻿namespace Harmony.Domain.Entities
 {
     /// <summary>
     /// Class to represent M 2 M relationship between users and cards
