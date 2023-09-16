@@ -38,19 +38,24 @@ namespace Harmony.Infrastructure.Services.Identity
         public async Task<Result<TokenResponse>> LoginAsync(TokenRequest model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
+
             if (user == null)
             {
                 return await Result<TokenResponse>.FailAsync("User Not Found.");
             }
+
             if (!user.IsActive)
             {
                 return await Result<TokenResponse>.FailAsync("User Not Active. Please contact the administrator.");
             }
+
             if (!user.EmailConfirmed)
             {
                 return await Result<TokenResponse>.FailAsync("E-Mail not confirmed.");
             }
+
             var passwordValid = await _userManager.CheckPasswordAsync(user, model.Password);
+
             if (!passwordValid)
             {
                 return await Result<TokenResponse>.FailAsync("Invalid Credentials.");
@@ -58,10 +63,17 @@ namespace Harmony.Infrastructure.Services.Identity
 
             user.RefreshToken = GenerateRefreshToken();
             user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+
             await _userManager.UpdateAsync(user);
 
             var token = await GenerateJwtAsync(user);
-            var response = new TokenResponse { Token = token, RefreshToken = user.RefreshToken, UserImageURL = user.ProfilePictureDataUrl };
+            var response = new TokenResponse 
+            { 
+                Token = token, 
+                RefreshToken = user.RefreshToken, 
+                UserImageURL = user.ProfilePictureDataUrl 
+            };
+
             return await Result<TokenResponse>.SuccessAsync(response);
         }
 
