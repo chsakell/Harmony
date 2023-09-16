@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Harmony.Shared.Constants.Role;
 using Harmony.Application.Exceptions;
 using Harmony.Persistence.Identity;
+using Harmony.Application.Services;
 
 namespace Harmony.Infrastructure.Services.Identity
 {
@@ -26,17 +27,19 @@ namespace Harmony.Infrastructure.Services.Identity
         private readonly RoleManager<HarmonyRole> _roleManager;
         //private readonly IMailService _mailService;
         //private readonly IStringLocalizer<UserService> _localizer;
-        //private readonly ICurrentUserService _currentUserService;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
 
         public UserService(
             UserManager<HarmonyUser> userManager,
             IMapper mapper,
+            ICurrentUserService currentUserService,
             RoleManager<HarmonyRole> roleManager
             )
         {
             _userManager = userManager;
             _mapper = mapper;
+            _currentUserService = currentUserService;
             _roleManager = roleManager;
         }
 
@@ -60,19 +63,19 @@ namespace Harmony.Infrastructure.Services.Identity
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserName = request.UserName,
-                //PhoneNumber = request.PhoneNumber,
-                //IsActive = request.ActivateUser,
-                //EmailConfirmed = request.AutoConfirmEmail
+                PhoneNumber = request.PhoneNumber,
+                IsActive = request.ActivateUser,
+                EmailConfirmed = request.AutoConfirmEmail
             };
 
-            //if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
-            //{
-            //    var userWithSamePhoneNumber = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == request.PhoneNumber);
-            //    if (userWithSamePhoneNumber != null)
-            //    {
-            //        return await Result.FailAsync(string.Format("Phone number {0} is already registered.", request.PhoneNumber));
-            //    }
-            //}
+            if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
+            {
+                var userWithSamePhoneNumber = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == request.PhoneNumber);
+                if (userWithSamePhoneNumber != null)
+                {
+                    return await Result.FailAsync(string.Format("Phone number {0} is already registered.", request.PhoneNumber));
+                }
+            }
 
             var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
             if (userWithSameEmail == null)
@@ -158,15 +161,11 @@ namespace Harmony.Infrastructure.Services.Identity
         public async Task<IResult> UpdateRolesAsync(UpdateUserRolesRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.UserId);
-            if (user.Email == "mukesh@blazorhero.com")
-            {
-                return await Result.FailAsync("Not Allowed.");
-            }
 
             var roles = await _userManager.GetRolesAsync(user);
             var selectedRoles = request.UserRoles.Where(x => x.Selected).ToList();
 
-            var currentUser = new HarmonyUser();// TODO await _userManager.FindByIdAsync(_currentUserService.UserId);
+            var currentUser = await _userManager.FindByIdAsync(_currentUserService.UserId);
             if (!await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdministratorRole))
             {
                 var tryToAddAdministratorRole = selectedRoles
