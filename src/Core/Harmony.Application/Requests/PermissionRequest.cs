@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Harmony.Application.Requests
+﻿namespace Harmony.Application.Requests
 {
     public class PermissionRequest
     {

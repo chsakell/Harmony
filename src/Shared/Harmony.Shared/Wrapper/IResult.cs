@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Harmony.Shared.Wrapper
+﻿namespace Harmony.Shared.Wrapper
 {
     public interface IResult
     {

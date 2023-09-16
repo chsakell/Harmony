@@ -1,15 +1,8 @@
-﻿using AutoMapper.Internal;
-using AutoMapper;
+﻿using AutoMapper;
 using Harmony.Application.Requests;
 using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.WebUtilities;

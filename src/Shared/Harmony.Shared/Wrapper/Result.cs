@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Harmony.Shared.Wrapper
+﻿namespace Harmony.Shared.Wrapper
 {
     public class Result : IResult
     {

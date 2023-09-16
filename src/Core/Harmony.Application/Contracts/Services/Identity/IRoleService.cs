@@ -1,8 +1,6 @@
 ﻿using Harmony.Application.Requests;
 using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Harmony.Application.Contracts.Services.Identity
 {

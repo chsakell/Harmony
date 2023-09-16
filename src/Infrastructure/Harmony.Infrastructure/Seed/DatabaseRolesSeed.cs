@@ -6,13 +6,7 @@ using Harmony.Shared.Constants.Permission;
 using Harmony.Shared.Constants.Role;
 using Harmony.Shared.Constants.User;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Seed
 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Harmony.Application.Responses
+﻿namespace Harmony.Application.Responses
 {
     public class UserRolesResponse
     {

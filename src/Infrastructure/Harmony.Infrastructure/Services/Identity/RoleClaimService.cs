@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests;
@@ -10,7 +7,6 @@ using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Harmony.Shared.Wrapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 
 namespace Harmony.Infrastructure.Services.Identity
 {

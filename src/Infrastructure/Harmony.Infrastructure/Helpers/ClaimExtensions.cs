@@ -2,12 +2,9 @@
 using Harmony.Persistence.Identity;
 using Harmony.Shared.Constants.Permission;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Helpers
 {

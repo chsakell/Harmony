@@ -2,7 +2,6 @@
 using Harmony.Application.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace BlazorHero.CleanArchitecture.Server.Controllers.Identity
 {
