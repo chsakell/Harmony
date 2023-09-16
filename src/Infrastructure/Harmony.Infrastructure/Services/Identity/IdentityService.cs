@@ -1,5 +1,4 @@
-﻿using Harmony.Application.Services.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +14,7 @@ using Harmony.Persistence.Identity;
 using Harmony.Application.Configurations;
 using Harmony.Shared.Wrapper;
 using Harmony.Application.Identity;
+using Harmony.Application.Contracts.Services.Identity;
 
 namespace Harmony.Infrastructure.Services.Identity
 {

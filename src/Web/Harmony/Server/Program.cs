@@ -48,5 +48,6 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 app.ConfigureSwagger();
+await app.InitializeDatabase(builder.Configuration);
 
 app.Run();

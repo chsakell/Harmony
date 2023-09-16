@@ -1,5 +1,5 @@
-﻿using Harmony.Application.Requests;
-using Harmony.Application.Services.Identity;
+﻿using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

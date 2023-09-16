@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Services
+namespace Harmony.Application.Contracts.Services
 {
-    public interface ICurrentUserService 
+    public interface ICurrentUserService
     {
         string UserId { get; }
     }

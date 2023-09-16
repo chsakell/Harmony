@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Services.Identity
+namespace Harmony.Application.Contracts.Services.Identity
 {
     public interface IUserService
     {

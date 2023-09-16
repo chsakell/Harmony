@@ -1,11 +1,9 @@
-﻿
-
-using Harmony.Application.Identity;
+﻿using Harmony.Application.Identity;
 using Harmony.Shared.Wrapper;
 
-namespace Harmony.Application.Services.Identity
+namespace Harmony.Application.Contracts.Services.Identity
 {
-    public interface ITokenService 
+    public interface ITokenService
     {
         Task<Result<TokenResponse>> LoginAsync(TokenRequest model);
 

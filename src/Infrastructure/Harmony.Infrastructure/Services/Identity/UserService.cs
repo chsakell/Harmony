@@ -2,7 +2,6 @@
 using AutoMapper;
 using Harmony.Application.Requests;
 using Harmony.Application.Responses;
-using Harmony.Application.Services.Identity;
 using Harmony.Shared.Wrapper;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Harmony.Shared.Constants.Role;
 using Harmony.Application.Exceptions;
 using Harmony.Persistence.Identity;
-using Harmony.Application.Services;
+using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Identity;
 
 namespace Harmony.Infrastructure.Services.Identity
 {

@@ -1,12 +1,10 @@
-﻿
-
-using Harmony.Application.Requests;
+﻿using Harmony.Application.Requests;
 using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 
-namespace Harmony.Application.Services.Identity
+namespace Harmony.Application.Contracts.Services.Identity
 {
-    public interface IRoleClaimService 
+    public interface IRoleClaimService
     {
         Task<Result<List<RoleClaimResponse>>> GetAllAsync();
 

@@ -1,6 +1,9 @@
 ﻿using Harmony.Application.Configurations;
-using Harmony.Application.Services;
-using Harmony.Application.Services.Identity;
+using Harmony.Application.Contracts.Persistence;
+using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Infrastructure.Mappings;
+using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
@@ -38,9 +41,10 @@ namespace Harmony.Server.Extensions
 
         public static void AddApplicationLayer(this IServiceCollection services)
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            var assembly = Assembly.GetAssembly(typeof(RoleProfile));
+            services.AddAutoMapper(assembly);
             //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         }
 
@@ -183,8 +187,8 @@ namespace Harmony.Server.Extensions
             IConfiguration configuration)
             => services
                 .AddDbContext<HarmonyContext>(options => options
-                    .UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-        //.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
+                    .UseSqlServer(configuration.GetConnectionString("DefaultConnection")))
+                .AddTransient<IDatabaseSeed, DatabaseRolesSeed>();
 
         internal static IServiceCollection AddIdentity(this IServiceCollection services)
         {

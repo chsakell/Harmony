@@ -1,5 +1,4 @@
-﻿
-using Harmony.Application.Responses;
+﻿using Harmony.Application.Responses;
 using Harmony.Persistence.Identity;
 using Harmony.Shared.Constants.Permission;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +9,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Harmony.CleanArchitecture.Helpers
+namespace Harmony.Infrastructure.Helpers
 {
     public static class ClaimsHelper
     {
@@ -47,6 +46,7 @@ namespace Harmony.CleanArchitecture.Helpers
         public static async Task<IdentityResult> AddPermissionClaim(this RoleManager<HarmonyRole> roleManager, HarmonyRole role, string permission)
         {
             var allClaims = await roleManager.GetClaimsAsync(role);
+
             if (!allClaims.Any(a => a.Type == ApplicationClaimTypes.Permission && a.Value == permission))
             {
                 return await roleManager.AddClaimAsync(role, new Claim(ApplicationClaimTypes.Permission, permission));

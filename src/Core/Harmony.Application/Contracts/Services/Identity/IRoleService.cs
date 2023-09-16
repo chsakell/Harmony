@@ -4,7 +4,7 @@ using Harmony.Shared.Wrapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Services.Identity
+namespace Harmony.Application.Contracts.Services.Identity
 {
     public interface IRoleService
     {

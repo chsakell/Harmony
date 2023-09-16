@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests;
 using Harmony.Application.Responses;
-using Harmony.Application.Services;
-using Harmony.Application.Services.Identity;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Harmony.Shared.Wrapper;

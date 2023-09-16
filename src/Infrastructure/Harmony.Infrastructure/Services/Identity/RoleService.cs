@@ -8,14 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Harmony.Persistence.Identity;
-using Harmony.Application.Services;
 using Harmony.Shared.Wrapper;
 using Harmony.Shared.Constants.Role;
 using Harmony.Application.Responses;
 using Harmony.Application.Requests;
 using Harmony.Shared.Constants.Permission;
-using Harmony.Application.Services.Identity;
-using Harmony.CleanArchitecture.Helpers;
+using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Infrastructure.Helpers;
 
 namespace Harmony.Infrastructure.Services.Identity
 {

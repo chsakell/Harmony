@@ -13,7 +13,7 @@ namespace Harmony.Persistence.Configurations.Identity
     /// <summary>
     /// EF Core entity configuration for Harmony Role Claim
     /// </summary>
-    public class ApplicationRoleClaimConfiguration : IEntityTypeConfiguration<HarmonyRoleClaim>
+    public class HarmonyRoleClaimConfiguration : IEntityTypeConfiguration<HarmonyRoleClaim>
     {
         public void Configure(EntityTypeBuilder<HarmonyRoleClaim> builder)
         {

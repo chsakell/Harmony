@@ -7,7 +7,7 @@ namespace Harmony.Persistence.Configurations.Identity
     /// <summary>
     /// EF Core entity configuration for Harmony User
     /// </summary>
-    public class ApplicationUserConfiguration : IEntityTypeConfiguration<HarmonyUser>
+    public class HarmonyUserConfiguration : IEntityTypeConfiguration<HarmonyUser>
     {
         public void Configure(EntityTypeBuilder<HarmonyUser> builder)
         {
