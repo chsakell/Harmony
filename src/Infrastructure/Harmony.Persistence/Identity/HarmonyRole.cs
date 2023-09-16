@@ -15,5 +15,16 @@ namespace Harmony.Persistence.Identity
         public DateTime? DateUpdated { get; set; }
 
         public ICollection<HarmonyRoleClaim> RoleClaims { get; set; }
+
+        public HarmonyRole() : base()
+        {
+            RoleClaims = new HashSet<HarmonyRoleClaim>();
+        }
+
+        public HarmonyRole(string roleName, string roleDescription = null) : base(roleName)
+        {
+            RoleClaims = new HashSet<HarmonyRoleClaim>();
+            Description = roleDescription;
+        }
     }
 }

@@ -13,6 +13,8 @@ namespace Harmony.Persistence.Configurations.Identity
         {
             builder.ToTable("Users", "identity");
 
+            builder.Property(u => u.ProfilePictureDataUrl).HasColumnType("text");
+
             // A user can create multiple boards and a board belongs to one user (1-M relationship)
             builder.HasMany(user => user.Boards)
                 .WithOne()

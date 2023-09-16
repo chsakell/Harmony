@@ -46,9 +46,9 @@ namespace Harmony.Server.Extensions
 
         internal static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            //services.AddTransient<IRoleClaimService, RoleClaimService>();
-            //services.AddTransient<ITokenService, IdentityService>();
-            //services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IRoleClaimService, RoleClaimService>();
+            services.AddTransient<ITokenService, IdentityService>();
+            services.AddTransient<IRoleService, RoleService>();
             //services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IUserService, UserService>();
             //services.AddTransient<IUploadService, UploadService>();

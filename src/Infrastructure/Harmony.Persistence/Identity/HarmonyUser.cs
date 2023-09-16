@@ -1,5 +1,6 @@
 ﻿using Harmony.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Harmony.Persistence.Identity
 {
@@ -18,6 +19,7 @@ namespace Harmony.Persistence.Identity
         public bool IsActive { get; set; }
         public string RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
+        public string ProfilePictureDataUrl { get; set; }
 
         public List<Board> Boards { get; set; } // Boards created by the user
         public List<UserBoard> AccessBoards { get; set; } // Boards that has access to
