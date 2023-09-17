@@ -1,0 +1,41 @@
+﻿@using Harmony.Shared.Constants.Application;
+@using Microsoft.AspNetCore.SignalR.Client
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Logout> localizer
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Logout" Class="mr-3 mb-n1" />
+            @localizer["Logout Confirmation"]
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText>@ContentText</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@localizer["Cancel"]</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public HubConnection HubConnection { get; set; }
+
+    [Parameter] public string ContentText { get; set; }
+
+    [Parameter] public string ButtonText { get; set; }
+
+    [Parameter] public Color Color { get; set; }
+
+    [Parameter] public string CurrentUserId { get; set; }
+
+    async Task Submit()
+    {
+        await HubConnection.SendAsync(ApplicationConstants.SignalR.OnDisconnect, CurrentUserId);
+        await _authenticationManager.Logout();
+        _navigationManager.NavigateTo("/login");
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    void Cancel() => MudDialog.Cancel();
+}

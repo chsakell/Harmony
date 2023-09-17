@@ -42,7 +42,6 @@ namespace Harmony.Server.Extensions
         {
             var assembly = Assembly.GetAssembly(typeof(RoleProfile));
             services.AddAutoMapper(assembly);
-            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         }

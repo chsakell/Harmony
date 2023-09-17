@@ -1,0 +1,50 @@
+﻿@page "/login"
+@layout MainLayout
+@attribute [AllowAnonymous]
+
+<EditForm Model="@_tokenModel" OnValidSubmit="SubmitAsync">
+    <MudGrid>
+        <MudItem xs="12">
+            @* <div class="d-flex justify-center">
+                <MudIcon Icon="@CustomIcons.BlazorHero" Color="Color.Primary" Size="Size.Large" ViewBox="0 0 500 500" Style="width: 100px; height: 100px;" />
+            </div> *@
+        </MudItem>
+        <DataAnnotationsValidator />
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText Typo="Typo.h4">Title</MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText>Description</MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText>Don't have an account? <MudLink Href="/register">Register here</MudLink></MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined"
+                          @bind-Value="_tokenModel.Email" For="@(() => _tokenModel.Email)" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField Label="Password" Variant="Variant.Outlined"
+                          @bind-Value="_tokenModel.Password" For="@(() => _tokenModel.Password)"
+                          InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-space-between align-center">
+            <MudCheckBox T="bool" Label="Remember me?" Color="Color.Primary" Class="ml-n1"></MudCheckBox> <MudLink Href="/account/forgot-password">Forgot password?</MudLink>
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Sign In</MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton OnClick="FillAdministratorCredentials">Fill Administrator Credentials</MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton OnClick="FillBasicUserCredentials">Fill Basic User Credentials</MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>

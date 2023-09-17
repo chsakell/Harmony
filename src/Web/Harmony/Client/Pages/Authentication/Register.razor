@@ -1,0 +1,47 @@
+﻿@page "/register"
+@layout MainLayout
+@attribute [AllowAnonymous]
+
+<EditForm Model="@_registerUserModel" OnValidSubmit="SubmitAsync">
+    <MudGrid>
+        @* <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudIcon Icon="@CustomIcons.BlazorHero" Color="Color.Primary" Size="Size.Large" ViewBox="0 0 500 500" Style="width: 100px; height: 100px;" />
+            </div>
+        </MudItem> *@
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText Typo="Typo.h4">Register</MudText>
+            </div>
+        </MudItem>
+        <MudItem  xs="12">
+            <div class="d-flex justify-center">
+                <MudText>Already have an account? <MudLink Href="/login">Sign In</MudLink></MudText>
+            </div>
+        </MudItem>
+        <MudItem  xs="12">
+            <MudTextField For="@(() => _registerUserModel.UserName)" @bind-Value="_registerUserModel.UserName" Label="User Name" />
+        </MudItem>
+        <MudItem  xs="12" sm="6" md="6">
+            <MudTextField For="@(() => _registerUserModel.FirstName)" @bind-Value="_registerUserModel.FirstName" Label="First Name" />
+        </MudItem>
+        <MudItem  xs="12" sm="6" md="6">
+            <MudTextField For="@(() => _registerUserModel.LastName)" @bind-Value="_registerUserModel.LastName" Label="Last Name" />
+        </MudItem>
+        <MudItem  xs="12" sm="6" md="6">
+            <MudTextField T="string" Label="E-mail" @bind-Value="_registerUserModel.Email" For="@(() => _registerUserModel.Email)" />
+        </MudItem>
+        <MudItem  xs="12" sm="6" md="6">
+            <MudTextField T="string" Label="Phone Number" @bind-Value="_registerUserModel.PhoneNumber" For="@(() => _registerUserModel.PhoneNumber)" />
+        </MudItem>
+        <MudItem  xs="12" sm="6" md="6">
+            <MudTextField For="@(() => _registerUserModel.Password)" InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility" @bind-Value="_registerUserModel.Password" Label="Password" />
+        </MudItem>
+        <MudItem  xs="12" sm="6" md="6">
+            <MudTextField For="@(() => _registerUserModel.ConfirmPassword)" InputType="InputType.Password" @bind-Value="_registerUserModel.ConfirmPassword" Label="Confirm Password" />
+        </MudItem>
+        <MudItem  xs="12" Class="d-flex justify-center">
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Register</MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>

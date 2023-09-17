@@ -1,5 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using BlazorHero.CleanArchitecture.Client.Infrastructure.Authentication;
 using Harmony.Client;
 using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Managers;
@@ -24,12 +23,12 @@ namespace Harmony.Client.Extensions
     {
         private const string ClientName = "BlazorHero.API";
 
-        public static WebAssemblyHostBuilder AddRootComponents(this WebAssemblyHostBuilder builder)
-        {
-            builder.RootComponents.Add<App>("#app");
+        //public static WebAssemblyHostBuilder AddRootComponents(this WebAssemblyHostBuilder builder)
+        //{
+        //    builder.RootComponents.Add<App>("#app");
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
         public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder)
         {

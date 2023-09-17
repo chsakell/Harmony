@@ -12,6 +12,7 @@ builder.Services.AddCurrentUserService();
 builder.Services.RegisterSwagger();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));
+builder.Services.AddSignalR();
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
 
@@ -43,9 +44,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
-app.MapControllers();
-app.MapFallbackToFile("index.html");
+app.UseEndpoints();
 app.ConfigureSwagger();
 await app.InitializeDatabase(builder.Configuration);
 

@@ -1,17 +1,30 @@
 ﻿@inherits LayoutComponentBase
+@* @inject Microsoft.Extensions.Localization.IStringLocalizer<MainLayout> _localizer *@
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudRTLProvider RightToLeft="@_rightToLeft">
+    <audio id="notification" src="/media/notification.mp3" />
+    <MudThemeProvider Theme="_currentTheme" />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+    <AuthorizeView>
+        <NotAuthorized>
+            <MudAppBar Elevation="4" Color="Color.Primary">
+                <MudSpacer />
+                <LanguageSelector />
+                <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkMode())" />
+            </MudAppBar>
+            <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
+                <MudPaper Elevation="25" Class="pa-8" Style="width: 500px;">
+                    @Body
+                </MudPaper>
+            </MudContainer>
+        </NotAuthorized>
+        <Authorized>
+            <MudLayout>
+                <MainBody OnDarkModeToggle="@DarkMode" OnRightToLeftToggle="@RightToLeftToggle">
+                    @Body
+                </MainBody>
+            </MudLayout>
+        </Authorized>
+    </AuthorizeView>
+</MudRTLProvider>

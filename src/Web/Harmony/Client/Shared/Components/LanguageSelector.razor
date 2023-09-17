@@ -1,0 +1,29 @@
+﻿@using Harmony.Shared.Constants.Localization;
+@* @inject Microsoft.Extensions.Localization.IStringLocalizer<LanguageSelector> _localizer *@
+
+<MudMenu Icon="@Icons.Material.Outlined.Translate" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
+    @foreach (var language in LocalizationConstants.SupportedLanguages)
+    {
+        <MudMenuItem OnClick="(()=> ChangeLanguageAsync(language.Code))">language.DisplayName</MudMenuItem>
+    }
+</MudMenu>
+
+@code
+{
+    private async Task ChangeLanguageAsync(string languageCode)
+    {
+        var result = await _clientPreferenceManager.ChangeLanguageAsync(languageCode);
+        if (result.Succeeded)
+        {
+            _snackBar.Add(result.Messages[0], Severity.Success);
+            _navigationManager.NavigateTo(_navigationManager.Uri, forceLoad: true);
+        }
+        else
+        {
+            foreach (var error in result.Messages)
+            {
+                _snackBar.Add(error, Severity.Error);
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BlazorHero.CleanArchitecture.Client.Infrastructure.Authentication
+namespace Harmony.Client.Infrastructure.Authentication
 {
     public class AuthenticationHeaderHandler : DelegatingHandler
     {
@@ -20,7 +20,7 @@ namespace BlazorHero.CleanArchitecture.Client.Infrastructure.Authentication
         {
             if (request.Headers.Authorization?.Scheme != "Bearer")
             {
-                var savedToken = await this.localStorage.GetItemAsync<string>(StorageConstants.Local.AuthToken);
+                var savedToken = await localStorage.GetItemAsync<string>(StorageConstants.Local.AuthToken);
 
                 if (!string.IsNullOrWhiteSpace(savedToken))
                 {

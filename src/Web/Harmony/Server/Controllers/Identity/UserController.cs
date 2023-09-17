@@ -3,7 +3,7 @@ using Harmony.Application.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BlazorHero.CleanArchitecture.Server.Controllers.Identity
+namespace Harmony.Server.Controllers.Identity
 {
     //[Authorize]
     [Route("api/identity/user")]

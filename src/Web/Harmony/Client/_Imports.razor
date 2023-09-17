@@ -1,12 +1,44 @@
-﻿@using System.Net.Http
+﻿@*Libraries*@
+@using System.Net.Http
 @using System.Net.Http.Json
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
-@using Harmony.Client
-@using Harmony.Client.Shared
-
 @using MudBlazor
+@using Blazored.LocalStorage;
+
+@using Harmony.Client
+@using Harmony.Client.Pages.Authentication
+@using Harmony.Client.Shared.Components
+@using Harmony.Client.Shared.Dialogs
+
+@using Harmony.Client.Shared
+@using Harmony.Client.Infrastructure.Authentication;
+@using Harmony.Client.Infrastructure.Managers.Identity.Authentication;
+@using Harmony.Client.Infrastructure.Managers.Identity.Account;
+@using Harmony.Client.Infrastructure.Managers.Preferences;
+using Harmony.Client.Infrastructure.Managers.Identity.Roles;
+@using Harmony.Client.Infrastructure.Interceptors;
+@using Harmony.Client.Infrastructure.Managers.Identity.Users;
+@using Harmony.Client.Infrastructure.Settings;
+
+@attribute [Authorize]
+@inject IAuthenticationManager _authenticationManager
+@inject IAccountManager _accountManager 
+@inject ISnackbar _snackBar
+@inject NavigationManager _navigationManager
+@inject HarmonyStateProvider _stateProvider
+@inject IAuthorizationService _authorizationService
+@inject IDialogService _dialogService
+@inject HttpClient _httpClient
+@inject IHttpInterceptorManager _interceptor
+@inject ClientPreferenceManager _clientPreferenceManager
+@inject IUserManager _userManager
+@inject ILocalStorageService _localStorage;
+@inject IJSRuntime _jsRuntime;
