@@ -1,9 +1,11 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Seed;
+using Harmony.Infrastructure.Services;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
@@ -38,22 +40,14 @@ namespace Harmony.Server.Extensions
             return applicationSettingsConfiguration.Get<AppConfiguration>();
         }
 
-        public static void AddApplicationLayer(this IServiceCollection services)
-        {
-            var assembly = Assembly.GetAssembly(typeof(RoleProfile));
-            services.AddAutoMapper(assembly);
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
-            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        }
-
         internal static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IRoleClaimService, RoleClaimService>();
             services.AddTransient<ITokenService, IdentityService>();
             services.AddTransient<IRoleService, RoleService>();
-            //services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IUserService, UserService>();
-            //services.AddTransient<IUploadService, UploadService>();
+            services.AddTransient<IUploadService, UploadService>();
             //services.AddTransient<IAuditService, AuditService>();
             return services;
         }

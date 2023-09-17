@@ -1,5 +1,6 @@
 using Harmony.Server.Extensions;
 using Microsoft.Extensions.FileProviders;
+using Harmony.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddCurrentUserService();
 builder.Services.RegisterSwagger();
+builder.Services.AddInfrastructureMappings();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));
 builder.Services.AddSignalR();
