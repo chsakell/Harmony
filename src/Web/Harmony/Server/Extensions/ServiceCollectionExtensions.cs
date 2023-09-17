@@ -9,6 +9,7 @@ using Harmony.Infrastructure.Services;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
+using Harmony.Server.Localization;
 using Harmony.Server.Services;
 using Harmony.Shared.Constants.Application;
 using Harmony.Shared.Constants.Permission;
@@ -16,6 +17,8 @@ using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Net;
@@ -180,7 +183,7 @@ namespace Harmony.Server.Extensions
             => services
                 .AddDbContext<HarmonyContext>(options => options
                     .UseSqlServer(configuration.GetConnectionString("DefaultConnection")))
-                .AddTransient<IDatabaseSeed, DatabaseRolesSeed>();
+                .AddTransient<IDatabaseSeeder, DatabaseRolesSeeder>();
 
         internal static IServiceCollection AddIdentity(this IServiceCollection services)
         {
@@ -264,6 +267,13 @@ namespace Harmony.Server.Extensions
                 //    },
                 //});
             });
+        }
+
+        // we don't need this
+        internal static IServiceCollection AddServerLocalization(this IServiceCollection services)
+        {
+            //services.TryAddTransient(typeof(IStringLocalizer<>), typeof(ServerLocalizer<>));
+            return services;
         }
     }
 }

@@ -5,13 +5,17 @@ using Harmony.Application.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddCurrentUserService();
 builder.Services.RegisterSwagger();
 builder.Services.AddInfrastructureMappings();
+builder.Services.AddServerLocalization();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));
 builder.Services.AddSignalR();

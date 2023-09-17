@@ -21,7 +21,7 @@ namespace Harmony.Server.Extensions
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
 
-            var initializers = serviceScope.ServiceProvider.GetServices<IDatabaseSeed>();
+            var initializers = serviceScope.ServiceProvider.GetServices<IDatabaseSeeder>();
 
             foreach (var initializer in initializers.OrderBy(init => init.Order))
             {

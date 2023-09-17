@@ -6,32 +6,33 @@ using Harmony.Shared.Constants.Permission;
 using Harmony.Shared.Constants.Role;
 using Harmony.Shared.Constants.User;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace Harmony.Infrastructure.Seed
 {
-    public class DatabaseRolesSeed : IDatabaseSeed
+    public class DatabaseRolesSeeder : IDatabaseSeeder
     {
         public int Order => 1;
 
-        private readonly ILogger<DatabaseRolesSeed> _logger;
-        //private readonly IStringLocalizer<DatabaseRolesSeed> _localizer;
+        private readonly ILogger<DatabaseRolesSeeder> _logger;
+        private readonly IStringLocalizer<DatabaseRolesSeeder> _localizer;
         private readonly HarmonyContext _db;
         private readonly UserManager<HarmonyUser> _userManager;
         private readonly RoleManager<HarmonyRole> _roleManager;
 
-        public DatabaseRolesSeed(
+        public DatabaseRolesSeeder(
             UserManager<HarmonyUser> userManager,
             RoleManager<HarmonyRole> roleManager,
             HarmonyContext db,
-            ILogger<DatabaseRolesSeed> logger)
-        // IStringLocalizer<DatabaseRolesSeed> localizer) // TODO
+            ILogger<DatabaseRolesSeeder> logger,
+            IStringLocalizer<DatabaseRolesSeeder> localizer)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _db = db;
             _logger = logger;
-            //_localizer = localizer;
+            _localizer = localizer;
         }
 
         public async Task Initialize()
@@ -44,14 +45,14 @@ namespace Harmony.Infrastructure.Seed
         private async Task AddAdministrator()
         {
             //Check if Role Exists
-            var adminRole = new HarmonyRole(RoleConstants.AdministratorRole, "Administrator role with full permissions");
+            var adminRole = new HarmonyRole(RoleConstants.AdministratorRole, _localizer["Administrator role with full permissions"]);
             var adminRoleInDb = await _roleManager.FindByNameAsync(RoleConstants.AdministratorRole);
 
             if (adminRoleInDb == null)
             {
                 await _roleManager.CreateAsync(adminRole);
                 adminRoleInDb = await _roleManager.FindByNameAsync(RoleConstants.AdministratorRole);
-                _logger.LogInformation("Seeded Administrator Role.");
+                _logger.LogInformation(_localizer["Seeded Administrator Role."]);
             }
             //Check if User Exists
             var superUser = new HarmonyUser
@@ -74,7 +75,7 @@ namespace Harmony.Infrastructure.Seed
                 var result = await _userManager.AddToRoleAsync(superUser, RoleConstants.AdministratorRole);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("Seeded Default SuperAdmin User.");
+                    _logger.LogInformation(_localizer["Seeded Default SuperAdmin User."]);
                 }
                 else
                 {
@@ -94,12 +95,12 @@ namespace Harmony.Infrastructure.Seed
         private async Task AddBasicUser()
         {
             //Check if Role Exists
-            var basicRole = new HarmonyRole(RoleConstants.BasicRole, "Basic role with default permissions");
+            var basicRole = new HarmonyRole(RoleConstants.BasicRole, _localizer["Basic role with default permissions"]);
             var basicRoleInDb = await _roleManager.FindByNameAsync(RoleConstants.BasicRole);
             if (basicRoleInDb == null)
             {
                 await _roleManager.CreateAsync(basicRole);
-                _logger.LogInformation("Seeded Basic Role.");
+                _logger.LogInformation(_localizer["Seeded Basic Role."]);
             }
             //Check if User Exists
             var basicUser = new HarmonyUser
@@ -120,7 +121,7 @@ namespace Harmony.Infrastructure.Seed
             {
                 await _userManager.CreateAsync(basicUser, UserConstants.DefaultPassword);
                 await _userManager.AddToRoleAsync(basicUser, RoleConstants.BasicRole);
-                _logger.LogInformation("Seeded User with Basic Role.");
+                _logger.LogInformation(_localizer["Seeded User with Basic Role."]);
             }
         }
     }

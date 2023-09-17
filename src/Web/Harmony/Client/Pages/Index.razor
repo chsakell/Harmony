@@ -1,6 +1,7 @@
 ﻿@page "/"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Index> _localizer
 
-<PageTitle>Index</PageTitle>
+<PageTitle>@_localizer["Title"]</PageTitle>
 
 <h1>Hello, world!</h1>
 
