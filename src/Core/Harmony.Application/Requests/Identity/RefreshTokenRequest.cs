@@ -1,4 +1,4 @@
-﻿namespace Harmony.Application.Identity
+﻿namespace Harmony.Application.Requests.Identity
 {
     public class RefreshTokenRequest
     {

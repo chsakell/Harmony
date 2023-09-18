@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Requests;
+using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;

@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Identity;
+﻿using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Wrapper;
 using System.Security.Claims;
 using System.Threading.Tasks;

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Routes;
 using Harmony.Client.Infrastructure.Extensions;
+using Harmony.Application.Requests.Identity;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Authentication
 {

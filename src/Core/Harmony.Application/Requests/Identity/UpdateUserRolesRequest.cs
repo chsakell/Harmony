@@ -1,6 +1,6 @@
 ﻿using Harmony.Application.Responses;
 
-namespace Harmony.Application.Requests
+namespace Harmony.Application.Requests.Identity
 {
     public class UpdateUserRolesRequest
     {

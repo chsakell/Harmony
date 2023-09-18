@@ -1,0 +1,25 @@
+﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<CreateWorkspaceModal> _localizer
+
+<EditForm Model="@_createWorkspaceModel" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <TitleContent>
+            @{
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Workspaces" Class="mr-3 mb-n1" />
+                    @_localizer["Create Workspace"]
+                </MudText>
+            }
+        </TitleContent>
+        <DialogContent>
+            <MudTextField For="@(() => _createWorkspaceModel.Name)" @bind-Value="_createWorkspaceModel.Name" Label="@_localizer["Name"]" />
+            <MudTextField For="@(() => _createWorkspaceModel.Description)" @bind-Value="_createWorkspaceModel.Description" Label="@_localizer["Description"]" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+            @{
+                <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit"  Color="Color.Success">@_localizer["Create"]</MudButton>
+            }
+        </DialogActions>
+    </MudDialog>
+</EditForm>

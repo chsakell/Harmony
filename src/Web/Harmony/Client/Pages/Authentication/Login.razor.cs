@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Identity;
+﻿using Harmony.Application.Requests.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using System.Security.Claims;

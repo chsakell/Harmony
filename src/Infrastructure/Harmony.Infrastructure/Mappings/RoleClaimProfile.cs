@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Harmony.Application.Requests;
+using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Persistence.Identity;
 

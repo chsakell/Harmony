@@ -10,6 +10,7 @@ using Harmony.Application.Configurations;
 using Harmony.Shared.Wrapper;
 using Harmony.Application.Identity;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Requests.Identity;
 
 namespace Harmony.Infrastructure.Services.Identity
 {

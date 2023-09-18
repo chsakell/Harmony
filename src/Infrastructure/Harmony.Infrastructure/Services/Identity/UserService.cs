@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Harmony.Application.Requests;
 using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 using System.Text;
@@ -11,6 +10,7 @@ using Harmony.Application.Exceptions;
 using Harmony.Persistence.Identity;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Requests.Identity;
 
 namespace Harmony.Infrastructure.Services.Identity
 {

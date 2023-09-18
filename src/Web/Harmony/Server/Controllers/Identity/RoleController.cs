@@ -1,5 +1,5 @@
 ﻿using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Requests;
+using Harmony.Application.Requests.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Identity

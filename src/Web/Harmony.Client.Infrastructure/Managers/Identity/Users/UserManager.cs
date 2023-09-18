@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Requests;
+﻿using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;

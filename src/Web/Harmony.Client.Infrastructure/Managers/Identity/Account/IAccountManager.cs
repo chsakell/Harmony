@@ -1,6 +1,4 @@
-﻿
-using Harmony.Application.Requests;
-using Harmony.Application.Requests.Identity;
+﻿using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Account

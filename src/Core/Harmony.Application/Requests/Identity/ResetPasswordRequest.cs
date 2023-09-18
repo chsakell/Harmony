@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Harmony.Application.Requests
+namespace Harmony.Application.Requests.Identity
 {
     public class ResetPasswordRequest
     {

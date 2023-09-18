@@ -1,4 +1,4 @@
-﻿namespace Harmony.Application.Requests
+﻿namespace Harmony.Application.Requests.Identity
 {
     public class RoleClaimRequest
     {
