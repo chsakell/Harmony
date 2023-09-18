@@ -15,10 +15,23 @@ namespace Harmony.Persistence.Configurations.Identity
 
             builder.Property(u => u.ProfilePictureDataUrl).HasColumnType("text");
 
+            // A user can create multiple workspaces and a board belongs to one user (1-M relationship)
+            builder.HasMany(user => user.Workspaces)
+                .WithOne()
+                .HasForeignKey(workspace => workspace.UserId).IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // extra configuration to fullfill the M2M relationship for access,
+            // between users and boards
+            builder
+                .HasMany(user => user.AccessWorkspaces)
+                .WithOne()
+                .HasForeignKey(userWorkspace => userWorkspace.UserId).IsRequired();
+
             // A user can create multiple boards and a board belongs to one user (1-M relationship)
             builder.HasMany(user => user.Boards)
                 .WithOne()
-                .HasForeignKey(board => board.UserId);
+                .HasForeignKey(board => board.UserId).IsRequired();
 
             // extra configuration to fullfill the M2M relationship for access,
             // between users and boards
@@ -32,7 +45,7 @@ namespace Harmony.Persistence.Configurations.Identity
             builder
                 .HasMany(user => user.AccessCards)
                 .WithOne()
-                .HasForeignKey(board => board.UserId);
+                .HasForeignKey(board => board.UserId).IsRequired();
 
             builder.HasMany(u => u.Comments)
                 .WithOne()

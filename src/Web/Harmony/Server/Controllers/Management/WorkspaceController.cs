@@ -3,7 +3,7 @@ using Harmony.Shared.Constants.Permission;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Project
+namespace Harmony.Server.Controllers.Management
 {
     public class WorkspaceController : BaseApiController<WorkspaceController>
     {

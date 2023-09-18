@@ -20,6 +20,10 @@ namespace Harmony.Persistence.Identity
         public DateTime RefreshTokenExpiryTime { get; set; }
         public string ProfilePictureDataUrl { get; set; }
 
+
+        public List<Workspace> Workspaces { get; set; } // Workspaces created by the user
+        public List<UserWorkspace> AccessWorkspaces { get; set; } // Workspaces that has access to
+
         public List<Board> Boards { get; set; } // Boards created by the user
         public List<UserBoard> AccessBoards { get; set; } // Boards that has access to
         public List<Comment> Comments { get; set; }

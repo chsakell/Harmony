@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\Harmony.Client.Infrastructure\Harmony.Client.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Management\" />
+  </ItemGroup>
+
 </Project>

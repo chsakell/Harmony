@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Workspaces.Commands.Create;
+using Harmony.Application.Features.Workspaces.Queries.GetAll;
 using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Wrapper;
 using System;
@@ -12,5 +13,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public interface IWorkspaceManager : IManager
     {
         Task<IResult> CreateAsync(CreateWorkspaceCommand request);
+        Task<IResult<List<GetAllWorkspacesResponse>>> GetAllAsync();
     }
 }

@@ -1,6 +1,7 @@
 using Harmony.Client;
 using Harmony.Client.Extensions;
 using Harmony.Client.Infrastructure.Managers.Preferences;
+using Harmony.Client.Infrastructure.Managers.Project;
 using Harmony.Client.Infrastructure.Settings;
 using Harmony.Shared.Constants.Localization;
 using Microsoft.AspNetCore.Components.Web;
