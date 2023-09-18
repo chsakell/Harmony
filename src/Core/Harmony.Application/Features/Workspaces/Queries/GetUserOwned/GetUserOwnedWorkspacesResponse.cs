@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.Features.Workspaces.Queries.GetAll
 {
-    public class GetAllWorkspacesResponse
+    public class GetUserOwnedWorkspacesResponse
     {
         public string Name { get; set; }
         public string Description { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Workspaces.Commands.Create;
+using Harmony.Application.Features.Workspaces.Queries.GetUserOwned;
 using Harmony.Shared.Constants.Permission;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> Post(CreateWorkspaceCommand command)
         {
             return Ok(await _mediator.Send(command));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _mediator.Send(new GetUserOwnedWorkspacesQuery()));
         }
     }
 }

@@ -7,9 +7,9 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BlazorHero.CleanArchitecture.Application.Features.Documents.Queries.GetAll
+namespace Harmony.Application.Features.Workspaces.Queries.GetUserOwned
 {
-    public class GetAllWorkspacesQuery : IRequest<IResult<List<GetAllWorkspacesResponse>>>
+    public class GetUserOwnedWorkspacesQuery : IRequest<IResult<List<GetUserOwnedWorkspacesResponse>>>
     {
     }
 }

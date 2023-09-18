@@ -23,10 +23,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult();
         }
 
-        public async Task<IResult<List<GetAllWorkspacesResponse>>> GetAllAsync()
+        public async Task<IResult<List<GetUserOwnedWorkspacesResponse>>> GetAllAsync()
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Index);
-            return await response.ToResult<List<GetAllWorkspacesResponse>>();
+            return await response.ToResult<List<GetUserOwnedWorkspacesResponse>>();
         }
     }
 }

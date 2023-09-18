@@ -13,6 +13,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public interface IWorkspaceManager : IManager
     {
         Task<IResult> CreateAsync(CreateWorkspaceCommand request);
-        Task<IResult<List<GetAllWorkspacesResponse>>> GetAllAsync();
+        Task<IResult<List<GetUserOwnedWorkspacesResponse>>> GetAllAsync();
     }
 }
