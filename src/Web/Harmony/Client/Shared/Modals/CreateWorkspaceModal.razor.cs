@@ -8,7 +8,7 @@ namespace Harmony.Client.Shared.Modals
     public partial class CreateWorkspaceModal
     {
         private readonly CreateWorkspaceCommand _createWorkspaceModel = new();
-
+        private bool _processing;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         private void Cancel()
@@ -18,6 +18,7 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task SubmitAsync()
         {
+            _processing = true;
             var response = await _workspaceManager.CreateAsync(_createWorkspaceModel);
 
             if (response.Succeeded)
@@ -32,6 +33,8 @@ namespace Harmony.Client.Shared.Modals
                     _snackBar.Add(message, Severity.Error);
                 }
             }
+
+            _processing = false;
         }
     }
 }
