@@ -15,6 +15,7 @@ builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddCurrentUserService();
 builder.Services.RegisterSwagger();
 builder.Services.AddInfrastructureMappings();
+builder.Services.AddRepositories();
 builder.Services.AddServerLocalization();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));

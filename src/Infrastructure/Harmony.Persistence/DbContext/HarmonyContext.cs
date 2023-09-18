@@ -5,6 +5,7 @@ namespace Harmony.Persistence.DbContext
 {
     public class HarmonyContext : AppIdentityContext
     {
+        public DbSet<Workspace> Workspaces { get; set; }
         public DbSet<Board> Boards { get; set; }
         public DbSet<BoardList> BoardLists { get; set; }
 

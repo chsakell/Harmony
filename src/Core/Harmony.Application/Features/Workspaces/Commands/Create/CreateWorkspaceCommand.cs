@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Harmony.Shared.Wrapper;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Requests.Workspace
+namespace Harmony.Application.Features.Workspaces.Commands.Create
 {
-    public class CreateWorkspaceRequest
+    public class CreateWorkspaceCommand : IRequest<Result<Guid>>
     {
         [Required]
-        [MaxLength(300)]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         [MaxLength(500)]

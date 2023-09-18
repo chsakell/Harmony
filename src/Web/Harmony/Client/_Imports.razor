@@ -2,6 +2,7 @@
 @using System.Net.Http
 @using System.Net.Http.Json
 
+
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -20,6 +21,7 @@
 
 @using Harmony.Client.Shared
 @using Harmony.Client.Infrastructure.Authentication;
+@using Harmony.Client.Infrastructure.Managers.Project;
 @using Harmony.Client.Infrastructure.Managers.Identity.Authentication;
 @using Harmony.Client.Infrastructure.Managers.Identity.Account;
 @using Harmony.Client.Infrastructure.Managers.Preferences;
@@ -29,8 +31,6 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 @using Harmony.Client.Infrastructure.Settings;
 
 @attribute [Authorize]
-@inject IAuthenticationManager _authenticationManager
-@inject IAccountManager _accountManager 
 @inject ISnackbar _snackBar
 @inject NavigationManager _navigationManager
 @inject HarmonyStateProvider _stateProvider
@@ -39,6 +39,11 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 @inject HttpClient _httpClient
 @inject IHttpInterceptorManager _interceptor
 @inject ClientPreferenceManager _clientPreferenceManager
-@inject IUserManager _userManager
 @inject ILocalStorageService _localStorage;
 @inject IJSRuntime _jsRuntime;
+
+@* Managers *@
+@inject IAuthenticationManager _authenticationManager
+@inject IAccountManager _accountManager
+@inject IUserManager _userManager
+@inject IWorkspaceManager _workspaceManager

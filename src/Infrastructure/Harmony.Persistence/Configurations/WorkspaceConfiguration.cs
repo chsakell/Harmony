@@ -13,7 +13,7 @@ namespace Harmony.Persistence.Configurations
         {
             builder.ToTable("Workspaces");
 
-            builder.Property(w => w.Name).HasMaxLength(300).IsRequired();
+            builder.Property(w => w.Name).HasMaxLength(50).IsRequired();
 
             builder.Property(w => w.Description).HasMaxLength(500);
 
