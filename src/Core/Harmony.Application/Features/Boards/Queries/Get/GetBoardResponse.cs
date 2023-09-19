@@ -1,4 +1,5 @@
-﻿using Harmony.Domain.Entities;
+﻿using Harmony.Application.DTO;
+using Harmony.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         public string Description { get; set; }
         public string UserId { get; set; }
         public Guid WorkspaceId { get; set; }
-    }
+		public List<BoardListDto> Lists { get; set; }
+	}
 }

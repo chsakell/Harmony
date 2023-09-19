@@ -8,31 +8,41 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Client.Pages.Management
 {
-    public partial class Board
-    {
-        [Parameter]
-        public string Id { get; set; }
+	public partial class Board
+	{
+		[Parameter]
+		public string Id { get; set; }
 
-        [Parameter]
-        public string Name { get; set; }
+		[Parameter]
+		public string Name { get; set; }
 
-        private GetBoardResponse _board = new GetBoardResponse();
-        protected async override Task OnInitializedAsync()
-        {
-            var result = await _boardManager.GetBoardAsync(Id);
+		private GetBoardResponse _board = new GetBoardResponse();
 
-            if(result.Succeeded)
-            {
-                _board = result.Data;
-            }
-        }
+		#region Kanban
 
-        private void NavigateToBoard(GetAllForUserBoardResponse board)
-        {
-            var slug = StringUtilities.SlugifyString(board.Id.ToString());
+		private List<KanBanSections> _sections = new();
+		private List<KanbanTaskItem> _tasks = new();
+		#endregion
 
-            _navigationManager.NavigateTo($"boards/{board.Id}/{slug}");
-        }
+		protected async override Task OnInitializedAsync()
+		{
+			var result = await _boardManager.GetBoardAsync(Id);
+
+			if (result.Succeeded)
+			{
+				_board = result.Data;
+
+				foreach (var list in _board.Lists)
+				{
+					_sections.Add(new KanBanSections(list.Name, false, string.Empty));
+
+					foreach(var card in list.Cards)
+					{
+						_tasks.Add(new KanbanTaskItem(card.Name, list.Name));
+					}
+				}
+			}
+		}
 
 		#region helper
 		private MudDropContainer<KanbanTaskItem> _dropContainer;
@@ -43,14 +53,6 @@ namespace Harmony.Client.Pages.Management
 		{
 			info.Item.Status = info.DropzoneIdentifier;
 		}
-
-		/* Setup for board  */
-		private List<KanBanSections> _sections = new()
-		{
-			new KanBanSections("To Do", false, String.Empty),
-			new KanBanSections("In Process", false, String.Empty),
-			new KanBanSections("Done", false, String.Empty),
-		};
 
 		public class KanBanSections
 		{
@@ -77,12 +79,12 @@ namespace Harmony.Client.Pages.Management
 			}
 		}
 
-		private List<KanbanTaskItem> _tasks = new()
-		{
-			new KanbanTaskItem("Write unit test", "To Do"),
-			new KanbanTaskItem("Some docu stuff", "To Do"),
-			new KanbanTaskItem("Walking the dog", "To Do"),
-		};
+		//private List<KanbanTaskItem> _tasks = new()
+		//{
+		//	new KanbanTaskItem("Write unit test", "To Do"),
+		//	new KanbanTaskItem("Some docu stuff", "To Do"),
+		//	new KanbanTaskItem("Walking the dog", "To Do"),
+		//};
 
 		KanBanNewForm newSectionModel = new KanBanNewForm();
 

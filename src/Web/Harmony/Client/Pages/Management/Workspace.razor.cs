@@ -25,7 +25,7 @@ namespace Harmony.Client.Pages.Management
 
         private void NavigateToBoard(GetAllForUserBoardResponse board)
         {
-            var slug = StringUtilities.SlugifyString(board.Id.ToString());
+            var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
             _navigationManager.NavigateTo($"boards/{board.Id}/{slug}");
         }
