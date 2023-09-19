@@ -44,7 +44,8 @@ namespace Harmony.Infrastructure.Repositories
         {
             return await _context.Boards
                 .Include(b => b.Lists)
-                .ThenInclude(l => l.Cards)
+                    .ThenInclude(l => l.Cards)
+                .Include(b => b.Users)
                 .FirstAsync(board => board.Id == boardId);
         }
     }
