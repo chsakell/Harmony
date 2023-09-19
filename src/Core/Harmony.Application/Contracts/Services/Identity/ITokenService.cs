@@ -1,5 +1,5 @@
-﻿using Harmony.Application.Identity;
-using Harmony.Application.Requests.Identity;
+﻿using Harmony.Application.Requests.Identity;
+using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Application.Contracts.Services.Identity

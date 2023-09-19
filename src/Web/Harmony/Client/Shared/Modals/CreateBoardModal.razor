@@ -1,4 +1,4 @@
-﻿@using Harmony.Application.Features.Workspaces.Queries.GetAll;
+﻿@using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardModal> _localizer
 
 <EditForm Model="@_createBoardModel" OnValidSubmit="SubmitAsync">
@@ -20,6 +20,14 @@
                 @foreach(var workspace in _ownedWorkspaces)
                 {
                     <MudSelectItem Value="workspace.Id.ToString()">@workspace.Name</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect T="BoardVisibility" @bind-Value="@_createBoardModel.Visibility"
+                       Label="Visibility" AnchorOrigin="Origin.BottomCenter"
+                       Variant="Variant.Outlined" Clearable>
+                @foreach (var visibility in Enum.GetValues<BoardVisibility>())
+                {
+                    <MudSelectItem Value="visibility">@visibility.ToString()</MudSelectItem>
                 }
             </MudSelect>
         </DialogContent>

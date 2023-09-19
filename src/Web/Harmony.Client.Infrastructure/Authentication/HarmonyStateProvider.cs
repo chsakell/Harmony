@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Harmony.Shared.Constants.Permission;
-using Harmony.Shared.Constants.Storage;
+using Harmony.Shared.Storage;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;

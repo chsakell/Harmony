@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 
-namespace Harmony.Application.Extensions
+namespace Harmony.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {

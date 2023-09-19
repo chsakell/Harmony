@@ -1,7 +1,5 @@
 ﻿using Harmony.Application.Features.Workspaces.Commands.Create;
-using Harmony.Application.Features.Workspaces.Queries.GetUserOwned;
-using Harmony.Shared.Constants.Permission;
-using Microsoft.AspNetCore.Authorization;
+using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -23,7 +21,7 @@ namespace Harmony.Server.Controllers.Management
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _mediator.Send(new GetUserOwnedWorkspacesQuery()));
+            return Ok(await _mediator.Send(new GetAllForUserWorkspacesQuery()));
         }
     }
 }

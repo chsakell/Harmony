@@ -1,5 +1,7 @@
-﻿using Harmony.Application.Features.Boards.Commands;
-
+﻿using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetAllForUser;
+using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -18,10 +20,16 @@ namespace Harmony.Server.Controllers.Management
             return Ok(await _mediator.Send(command));
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Get()
-        //{
-        //    return Ok(await _mediator.Send(new GetUserOwnedBoardsQuery()));
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _mediator.Send(new GetAllForUserBoardsQuery()));
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> LoadBoard(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetBoardQuery(id)));
+        }
     }
 }

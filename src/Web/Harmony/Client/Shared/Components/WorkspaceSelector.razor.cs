@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Features.Workspaces.Queries.GetAll;
+﻿using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -7,8 +7,8 @@ namespace Harmony.Client.Shared.Components
 {
     public partial class WorkspaceSelector
     {
-        List<GetUserOwnedWorkspacesResponse> _ownedWorkspaces = new List<GetUserOwnedWorkspacesResponse>();
-        GetUserOwnedWorkspacesResponse? _selectedWorkspace;
+        List<GetAllForUserWorkspaceResponse> _ownedWorkspaces = new List<GetAllForUserWorkspaceResponse>();
+        GetAllForUserWorkspaceResponse? _selectedWorkspace;
         protected override async Task OnInitializedAsync()
         {
             var ownedWorkspacesResult = await _workspaceManager.GetAllAsync();
@@ -40,7 +40,7 @@ namespace Harmony.Client.Shared.Components
             }
         }
 
-        private void Navigate(GetUserOwnedWorkspacesResponse workspace)
+        private void Navigate(GetAllForUserWorkspaceResponse workspace)
         {
             var slug = StringUtilities.SlugifyString(workspace.Name);
             _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");

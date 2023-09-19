@@ -1,5 +1,5 @@
 ﻿using Harmony.Client.Extensions;
-using Harmony.Shared.Constants.Storage;
+using Harmony.Shared.Storage;
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 

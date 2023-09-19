@@ -1,5 +1,5 @@
 ﻿using Blazored.LocalStorage;
-using Harmony.Shared.Constants.Storage;
+using Harmony.Shared.Storage;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;

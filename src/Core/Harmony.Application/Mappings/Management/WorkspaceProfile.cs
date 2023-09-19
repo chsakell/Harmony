@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Harmony.Application.Features.Workspaces.Queries.GetAll;
+using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Harmony.Application.Mappings.Management
     {
         public WorkspaceProfile()
         {
-            CreateMap<Workspace, GetUserOwnedWorkspacesResponse>().ReverseMap();
+            CreateMap<Workspace, GetAllForUserWorkspaceResponse>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Harmony.Shared.Constants.Storage
+﻿namespace Harmony.Shared.Storage
 {
     public static class StorageConstants
     {

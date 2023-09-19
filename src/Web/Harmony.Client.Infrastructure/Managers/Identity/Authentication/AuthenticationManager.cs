@@ -1,6 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using Harmony.Application.Identity;
-using Harmony.Shared.Constants.Storage;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
@@ -14,6 +12,8 @@ using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Routes;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Application.Requests.Identity;
+using Harmony.Application.Responses;
+using Harmony.Shared.Storage;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Authentication
 {

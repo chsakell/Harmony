@@ -14,6 +14,7 @@ namespace Harmony.Persistence.Configurations
             builder.ToTable("Boards");
 
             builder.Property(b => b.Title).IsRequired().HasMaxLength(300);
+            builder.Property(b => b.Description).IsRequired().HasMaxLength(100);
 
             builder.Property(b => b.Visibility).IsRequired();
 

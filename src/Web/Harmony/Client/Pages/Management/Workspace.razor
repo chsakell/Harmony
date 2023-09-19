@@ -1,10 +1,15 @@
 ﻿@page "/workspaces/{id}/{name}"
-<h3>Workspace @Id</h3>
 
-@code {
-    [Parameter]
-    public string Id { get; set; }
-
-    [Parameter]
-    public string Name { get; set; }
-}
+<MudGrid>
+    @foreach (var board in _userBoards)
+    {
+        <MudItem xs="3" md="6" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
+            <MudCard>
+                <MudCardContent>
+                    <MudText>@board.Title</MudText>
+                    <MudText Typo="Typo.body2">@board.Description</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>

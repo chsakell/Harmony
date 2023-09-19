@@ -9,13 +9,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Features.Boards.Commands
+namespace Harmony.Application.Features.Boards.Commands.Create
 {
     public class CreateBoardCommand : IRequest<Result<Guid>>
     {
         [Required]
         [MaxLength(300)]
         public string Title { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Description { get; set; }
 
         [Required]
         public string WorkspaceId { get; set; }

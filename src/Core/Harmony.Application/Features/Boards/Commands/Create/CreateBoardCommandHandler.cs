@@ -30,7 +30,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
         {
             var userId = _currentUserService.UserId;
 
-            if(string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId))
             {
                 return await Result<Guid>.FailAsync(_localizer["Login required to complete this operator"]);
             }
@@ -40,11 +40,12 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 Title = request.Title,
                 WorkspaceId = Guid.Parse(request.WorkspaceId),
                 UserId = userId,
+                Visibility = request.Visibility
             };
 
             var dbResult = await _boardRepository.CreateAsync(Board);
 
-            if(dbResult > 0)
+            if (dbResult > 0)
             {
                 return await Result<Guid>.SuccessAsync(Board.Id, _localizer["Board Created"]);
             }

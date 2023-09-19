@@ -1,4 +1,4 @@
-﻿namespace Harmony.Application.Identity
+﻿namespace Harmony.Application.Responses
 {
     public class TokenResponse
     {

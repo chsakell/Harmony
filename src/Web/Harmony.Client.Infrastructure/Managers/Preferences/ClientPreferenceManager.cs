@@ -6,7 +6,7 @@ using Microsoft.Extensions.Localization;
 using Harmony.Client.Infrastructure.Settings;
 using Harmony.Shared.Wrapper;
 using Harmony.Shared.Settings;
-using Harmony.Shared.Constants.Storage;
+using Harmony.Shared.Storage;
 
 namespace Harmony.Client.Infrastructure.Managers.Preferences
 {

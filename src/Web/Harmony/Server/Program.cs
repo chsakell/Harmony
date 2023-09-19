@@ -1,6 +1,7 @@
 using Harmony.Server.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Harmony.Application.Extensions;
+using Harmony.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

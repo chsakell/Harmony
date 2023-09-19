@@ -17,10 +17,10 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CreateAsync(Workspace workspace);
 
         /// <summary>
-        /// Returns workspaces created by userId
+        /// Returns workspaces created by userId plus have access to
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<List<Workspace>> GetUserOwnedWorkspaces(string userId);
+        Task<List<Workspace>> GetAllForUser(string userId);
     }
 }

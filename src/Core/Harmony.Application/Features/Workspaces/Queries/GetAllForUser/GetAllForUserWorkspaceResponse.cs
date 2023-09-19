@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Features.Workspaces.Queries.GetAll
+namespace Harmony.Application.Features.Workspaces.Queries.GetAllForUser
 {
-    public class GetUserOwnedWorkspacesResponse
+    public class GetAllForUserWorkspaceResponse
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

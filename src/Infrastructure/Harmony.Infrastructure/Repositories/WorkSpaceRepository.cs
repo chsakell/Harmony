@@ -26,7 +26,7 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Workspace>> GetUserOwnedWorkspaces(string userId)
+        public async Task<List<Workspace>> GetAllForUser(string userId)
         {
             return await _context.Workspaces
                 .Where(workspace => workspace.UserId == userId)
