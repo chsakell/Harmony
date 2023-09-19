@@ -1,20 +1,27 @@
-﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<CreateWorkspaceModal> _localizer
+﻿@using Harmony.Application.Features.Workspaces.Queries.GetAll;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardModal> _localizer
 
-<EditForm Model="@_createWorkspaceModel" OnValidSubmit="SubmitAsync">
+<EditForm Model="@_createBoardModel" OnValidSubmit="SubmitAsync">
     <DataAnnotationsValidator />
     <MudDialog>
         <TitleContent>
             @{
                 <MudText Typo="Typo.h6">
-                    <MudIcon Icon="@Icons.Material.Filled.Workspaces" Class="mr-3 mb-n1" />
-                    @_localizer["Create Workspace"]
+                    <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-3 mb-n1" />
+                    @_localizer["Create Board"]
                 </MudText>
             }
         </TitleContent>
         <DialogContent>
-            <MudTextField For="@(() => _createWorkspaceModel.Name)" @bind-Value="_createWorkspaceModel.Name" Label="@_localizer["Title"]" />
-            <MudTextField For="@(() => _createWorkspaceModel.Description)" @bind-Value="_createWorkspaceModel.Description" Label="@_localizer["Description"]" />
-            <MudSwitch @bind-Checked="@_createWorkspaceModel.IsPublic" Class="mt-4" Label="@_localizer["Public"]" Color="Color.Success" />
+            <MudTextField For="@(() => _createBoardModel.Title)" @bind-Value="_createBoardModel.Title" Label="@_localizer["Title"]" />
+            <MudSelect T="string" @bind-Value="@_createBoardModel.WorkspaceId"
+                       Label="Select workspace" AnchorOrigin="Origin.BottomCenter" 
+            Variant="Variant.Outlined" Clearable>
+                @foreach(var workspace in _ownedWorkspaces)
+                {
+                    <MudSelectItem Value="workspace.Id.ToString()">@workspace.Name</MudSelectItem>
+                }
+            </MudSelect>
         </DialogContent>
         <DialogActions>
             <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>

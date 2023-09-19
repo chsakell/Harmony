@@ -7,7 +7,7 @@ namespace Harmony.Domain.Entities
     /// </summary>
     public class Board : AuditableEntity<Guid>
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string UserId { get; set; }
         public Workspace Workspace { get; set; }
         public Guid WorkspaceId { get; set; }

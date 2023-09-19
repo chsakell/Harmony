@@ -10,26 +10,26 @@ using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Repositories
 {
-    public class WorkspaceRepository : IWorkspaceRepository
+    public class BoardRepository : IBoardRepository
     {
         private readonly HarmonyContext _context;
 
-        public WorkspaceRepository(HarmonyContext context)
+        public BoardRepository(HarmonyContext context)
         {
             _context = context;
         }
 
-        public async Task<int> CreateAsync(Workspace workspace)
+        public async Task<int> CreateAsync(Board Board)
         {
-            await _context.Workspaces.AddAsync(workspace);
+            await _context.Boards.AddAsync(Board);
 
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Workspace>> GetUserOwnedWorkspaces(string userId)
+        public async Task<List<Board>> GetUserOwnedBoards(string userId)
         {
-            return await _context.Workspaces
-                .Where(workspace => workspace.UserId == userId)
+            return await _context.Boards
+                .Where(Board => Board.UserId == userId)
                 .ToListAsync();
         }
     }

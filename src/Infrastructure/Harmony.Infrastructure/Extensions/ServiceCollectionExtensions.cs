@@ -17,7 +17,8 @@ namespace Harmony.Application.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             return services
-                .AddTransient<IWorkspaceRepository, WorkSpaceRepository>();
+                .AddTransient<IWorkspaceRepository, WorkspaceRepository>()
+                .AddTransient<IBoardRepository, BoardRepository>();
         }
     }
 }
