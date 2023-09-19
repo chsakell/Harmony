@@ -13,5 +13,6 @@ namespace Harmony.Domain.Entities
         public List<Board> Boards { get; set; }
         public string UserId { get; set; }
         public List<UserWorkspace> Users { get; set; }
+        public bool IsPublic { get; set; }
     }
 }

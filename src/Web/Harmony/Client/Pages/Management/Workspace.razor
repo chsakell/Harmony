@@ -1,0 +1,10 @@
+﻿@page "/workspaces/{id}/{name}"
+<h3>Workspace @Id</h3>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string Name { get; set; }
+}

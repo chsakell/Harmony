@@ -39,7 +39,8 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
             {
                 Name = request.Name,
                 Description = request.Description,
-                UserId = userId
+                UserId = userId,
+                IsPublic = request.IsPublic,
             };
 
             var dbResult = await _workspaceRepository.CreateAsync(workspace);

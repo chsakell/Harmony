@@ -8,6 +8,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetAll
 {
     public class GetUserOwnedWorkspacesResponse
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }

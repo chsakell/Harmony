@@ -1,1 +1,16 @@
-﻿
+﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<WorkspaceSelector> _localizer
+
+<MudMenu Color="Color.Inherit" Label="@_localizer["Workspaces"]" MaxHeight="350"
+         EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Dense="true" AnchorOrigin="Origin.BottomLeft">
+    @foreach (var workspace in _ownedWorkspaces)
+    {
+        <MudMenuItem Style="max-width: 350px" @onclick="() => Navigate(workspace)">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.body1" Style="font-weight:bold">@workspace.Name</MudText>
+                    <MudText Typo="Typo.body2">@workspace.Description</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudMenuItem>
+    }
+</MudMenu>

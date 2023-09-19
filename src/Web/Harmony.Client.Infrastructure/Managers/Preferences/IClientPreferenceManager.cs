@@ -9,5 +9,9 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
         Task<MudTheme> GetCurrentThemeAsync();
 
         Task<bool> ToggleDarkModeAsync();
+
+        Task<string> GetSelectedWorkspace();
+
+        Task<bool> SetSelectedWorkspace(Guid workspaceId);
     }
 }

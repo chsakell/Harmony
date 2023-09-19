@@ -11,5 +11,6 @@ namespace Harmony.Client.Infrastructure.Settings
         public bool IsDrawerOpen { get; set; }
         public string PrimaryColor { get; set; }
         public string LanguageCode { get; set; } = LocalizationConstants.SupportedLanguages.FirstOrDefault()?.Code ?? "en-US";
+        public string Workspace { get; set; }
     }
 }

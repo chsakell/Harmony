@@ -44,6 +44,7 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
                 await SetPreference(preference);
                 return preference.IsRTL;
             }
+
             return false;
         }
 
@@ -77,6 +78,7 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
             }
             return HarmonyTheme.DefaultTheme;
         }
+
         public async Task<bool> IsRTL()
         {
             var preference = await GetPreference() as ClientPreference;
@@ -95,6 +97,30 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
         public async Task SetPreference(IPreference preference)
         {
             await _localStorageService.SetItemAsync(StorageConstants.Local.Preference, preference as ClientPreference);
+        }
+
+        public async Task<string> GetSelectedWorkspace()
+        {
+            var preference = await GetPreference() as ClientPreference;
+            if (preference != null)
+            {
+                return preference.Workspace;
+            }
+
+            return null;
+        }
+
+        public async Task<bool> SetSelectedWorkspace(Guid workspaceId)
+        {
+            var preference = await GetPreference() as ClientPreference;
+            if (preference != null)
+            {
+                preference.Workspace = workspaceId.ToString();
+                await SetPreference(preference);
+                return true;
+            }
+
+            return false;
         }
     }
 }
