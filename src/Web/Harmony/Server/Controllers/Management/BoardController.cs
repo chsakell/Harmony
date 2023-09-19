@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
@@ -31,5 +32,11 @@ namespace Harmony.Server.Controllers.Management
         {
             return Ok(await _mediator.Send(new GetBoardQuery(id)));
         }
-    }
+
+		[HttpPost("{id:guid}/lists")]
+		public async Task<IActionResult> CreateList(CreateListCommand command)
+		{
+			return Ok(await _mediator.Send(command));
+		}
+	}
 }

@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Queries.Get;
+﻿using Harmony.Application.Features.Boards.Commands.CreateList;
+using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
@@ -20,8 +21,8 @@ namespace Harmony.Client.Pages.Management
 
 		#region Kanban
 
-		private List<KanBanSections> _sections = new();
-		private List<KanbanTaskItem> _tasks = new();
+		private List<KanBanList> _kanbanLists = new();
+		private List<KanbanListCard> _kanbanCards = new();
 		#endregion
 
 		protected async override Task OnInitializedAsync()
@@ -34,59 +35,52 @@ namespace Harmony.Client.Pages.Management
 
 				foreach (var list in _board.Lists)
 				{
-					_sections.Add(new KanBanSections(list.Name, false, string.Empty));
+					_kanbanLists.Add(new KanBanList(list.Name, false, string.Empty));
 
 					foreach(var card in list.Cards)
 					{
-						_tasks.Add(new KanbanTaskItem(card.Name, list.Name));
+						_kanbanCards.Add(new KanbanListCard(card.Name, list.Name));
 					}
 				}
 			}
 		}
 
 		#region helper
-		private MudDropContainer<KanbanTaskItem> _dropContainer;
+		private MudDropContainer<KanbanListCard> _dropContainer;
 
 		private bool _addSectionOpen;
 		/* handling board events */
-		private void TaskUpdated(MudItemDropInfo<KanbanTaskItem> info)
+		private void TaskUpdated(MudItemDropInfo<KanbanListCard> info)
 		{
 			info.Item.Status = info.DropzoneIdentifier;
 		}
 
-		public class KanBanSections
+		public class KanBanList
 		{
 			public string Name { get; init; }
 			public bool NewTaskOpen { get; set; }
 			public string NewTaskName { get; set; }
 
-			public KanBanSections(string name, bool newTaskOpen, string newTaskName)
+			public KanBanList(string name, bool newTaskOpen, string newTaskName)
 			{
 				Name = name;
 				NewTaskOpen = newTaskOpen;
 				NewTaskName = newTaskName;
 			}
 		}
-		public class KanbanTaskItem
+		public class KanbanListCard
 		{
 			public string Name { get; init; }
 			public string Status { get; set; }
 
-			public KanbanTaskItem(string name, string status)
+			public KanbanListCard(string name, string status)
 			{
 				Name = name;
 				Status = status;
 			}
 		}
 
-		//private List<KanbanTaskItem> _tasks = new()
-		//{
-		//	new KanbanTaskItem("Write unit test", "To Do"),
-		//	new KanbanTaskItem("Some docu stuff", "To Do"),
-		//	new KanbanTaskItem("Walking the dog", "To Do"),
-		//};
-
-		KanBanNewForm newSectionModel = new KanBanNewForm();
+		KanBanNewForm newListModel = new KanBanNewForm();
 
 		public class KanBanNewForm
 		{
@@ -95,47 +89,54 @@ namespace Harmony.Client.Pages.Management
 			public string Name { get; set; }
 		}
 
-		private void OnValidSectionSubmit(EditContext context)
+		private async Task OnValidListSubmit(EditContext context)
 		{
-			_sections.Add(new KanBanSections(newSectionModel.Name, false, String.Empty));
-			newSectionModel.Name = string.Empty;
+			var result = await _boardManager.CreateListAsync(new CreateListCommand(newListModel.Name, Guid.Parse(Id)));
+
+			if(result.Succeeded)
+			{
+
+			}
+
+			_kanbanLists.Add(new KanBanList(newListModel.Name, false, String.Empty));
+			newListModel.Name = string.Empty;
 			_addSectionOpen = false;
 		}
 
-		private void OpenAddNewSection()
+		private void OpenAddNewList()
 		{
 			_addSectionOpen = true;
 		}
 
-		private void AddTask(KanBanSections section)
+		private void AddTask(KanBanList section)
 		{
-			_tasks.Add(new KanbanTaskItem(section.NewTaskName, section.Name));
+			_kanbanCards.Add(new KanbanListCard(section.NewTaskName, section.Name));
 			section.NewTaskName = string.Empty;
 			section.NewTaskOpen = false;
 			_dropContainer.Refresh();
 		}
 
-		private void DeleteSection(KanBanSections section)
+		private void DeleteSection(KanBanList section)
 		{
-			if (_sections.Count == 1)
+			if (_kanbanLists.Count == 1)
 			{
-				_tasks.Clear();
-				_sections.Clear();
+				_kanbanCards.Clear();
+				_kanbanLists.Clear();
 			}
 			else
 			{
-				int newIndex = _sections.IndexOf(section) - 1;
+				int newIndex = _kanbanLists.IndexOf(section) - 1;
 				if (newIndex < 0)
 				{
 					newIndex = 0;
 				}
 
-				_sections.Remove(section);
+				_kanbanLists.Remove(section);
 
-				var tasks = _tasks.Where(x => x.Status == section.Name);
+				var tasks = _kanbanCards.Where(x => x.Status == section.Name);
 				foreach (var item in tasks)
 				{
-					item.Status = _sections[newIndex].Name;
+					item.Status = _kanbanLists[newIndex].Name;
 				}
 			}
 		}

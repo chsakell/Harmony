@@ -1,11 +1,11 @@
 ﻿@page "/boards/{id}/{name}"
 
-<MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" 
-	Items="@_tasks" 
+<MudDropContainer T="KanbanListCard" @ref="_dropContainer" 
+	Items="@_kanbanCards" 
 	ItemsSelector="@((item,column) => item.Status == column)" 
 	ItemDropped="TaskUpdated" Class="d-flex flex-row">
 	<ChildContent>
-		@foreach (var item in _sections)
+		@foreach (var item in _kanbanLists)
 		{
 			<MudPaper Elevation="0" Width="224px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
 				<MudToolBar DisableGutters="true">
@@ -16,7 +16,7 @@
 						<MudButton Size="Size.Small" Color="Color.Default" StartIcon="@Icons.Material.Rounded.Edit">Rename Section</MudButton>
 					</MudMenu>
 				</MudToolBar>
-				<MudDropZone T="KanbanTaskItem" Identifier="@item.Name" Class="mud-height-full" />
+				<MudDropZone T="KanbanListCard" Identifier="@item.Name" Class="mud-height-full" />
 				@if (item.NewTaskOpen)
 				{
 					<MudPaper Elevation="25" Class="pa-2 rounded-lg">
@@ -33,17 +33,17 @@
 		<MudPaper Class="pa-4" Elevation="0" Width="224px">
 			@if (_addSectionOpen)
 			{
-				<MudPaper Elevation="0" Width="224px" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
-					<EditForm Model="@newSectionModel" OnValidSubmit="OnValidSectionSubmit">
+				<MudPaper Elevation="0" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
+					<EditForm Model="@newListModel" OnValidSubmit="OnValidListSubmit">
 						<DataAnnotationsValidator />
-						<MudTextField @bind-Value="newSectionModel.Name" For="@(() => newSectionModel.Name)" Placeholder="New Section" DisableUnderLine="true"></MudTextField>
-						<MudButton ButtonType="ButtonType.Submit" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Section</MudButton>
+						<MudTextField @bind-Value="newListModel.Name" For="@(() => newListModel.Name)" Placeholder="New List" DisableUnderLine="true"></MudTextField>
+						<MudButton ButtonType="ButtonType.Submit" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add list</MudButton>
 					</EditForm>
 				</MudPaper>
 			}
 			else
 			{
-				<MudButton OnClick="OpenAddNewSection" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="rounded-lg py-2" FullWidth="true">Add Section</MudButton>
+				<MudButton OnClick="OpenAddNewList" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="rounded-lg py-2" FullWidth="true">Add Section</MudButton>
 			}
 		</MudPaper>
 	</ChildContent>

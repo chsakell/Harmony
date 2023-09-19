@@ -18,7 +18,8 @@ namespace Harmony.Infrastructure.Extensions
         {
             return services
                 .AddTransient<IWorkspaceRepository, WorkspaceRepository>()
-                .AddTransient<IBoardRepository, BoardRepository>();
-        }
+                .AddTransient<IBoardRepository, BoardRepository>()
+				.AddTransient<IBoardListRepository, BoardListRepository>();
+		}
     }
 }

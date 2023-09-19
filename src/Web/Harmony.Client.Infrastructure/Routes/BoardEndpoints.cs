@@ -8,5 +8,10 @@
         {
             return $"{Index}{boardId}";
         }
-    }
+
+		public static string CreateList(Guid boardId)
+		{
+			return $"{Index}{boardId}/lists/";
+		}
+	}
 }

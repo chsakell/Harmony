@@ -48,5 +48,19 @@ namespace Harmony.Infrastructure.Repositories
                 .Include(b => b.Users)
                 .FirstAsync(board => board.Id == boardId);
         }
-    }
+
+		public async Task<Board?> GetBoardWithLists(Guid boardId)
+		{
+            return await _context.Boards
+                .Include (b => b.Lists)
+                .FirstOrDefaultAsync(board => board.Id == boardId);
+		}
+
+		public async Task<int> Update(Board board)
+		{
+			_context.Boards.Update(board);
+
+            return await _context.SaveChangesAsync();
+		}
+	}
 }
