@@ -11,6 +11,8 @@ namespace Harmony.Application.Contracts.Repositories
     {
 		Task<Card> Get(Guid cardId);
 		Task<Card> GetByPosition(Guid boardListId, byte position);
+		Task<List<Card>> GetCardsInPositionGreaterThan(Guid boardListId, byte position);
+		Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, byte position);
 		Task<int> CountCards(Guid listId);
         Task<int> Add(Card card);
 		Task<int> Update(Card card);

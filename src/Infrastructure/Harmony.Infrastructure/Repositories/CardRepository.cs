@@ -53,5 +53,15 @@ namespace Harmony.Infrastructure.Repositories
 		{
 			_context.Cards.Update(Card);
 		}
+
+		public async Task<List<Card>> GetCardsInPositionGreaterThan(Guid boardListId, byte position)
+		{
+			return await _context.Cards.Where(c => c.BoardListId == boardListId && c.Position > position).ToListAsync();
+		}
+
+		public async Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, byte position)
+		{
+			return await _context.Cards.Where(c => c.BoardListId == boardListId && c.Position >= position).ToListAsync();
+		}
 	}
 }

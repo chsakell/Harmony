@@ -11,22 +11,25 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
-
+using Harmony.Application.Contracts.Services.Management;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 
 public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<CardDto>>
 {
+	private readonly ICardService _cardService;
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
 	private readonly IStringLocalizer<MoveCardCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
-	public MoveCardCommandHandler(ICardRepository cardRepository,
+	public MoveCardCommandHandler(ICardService cardService,
+		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		IStringLocalizer<MoveCardCommandHandler> localizer,
 		IMapper mapper)
 	{
+		_cardService = cardService;
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
 		_localizer = localizer;
@@ -43,26 +46,10 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
 		var card = await _cardRepository.Get(request.CardId);
 
-
-		card.BoardListId = request.ListId;
-
-		// needs swapping
-		if(card.Position != request.Position)
-		{
-			var currentPositionCard = await _cardRepository.GetByPosition(request.ListId, request.Position);
-			if (currentPositionCard != null)
-			{
-				currentPositionCard.Position = card.Position;
-				_cardRepository.UpdateEntry(currentPositionCard);
-			}
-		}
-
-		card.Position = request.Position;
-
 		// commit all the changes
-		var dbResult = await _cardRepository.Update(card);
+		var operationCompleted = await _cardService.PositionCard(card, request.ListId, request.Position);
 
-		if (dbResult > 0)
+		if (operationCompleted)
 		{
 			var result = _mapper.Map<CardDto>(card);
 			return await Result<CardDto>.SuccessAsync(result, _localizer["Card Moved"]);

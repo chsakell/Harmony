@@ -2,7 +2,7 @@
 @using Harmony.Client.Infrastructure.Models.Kanban;
 
 <MudDropContainer T="KanbanListCard" @ref="_dropContainer"
-				  Items="@KanbanCards"
+				  Items="@_kanbanCards"
 				  ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)" 
 	ItemDropped="TaskUpdated" Class="d-flex flex-row">
 	<ChildContent>

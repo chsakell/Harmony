@@ -3,10 +3,12 @@ using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services;
 using Harmony.Infrastructure.Services.Identity;
+using Harmony.Infrastructure.Services.Management;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Harmony.Server.Localization;
@@ -51,8 +53,9 @@ namespace Harmony.Server.Extensions
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUploadService, UploadService>();
-            //services.AddTransient<IAuditService, AuditService>();
-            return services;
+			services.AddTransient<ICardService, CardService>();
+			//services.AddTransient<IAuditService, AuditService>();
+			return services;
         }
 
         internal static IServiceCollection AddIdentityServices(this IServiceCollection services)

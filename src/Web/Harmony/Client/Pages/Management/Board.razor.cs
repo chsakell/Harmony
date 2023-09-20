@@ -26,7 +26,7 @@ namespace Harmony.Client.Pages.Management
 
 		KanBanNewListForm _newListModel = new KanBanNewListForm();
 		private List<KanBanList> _kanbanLists = new();
-		public List<KanbanListCard> KanbanCards => _kanbanCards.OrderBy(c => c.Position).ToList();
+		public IEnumerable<KanbanListCard> KanbanCards => _kanbanCards.OrderBy(c => c.Position);
 
 		private List<KanbanListCard> _kanbanCards = new();
 		private MudDropContainer<KanbanListCard> _dropContainer;
