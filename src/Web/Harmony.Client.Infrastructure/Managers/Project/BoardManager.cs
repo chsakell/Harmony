@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Boards.Commands.CreateCard;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
@@ -28,8 +29,18 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
 		public async Task<IResult<BoardListDto>> CreateListAsync(CreateListCommand request)
 		{
-			var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints.CreateList(request.BoardId), request);
+			var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints
+                .CreateList(request.BoardId), request);
+
 			return await response.ToResult<BoardListDto>();
+		}
+
+		public async Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request)
+		{
+			var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints
+                .CreateCard(request.BoardId, request.ListId), request);
+
+			return await response.ToResult<CardDto>();
 		}
 
 		public async Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId)

@@ -8,11 +8,8 @@ using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
-    public interface IBoardManager : IManager
+    public interface ICardManager : IManager
     {
-        Task<IResult> CreateAsync(CreateBoardCommand request);
-        Task<IResult<List<GetAllForUserBoardResponse>>> GetUserBoardsAsync();
-        Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId);
-		Task<IResult<BoardListDto>> CreateListAsync(CreateListCommand request);
+        Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request);
 	}
 }

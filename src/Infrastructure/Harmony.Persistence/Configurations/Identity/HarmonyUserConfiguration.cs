@@ -40,9 +40,21 @@ namespace Harmony.Persistence.Configurations.Identity
                 .WithOne()
                 .HasForeignKey(board => board.UserId);
 
-            // extra configuration to fullfill the M2M relationship for access,
-            // between users and cards
-            builder
+			// A user can create multiple board lists and a list belongs to one user (1-M relationship)
+			builder.HasMany(user => user.BoardLists)
+				.WithOne()
+				.HasForeignKey(board => board.UserId).IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+			// A user can create multiple cards and a card belongs to one user (1-M relationship)
+			builder.HasMany(user => user.Cards)
+				.WithOne()
+				.HasForeignKey(board => board.UserId).IsRequired()
+				.OnDelete(DeleteBehavior.NoAction);
+
+			// extra configuration to fullfill the M2M relationship for access,
+			// between users and cards
+			builder
                 .HasMany(user => user.AccessCards)
                 .WithOne()
                 .HasForeignKey(board => board.UserId).IsRequired();

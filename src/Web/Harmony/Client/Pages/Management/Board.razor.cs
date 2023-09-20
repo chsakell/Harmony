@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.CreateCard;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
@@ -45,7 +46,7 @@ namespace Harmony.Client.Pages.Management
 
 					foreach(var card in list.Cards)
 					{
-						_kanbanCards.Add(new KanbanListCard(card.Name, list.Name));
+						_kanbanCards.Add(new KanbanListCard(card.Id, card.Name, card.Position, list.Name));
 					}
 				}
 			}
@@ -81,7 +82,6 @@ namespace Harmony.Client.Pages.Management
 					_snackBar.Add(message, Severity.Error);
 				}
 			}
-			
 		}
 
 		private void OpenAddNewList()
@@ -89,12 +89,32 @@ namespace Harmony.Client.Pages.Management
 			_addNewListOpen = true;
 		}
 
-		private void AddTask(KanBanList section)
+		private async Task AddCard(KanBanList kanBanList)
 		{
-			_kanbanCards.Add(new KanbanListCard(section.Name, section.Name));
-			section.Name = string.Empty;
-			section.NewTaskOpen = false;
-			_dropContainer.Refresh();
+			var result = await _cardManager
+				.CreateCardAsync(new CreateCardCommand(kanBanList.NewCardName, Guid.Parse(Id), kanBanList.Id));
+
+			if (result.Succeeded && result.Messages.Any())
+			{
+				var cardAdded = result.Data;
+				var boardList = _board.Lists.Find(l => l.Id == kanBanList.Id);
+				boardList.Cards.Add(cardAdded);
+
+				_kanbanCards.Add(new KanbanListCard(cardAdded.Id, kanBanList.NewCardName, cardAdded.Position, kanBanList.Name));
+				
+				kanBanList.NewCardName = string.Empty;
+				kanBanList.NewTaskOpen = false;
+				_dropContainer.Refresh();
+
+				_snackBar.Add(result.Messages[0], Severity.Success);
+			}
+			else
+			{
+				foreach (var message in result.Messages)
+				{
+					_snackBar.Add(message, Severity.Error);
+				}
+			}
 		}
 
 		private void DeleteList(KanBanList section)

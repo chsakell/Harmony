@@ -21,8 +21,8 @@
 				@if (item.NewTaskOpen)
 				{
 					<MudPaper Elevation="25" Class="pa-2 rounded-lg">
-						<MudTextField @bind-Value="item.Name" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-						<MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
+						<MudTextField @bind-Value="item.NewCardName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+						<MudButton OnClick="@(() => AddCard(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add card</MudButton>
 					</MudPaper>
 				}
 				else

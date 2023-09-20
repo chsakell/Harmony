@@ -38,6 +38,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
             var Board = new Board()
             {
                 Title = request.Title,
+                Description = request.Description,
                 WorkspaceId = Guid.Parse(request.WorkspaceId),
                 UserId = userId,
                 Visibility = request.Visibility

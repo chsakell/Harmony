@@ -7,7 +7,8 @@
     {
         public string Name { get; set; }
         public Board Board { get; set; }
-        public Guid BoardId { get; set; }
+		public string UserId { get; set; } // User created the list
+		public Guid BoardId { get; set; }
         public byte Position { get; set; } // position on the board
         public List<Card> Cards { get; set; }
     }

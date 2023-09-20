@@ -14,6 +14,7 @@
         </TitleContent>
         <DialogContent>
             <MudTextField For="@(() => _createBoardModel.Title)" @bind-Value="_createBoardModel.Title" Label="@_localizer["Title"]" />
+            <MudTextField For="@(() => _createBoardModel.Description)" @bind-Value="_createBoardModel.Description" Label="@_localizer["Description"]" />
             <MudSelect T="string" @bind-Value="@_createBoardModel.WorkspaceId"
                        Label="Select workspace" AnchorOrigin="Origin.BottomCenter" 
             Variant="Variant.Outlined" Clearable>
