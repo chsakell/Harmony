@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Commands.Create;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
@@ -11,6 +12,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult> CreateAsync(CreateBoardCommand request);
         Task<IResult<List<GetAllForUserBoardResponse>>> GetUserBoardsAsync();
         Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId);
-		Task<IResult<Guid>> CreateListAsync(CreateListCommand request);
+		Task<IResult<BoardListDto>> CreateListAsync(CreateListCommand request);
 	}
 }

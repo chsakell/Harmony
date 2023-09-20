@@ -1,4 +1,5 @@
-﻿using Harmony.Domain.Entities;
+﻿using Harmony.Application.DTO;
+using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.Features.Boards.Commands.CreateList
 {
-	public class CreateListCommand : IRequest<Result<Guid>>
+	public class CreateListCommand : IRequest<Result<BoardListDto>>
 	{
 		[Required]
 		public string Name { get; set; }

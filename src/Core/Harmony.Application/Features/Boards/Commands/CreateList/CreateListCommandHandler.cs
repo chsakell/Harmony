@@ -10,30 +10,35 @@ using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Features.Boards.Commands.CreateList;
+using Harmony.Application.DTO;
+using AutoMapper;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
-    public class CreateListCommandHandler : IRequestHandler<CreateListCommand, Result<Guid>>
+    public class CreateListCommandHandler : IRequestHandler<CreateListCommand, Result<BoardListDto>>
     {
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<CreateBoardCommandHandler> _localizer;
+		private readonly IMapper _mapper;
 
-        public CreateListCommandHandler(IBoardListRepository boardListRepository,
+		public CreateListCommandHandler(IBoardListRepository boardListRepository,
             ICurrentUserService currentUserService,
-            IStringLocalizer<CreateBoardCommandHandler> localizer)
+            IStringLocalizer<CreateBoardCommandHandler> localizer,
+            IMapper mapper)
         {
             _boardListRepository = boardListRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
-        }
-        public async Task<Result<Guid>> Handle(CreateListCommand request, CancellationToken cancellationToken)
+			_mapper = mapper;
+		}
+        public async Task<Result<BoardListDto>> Handle(CreateListCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<Guid>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<BoardListDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var totalLists = await _boardListRepository.CountLists(request.BoardId);
@@ -49,10 +54,11 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             if (dbResult > 0)
             {
-                return await Result<Guid>.SuccessAsync(boardList.Id, _localizer["List Created"]);
+                var result = _mapper.Map<BoardListDto>(boardList);
+                return await Result<BoardListDto>.SuccessAsync(result, _localizer["List Created"]);
             }
 
-            return await Result<Guid>.FailAsync(_localizer["Operation failed"]);
+            return await Result<BoardListDto>.FailAsync(_localizer["Operation failed"]);
         }
     }
 }

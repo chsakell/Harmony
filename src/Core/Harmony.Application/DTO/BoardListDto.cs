@@ -9,6 +9,7 @@ namespace Harmony.Application.DTO
 {
 	public class BoardListDto
 	{
+		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public byte Position { get; set; } // position on the board
 		public List<CardDto> Cards { get; set; }

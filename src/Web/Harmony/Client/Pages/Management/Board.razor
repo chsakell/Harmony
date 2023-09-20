@@ -1,4 +1,5 @@
 ﻿@page "/boards/{id}/{name}"
+@using Harmony.Client.Infrastructure.Models.Kanban;
 
 <MudDropContainer T="KanbanListCard" @ref="_dropContainer" 
 	Items="@_kanbanCards" 
@@ -12,7 +13,7 @@
 					<MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
 					<MudSpacer />
 					<MudMenu Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-						<MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => DeleteSection(item))">Delete Section</MudButton>
+						<MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => DeleteList(item))">Delete Section</MudButton>
 						<MudButton Size="Size.Small" Color="Color.Default" StartIcon="@Icons.Material.Rounded.Edit">Rename Section</MudButton>
 					</MudMenu>
 				</MudToolBar>
@@ -20,7 +21,7 @@
 				@if (item.NewTaskOpen)
 				{
 					<MudPaper Elevation="25" Class="pa-2 rounded-lg">
-						<MudTextField @bind-Value="item.NewTaskName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+						<MudTextField @bind-Value="item.Name" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
 						<MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
 					</MudPaper>
 				}
@@ -31,12 +32,12 @@
 			</MudPaper>
 		}
 		<MudPaper Class="pa-4" Elevation="0" Width="224px">
-			@if (_addSectionOpen)
+			@if (_addNewListOpen)
 			{
 				<MudPaper Elevation="0" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
-					<EditForm Model="@newListModel" OnValidSubmit="OnValidListSubmit">
+					<EditForm Model="@_newListModel" OnValidSubmit="OnValidListSubmit">
 						<DataAnnotationsValidator />
-						<MudTextField @bind-Value="newListModel.Name" For="@(() => newListModel.Name)" Placeholder="New List" DisableUnderLine="true"></MudTextField>
+						<MudTextField @bind-Value="_newListModel.Name" For="@(() => _newListModel.Name)" Placeholder="New List" DisableUnderLine="true"></MudTextField>
 						<MudButton ButtonType="ButtonType.Submit" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add list</MudButton>
 					</EditForm>
 				</MudPaper>

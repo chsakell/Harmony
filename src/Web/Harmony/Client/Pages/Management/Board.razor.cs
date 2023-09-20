@@ -1,6 +1,8 @@
-﻿using Harmony.Application.Features.Boards.Commands.CreateList;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
+using Harmony.Client.Infrastructure.Models.Kanban;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -21,8 +23,12 @@ namespace Harmony.Client.Pages.Management
 
 		#region Kanban
 
+		KanBanNewListForm _newListModel = new KanBanNewListForm();
 		private List<KanBanList> _kanbanLists = new();
 		private List<KanbanListCard> _kanbanCards = new();
+		private MudDropContainer<KanbanListCard> _dropContainer;
+		private bool _addNewListOpen;
+
 		#endregion
 
 		protected async override Task OnInitializedAsync()
@@ -35,7 +41,7 @@ namespace Harmony.Client.Pages.Management
 
 				foreach (var list in _board.Lists)
 				{
-					_kanbanLists.Add(new KanBanList(list.Name, false, string.Empty));
+					_kanbanLists.Add(new KanBanList(list.Id, list.Name, list.Position));
 
 					foreach(var card in list.Cards)
 					{
@@ -46,77 +52,52 @@ namespace Harmony.Client.Pages.Management
 		}
 
 		#region helper
-		private MudDropContainer<KanbanListCard> _dropContainer;
-
-		private bool _addSectionOpen;
+		
 		/* handling board events */
 		private void TaskUpdated(MudItemDropInfo<KanbanListCard> info)
 		{
 			info.Item.Status = info.DropzoneIdentifier;
 		}
 
-		public class KanBanList
-		{
-			public string Name { get; init; }
-			public bool NewTaskOpen { get; set; }
-			public string NewTaskName { get; set; }
-
-			public KanBanList(string name, bool newTaskOpen, string newTaskName)
-			{
-				Name = name;
-				NewTaskOpen = newTaskOpen;
-				NewTaskName = newTaskName;
-			}
-		}
-		public class KanbanListCard
-		{
-			public string Name { get; init; }
-			public string Status { get; set; }
-
-			public KanbanListCard(string name, string status)
-			{
-				Name = name;
-				Status = status;
-			}
-		}
-
-		KanBanNewForm newListModel = new KanBanNewForm();
-
-		public class KanBanNewForm
-		{
-			[Required]
-			[StringLength(10, ErrorMessage = "Name length can't be more than 10.")]
-			public string Name { get; set; }
-		}
-
 		private async Task OnValidListSubmit(EditContext context)
 		{
-			var result = await _boardManager.CreateListAsync(new CreateListCommand(newListModel.Name, Guid.Parse(Id)));
+			var result = await _boardManager.CreateListAsync(new CreateListCommand(_newListModel.Name, Guid.Parse(Id)));
 
-			if(result.Succeeded)
+			if(result.Succeeded && result.Messages.Any())
 			{
+				var listAdded = result.Data;
+				_board.Lists.Add(listAdded);
+				
+				_kanbanLists.Add(new KanBanList(listAdded.Id, listAdded.Name, listAdded.Position));
+				_newListModel.Name = string.Empty;
+				_addNewListOpen = false;
 
+				_snackBar.Add(result.Messages[0], Severity.Success);
 			}
-
-			_kanbanLists.Add(new KanBanList(newListModel.Name, false, String.Empty));
-			newListModel.Name = string.Empty;
-			_addSectionOpen = false;
+			else
+			{
+				foreach (var message in result.Messages)
+				{
+					_snackBar.Add(message, Severity.Error);
+				}
+			}
+			
 		}
 
 		private void OpenAddNewList()
 		{
-			_addSectionOpen = true;
+			_addNewListOpen = true;
 		}
 
 		private void AddTask(KanBanList section)
 		{
-			_kanbanCards.Add(new KanbanListCard(section.NewTaskName, section.Name));
-			section.NewTaskName = string.Empty;
+			_kanbanCards.Add(new KanbanListCard(section.Name, section.Name));
+			section.Name = string.Empty;
 			section.NewTaskOpen = false;
 			_dropContainer.Refresh();
 		}
 
-		private void DeleteSection(KanBanList section)
+		private void DeleteList(KanBanList section)
 		{
 			if (_kanbanLists.Count == 1)
 			{
