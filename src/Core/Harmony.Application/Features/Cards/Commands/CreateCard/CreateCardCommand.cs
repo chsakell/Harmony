@@ -10,19 +10,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Features.Boards.Commands.CreateCard;
+namespace Harmony.Application.Features.Cards.Commands.CreateCard;
 
 public class CreateCardCommand : IRequest<Result<CardDto>>
 {
-	[Required]
-	public string Name { get; set; }
-	public Guid BoardId { get; set; }
-	public Guid ListId { get; set; }
+    [Required]
+    public string Name { get; set; }
+    public Guid BoardId { get; set; }
+    public Guid ListId { get; set; }
 
-	public CreateCardCommand(string name, Guid boardId, Guid listId)
-	{
-		Name = name;
-		BoardId = boardId;
-		ListId = listId;
-	}
+    public CreateCardCommand(string name, Guid boardId, Guid listId)
+    {
+        Name = name;
+        BoardId = boardId;
+        ListId = listId;
+    }
 }

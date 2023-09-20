@@ -1,8 +1,8 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Commands.CreateCard;
-using Harmony.Application.Features.Boards.Commands.CreateList;
+﻿using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
+using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Client.Infrastructure.Models.Kanban;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
@@ -26,6 +26,8 @@ namespace Harmony.Client.Pages.Management
 
 		KanBanNewListForm _newListModel = new KanBanNewListForm();
 		private List<KanBanList> _kanbanLists = new();
+		public List<KanbanListCard> KanbanCards => _kanbanCards.OrderBy(c => c.Position).ToList();
+
 		private List<KanbanListCard> _kanbanCards = new();
 		private MudDropContainer<KanbanListCard> _dropContainer;
 		private bool _addNewListOpen;
@@ -55,8 +57,76 @@ namespace Harmony.Client.Pages.Management
 		#region helper
 		
 		/* handling board events */
-		private void TaskUpdated(MudItemDropInfo<KanbanListCard> info)
+		private async Task TaskUpdated(MudItemDropInfo<KanbanListCard> info)
 		{
+			if(info?.Item == null)
+			{
+				return;
+			};
+
+			var cardId = info.Item.Id;
+			var moveToListId = Guid.Parse(info.DropzoneIdentifier);
+			var currentListId = info.Item.BoardListId;
+
+			var currentPosition = info.Item.Position;
+			var newPosition = (byte)info.IndexInZone;
+
+			var result = await _cardManager
+				.MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, newPosition));
+
+			if (result.Succeeded && result.Messages.Any())
+			{
+				info.Item.BoardListId = moveToListId;
+				info.Item.Position = newPosition;
+
+				var cardAdded = result.Data;
+
+				var currentList = _board.Lists.FirstOrDefault(l => l.Id == currentListId);
+				var currentCard = currentList?.Cards.FirstOrDefault(c => c.Id == cardId);
+
+				if(currentCard != null)
+				{
+					if(currentListId != moveToListId)
+					{
+						currentList.Cards.Remove(currentCard);
+						
+						var newBoardList = _board.Lists.Find(l => l.Id == cardAdded.BoardListId);
+						var newCardInIndex = newBoardList.Cards.FirstOrDefault(c => c.Position == cardAdded.Position);
+						
+						// needs swapping
+						if(newCardInIndex != null)
+						{
+
+						}
+
+						newBoardList.Cards.Add(cardAdded);
+					}
+					else
+					{
+						// needs swapping
+						if(currentCard.Position != newPosition)
+						{
+							var currentCardInIndex = currentList.Cards.FirstOrDefault(c => c.Position == newPosition);
+							if(currentCardInIndex != null)
+							{
+								currentCardInIndex.Position = currentCard.Position;
+							}
+						}
+
+						currentCard.Position = newPosition;
+					}
+				}
+
+				_snackBar.Add(result.Messages[0], Severity.Success);
+			}
+			else
+			{
+				foreach (var message in result.Messages)
+				{
+					_snackBar.Add(message, Severity.Error);
+				}
+			}
+
 			info.Item.BoardListId = Guid.Parse(info.DropzoneIdentifier);
 		}
 

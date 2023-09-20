@@ -1,12 +1,12 @@
 ﻿@page "/boards/{id}/{name}"
 @using Harmony.Client.Infrastructure.Models.Kanban;
 
-<MudDropContainer T="KanbanListCard" @ref="_dropContainer" 
-	Items="@_kanbanCards" 
-	ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)" 
+<MudDropContainer T="KanbanListCard" @ref="_dropContainer"
+				  Items="@KanbanCards"
+				  ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)" 
 	ItemDropped="TaskUpdated" Class="d-flex flex-row">
 	<ChildContent>
-		@foreach (var item in _kanbanLists)
+		@foreach (var item in _kanbanLists.OrderBy(l => l.Position))
 		{
 			<MudPaper Elevation="0" Width="224px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
 				<MudToolBar DisableGutters="true">

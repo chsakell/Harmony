@@ -1,9 +1,10 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Commands.Create;
-using Harmony.Application.Features.Boards.Commands.CreateCard;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
+using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -27,5 +28,12 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
 			return await response.ToResult<CardDto>();
 		}
-    }
+
+		public async Task<IResult<CardDto>> MoveCardAsync(MoveCardCommand request)
+		{
+			var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Move(request.CardId), request);
+
+			return await response.ToResult<CardDto>();
+		}
+	}
 }
