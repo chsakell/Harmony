@@ -48,7 +48,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 Name = request.Name,
                 UserId = userId,
                 BoardId = request.BoardId,
-                Position = (byte)(totalLists + 1)
+                Position = (byte)(totalLists)
             };
 
             var dbResult = await _boardListRepository.Add(boardList);

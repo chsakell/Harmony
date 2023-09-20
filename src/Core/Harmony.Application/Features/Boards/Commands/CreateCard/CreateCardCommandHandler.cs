@@ -49,7 +49,7 @@ namespace Harmony.Application.Features.Boards.Commands.CreateCard
 				Name = request.Name,
 				UserId = userId,
 				BoardListId = request.ListId,
-				Position = (byte)(totalCards + 1)
+				Position = (byte)(totalCards)
 			};
 
 			var dbResult = await _cardRepository.Add(card);

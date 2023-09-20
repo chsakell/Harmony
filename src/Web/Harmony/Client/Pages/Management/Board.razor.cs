@@ -46,7 +46,7 @@ namespace Harmony.Client.Pages.Management
 
 					foreach(var card in list.Cards)
 					{
-						_kanbanCards.Add(new KanbanListCard(card.Id, card.Name, card.Position, list.Name));
+						_kanbanCards.Add(new KanbanListCard(card.Id, list.Id, card.Name, card.Position));
 					}
 				}
 			}
@@ -57,7 +57,7 @@ namespace Harmony.Client.Pages.Management
 		/* handling board events */
 		private void TaskUpdated(MudItemDropInfo<KanbanListCard> info)
 		{
-			info.Item.Status = info.DropzoneIdentifier;
+			info.Item.BoardListId = Guid.Parse(info.DropzoneIdentifier);
 		}
 
 		private async Task OnValidListSubmit(EditContext context)
@@ -100,7 +100,7 @@ namespace Harmony.Client.Pages.Management
 				var boardList = _board.Lists.Find(l => l.Id == kanBanList.Id);
 				boardList.Cards.Add(cardAdded);
 
-				_kanbanCards.Add(new KanbanListCard(cardAdded.Id, kanBanList.NewCardName, cardAdded.Position, kanBanList.Name));
+				_kanbanCards.Add(new KanbanListCard(cardAdded.Id, cardAdded.BoardListId, kanBanList.NewCardName, cardAdded.Position));
 				
 				kanBanList.NewCardName = string.Empty;
 				kanBanList.NewTaskOpen = false;
@@ -134,10 +134,11 @@ namespace Harmony.Client.Pages.Management
 
 				_kanbanLists.Remove(section);
 
-				var tasks = _kanbanCards.Where(x => x.Status == section.Name);
+				var tasks = _kanbanCards.Where(x => x.BoardListId == section.Id);
+
 				foreach (var item in tasks)
 				{
-					item.Status = _kanbanLists[newIndex].Name;
+					//item.Status = _kanbanLists[newIndex].Name;
 				}
 			}
 		}

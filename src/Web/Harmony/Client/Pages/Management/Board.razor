@@ -3,7 +3,7 @@
 
 <MudDropContainer T="KanbanListCard" @ref="_dropContainer" 
 	Items="@_kanbanCards" 
-	ItemsSelector="@((item,column) => item.Status == column)" 
+	ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)" 
 	ItemDropped="TaskUpdated" Class="d-flex flex-row">
 	<ChildContent>
 		@foreach (var item in _kanbanLists)
@@ -17,7 +17,7 @@
 						<MudButton Size="Size.Small" Color="Color.Default" StartIcon="@Icons.Material.Rounded.Edit">Rename Section</MudButton>
 					</MudMenu>
 				</MudToolBar>
-				<MudDropZone T="KanbanListCard" Identifier="@item.Name" Class="mud-height-full" />
+				<MudDropZone T="KanbanListCard" Identifier="@item.Id.ToString()" Class="mud-height-full" AllowReorder="true" />
 				@if (item.NewTaskOpen)
 				{
 					<MudPaper Elevation="25" Class="pa-2 rounded-lg">

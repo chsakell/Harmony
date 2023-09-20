@@ -9,13 +9,11 @@ namespace Harmony.Client.Infrastructure.Models.Kanban
 {
 	public class KanbanListCard : CardDto
 	{
-		public string Status { get; set; }
-
-		public KanbanListCard(Guid id, string name, byte position, string status)
+		public KanbanListCard(Guid id, Guid boardListId, string name, byte position)
 		{
 			Id = id;
+			BoardListId = boardListId;
 			Name = name;
-			Status = status;
 			Position = position;
 		}
 	}
