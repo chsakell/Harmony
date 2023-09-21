@@ -1,5 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using BlazorState;
 using Harmony.Client;
 using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Managers;
@@ -69,17 +68,6 @@ namespace Harmony.Client.Extensions
                 })
                 .AddHttpMessageHandler<AuthenticationHeaderHandler>();
             builder.Services.AddHttpClientInterceptor();
-
-            builder.Services.AddBlazorState
-            (
-                (aOptions) =>
-                    aOptions.Assemblies =
-                    new Assembly[]
-                    {
-                        typeof(Program).GetTypeInfo().Assembly,
-                    }
-            );
-
             return builder;
         }
 
