@@ -46,7 +46,7 @@ namespace Harmony.Client.Pages.Management
 				{
 					_kanbanLists.Add(new KanBanList(list.Id, list.Name, list.Position));
 
-					foreach(var card in list.Cards)
+					foreach(var card in list.Cards.OrderBy(c => c.Position))
 					{
 						_kanbanCards.Add(new KanbanListCard(card.Id, list.Id, card.Name, card.Position));
 					}
@@ -91,12 +91,12 @@ namespace Harmony.Client.Pages.Management
 						currentList.Cards.Remove(currentCard);
 						
 						var newBoardList = _board.Lists.Find(l => l.Id == cardAdded.BoardListId);
-						var newCardInIndex = newBoardList.Cards.FirstOrDefault(c => c.Position == cardAdded.Position);
+						var cardsInNewBoardListGreaterOrEqualThanIndex = newBoardList.Cards.Where(c => c.Position >= cardAdded.Position);
 						
-						// needs swapping
-						if(newCardInIndex != null)
+						// needs increasing by 1
+						foreach (var cardInNewBoardList in cardsInNewBoardListGreaterOrEqualThanIndex)
 						{
-
+							cardInNewBoardList.Position += 1;
 						}
 
 						newBoardList.Cards.Add(cardAdded);

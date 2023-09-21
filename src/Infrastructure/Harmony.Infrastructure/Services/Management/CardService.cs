@@ -33,7 +33,7 @@ namespace Harmony.Infrastructure.Services.Management
 
 			await ReorderCards(card.BoardListId, currentPosition, true);
 
-			return await MoveCard(card, newListId, currentPosition);
+			return await MoveCard(card, newListId, newPosition);
 		}
 
 		private async Task<bool> MoveCard(Card card, Guid newListId, byte newPosition)
