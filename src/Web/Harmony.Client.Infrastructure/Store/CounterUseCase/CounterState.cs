@@ -1,6 +1,6 @@
 ﻿using Fluxor;
 
-namespace Harmony.Client.Store.CounterUseCase
+namespace Harmony.Client.Infrastructure.Store.CounterUseCase
 {
 	[FeatureState]
 	public class CounterState

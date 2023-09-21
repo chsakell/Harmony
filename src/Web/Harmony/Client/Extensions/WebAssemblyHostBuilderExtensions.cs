@@ -4,6 +4,7 @@ using Harmony.Client;
 using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Managers;
 using Harmony.Client.Infrastructure.Managers.Preferences;
+using Harmony.Client.Infrastructure.Store.CounterUseCase;
 using Harmony.Shared.Constants.Permission;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -69,7 +70,7 @@ namespace Harmony.Client.Extensions
                 })
                 .AddHttpMessageHandler<AuthenticationHeaderHandler>();
             builder.Services.AddHttpClientInterceptor();
-			builder.Services.AddFluxor(options => options.ScanAssemblies(typeof(Program).Assembly));
+			builder.Services.AddFluxor(options => options.ScanAssemblies(typeof(CounterState).Assembly));
 			return builder;
         }
 

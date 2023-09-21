@@ -1,6 +1,6 @@
 ﻿using Fluxor;
-using Harmony.Client.Store;
-using Harmony.Client.Store.CounterUseCase;
+using Harmony.Client.Infrastructure.Store;
+using Harmony.Client.Infrastructure.Store.CounterUseCase;
 using Microsoft.AspNetCore.Components;
 
 namespace Harmony.Client.Pages
