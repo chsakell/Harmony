@@ -1,5 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using Fluxor;
 using Harmony.Client;
 using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Managers;
@@ -69,8 +68,7 @@ namespace Harmony.Client.Extensions
                 })
                 .AddHttpMessageHandler<AuthenticationHeaderHandler>();
             builder.Services.AddHttpClientInterceptor();
-			builder.Services.AddFluxor(options => options.ScanAssemblies(typeof(Program).Assembly));
-			return builder;
+            return builder;
         }
 
         public static IServiceCollection AddManagers(this IServiceCollection services)
