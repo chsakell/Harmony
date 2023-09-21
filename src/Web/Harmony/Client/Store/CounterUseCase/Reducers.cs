@@ -1,6 +1,8 @@
 ﻿using Fluxor;
+using Harmony.Client.Store;
+using Harmony.Client.Store.CounterUseCase;
 
-namespace Harmony.Client.Infrastructure.Store.CounterUseCase
+namespace Harmony.Client.Store.CounterUseCase
 {
 	public static class Reducers
 	{

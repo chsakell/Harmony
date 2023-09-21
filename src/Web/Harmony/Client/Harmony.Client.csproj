@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Store\**" />
-    <Content Remove="Store\**" />
-    <EmbeddedResource Remove="Store\**" />
-    <None Remove="Store\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.9.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.11" />
