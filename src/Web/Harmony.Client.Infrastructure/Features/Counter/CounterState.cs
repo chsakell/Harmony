@@ -1,4 +1,4 @@
-namespace Harmony.Client.Features.Counter
+namespace Harmony.Client.Infrastructure.Features.Counter
 {
     using BlazorState;
 
