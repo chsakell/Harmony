@@ -3,6 +3,7 @@ using Harmony.Client;
 using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Managers;
 using Harmony.Client.Infrastructure.Managers.Preferences;
+using Harmony.Client.Infrastructure.Store;
 using Harmony.Shared.Constants.Permission;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -56,6 +57,7 @@ namespace Harmony.Client.Extensions
                 .AddScoped<HarmonyStateProvider>()
                 .AddScoped<AuthenticationStateProvider, HarmonyStateProvider>()
                 .AddManagers()
+                .AddStores()
                 .AddTransient<AuthenticationHeaderHandler>()
                 .AddScoped(sp => sp
                     .GetRequiredService<IHttpClientFactory>()
@@ -97,15 +99,33 @@ namespace Harmony.Client.Extensions
             return services;
         }
 
-        //public static IServiceCollection AddExtendedAttributeManagers(this IServiceCollection services)
-        //{
-        //    //TODO - add managers with reflection!
+		public static IServiceCollection AddStores(this IServiceCollection services)
+		{
+			var managers = typeof(IStore);
 
-        //    return services
-        //        .AddTransient(typeof(IExtendedAttributeManager<int, int, Document, DocumentExtendedAttribute>), typeof(ExtendedAttributeManager<int, int, Document, DocumentExtendedAttribute>));
-        //}
+			var types = managers
+				.Assembly
+				.GetExportedTypes()
+				.Where(t => t.IsClass && !t.IsAbstract)
+				.Select(t => new
+				{
+					Service = t.GetInterface($"I{t.Name}"),
+					Implementation = t
+				})
+				.Where(t => t.Service != null);
 
-        private static void RegisterPermissionClaims(AuthorizationOptions options)
+			foreach (var type in types)
+			{
+				if (managers.IsAssignableFrom(type.Service))
+				{
+					services.AddTransient(type.Service, type.Implementation);
+				}
+			}
+
+			return services;
+		}
+
+		private static void RegisterPermissionClaims(AuthorizationOptions options)
         {
             foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
             {
