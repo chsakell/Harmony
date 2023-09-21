@@ -76,7 +76,7 @@ namespace Harmony.Client.Extensions
                     aOptions.Assemblies =
                     new Assembly[]
                     {
-                        typeof(Infrastructure.Features.Counter.CounterState).GetTypeInfo().Assembly,
+                        typeof(Program).GetTypeInfo().Assembly,
                     }
             );
 

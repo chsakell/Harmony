@@ -1,4 +1,4 @@
-namespace Harmony.Client.Infrastructure.Features.Counter;
+namespace Harmony.Client.Features.Counter;
 
 using System.Threading;
 using System.Threading.Tasks;
