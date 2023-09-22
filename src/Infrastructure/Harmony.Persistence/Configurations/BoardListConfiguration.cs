@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Persistence.Configurations
 {
@@ -16,6 +17,8 @@ namespace Harmony.Persistence.Configurations
             builder.Property(b => b.BoardId).IsRequired();
 
             builder.Property(b => b.Name).IsRequired().HasMaxLength(100);
+
+            builder.Property(b => b.Status).IsRequired().HasDefaultValue(BoardListStatus.Active);
 
             builder.Property(b => b.Position).IsRequired();
 

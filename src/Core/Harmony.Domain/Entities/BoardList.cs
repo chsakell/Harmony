@@ -1,4 +1,6 @@
-﻿namespace Harmony.Domain.Entities
+﻿using Harmony.Domain.Enums;
+
+namespace Harmony.Domain.Entities
 {
     /// <summary>
     /// Class to represent a board's lists/columns
@@ -11,5 +13,6 @@
 		public Guid BoardId { get; set; }
         public byte Position { get; set; } // position on the board
         public List<Card> Cards { get; set; }
+        public BoardListStatus Status { get; set; }
     }
 }

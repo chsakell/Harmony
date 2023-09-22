@@ -1,4 +1,6 @@
-﻿namespace Harmony.Domain.Entities
+﻿using Harmony.Domain.Enums;
+
+namespace Harmony.Domain.Entities
 {
     /// <summary>
     /// Class to represent cards in lists
@@ -15,7 +17,7 @@
         public List<CheckList> CheckLists { get; set; }
         public List<UserCard> Members { get; set; }
         public List<CardActivity> Activities { get; set; }
-        public bool IsArchived { get; set; }
+        public CardStatus Status { get; set; }
         public List<CardLabel> Labels { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
