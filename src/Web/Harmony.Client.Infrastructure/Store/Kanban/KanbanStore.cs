@@ -1,61 +1,45 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
-using Harmony.Client.Infrastructure.Managers.Project;
 using Harmony.Client.Infrastructure.Models.Kanban;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
+
 
 namespace Harmony.Client.Infrastructure.Store.Kanban
 {
 	public class KanbanStore : IKanbanStore
 	{
 		private GetBoardResponse _board = new GetBoardResponse();
-		private List<KanBanList> _kanbanLists = new();
-		private List<KanbanListCard> _kanbanCards = new();
 
+		private bool _boardLoading = true;
+		public bool BoardLoading => _boardLoading;
 		public GetBoardResponse Board => _board;
-		public List<KanBanList> KanbanLists => _kanbanLists;
-		public List<KanbanListCard> KanbanCards => _kanbanCards;
-
+		public IEnumerable<BoardListDto> KanbanLists => _board.Lists.OrderBy(l => l.Position);
+		public IEnumerable<CardDto> KanbanCards => _board.Lists.SelectMany(l => l.Cards).OrderBy(c => c.Position);
 
 		public void LoadBoard(GetBoardResponse board)
 		{
 			_board = board;
 
-			foreach (var list in board.Lists)
-			{
-				_kanbanLists.Add(new KanBanList(list.Id, list.Name, list.Position));
-
-				foreach (var card in list.Cards.OrderBy(c => c.Position))
-				{
-					_kanbanCards.Add(new KanbanListCard(card.Id, list.Id, card.Name, card.Position));
-				}
-			}
+			_boardLoading = false;
 		}
 
 		public void AddListToBoard(BoardListDto list)
 		{
 			_board.Lists.Add(list);
-
-			_kanbanLists.Add(new KanBanList(list.Id, list.Name, list.Position));
 		}
 
-		public void AddCardToList(CardDto card, Guid listId)
+		public void AddCardToList(CardDto card, BoardListDto list)
 		{
-			var boardList = _board.Lists.Find(l => l.Id == listId);
+			var boardList = _board.Lists.Find(l => l.Id == list.Id);
+
 			if (boardList == null)
 			{
 				return;
 			}
 
 			boardList.Cards.Add(card);
-
-			_kanbanCards.Add(new KanbanListCard(card.Id, card.BoardListId, card.Name, card.Position));
-		}
+            list.NewCardName = string.Empty;
+            list.NewTaskOpen = false;
+        }
 
 		public void MoveCard(CardDto card, Guid previousListId, Guid nextListId,  byte newPosition)
 		{
@@ -96,10 +80,9 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 			}
 		}
 
-		public void DeleteList(KanBanList list)
+		public void DeleteList(BoardListDto list)
 		{
-			_kanbanLists.RemoveAll(l => l.Id == list.Id);
-			_kanbanCards.RemoveAll(c => c.BoardListId == list.Id);
+			_board.Lists.RemoveAll(l => l.Id == list.Id);
 		}
 	}
 }

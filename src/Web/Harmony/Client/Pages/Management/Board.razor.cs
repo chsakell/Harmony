@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Commands.CreateList;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
@@ -29,11 +30,8 @@ namespace Harmony.Client.Pages.Management
 		#region Kanban
 
 		KanBanNewListForm _newListModel = new KanBanNewListForm();
-		private List<KanBanList> _kanbanLists = new();
-		public IEnumerable<KanbanListCard> KanbanCards => _kanbanCards.OrderBy(c => c.Position);
 
-		private List<KanbanListCard> _kanbanCards = new();
-		private MudDropContainer<KanbanListCard> _dropContainer;
+		private MudDropContainer<CardDto> _dropContainer;
 		private bool _addNewListOpen;
 
 		#endregion
@@ -48,10 +46,7 @@ namespace Harmony.Client.Pages.Management
 			}
 		}
 
-		#region helper
-		
-		/* handling board events */
-		private async Task TaskUpdated(MudItemDropInfo<KanbanListCard> info)
+		private async Task CardMoved(MudItemDropInfo<CardDto> info)
 		{
 			if(info?.Item == null)
 			{
@@ -67,15 +62,10 @@ namespace Harmony.Client.Pages.Management
 
 			if (result.Succeeded)
 			{
-				info.Item.BoardListId = moveToListId;
-				info.Item.Position = newPosition;
-
 				KanbanStore.MoveCard(result.Data, currentListId, moveToListId, newPosition);
 			}
 
 			DisplayMessage(result);
-
-			info.Item.BoardListId = Guid.Parse(info.DropzoneIdentifier);
 		}
 
 		private async Task OnValidListSubmit(EditContext context)
@@ -98,53 +88,26 @@ namespace Harmony.Client.Pages.Management
 			_addNewListOpen = true;
 		}
 
-		private async Task AddCard(KanBanList kanBanList)
+		private async Task AddCard(BoardListDto list)
 		{
 			var result = await _cardManager
-				.CreateCardAsync(new CreateCardCommand(kanBanList.NewCardName, Guid.Parse(Id), kanBanList.Id));
+				.CreateCardAsync(new CreateCardCommand(list.NewCardName, Guid.Parse(Id), list.Id));
 
 			if (result.Succeeded)
 			{
 				var cardAdded = result.Data;
 				
-				KanbanStore.AddCardToList(cardAdded, kanBanList.Id);
-
-				kanBanList.NewCardName = string.Empty;
-				kanBanList.NewTaskOpen = false;
+				KanbanStore.AddCardToList(cardAdded, list);
 				_dropContainer.Refresh();
 			}
 
 			DisplayMessage(result);
 		}
 
-		private void DeleteList(KanBanList section)
+		private void DeleteList(BoardListDto list)
 		{
-			KanbanStore.DeleteList(section);
-
-			//if (_kanbanLists.Count == 1)
-			//{
-			//	_kanbanCards.Clear();
-			//	_kanbanLists.Clear();
-			//}
-			//else
-			//{
-			//	int newIndex = _kanbanLists.IndexOf(section) - 1;
-			//	if (newIndex < 0)
-			//	{
-			//		newIndex = 0;
-			//	}
-
-			//	_kanbanLists.Remove(section);
-
-			//	var tasks = _kanbanCards.Where(x => x.BoardListId == section.Id);
-
-			//	foreach (var item in tasks)
-			//	{
-			//		item.Name = _kanbanLists[newIndex].Name;
-			//	}
-			//}
+			KanbanStore.DeleteList(list);
 		}
-		#endregion
 
 		private void DisplayMessage(IResult result)
 		{
