@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Pages.Authentication
 {

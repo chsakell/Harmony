@@ -1,7 +1,5 @@
 ﻿using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Shared.Utilities;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace Harmony.Client.Shared.Components
 {

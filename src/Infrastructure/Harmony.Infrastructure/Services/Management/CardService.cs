@@ -1,12 +1,10 @@
-﻿using Azure.Core;
-using Harmony.Application.Contracts.Repositories;
+﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Entities;
-using Harmony.Persistence.Migrations;
 
 namespace Harmony.Infrastructure.Services.Management
 {
-	public class CardService : ICardService
+    public class CardService : ICardService
 	{
 		private readonly ICardRepository _cardRepository;
 

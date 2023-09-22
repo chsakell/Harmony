@@ -1,5 +1,4 @@
 ﻿using Harmony.Client.Infrastructure.Managers;
-using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
 namespace Harmony.Client.Infrastructure.Interceptors

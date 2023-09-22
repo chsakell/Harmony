@@ -2,14 +2,9 @@
 using Harmony.Shared.Constants.Permission;
 using Harmony.Shared.Storage;
 using Microsoft.AspNetCore.Components.Authorization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Infrastructure.Authentication
 {

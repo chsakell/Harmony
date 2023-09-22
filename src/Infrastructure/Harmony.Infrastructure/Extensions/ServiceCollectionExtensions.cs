@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Infrastructure.Repositories;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

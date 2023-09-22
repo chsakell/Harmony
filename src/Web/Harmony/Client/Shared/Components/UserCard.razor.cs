@@ -1,7 +1,6 @@
 ﻿using Harmony.Client.Extensions;
 using Harmony.Shared.Storage;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Shared.Components
 {

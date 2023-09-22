@@ -2,10 +2,7 @@
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Roles
 {

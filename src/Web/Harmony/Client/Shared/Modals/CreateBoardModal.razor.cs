@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
-using Harmony.Application.Requests.Identity;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 

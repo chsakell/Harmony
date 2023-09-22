@@ -3,8 +3,6 @@ using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
-using MediatR;
-using System.Collections.Generic;
 using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project

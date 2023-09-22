@@ -1,7 +1,6 @@
 ﻿using Harmony.Application.Contracts.Services;
 using Harmony.Application.Extensions;
 using Harmony.Application.Requests;
-using System.IO;
 
 namespace Harmony.Infrastructure.Services
 {

@@ -1,11 +1,10 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
-using Harmony.Client.Infrastructure.Models.Kanban;
 
 
 namespace Harmony.Client.Infrastructure.Store.Kanban
 {
-	public class KanbanStore : IKanbanStore
+    public class KanbanStore : IKanbanStore
 	{
 		private GetBoardResponse _board = new GetBoardResponse();
 

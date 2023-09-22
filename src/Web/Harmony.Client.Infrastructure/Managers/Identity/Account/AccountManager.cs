@@ -2,9 +2,7 @@
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Routes;
 using Harmony.Shared.Wrapper;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Account
 {

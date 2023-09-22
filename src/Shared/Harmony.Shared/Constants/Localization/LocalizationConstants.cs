@@ -1,6 +1,4 @@
-﻿using Harmony.Shared.Constants.Localization;
-
-namespace Harmony.Shared.Constants.Localization
+﻿namespace Harmony.Shared.Constants.Localization
 {
     public static class LocalizationConstants
     {

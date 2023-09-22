@@ -3,7 +3,6 @@ using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Requests.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Harmony.Server.Controllers.Identity
 {

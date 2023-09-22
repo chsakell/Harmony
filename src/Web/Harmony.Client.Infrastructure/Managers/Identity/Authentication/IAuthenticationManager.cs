@@ -1,7 +1,6 @@
 ﻿using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Wrapper;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Authentication
 {

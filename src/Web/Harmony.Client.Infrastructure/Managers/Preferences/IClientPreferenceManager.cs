@@ -1,6 +1,5 @@
 ﻿using Harmony.Shared.Managers;
 using MudBlazor;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Infrastructure.Managers.Preferences
 {

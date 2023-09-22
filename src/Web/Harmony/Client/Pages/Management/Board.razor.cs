@@ -5,17 +5,14 @@ using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Client.Infrastructure.Models.Kanban;
 using Harmony.Client.Infrastructure.Store.Kanban;
-using Harmony.Domain.Entities;
-using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Client.Pages.Management
 {
-	public partial class Board
+    public partial class Board
 	{
 		[Parameter]
 		public string Id { get; set; }

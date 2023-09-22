@@ -1,8 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
-using MediatR;
-using System.Collections.Generic;
 using System.Net.Http.Json;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;

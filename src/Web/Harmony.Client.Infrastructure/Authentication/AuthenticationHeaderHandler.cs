@@ -1,9 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Harmony.Shared.Storage;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Infrastructure.Authentication
 {

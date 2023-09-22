@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using MudBlazor;
 
 using Microsoft.Extensions.Localization;

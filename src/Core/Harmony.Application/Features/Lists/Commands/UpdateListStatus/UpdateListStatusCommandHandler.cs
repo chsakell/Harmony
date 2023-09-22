@@ -1,18 +1,9 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Features.Boards.Commands.CreateList;
-using Harmony.Application.DTO;
 using AutoMapper;
-using Harmony.Application.Features.Boards.Commands.Create;
 
 namespace Harmony.Application.Features.Lists.Commands.ArchiveList
 {

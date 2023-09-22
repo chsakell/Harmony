@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services.Account;
 using Harmony.Persistence.Identity;
 using Harmony.Shared.Wrapper;

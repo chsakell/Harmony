@@ -1,8 +1,6 @@
 ﻿using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Users
 {

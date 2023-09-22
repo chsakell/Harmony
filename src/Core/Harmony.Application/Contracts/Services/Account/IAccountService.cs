@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Wrapper;
-using System.Threading.Tasks;
 
 namespace Harmony.Application.Contracts.Services.Account
 {

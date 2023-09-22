@@ -2,12 +2,9 @@
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Routes;
 using Harmony.Client.Infrastructure.Extensions;

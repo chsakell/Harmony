@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
 using Toolbelt.Blazor;
 using Harmony.Client.Infrastructure.Managers.Identity.Authentication;
