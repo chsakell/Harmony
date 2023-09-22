@@ -6,13 +6,13 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Features.Boards.Queries.GetAllForUser
+namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
 {
-    public class GetAllForUserBoardsQuery : IRequest<IResult<List<GetAllForUserBoardResponse>>>
+    public class LoadWorkspaceQuery : IRequest<IResult<List<LoadWorkspaceResponse>>>
     {
         public Guid WorkspaceId { get; set; }
 
-        public GetAllForUserBoardsQuery(Guid workspaceId)
+        public LoadWorkspaceQuery(Guid workspaceId)
         {
             WorkspaceId = workspaceId;
         }

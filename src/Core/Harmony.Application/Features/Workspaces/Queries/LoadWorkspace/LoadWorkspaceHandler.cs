@@ -11,18 +11,18 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Features.Boards.Queries.GetAllForUser
+namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
 {
-    public class GetAllForUserBoardsHandler : IRequestHandler<GetAllForUserBoardsQuery, IResult<List<GetAllForUserBoardResponse>>>
+    public class LoadWorkspaceHandler : IRequestHandler<LoadWorkspaceQuery, IResult<List<LoadWorkspaceResponse>>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IStringLocalizer<GetAllForUserBoardsHandler> _localizer;
+        private readonly IStringLocalizer<LoadWorkspaceHandler> _localizer;
         private readonly IMapper _mapper;
 
-        public GetAllForUserBoardsHandler(IWorkspaceRepository workspaceRepository,
+        public LoadWorkspaceHandler(IWorkspaceRepository workspaceRepository,
             ICurrentUserService currentUserService,
-            IStringLocalizer<GetAllForUserBoardsHandler> localizer,
+            IStringLocalizer<LoadWorkspaceHandler> localizer,
             IMapper mapper)
         {
             _workspaceRepository = workspaceRepository;
@@ -31,20 +31,20 @@ namespace Harmony.Application.Features.Boards.Queries.GetAllForUser
             _mapper = mapper;
         }
 
-        public async Task<IResult<List<GetAllForUserBoardResponse>>> Handle(GetAllForUserBoardsQuery request, CancellationToken cancellationToken)
+        public async Task<IResult<List<LoadWorkspaceResponse>>> Handle(LoadWorkspaceQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<List<GetAllForUserBoardResponse>>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<List<LoadWorkspaceResponse>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var userBoards = await _workspaceRepository.LoadWorkspace(userId, request.WorkspaceId);
 
-            var result = _mapper.Map<List<GetAllForUserBoardResponse>>(userBoards);
+            var result = _mapper.Map<List<LoadWorkspaceResponse>>(userBoards);
 
-            return await Result<List<GetAllForUserBoardResponse>>.SuccessAsync(result);
+            return await Result<List<LoadWorkspaceResponse>>.SuccessAsync(result);
         }
     }
 }

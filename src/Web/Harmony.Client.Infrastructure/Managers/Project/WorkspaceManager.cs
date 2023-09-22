@@ -1,6 +1,6 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetAllForUser;
-using Harmony.Application.Features.Workspaces.Commands.Create;
+﻿using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -30,10 +30,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<List<GetAllForUserWorkspaceResponse>>();
         }
 
-        public async Task<IResult<List<GetAllForUserBoardResponse>>> LoadWorkspaceAsync(string workspaceId)
+        public async Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId)
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Get(workspaceId));
-            return await response.ToResult<List<GetAllForUserBoardResponse>>();
+            return await response.ToResult<List<LoadWorkspaceResponse>>();
         }
     }
 }

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Features.Boards.Queries.GetAllForUser
+namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
 {
-    public class GetAllForUserBoardResponse
+    public class LoadWorkspaceResponse
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

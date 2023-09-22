@@ -1,6 +1,6 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetAllForUser;
-using Harmony.Application.Features.Workspaces.Commands.Create;
+﻿using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Wrapper;
 using System;
@@ -15,6 +15,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     {
         Task<IResult> CreateAsync(CreateWorkspaceCommand request);
         Task<IResult<List<GetAllForUserWorkspaceResponse>>> GetAllAsync();
-        Task<IResult<List<GetAllForUserBoardResponse>>> LoadWorkspaceAsync(string workspaceId);
+        Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId);
     }
 }

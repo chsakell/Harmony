@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetAllForUser;
+﻿using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,7 @@ namespace Harmony.Server.Controllers.Management
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return Ok(await _mediator.Send(new GetAllForUserBoardsQuery(id)));
+            return Ok(await _mediator.Send(new LoadWorkspaceQuery(id)));
         }
     }
 }

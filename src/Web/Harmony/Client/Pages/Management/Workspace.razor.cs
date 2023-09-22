@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetAllForUser;
+﻿using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 
@@ -12,7 +12,7 @@ namespace Harmony.Client.Pages.Management
         [Parameter]
         public string Name { get; set; }
 
-        private List<GetAllForUserBoardResponse> _userBoards = new List<GetAllForUserBoardResponse>();
+        private List<LoadWorkspaceResponse> _userBoards = new List<LoadWorkspaceResponse>();
         protected async override Task OnInitializedAsync()
         {
             var result = await _workspaceManager.LoadWorkspaceAsync(Id);
@@ -23,7 +23,7 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private void NavigateToBoard(GetAllForUserBoardResponse board)
+        private void NavigateToBoard(LoadWorkspaceResponse board)
         {
             var slug = StringUtilities.SlugifyString(board.Title.ToString());
 

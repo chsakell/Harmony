@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
-using Harmony.Application.Features.Boards.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Harmony.Application.Mappings.Management
         public WorkspaceProfile()
         {
             CreateMap<Workspace, GetAllForUserWorkspaceResponse>().ReverseMap();
-			CreateMap<Board, GetAllForUserBoardResponse>().ReverseMap();
+			CreateMap<Board, LoadWorkspaceResponse>().ReverseMap();
 			CreateMap<Board, GetBoardResponse>();
 
             CreateMap<BoardList, BoardListDto>();
