@@ -21,12 +21,6 @@ namespace Harmony.Server.Controllers.Management
             return Ok(await _mediator.Send(command));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(await _mediator.Send(new GetAllForUserBoardsQuery()));
-        }
-
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> LoadBoard(Guid id)
         {

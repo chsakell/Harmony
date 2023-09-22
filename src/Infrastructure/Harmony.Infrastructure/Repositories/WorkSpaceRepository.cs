@@ -32,5 +32,12 @@ namespace Harmony.Infrastructure.Repositories
                 .Where(workspace => workspace.UserId == userId)
                 .ToListAsync();
         }
+
+        public async Task<List<Board>> LoadWorkspace(string userId, Guid workspaceId)
+        {
+            return await _context.Boards
+                .Where(Board => Board.UserId == userId && Board.WorkspaceId == workspaceId)
+                .ToListAsync();
+        }
     }
 }

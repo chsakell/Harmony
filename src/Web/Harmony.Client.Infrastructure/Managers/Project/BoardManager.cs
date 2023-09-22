@@ -41,11 +41,5 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints.Get(boardId));
             return await response.ToResult<GetBoardResponse>();
         }
-
-        public async Task<IResult<List<GetAllForUserBoardResponse>>> GetUserBoardsAsync()
-        {
-            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.Index);
-            return await response.ToResult<List<GetAllForUserBoardResponse>>();
-        }
     }
 }

@@ -15,17 +15,17 @@ namespace Harmony.Application.Features.Boards.Queries.GetAllForUser
 {
     public class GetAllForUserBoardsHandler : IRequestHandler<GetAllForUserBoardsQuery, IResult<List<GetAllForUserBoardResponse>>>
     {
-        private readonly IBoardRepository _boardRepository;
+        private readonly IWorkspaceRepository _workspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetAllForUserBoardsHandler> _localizer;
         private readonly IMapper _mapper;
 
-        public GetAllForUserBoardsHandler(IBoardRepository boardRepository,
+        public GetAllForUserBoardsHandler(IWorkspaceRepository workspaceRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<GetAllForUserBoardsHandler> localizer,
             IMapper mapper)
         {
-            _boardRepository = boardRepository;
+            _workspaceRepository = workspaceRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
             _mapper = mapper;
@@ -40,7 +40,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetAllForUser
                 return await Result<List<GetAllForUserBoardResponse>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var userBoards = await _boardRepository.GetAllForUser(userId);
+            var userBoards = await _workspaceRepository.LoadWorkspace(userId, request.WorkspaceId);
 
             var result = _mapper.Map<List<GetAllForUserBoardResponse>>(userBoards);
 

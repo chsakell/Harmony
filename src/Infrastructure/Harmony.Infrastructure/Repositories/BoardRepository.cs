@@ -26,13 +26,6 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Board>> GetAllForUser(string userId)
-        {
-            return await _context.Boards
-                .Where(Board => Board.UserId == userId)
-                .ToListAsync();
-        }
-
         public async Task<bool> Exists(Guid boardId)
         {
             return await _context.Boards

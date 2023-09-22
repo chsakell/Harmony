@@ -10,5 +10,11 @@ namespace Harmony.Application.Features.Boards.Queries.GetAllForUser
 {
     public class GetAllForUserBoardsQuery : IRequest<IResult<List<GetAllForUserBoardResponse>>>
     {
+        public Guid WorkspaceId { get; set; }
+
+        public GetAllForUserBoardsQuery(Guid workspaceId)
+        {
+            WorkspaceId = workspaceId;
+        }
     }
 }

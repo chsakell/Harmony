@@ -22,5 +22,7 @@ namespace Harmony.Application.Contracts.Repositories
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<List<Workspace>> GetAllForUser(string userId);
+
+        Task<List<Board>> LoadWorkspace(string userId, Guid workspaceId);
     }
 }

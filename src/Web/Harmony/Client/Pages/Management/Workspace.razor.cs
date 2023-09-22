@@ -15,7 +15,7 @@ namespace Harmony.Client.Pages.Management
         private List<GetAllForUserBoardResponse> _userBoards = new List<GetAllForUserBoardResponse>();
         protected async override Task OnInitializedAsync()
         {
-            var result = await _boardManager.GetUserBoardsAsync();
+            var result = await _workspaceManager.LoadWorkspaceAsync(Id);
 
             if(result.Succeeded)
             {
