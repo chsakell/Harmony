@@ -3,15 +3,14 @@ using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
-using Harmony.Application.Features.Cards.Commands.CreateCard;
-using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
-    public interface ICardManager : IManager
+    public interface IBoardListManager : IManager
     {
-        Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request);
-        Task<IResult<CardDto>> MoveCardAsync(MoveCardCommand request);
+		Task<IResult<BoardListDto>> CreateListAsync(CreateListCommand request);
+        Task<IResult<bool>> UpdateListStatusAsync(UpdateListStatusCommand request);
     }
 }

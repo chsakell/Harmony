@@ -43,8 +43,8 @@ namespace Harmony.Infrastructure.Repositories
         public async Task<Board> LoadBoard(Guid boardId)
         {
             return await _context.Boards
-                .Include(b => b.Lists)
-                    .ThenInclude(l => l.Cards)
+                .Include(b => b.Lists.Where(l => l.Status == Domain.Enums.BoardListStatus.Active))
+                    .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active))
                 .Include(b => b.Users)
                 .FirstAsync(board => board.Id == boardId);
         }

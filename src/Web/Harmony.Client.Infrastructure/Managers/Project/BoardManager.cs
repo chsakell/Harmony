@@ -4,6 +4,7 @@ using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -26,14 +27,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints.Index, request);
             return await response.ToResult();
         }
-
-		public async Task<IResult<BoardListDto>> CreateListAsync(CreateListCommand request)
-		{
-			var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints
-                .CreateList(request.BoardId), request);
-
-			return await response.ToResult<BoardListDto>();
-		}
 
 		public async Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request)
 		{

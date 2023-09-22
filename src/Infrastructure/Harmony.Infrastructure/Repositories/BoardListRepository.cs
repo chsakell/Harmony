@@ -30,5 +30,17 @@ namespace Harmony.Infrastructure.Repositories
 
 			return await _context.SaveChangesAsync();
 		}
-	}
+
+        public async Task<BoardList?> Get(Guid boardListId)
+        {
+            return await _context.BoardLists.FirstOrDefaultAsync(l => l.Id == boardListId);
+        }
+
+        public async Task<int> Update(BoardList list)
+        {
+            _context.BoardLists.Update(list);
+
+            return await _context.SaveChangesAsync();
+        }
+    }
 }

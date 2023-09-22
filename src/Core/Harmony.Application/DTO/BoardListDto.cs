@@ -1,4 +1,5 @@
 ﻿using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace Harmony.Application.DTO
 		// helpers for kanban
         public string NewCardName { get; set; }
         public bool NewTaskOpen { get; set; }
+		public BoardListStatus Status { get; set; }
     }
 }

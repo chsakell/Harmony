@@ -80,7 +80,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 			}
 		}
 
-		public void DeleteList(BoardListDto list)
+		public void ArchiveList(BoardListDto list)
 		{
 			_board.Lists.RemoveAll(l => l.Id == list.Id);
 		}

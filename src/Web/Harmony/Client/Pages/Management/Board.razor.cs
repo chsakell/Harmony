@@ -4,6 +4,7 @@ using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetAllForUser;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Client.Infrastructure.Models.Kanban;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Domain.Entities;
@@ -70,7 +71,7 @@ namespace Harmony.Client.Pages.Management
 
 		private async Task OnValidListSubmit(EditContext context)
 		{
-			var result = await _boardManager.CreateListAsync(new CreateListCommand(_newListModel.Name, Guid.Parse(Id)));
+			var result = await _boardListManager.CreateListAsync(new CreateListCommand(_newListModel.Name, Guid.Parse(Id)));
 
 			if(result.Succeeded)
 			{
@@ -104,9 +105,18 @@ namespace Harmony.Client.Pages.Management
 			DisplayMessage(result);
 		}
 
-		private void DeleteList(BoardListDto list)
+		private async Task ArchiveList(BoardListDto list)
 		{
-			KanbanStore.DeleteList(list);
+            var result = await _boardListManager
+                .UpdateListStatusAsync(new UpdateListStatusCommand(list.Id, Domain.Enums.BoardListStatus.Archived));
+
+            if (result.Succeeded && result.Data)
+            {
+                KanbanStore.ArchiveList(list);
+                _dropContainer.Refresh();
+            }
+
+            DisplayMessage(result);
 		}
 
 		private void DisplayMessage(IResult result)

@@ -32,11 +32,5 @@ namespace Harmony.Server.Controllers.Management
         {
             return Ok(await _mediator.Send(new GetBoardQuery(id)));
         }
-
-		[HttpPost("{id:guid}/lists")]
-		public async Task<IActionResult> CreateList(CreateListCommand command)
-		{
-			return Ok(await _mediator.Send(command));
-		}
 	}
 }

@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Cards - Copy\**" />
+    <EmbeddedResource Remove="Features\Cards - Copy\**" />
+    <None Remove="Features\Cards - Copy\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Shared\Harmony.Shared\Harmony.Shared.csproj" />
     <ProjectReference Include="..\Harmony.Domain\Harmony.Domain.csproj" />
   </ItemGroup>

@@ -12,6 +12,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult> CreateAsync(CreateBoardCommand request);
         Task<IResult<List<GetAllForUserBoardResponse>>> GetUserBoardsAsync();
         Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId);
-		Task<IResult<BoardListDto>> CreateListAsync(CreateListCommand request);
-	}
+		// Task<IResult<BoardListDto>> CreateListAsync(CreateListCommand request);
+    }
 }
