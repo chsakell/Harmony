@@ -9,5 +9,6 @@
         public static string Move(Guid cardId) => $"{Index}/{cardId}/move/";
 
         public static string Description(Guid cardId) => $"{Index}/{cardId}/description/";
+        public static string Checklists(Guid cardId) => $"{Index}/{cardId}/checklists/";
     }
 }

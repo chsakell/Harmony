@@ -8,7 +8,7 @@
             @{
                 <MudText Typo="Typo.h6">
                     <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-3 mb-n1" />
-                    @_localizer["Create Board"]
+                    @_localizer["Edit card"]
                 </MudText>
             }
         </TitleContent>
@@ -16,6 +16,33 @@
             <MudTextField For="@(() => _card.Name)" @bind-Value="_card.Name" Label="@_localizer["Title"]" />
             <PostTextEditor Contents="@_card.Description" @ref="_textEditor"></PostTextEditor>
             <MudButton OnClick="SaveDescription">@_localizer["Save"]</MudButton>
+
+            <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
+            <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton>
+            @foreach(var checkList in _card.CheckLists)
+            {
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">@checkList.Title</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        @foreach(var item in checkList.Items)
+                        {
+                            <MudSwitch @bind-Checked="@item.IsChecked" Label="Success" Color="Color.Success" />
+                            <MudTextField For="@(() => item.Description)" @bind-Value="item.Description" Label="@_localizer["Description"]" />
+                        }
+                    </MudCardContent>
+                    <MudCardActions>
+                        @* <MudTextField For="@(() => _card.Name)" @bind-Value="_card.Name" Label="@_localizer["Title"]" />
+                        <MudButton Variant="Variant.Text" Color="Color.Primary">@_localizer["Add item"]</MudButton> *@
+                    </MudCardActions>
+                </MudCard>
+            }
         </DialogContent>
     </MudDialog>
 }

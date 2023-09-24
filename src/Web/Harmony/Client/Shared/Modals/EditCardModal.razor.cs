@@ -1,8 +1,10 @@
 ﻿using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Client.Shared.Components;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -15,6 +17,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _loading = true;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
         private PostTextEditor _textEditor;
+        public string NewListName { get; set; }
         [Parameter] public Guid CardId { get; set; }
         private void Cancel()
         {
@@ -44,6 +47,16 @@ namespace Harmony.Client.Shared.Modals
             DisplayMessage(response);
 
             _loading = false;
+        }
+
+        private async Task AddCheckList()
+        {
+            var position = (byte)_card.CheckLists.Count;
+
+            var response = await _checkListManager
+                .CreateCheckListAsync(new CreateChecklistCommand(CardId, NewListName, position));
+
+            DisplayMessage(response);
         }
 
         private void DisplayMessage(IResult result)

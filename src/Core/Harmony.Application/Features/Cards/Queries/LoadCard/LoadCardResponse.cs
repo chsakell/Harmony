@@ -11,6 +11,7 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public string UserId { get; set; } // User created the card
         public BoardListDto BoardList { get; set; }
         public CardStatus Status { get; set; }
+        public List<CheckListDto> CheckLists { get; set; }
         //public List<CardLabel> Labels { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }

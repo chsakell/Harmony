@@ -30,7 +30,9 @@ namespace Harmony.Persistence.Identity
 		public List<BoardList> BoardLists { get; set; } // Board lists created by the user
 		public List<Card> Cards { get; set; } // Cards created by the user
 
-		public List<Comment> Comments { get; set; }
+        public List<CheckList> CheckLists { get; set; } // Check lists created by the user
+
+        public List<Comment> Comments { get; set; }
         public List<UserCard> AccessCards { get; set; } // Cards that has access to
 		public List<CardActivity> CardActivities { get; set; }
     }

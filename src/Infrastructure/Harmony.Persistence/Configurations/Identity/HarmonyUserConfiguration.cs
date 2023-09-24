@@ -59,6 +59,12 @@ namespace Harmony.Persistence.Configurations.Identity
                 .WithOne()
                 .HasForeignKey(board => board.UserId).IsRequired();
 
+            // A user can create multiple checklists and a board belongs to one user (1-M relationship)
+            builder.HasMany(user => user.CheckLists)
+                .WithOne()
+                .HasForeignKey(board => board.UserId).IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.HasMany(u => u.Comments)
                 .WithOne()
                 .HasForeignKey(u => u.UserId);
