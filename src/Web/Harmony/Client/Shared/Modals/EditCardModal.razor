@@ -35,11 +35,20 @@
                         {
                             <MudSwitch @bind-Checked="@item.IsChecked" Label="Success" Color="Color.Success" />
                             <MudTextField For="@(() => item.Description)" @bind-Value="item.Description" Label="@_localizer["Description"]" />
+
                         }
                     </MudCardContent>
                     <MudCardActions>
-                        @* <MudTextField For="@(() => _card.Name)" @bind-Value="_card.Name" Label="@_localizer["Title"]" />
-                        <MudButton Variant="Variant.Text" Color="Color.Primary">@_localizer["Add item"]</MudButton> *@
+                        @if (checkList.NewItem != null)
+                        {
+                            <MudTextField For="@(() => checkList.NewItem.Description)" @bind-Value="checkList.NewItem.Description" Label="@_localizer["Description"]" />
+                            <MudButton Variant="Variant.Text" OnClick="() => AddCheckListItem(checkList.NewItem)" Color="Color.Primary">@_localizer["Add item"]</MudButton>
+                            <MudButton Variant="Variant.Text" OnClick="() => checkList.NewItem = null" Color="Color.Primary">@_localizer["Cancel"]</MudButton>
+                        }
+                        else
+                        {
+                            <MudButton Variant="Variant.Text" OnClick="() => checkList.NewItem = new() { CheckListId = checkList.Id }" Color="Color.Primary">@_localizer["Add item"]</MudButton>
+                        }
                     </MudCardActions>
                 </MudCard>
             }

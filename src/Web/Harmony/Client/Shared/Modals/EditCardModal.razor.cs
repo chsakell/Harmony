@@ -1,5 +1,7 @@
-﻿using Harmony.Application.Features.Boards.Commands.Create;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
+using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
@@ -57,6 +59,20 @@ namespace Harmony.Client.Shared.Modals
                 .CreateCheckListAsync(new CreateChecklistCommand(CardId, NewListName, position));
 
             DisplayMessage(response);
+        }
+
+        private async Task AddCheckListItem(CheckListItemDto checkListItem)
+        {
+            var response = await _checkListManager
+                .CreateCheckListItemAsync(new CreateCheckListItemCommand(checkListItem.CheckListId, checkListItem.Description));
+
+            DisplayMessage(response);
+
+            var list = _card.CheckLists.FirstOrDefault(list => list.Id == checkListItem.CheckListId);
+            if(list != null)
+            {
+                list.NewItem = null;
+            }
         }
 
         private void DisplayMessage(IResult result)

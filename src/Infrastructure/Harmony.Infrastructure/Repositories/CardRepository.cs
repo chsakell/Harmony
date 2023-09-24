@@ -24,6 +24,7 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.Cards
 				.Include(card => card.BoardList)
 				.Include(card => card.CheckLists)
+					.ThenInclude(list => list.Items)
 				.Include(card => card.Comments)
 				.Include(card => card.Activities)
 				.Include(card => card.Attachments)

@@ -1,4 +1,5 @@
-﻿using Harmony.Domain.Entities;
+﻿using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
+using Harmony.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,8 @@ namespace Harmony.Application.DTO
         public Guid CardId { get; set; }
         public List<CheckListItemDto> Items { get; set; }
         public byte Position { get; set; }
+
+        // helper for add new items
+        public CheckListItemDto NewItem { get; set; }
     }
 }

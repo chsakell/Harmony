@@ -20,7 +20,8 @@ namespace Harmony.Infrastructure.Extensions
                 .AddTransient<IBoardRepository, BoardRepository>()
 				.AddTransient<IBoardListRepository, BoardListRepository>()
 				.AddTransient<ICardRepository, CardRepository>()
-                .AddTransient<IChecklistRepository, ChecklistRepository>();
+                .AddTransient<IChecklistRepository, ChecklistRepository>()
+                .AddTransient<ICheckListItemRepository, CheckListItemRepository>();
 		}
     }
 }
