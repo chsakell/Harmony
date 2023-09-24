@@ -19,7 +19,18 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.Cards.FirstOrDefaultAsync(card => card.Id == cardId);
 		}
 
-		public async Task<Card?> GetByPosition(Guid boardListId, byte position)
+        public async Task<Card?> Load(Guid cardId)
+        {
+            return await _context.Cards
+				.Include(card => card.BoardList)
+				.Include(card => card.CheckLists)
+				.Include(card => card.Comments)
+				.Include(card => card.Activities)
+				.Include(card => card.Attachments)
+				.FirstOrDefaultAsync(card => card.Id == cardId);
+        }
+
+        public async Task<Card?> GetByPosition(Guid boardListId, byte position)
 		{
 			return await _context.Cards
 				.FirstOrDefaultAsync(card => card.BoardListId == boardListId && card.Position == position);

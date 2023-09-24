@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -16,7 +17,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             _httpClient = client;
         }
 
-		public async Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request)
+        public async Task<IResult<LoadCardResponse>> LoadCardAsync(LoadCardQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.CardEndpoints.Get(request.CardId));
+
+            return await response.ToResult<LoadCardResponse>();
+        }
+
+        public async Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request)
 		{
 			var response = await _httpClient.PostAsJsonAsync(Routes.CardEndpoints.Index, request);
 

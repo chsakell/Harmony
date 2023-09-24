@@ -1,0 +1,17 @@
+﻿@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardModal> _localizer
+
+<MudDialog>
+    <TitleContent>
+        @{
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-3 mb-n1" />
+                @_localizer["Create Board"]
+            </MudText>
+        }
+    </TitleContent>
+    <DialogContent>
+        <MudTextField For="@(() => _card.Name)" @bind-Value="_card.Name" Label="@_localizer["Title"]" />
+        <MudTextField For="@(() => _card.Description)" @bind-Value="_card.Description" Label="@_localizer["Description"]" />
+    </DialogContent>
+</MudDialog>

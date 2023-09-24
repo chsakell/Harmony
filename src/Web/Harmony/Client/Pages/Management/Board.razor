@@ -1,6 +1,7 @@
 ﻿@page "/boards/{id}/{name}"
 @using Harmony.Application.DTO;
 @using Harmony.Client.Infrastructure.Models.Kanban;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Board> _localizer
 
 @if (!KanbanStore.BoardLoading)
 {
@@ -52,7 +53,7 @@
             </MudPaper>
         </ChildContent>
         <ItemRenderer>
-            <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3">@context.Name</MudPaper>
+            <MudPaper Elevation="25" @onclick="() => EditCard(context)" Class="pa-4 rounded-lg my-3">@context.Name</MudPaper>
         </ItemRenderer>
     </MudDropContainer>
 }

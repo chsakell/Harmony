@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Client.Infrastructure.Models.Kanban;
 using Harmony.Client.Infrastructure.Store.Kanban;
+using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -114,7 +115,22 @@ namespace Harmony.Client.Pages.Management
             DisplayMessage(result);
 		}
 
-		private void DisplayMessage(IResult result)
+		private async Task EditCard(CardDto card)
+		{
+            var parameters = new DialogParameters<EditCardModal>();
+			parameters.Add(c => c.CardId, card.Id);
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
+            var result = await dialog.Result;
+            if (!result.Cancelled)
+            {
+                // TODO update workspace list or navigate to it
+            }
+        }
+
+
+        private void DisplayMessage(IResult result)
 		{
 			if(result == null)
 			{
