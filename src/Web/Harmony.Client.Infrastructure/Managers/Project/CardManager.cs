@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
@@ -37,5 +38,12 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
 			return await response.ToResult<CardDto>();
 		}
-	}
+
+        public async Task<IResult<bool>> UpdateDescriptionAsync(UpdateCardDescriptionCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Description(request.CardId), request);
+
+            return await response.ToResult<bool>();
+        }
+    }
 }

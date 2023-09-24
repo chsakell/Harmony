@@ -1,6 +1,9 @@
 ﻿using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+using Harmony.Client.Shared.Components;
+using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,8 +12,9 @@ namespace Harmony.Client.Shared.Modals
     public partial class EditCardModal
     {
         private LoadCardResponse _card = new();
-        private bool _processing;
+        private bool _loading = true;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        private PostTextEditor _textEditor;
         [Parameter] public Guid CardId { get; set; }
         private void Cancel()
         {
@@ -25,27 +29,36 @@ namespace Harmony.Client.Shared.Modals
             {
                 _card = loadCardResult.Data;
             }
+
+            _loading = false;
         }
 
-        private async Task SubmitAsync()
+        private async Task SaveDescription()
         {
-            _processing = true;
-            //var response = await _boardManager.CreateAsync(_createBoardModel);
+            _loading = true;
+            var cardDescription = await _textEditor.GetHTML();
 
-            //if (response.Succeeded)
-            //{
-            //    _snackBar.Add(response.Messages[0], Severity.Success);
-            //    MudDialog.Close();
-            //}
-            //else
-            //{
-            //    foreach (var message in response.Messages)
-            //    {
-            //        _snackBar.Add(message, Severity.Error);
-            //    }
-            //}
+            var response = await _cardManager
+                .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription));
 
-            _processing = false;
+            DisplayMessage(response);
+
+            _loading = false;
+        }
+
+        private void DisplayMessage(IResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var severity = result.Succeeded ? Severity.Success : Severity.Error;
+
+            foreach (var message in result.Messages)
+            {
+                _snackBar.Add(message, severity);
+            }
         }
     }
 }
