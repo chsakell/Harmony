@@ -19,7 +19,6 @@ namespace Harmony.Client.Shared.Modals
 
         protected async override Task OnInitializedAsync()
         {
-            var id = Guid.Parse("73289C87-5B4D-40AE-D6AB-08DBBAAAF4B2");
             var loadCardResult = await _cardManager.LoadCardAsync(new LoadCardQuery(CardId));
 
             if (loadCardResult.Succeeded)
