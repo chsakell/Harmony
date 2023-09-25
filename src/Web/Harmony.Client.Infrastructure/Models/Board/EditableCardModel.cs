@@ -13,11 +13,8 @@ namespace Harmony.Client.Infrastructure.Models.Board
     public class EditableCardModel
     {
         [Required]
+        [MaxLength(300)]
         public string Title { get; set; }
-
-        public FluentValueValidator<string> TitleValidator = new FluentValueValidator<string>(x => x
-        .NotEmpty()
-        .MaximumLength(300));
 
         public string Description { get; set; }
         public string UserId { get; set; } // User created the card

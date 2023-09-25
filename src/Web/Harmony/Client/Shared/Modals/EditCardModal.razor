@@ -19,17 +19,16 @@
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <EditableTextField For="@(() => _card.Title)"
-                                    Validator="_card.TitleValidator"
                                     OnSave="(newTitle) => UpdateTitle(newTitle)"
                                     Text="@_card.Title" Label="@_localizer["Title"]" />
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudText>This day everything happend.</MudText>
-                            <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
+                            <PostTextEditor Contents="@_card.Description" @ref="_textEditor"></PostTextEditor>
+                            <MudButton OnClick="SaveDescription">@_localizer["Save"]</MudButton>
                         </MudCardContent>
                         <MudCardActions>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+                            @* <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton> *@
                         </MudCardActions>
                     </MudCard>
                 </MudItem>
@@ -37,9 +36,7 @@
 
                 </MudItem>
             </MudGrid>
-            <MudTextField For="@(() => _card.Title)" @bind-Value="_card.Title" Label="@_localizer["Title"]" />
-            <PostTextEditor Contents="@_card.Description" @ref="_textEditor"></PostTextEditor>
-            <MudButton OnClick="SaveDescription">@_localizer["Save"]</MudButton>
+            
 
             <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
             <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton>

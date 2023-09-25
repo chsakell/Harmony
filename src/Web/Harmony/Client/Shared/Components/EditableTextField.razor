@@ -2,7 +2,7 @@
 @if (_editing)
 {
     <MudForm @ref="_form" IsValidChanged="FormValidChanged">
-        <MudTextField Validation="Validator" Immediate="true"
+        <MudTextField Immediate="true"
                       For="For" @bind-Value="Text"
                       Label="@Label" />
         <MudPaper Class="d-flex pa-2 flex-row-reverse">
