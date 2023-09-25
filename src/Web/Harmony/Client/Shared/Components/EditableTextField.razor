@@ -6,7 +6,19 @@
                       For="For" @bind-Value="Text"
                       Label="@Label" />
         <MudPaper Class="d-flex pa-2 flex-row-reverse">
-            <MudButton Variant="Variant.Filled" OnClick="SaveValue" Disabled="!IsSaveEnabled" StartIcon="@Icons.Material.Filled.Save" Size="Size.Small">Save</MudButton>
+
+            <MudButton Variant="Variant.Filled" OnClick="SaveValue" Disabled="!IsSaveEnabled" StartIcon="@Icons.Material.Filled.Save" Size="Size.Small">
+                @if (_isSaving)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    <MudText Class="ms-2">Processing</MudText>
+                }
+                else
+                {
+                    <MudText>Save</MudText>
+                }
+            </MudButton>
+
             <MudButton Variant="Variant.Filled" Class="mr-2" OnClick="CancelEditing" StartIcon="@Icons.Material.Filled.Cancel" Size="Size.Small">Cancel</MudButton>
         </MudPaper>
     </MudForm>
@@ -18,6 +30,7 @@ else
 
 @code {
     private MudForm _form;
+    private bool _isSaving;
 
     [Parameter]
     public string Text { get; set; }
@@ -31,11 +44,11 @@ else
     [Parameter]
     public EventCallback<string> OnSave { get; set; }
 
-    public bool IsSaveEnabled => _form.IsValid && !_originalText.Equals(Text);
+    public bool IsSaveEnabled => _form.IsValid && !_originalText.Equals(Text) && !_isSaving;
 
     private void FormValidChanged(bool isValid)
     {
-        
+
     }
 
     private void CancelEditing()
@@ -46,7 +59,11 @@ else
 
     public async Task SaveValue()
     {
+        _isSaving = true;
+
         await OnSave.InvokeAsync(Text);
+
+        _isSaving = false;
     }
 
     [Parameter]
