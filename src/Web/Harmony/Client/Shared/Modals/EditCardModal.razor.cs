@@ -55,7 +55,7 @@ namespace Harmony.Client.Shared.Modals
             _loading = false;
         }
 
-        private async Task UpdateTitle()
+        private async Task UpdateTitle(string newTitle)
         {
             var title = _card.Title;
             await Task.CompletedTask;

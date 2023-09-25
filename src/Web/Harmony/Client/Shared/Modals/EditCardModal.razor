@@ -20,7 +20,7 @@
                             <CardHeaderContent>
                                 <EditableTextField For="@(() => _card.Title)"
                                     Validator="_card.TitleValidator"
-                                    OnSave="UpdateTitle"
+                                    OnSave="(newTitle) => UpdateTitle(newTitle)"
                                     Text="@_card.Title" Label="@_localizer["Title"]" />
                             </CardHeaderContent>
                         </MudCardHeader>

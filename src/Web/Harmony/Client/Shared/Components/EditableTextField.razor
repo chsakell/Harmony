@@ -1,7 +1,7 @@
 ﻿@using System.Linq.Expressions;
 @if (_editing)
 {
-    <MudForm @ref="_form" IsValidChanged="IsValidChanged">
+    <MudForm @ref="_form">
         <MudTextField Validation="Validator" Immediate="true"
                       For="For" @bind-Value="Text"
                       Label="@Label" />
@@ -19,6 +19,7 @@ else
 
 @code {
     private MudForm _form;
+
     [Parameter]
     public string Text { get; set; }
 
@@ -29,14 +30,11 @@ else
     public object? Validator { get; set; }
 
     [Parameter]
-    public EventCallback OnSave { get; set; }
+    public EventCallback<string> OnSave { get; set; }
 
     public bool IsSaveEnabled => _form.IsValid && !_originalText.Equals(Text);
 
-    private void IsValidChanged(bool isValid)
-    {
-        //_isSaveEnabled = isValid;
-    }
+    
 
     private void CancelEditing()
     {
@@ -46,7 +44,7 @@ else
 
     public async Task SaveValue()
     {
-        await OnSave.InvokeAsync();
+        await OnSave.InvokeAsync(Text);
     }
 
     [Parameter]
