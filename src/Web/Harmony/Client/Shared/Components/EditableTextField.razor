@@ -63,6 +63,8 @@ else
 
         await OnSave.InvokeAsync(Text);
 
+        _originalText = Text;
+
         _isSaving = false;
     }
 
@@ -77,4 +79,5 @@ else
     {
         _originalText = Text;
     }
+
 }

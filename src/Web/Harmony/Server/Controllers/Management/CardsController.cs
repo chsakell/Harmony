@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
+using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("{id:guid}/description")]
         public async Task<IActionResult> UpdateDescription(Guid id, UpdateCardDescriptionCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpPut("{id:guid}/title")]
+        public async Task<IActionResult> UpdateTitle(Guid id, UpdateCardTitleCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

@@ -5,24 +5,14 @@
 {
     <MudDialog>
         <TitleContent>
-            @{
-                <MudText Typo="Typo.h6">
-                    <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-3 mb-n1" />
-                    @_localizer["Edit card"]
-                </MudText>
-            }
+            <EditableTextField For="@(() => _card.Title)"
+                               OnSave="(newTitle) => SaveTitle(newTitle)"
+                               Text="@_card.Title" Label="@_localizer["Title"]" />
         </TitleContent>
         <DialogContent>
             <MudGrid>
                 <MudItem sm="9">
                     <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <EditableTextField For="@(() => _card.Title)"
-                                                   OnSave="(newTitle) => UpdateTitle(newTitle)"
-                                                   Text="@_card.Title" Label="@_localizer["Title"]" />
-                            </CardHeaderContent>
-                        </MudCardHeader>
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="12">
@@ -65,7 +55,6 @@
                                                             </MudTimelineItem>
                                                         }
                                                     </MudTimeline>
-
                                                 }
                                             </MudCardContent>
                                             <MudCardActions>
