@@ -1,0 +1,38 @@
+﻿@using System.Linq.Expressions;
+@if (Editing)
+{
+    <MudTextField For="For" @bind-Value="Text" Label="@Label" />
+}
+else
+{
+    <MudText Typo="Typo.h6">@Text</MudText>
+}
+
+@code {
+    [Parameter] 
+    public string Text { get; set; }
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public bool Editing { get; set; }
+
+    [Parameter]
+    public Expression<Func<string>>? For { get; set; }
+
+    private string _originalText;
+
+    protected override void OnInitialized()
+    {
+        _originalText = Text;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(!Editing)
+        {
+            Text = _originalText;
+        }
+    }
+}

@@ -18,10 +18,21 @@
                     <MudCard>
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.h6">@_card.Title</MudText>
+
+                                <EditableTextField For="@(() => _card.Title)"
+                                                   Text="@_card.Title" Label="@_localizer["Title"]"
+                                                   Editing="_card.TitleEditing" />
                             </CardHeaderContent>
                             <CardHeaderActions>
-                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
+                                @if (_card.TitleEditing)
+                                {
+                                    <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.Save" Color="Color.Default" />
+                                    <MudIconButton OnClick="() => _card.TitleEditing = false" Icon="@Icons.Material.Filled.Cancel" Color="Color.Default" />
+                                }
+                                else
+                                {
+                                    <MudIconButton OnClick="() => _card.TitleEditing = true" Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
+                                }
                             </CardHeaderActions>
                         </MudCardHeader>
                         <MudCardContent>
@@ -43,7 +54,7 @@
 
             <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
             <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton>
-            @foreach(var checkList in _card.CheckLists)
+            @foreach (var checkList in _card.CheckLists)
             {
                 <MudCard>
                     <MudCardHeader>
@@ -55,7 +66,7 @@
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
-                        @foreach(var item in checkList.Items)
+                        @foreach (var item in checkList.Items)
                         {
                             <MudSwitch @bind-Checked="@item.IsChecked" Label="Success" Color="Color.Success" />
                             <MudTextField For="@(() => item.Description)" @bind-Value="item.Description" Label="@_localizer["Description"]" />

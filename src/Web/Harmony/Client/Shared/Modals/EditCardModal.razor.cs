@@ -55,6 +55,11 @@ namespace Harmony.Client.Shared.Modals
             _loading = false;
         }
 
+        private async Task UpdateTitle()
+        {
+            await Task.CompletedTask;
+        }
+
         private async Task AddCheckList()
         {
             var position = (byte)_card.CheckLists.Count;
