@@ -1,38 +1,63 @@
 ﻿@using System.Linq.Expressions;
-@if (Editing)
+@if (_editing)
 {
-    <MudTextField For="For" @bind-Value="Text" Label="@Label" />
+    <MudForm @ref="_form" IsValidChanged="IsValidChanged">
+        <MudTextField Validation="Validator" Immediate="true"
+                      For="For" @bind-Value="Text"
+                      Label="@Label" />
+        <MudPaper Class="d-flex pa-2 flex-row-reverse">
+            <MudButton Variant="Variant.Filled" OnClick="SaveValue" Disabled="!IsSaveEnabled" StartIcon="@Icons.Material.Filled.Save" Size="Size.Small">Save</MudButton>
+            <MudButton Variant="Variant.Filled" Class="mr-2" OnClick="CancelEditing" StartIcon="@Icons.Material.Filled.Cancel" Size="Size.Small">Cancel</MudButton>
+        </MudPaper>
+    </MudForm>
 }
 else
 {
-    <MudText Typo="Typo.h6">@Text</MudText>
+    <MudTextField ReadOnly="true" Adornment="Adornment.End" @bind-Value="@Text" AdornmentIcon="@Icons.Material.Filled.Edit"
+                  OnAdornmentClick="() => _editing = true" AdornmentAriaLabel="Edit" />
 }
 
 @code {
-    [Parameter] 
+    private MudForm _form;
+    [Parameter]
     public string Text { get; set; }
 
     [Parameter]
     public string Label { get; set; }
 
     [Parameter]
-    public bool Editing { get; set; }
+    public object? Validator { get; set; }
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    public bool IsSaveEnabled => _form.IsValid && !_originalText.Equals(Text);
+
+    private void IsValidChanged(bool isValid)
+    {
+        //_isSaveEnabled = isValid;
+    }
+
+    private void CancelEditing()
+    {
+        _editing = false;
+        Text = _originalText;
+    }
+
+    public async Task SaveValue()
+    {
+        await OnSave.InvokeAsync();
+    }
 
     [Parameter]
     public Expression<Func<string>>? For { get; set; }
 
     private string _originalText;
 
+    private bool _editing;
+
     protected override void OnInitialized()
     {
         _originalText = Text;
-    }
-
-    protected override void OnParametersSet()
-    {
-        if(!Editing)
-        {
-            Text = _originalText;
-        }
     }
 }

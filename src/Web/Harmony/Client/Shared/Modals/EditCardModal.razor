@@ -18,22 +18,11 @@
                     <MudCard>
                         <MudCardHeader>
                             <CardHeaderContent>
-
                                 <EditableTextField For="@(() => _card.Title)"
-                                                   Text="@_card.Title" Label="@_localizer["Title"]"
-                                                   Editing="_card.TitleEditing" />
+                                    Validator="_card.TitleValidator"
+                                    OnSave="UpdateTitle"
+                                    Text="@_card.Title" Label="@_localizer["Title"]" />
                             </CardHeaderContent>
-                            <CardHeaderActions>
-                                @if (_card.TitleEditing)
-                                {
-                                    <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.Save" Color="Color.Default" />
-                                    <MudIconButton OnClick="() => _card.TitleEditing = false" Icon="@Icons.Material.Filled.Cancel" Color="Color.Default" />
-                                }
-                                else
-                                {
-                                    <MudIconButton OnClick="() => _card.TitleEditing = true" Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
-                                }
-                            </CardHeaderActions>
                         </MudCardHeader>
                         <MudCardContent>
                             <MudText>This day everything happend.</MudText>
