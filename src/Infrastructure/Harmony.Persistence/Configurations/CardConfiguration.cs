@@ -18,7 +18,7 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(c => c.Status).IsRequired().HasDefaultValue(CardStatus.Active);
 
-            builder.Property(c => c.Name).IsRequired().HasMaxLength(300);
+            builder.Property(c => c.Title).IsRequired().HasMaxLength(300);
 
             builder.Property(c => c.Position).IsRequired();
 

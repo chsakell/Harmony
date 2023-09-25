@@ -10,7 +10,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
 {
     public class EditableCardModel
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
         public string UserId { get; set; } // User created the card
         public EditableBoardListModel BoardList { get; set; }

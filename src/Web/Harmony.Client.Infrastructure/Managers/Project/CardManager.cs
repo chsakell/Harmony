@@ -25,6 +25,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<LoadCardResponse>();
         }
 
+
         public async Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request)
 		{
 			var response = await _httpClient.PostAsJsonAsync(Routes.CardEndpoints.Index, request);

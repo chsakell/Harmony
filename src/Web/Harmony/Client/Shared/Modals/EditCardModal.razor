@@ -18,7 +18,7 @@
                     <MudCard>
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.h6">@_card.Name</MudText>
+                                <MudText Typo="Typo.h6">@_card.Title</MudText>
                             </CardHeaderContent>
                             <CardHeaderActions>
                                 <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
@@ -37,7 +37,7 @@
 
                 </MudItem>
             </MudGrid>
-            <MudTextField For="@(() => _card.Name)" @bind-Value="_card.Name" Label="@_localizer["Title"]" />
+            <MudTextField For="@(() => _card.Title)" @bind-Value="_card.Title" Label="@_localizer["Title"]" />
             <PostTextEditor Contents="@_card.Description" @ref="_textEditor"></PostTextEditor>
             <MudButton OnClick="SaveDescription">@_localizer["Save"]</MudButton>
 
@@ -51,7 +51,7 @@
                             <MudText Typo="Typo.h6">@checkList.Title</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>

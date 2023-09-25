@@ -39,7 +39,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
 
             var card = new Card()
             {
-                Name = request.Name,
+                Title = request.Title,
                 UserId = userId,
                 BoardListId = request.ListId,
                 Position = (byte)totalCards

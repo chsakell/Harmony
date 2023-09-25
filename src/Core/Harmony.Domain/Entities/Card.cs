@@ -7,7 +7,7 @@ namespace Harmony.Domain.Entities
     /// </summary>
     public class Card : AuditableEntity<Guid>
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
 		public string UserId { get; set; } // User created the card
 		public BoardList BoardList { get; set; }

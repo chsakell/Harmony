@@ -8,13 +8,13 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard;
 public class CreateCardCommand : IRequest<Result<CardDto>>
 {
     [Required]
-    public string Name { get; set; }
+    public string Title { get; set; }
     public Guid BoardId { get; set; }
     public Guid ListId { get; set; }
 
-    public CreateCardCommand(string name, Guid boardId, Guid listId)
+    public CreateCardCommand(string title, Guid boardId, Guid listId)
     {
-        Name = name;
+        Title = title;
         BoardId = boardId;
         ListId = listId;
     }

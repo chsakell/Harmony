@@ -3,7 +3,7 @@
     public class CardDto
 	{
 		public Guid Id { get; set; }
-		public string Name { get; set; }
+		public string Title { get; set; }
 		public string Description { get; set; }
 		//public BoardList BoardList { get; set; }
 		public Guid BoardListId { get; set; }
