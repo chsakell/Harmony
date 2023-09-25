@@ -3,6 +3,7 @@
 @using System.Net.Http.Json
 
 
+@using AutoMapper;
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -53,3 +54,4 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 @inject ICardManager _cardManager
 @inject IBoardListManager _boardListManager
 @inject IChecklistManager _checkListManager
+@inject IMapper _mapper

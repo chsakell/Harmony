@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
@@ -15,12 +16,13 @@ namespace Harmony.Client.Shared.Modals
 {
     public partial class EditCardModal
     {
-        private LoadCardResponse _card = new();
+        private EditableCardModel _card = new();
         private bool _loading = true;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
         private PostTextEditor _textEditor;
         public string NewListName { get; set; }
         [Parameter] public Guid CardId { get; set; }
+
         private void Cancel()
         {
             MudDialog.Cancel();
@@ -32,7 +34,7 @@ namespace Harmony.Client.Shared.Modals
 
             if (loadCardResult.Succeeded)
             {
-                _card = loadCardResult.Data;
+                _card = _mapper.Map<EditableCardModel>(loadCardResult.Data);
             }
 
             _loading = false;
@@ -45,6 +47,8 @@ namespace Harmony.Client.Shared.Modals
 
             var response = await _cardManager
                 .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription));
+
+            _card.Description = cardDescription;
 
             DisplayMessage(response);
 
@@ -61,7 +65,7 @@ namespace Harmony.Client.Shared.Modals
             DisplayMessage(response);
         }
 
-        private async Task AddCheckListItem(CheckListItemDto checkListItem)
+        private async Task AddCheckListItem(EditableCheckListItemModel checkListItem)
         {
             var response = await _checkListManager
                 .CreateCheckListItemAsync(new CreateCheckListItemCommand(checkListItem.CheckListId,
@@ -74,7 +78,8 @@ namespace Harmony.Client.Shared.Modals
 
                 if (response.Succeeded)
                 {
-                    list.Items.Add(response.Data);
+                    var itemAdded = _mapper.Map<EditableCheckListItemModel>(response.Data);
+                    list.Items.Add(itemAdded);
                 }
             }
 
