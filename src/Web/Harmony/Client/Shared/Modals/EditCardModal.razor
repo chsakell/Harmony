@@ -26,12 +26,7 @@
                         <MudCardContent>
                             <EditableTextEditorField Text="@_card.Description"
                             OnSave="(html) => SaveDescription(html)"/>
-                            @* <PostTextEditor Contents="@_card.Description" @ref="_textEditor"></PostTextEditor>
-                            <MudButton OnClick="SaveDescription">@_localizer["Save"]</MudButton> *@
                         </MudCardContent>
-                        <MudCardActions>
-                            @* <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton> *@
-                        </MudCardActions>
                     </MudCard>
                 </MudItem>
                 <MudItem sm="3">
@@ -40,8 +35,8 @@
             </MudGrid>
             
 
-            <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
-            <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton>
+           @*  <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
+            <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton> *@
             @foreach (var checkList in _card.CheckLists)
             {
                 <MudCard>
