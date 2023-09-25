@@ -23,11 +23,11 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<CheckListDto>();
         }
 
-        public async Task<IResult<CheckListDto>> CreateCheckListItemAsync(CreateCheckListItemCommand request)
+        public async Task<IResult<CheckListItemDto>> CreateCheckListItemAsync(CreateCheckListItemCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.CheckListEndpoints.GetListItems(request.CheckListId), request);
 
-            return await response.ToResult<CheckListDto>();
+            return await response.ToResult<CheckListItemDto>();
         }
     }
 }

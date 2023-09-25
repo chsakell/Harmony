@@ -12,6 +12,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public interface IChecklistManager : IManager
     {
         Task<IResult<CheckListDto>> CreateCheckListAsync(CreateChecklistCommand request);
-        Task<IResult<CheckListDto>> CreateCheckListItemAsync(CreateCheckListItemCommand request);
+        Task<IResult<CheckListItemDto>> CreateCheckListItemAsync(CreateCheckListItemCommand request);
     }
 }

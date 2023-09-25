@@ -36,14 +36,14 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
                 return await Result<CheckListItemDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-
             var items = await _checkListItemRepository.GetItems(request.CheckListId);
 
             var newItem = new CheckListItem()
             {
                 CheckListId = request.CheckListId,
                 Description = request.Description,
-                Position = (byte)items.Count
+                Position = (byte)items.Count,
+                DueDate = request.DueDate,
             };
 
             var dbResult = await _checkListItemRepository.Add(newItem);

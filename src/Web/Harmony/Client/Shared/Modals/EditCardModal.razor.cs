@@ -64,15 +64,21 @@ namespace Harmony.Client.Shared.Modals
         private async Task AddCheckListItem(CheckListItemDto checkListItem)
         {
             var response = await _checkListManager
-                .CreateCheckListItemAsync(new CreateCheckListItemCommand(checkListItem.CheckListId, checkListItem.Description));
-
-            DisplayMessage(response);
+                .CreateCheckListItemAsync(new CreateCheckListItemCommand(checkListItem.CheckListId,
+                checkListItem.Description, checkListItem.DueDate));
 
             var list = _card.CheckLists.FirstOrDefault(list => list.Id == checkListItem.CheckListId);
-            if(list != null)
+            if (list != null)
             {
                 list.NewItem = null;
+
+                if (response.Succeeded)
+                {
+                    list.Items.Add(response.Data);
+                }
             }
+
+            DisplayMessage(response);
         }
 
         private void DisplayMessage(IResult result)

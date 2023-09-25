@@ -14,5 +14,6 @@ namespace Harmony.Application.DTO
         public Guid CheckListId { get; set; }
         public bool IsChecked { get; set; }
         public byte Position { get; set; }
+        public DateTime? DueDate { get; set; }
     }
 }
