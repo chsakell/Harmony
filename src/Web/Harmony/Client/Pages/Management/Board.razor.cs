@@ -117,8 +117,10 @@ namespace Harmony.Client.Pages.Management
 
 		private async Task EditCard(CardDto card)
 		{
-            var parameters = new DialogParameters<EditCardModal>();
-			parameters.Add(c => c.CardId, card.Id);
+            var parameters = new DialogParameters<EditCardModal>
+            {
+                { c => c.CardId, card.Id }
+            };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);

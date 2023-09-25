@@ -35,11 +35,9 @@
                                         <MudCard>
                                             <MudCardHeader>
                                                 <CardHeaderContent>
-                                                    <MudText Typo="Typo.h6">@checkList.Title</MudText>
+                                                    <EditableTextField For="@(() => checkList.Title)"
+                                                                       Text="@checkList.Title" Label="@_localizer["Title"]" />
                                                 </CardHeaderContent>
-                                                <CardHeaderActions>
-                                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" />
-                                                </CardHeaderActions>
                                             </MudCardHeader>
                                             <MudCardContent>
                                                 @foreach (var item in checkList.Items)

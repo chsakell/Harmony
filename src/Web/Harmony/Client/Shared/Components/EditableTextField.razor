@@ -13,8 +13,7 @@
 }
 else
 {
-    <MudTextField ReadOnly="true" Adornment="Adornment.End" @bind-Value="@Text" AdornmentIcon="@Icons.Material.Filled.Edit"
-                  OnAdornmentClick="() => _editing = true" AdornmentAriaLabel="Edit" />
+    <MudTextField ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="() => _editing = true" />
 }
 
 @code {
