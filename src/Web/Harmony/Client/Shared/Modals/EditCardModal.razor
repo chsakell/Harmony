@@ -19,8 +19,8 @@
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <EditableTextField For="@(() => _card.Title)"
-                                    OnSave="(newTitle) => UpdateTitle(newTitle)"
-                                    Text="@_card.Title" Label="@_localizer["Title"]" />
+                                                   OnSave="(newTitle) => UpdateTitle(newTitle)"
+                                                   Text="@_card.Title" Label="@_localizer["Title"]" />
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
@@ -49,19 +49,20 @@
                                                         {
                                                             <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
                                                                 <ItemContent>
-                                                                    <MudGrid>
-                                                                        <MudItem xs="12">
-                                                                            <EditableTextField For="@(() => item.Description)"
-                                                                                               Text="@item.Description" Label="@_localizer["Description"]" />
-                                                                            @* <MudTextField For="@(() => item.Description)" @bind-Value="item.Description" Label="@_localizer["Description"]" /> *@
-                                                                        </MudItem>
-                                                                        <MudItem xs="4">
-                                                                            <MudCheckBox @bind-Checked="@item.IsChecked" Color="Color.Success" />
-                                                                        </MudItem>
-                                                                        <MudItem xs="4">
-                                                                            <MudTextField T="DateTime?" For="@(() => item.DueDate)" @bind-Value="item.DueDate" Variant="Variant.Text" Format="yyyy-MM-dd" Label="Due date" InputType="InputType.Date" />
-                                                                        </MudItem>
-                                                                    </MudGrid>
+                                                                    <MudPaper>
+                                                                        <MudGrid>
+                                                                            <MudItem xs="12">
+                                                                                <EditableTextField For="@(() => item.Description)"
+                                                                                                   Text="@item.Description" Label="@_localizer["Description"]" />
+                                                                            </MudItem>
+                                                                            <MudItem xs="4" Class="pa-0">
+                                                                                <MudCheckBox @bind-Checked="@item.IsChecked" Color="Color.Success" />
+                                                                            </MudItem>
+                                                                            <MudItem xs="4" Class="pa-0" Style="margin-top: -20px;">
+                                                                                <MudTextField HelperText="Due date" T="DateTime?" For="@(() => item.DueDate)" @bind-Value="item.DueDate" Variant="Variant.Text" Format="yyyy-MM-dd" InputType="InputType.Date" />
+                                                                            </MudItem>
+                                                                        </MudGrid>
+                                                                    </MudPaper>
                                                                 </ItemContent>
                                                             </MudTimelineItem>
                                                         }
@@ -86,7 +87,7 @@
                                     }
                                 </MudItem>
                             </MudGrid>
-                            
+
                         </MudCardContent>
                     </MudCard>
                 </MudItem>
@@ -94,11 +95,11 @@
 
                 </MudItem>
             </MudGrid>
-            
 
-           @*  <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
-            <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton> *@
-            
+
+            @*  <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
+        <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton> *@
+
         </DialogContent>
     </MudDialog>
 }
