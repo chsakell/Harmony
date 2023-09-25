@@ -24,8 +24,10 @@
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
-                            <PostTextEditor Contents="@_card.Description" @ref="_textEditor"></PostTextEditor>
-                            <MudButton OnClick="SaveDescription">@_localizer["Save"]</MudButton>
+                            <EditableTextEditorField Text="@_card.Description"
+                            OnSave="(html) => SaveDescription(html)"/>
+                            @* <PostTextEditor Contents="@_card.Description" @ref="_textEditor"></PostTextEditor>
+                            <MudButton OnClick="SaveDescription">@_localizer["Save"]</MudButton> *@
                         </MudCardContent>
                         <MudCardActions>
                             @* <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton> *@

@@ -14,5 +14,10 @@ namespace Harmony.Client.Shared.Components
         {
             return await _editor.GetHTML();
         }
+
+        public async Task LoadHtml(string html)
+        {
+            await _editor.LoadHTMLContent(html);
+        }
     }
 }

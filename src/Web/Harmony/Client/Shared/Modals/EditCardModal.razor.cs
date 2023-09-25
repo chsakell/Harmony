@@ -19,7 +19,6 @@ namespace Harmony.Client.Shared.Modals
         private EditableCardModel _card = new();
         private bool _loading = true;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-        private PostTextEditor _textEditor;
         public string NewListName { get; set; }
         [Parameter] public Guid CardId { get; set; }
 
@@ -40,10 +39,9 @@ namespace Harmony.Client.Shared.Modals
             _loading = false;
         }
 
-        private async Task SaveDescription()
+        private async Task SaveDescription(string cardDescription)
         {
             _loading = true;
-            var cardDescription = await _textEditor.GetHTML();
 
             var response = await _cardManager
                 .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription));

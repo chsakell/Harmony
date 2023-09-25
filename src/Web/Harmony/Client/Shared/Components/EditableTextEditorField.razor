@@ -1,0 +1,59 @@
+﻿@using System.Linq.Expressions;
+
+    <MudForm @ref="_form" IsValidChanged="FormValidChanged">
+        <PostTextEditor Contents="@Text" @ref="_textEditor"></PostTextEditor>
+        <MudPaper Class="d-flex pa-2 flex-row-reverse">
+            <MudButton Variant="Variant.Filled" OnClick="SaveValue" 
+            StartIcon="@Icons.Material.Filled.Save" Size="Size.Small">Save</MudButton>
+        <MudButton Variant="Variant.Filled" Class="mr-2" OnClick="CancelEditing" StartIcon="@Icons.Material.Filled.Undo" Size="Size.Small">Revert</MudButton>
+
+        </MudPaper>
+    </MudForm>
+
+
+@code {
+    private MudForm _form;
+    private PostTextEditor _textEditor;
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public object? Validator { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSave { get; set; }
+
+    private void FormValidChanged(bool isValid)
+    {
+
+    }
+
+    private async Task CancelEditing()
+    {
+        _editing = false;
+        Text = _originalText;
+        await _textEditor.LoadHtml(Text);
+    }
+
+    public async Task SaveValue()
+    {
+        var html = await _textEditor.GetHTML();
+        await OnSave.InvokeAsync(html);
+    }
+
+    [Parameter]
+    public Expression<Func<string>>? For { get; set; }
+
+    private string _originalText;
+
+    private bool _editing;
+
+    protected override void OnInitialized()
+    {
+        _originalText = Text;
+    }
+}
