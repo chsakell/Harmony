@@ -7,6 +7,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
+using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Client.Infrastructure.Models.Board;
@@ -129,6 +130,18 @@ namespace Harmony.Client.Shared.Modals
             var response = await _checkListItemManager
                 .UpdateListItemCheckedAsync(new 
                 UpdateListItemCheckedCommand(item.Id, !item.IsChecked));
+
+
+            DisplayMessage(response);
+        }
+
+        private async Task ListItemDueDateChanged(EditableCheckListItemModel item)
+        {
+            item.DatePicker.Close();
+
+            var response = await _checkListItemManager
+                .UpdateListItemDueDateAsync(new
+                UpdateListItemDueDateCommand(item.Id, item.DueDate));
 
 
             DisplayMessage(response);

@@ -9,5 +9,7 @@
         public static string Description(Guid checkListItemId) => $"{Index}/{checkListItemId}/description/";
 
         public static string Checked(Guid checkListItemId) => $"{Index}/{checkListItemId}/checked/";
+
+        public static string DueDate(Guid checkListItemId) => $"{Index}/{checkListItemId}/duedate/";
     }
 }

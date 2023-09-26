@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
+using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("{id:guid}/checked")]
         public async Task<IActionResult> UpdateDescription(Guid id, UpdateListItemCheckedCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpPut("{id:guid}/duedate")]
+        public async Task<IActionResult> UpdateDueDate(Guid id, UpdateListItemDueDateCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

@@ -4,6 +4,7 @@ using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
+using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
@@ -32,6 +33,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CheckListItemEndpoints
                 .Description(request.ListItemId), request);
+
+            return await response.ToResult<bool>();
+        }
+
+        public async Task<IResult<bool>> UpdateListItemDueDateAsync(UpdateListItemDueDateCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.CheckListItemEndpoints
+                .DueDate(request.ListItemId), request);
 
             return await response.ToResult<bool>();
         }

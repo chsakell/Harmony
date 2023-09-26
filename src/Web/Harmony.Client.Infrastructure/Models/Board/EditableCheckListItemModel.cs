@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MudBlazor;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,5 +18,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public bool IsChecked { get; set; }
         public byte Position { get; set; }
         public DateTime? DueDate { get; set; }
+
+        public MudDatePicker DatePicker;
     }
 }

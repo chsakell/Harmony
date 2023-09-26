@@ -44,7 +44,16 @@
                                                                 <MudCheckBox @bind-Checked="@item.IsChecked" @onclick="() => ToggleListItemChecked(item)" Color="Color.Success" />
                                                             </MudItem>
                                                             <MudItem xs="4" Class="pa-0" Style="margin-top: -20px;">
-                                                                <MudTextField HelperText="Due date" T="DateTime?" For="@(() => item.DueDate)" @bind-Value="item.DueDate" Variant="Variant.Text" Format="yyyy-MM-dd" InputType="InputType.Date" />
+                                                                <MudDatePicker Label="Due date" @ref="@item.DatePicker"
+                                                                @bind-Date="@item.DueDate"
+                                                                               DateFormat="yyyy-MM-dd"
+                                                                               IsDateDisabledFunc="@((DateTime dt)=>(dt < DateTime.Now))">
+                                                                    <PickerActions>
+                                                                        <MudButton Class="mr-auto align-self-start" OnClick="@(() => item.DatePicker.Clear())">Clear</MudButton>
+                                                                        <MudButton OnClick="@(() => item.DatePicker.Close(false))">Cancel</MudButton>
+                                                                        <MudButton Color="Color.Primary" OnClick="@(() => ListItemDueDateChanged(item))">Ok</MudButton>
+                                                                    </PickerActions>
+                                                                </MudDatePicker>
                                                             </MudItem>
                                                         </MudGrid>
                                                     </MudPaper>
