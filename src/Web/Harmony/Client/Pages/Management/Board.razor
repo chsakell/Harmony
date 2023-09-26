@@ -12,7 +12,7 @@
         <ChildContent>
             @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
             {
-                <MudPaper Elevation="0" Width="224px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
+                <MudPaper Elevation="0" Width="280px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
                     <MudToolBar DisableGutters="true">
                         <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
                         <MudSpacer />
@@ -25,8 +25,8 @@
                     @if (item.NewTaskOpen)
                     {
                         <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                            <MudTextField @bind-Value="item.NewCardName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-                            <MudButton OnClick="@(() => AddCard(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add card</MudButton>
+                            <MudTextField @bind-Value="item.NewCardName" Placeholder="Enter a title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                            <MudButton OnClick="@(() => AddCard(item))" Size="Size.Small" StartIcon="@Icons.Material.Rounded.Add" Color="Color.Primary" FullWidth="true">Create</MudButton>
                         </MudPaper>
                     }
                     else
@@ -35,7 +35,7 @@
                     }
                 </MudPaper>
             }
-            <MudPaper Class="pa-4" Elevation="0" Width="224px">
+            <MudPaper Class="pa-4" Elevation="0" Width="280px">
                 @if (_addNewListOpen)
                 {
                     <MudPaper Elevation="0" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
@@ -53,7 +53,7 @@
             </MudPaper>
         </ChildContent>
         <ItemRenderer>
-            <MudPaper Elevation="25" @onclick="() => EditCard(context)" Class="pa-4 rounded-lg my-3">@context.Title</MudPaper>
+            <MudPaper Elevation="25" @onclick="() => EditCard(context)" Class="pa-4 rounded-lg my-3 cursor-pointer">@context.Title</MudPaper>
         </ItemRenderer>
     </MudDropContainer>
 }
