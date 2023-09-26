@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using MudBlazor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,5 +21,20 @@ namespace Harmony.Client.Infrastructure.Models.Board
 
         // helper for add new items
         public EditableCheckListItemModel NewItem { get; set; }
+
+        public double TotalProgress
+        {
+            get
+            {
+                var totalItems = Items.Count;
+                var totalItemsChecked = Items.Where(item => item.IsChecked).Count();
+
+                var totalProgress = ((double)totalItemsChecked / (double)Items.Count) * 100;
+                return totalProgress;
+            }
+        }
+
+        public Color ProgressColor => TotalProgress >= 99 ? Color.Success : 
+            TotalProgress == 0 ? Color.Warning : Color.Info;
     }
 }

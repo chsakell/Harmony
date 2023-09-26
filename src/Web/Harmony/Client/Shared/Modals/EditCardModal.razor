@@ -28,6 +28,7 @@
                                                     <EditableTextField For="@(() => checkList.Title)"
                                                                        OnSave="(text) => SaveCheckListTitle(checkList.Id, text)"
                                                                        Text="@checkList.Title" Label="@_localizer["Title"]" />
+                                                    <MudProgressLinear Size="Size.Large" Color="checkList.ProgressColor" Value="checkList.TotalProgress" />
                                                 </CardHeaderContent>
                                             </MudCardHeader>
                                             <MudCardContent>
