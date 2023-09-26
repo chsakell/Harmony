@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Client.Infrastructure.Models.Board;
@@ -65,6 +66,20 @@ namespace Harmony.Client.Shared.Modals
 
             DisplayMessage(response);
         }
+
+        private async Task SaveCheckListDescription(Guid checkListItemId, string description)
+        {
+            var response = await _checkListItemManager
+                .UpdateListItemDescriptionAsync(new UpdateListItemDescriptionCommand(checkListItemId, description));
+
+            var checkListItem = _card.CheckLists.SelectMany(list => list.Items)
+                .FirstOrDefault(x => x.Id == checkListItemId);
+
+            checkListItem.Description = description;
+
+            DisplayMessage(response);
+        }
+
         private async Task SaveTitle(string newTitle)
         {
             var result = await _cardManager.UpdateTitleAsync(new UpdateCardTitleCommand(CardId, newTitle));

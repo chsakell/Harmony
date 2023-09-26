@@ -22,11 +22,24 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<CheckListItem?> Get(Guid checklistItemId)
+        {
+            return await _context.CheckListItems
+                .FirstOrDefaultAsync(item => item.Id == checklistItemId);
+        }
+
         public async Task<List<CheckListItem>> GetItems(Guid checklistId)
         {
             return await _context.CheckListItems
                 .Where(item => item.CheckListId == checklistId)
                 .ToListAsync();
+        }
+
+        public async Task<int> Update(CheckListItem checklistItem)
+        {
+            _context.CheckListItems.Update(checklistItem);
+
+            return await _context.SaveChangesAsync();
         }
     }
 }

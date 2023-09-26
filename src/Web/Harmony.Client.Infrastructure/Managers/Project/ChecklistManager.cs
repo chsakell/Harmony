@@ -1,7 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
-using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
