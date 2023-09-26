@@ -26,6 +26,7 @@
                                             <MudCardHeader>
                                                 <CardHeaderContent>
                                                     <EditableTextField For="@(() => checkList.Title)"
+                                                                       OnSave="(text) => SaveCheckListTitle(checkList.Id, text)"
                                                                        Text="@checkList.Title" Label="@_localizer["Title"]" />
                                                 </CardHeaderContent>
                                             </MudCardHeader>

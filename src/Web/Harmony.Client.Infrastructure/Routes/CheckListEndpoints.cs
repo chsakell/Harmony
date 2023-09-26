@@ -7,5 +7,7 @@
         public static string GetList(Guid checkListId) => $"{Index}/{checkListId}/";
 
         public static string GetListItems(Guid checkListId) => $"{Index}/{checkListId}/items/";
+
+        public static string Title(Guid checkListId) => $"{Index}/{checkListId}/title/";
     }
 }
