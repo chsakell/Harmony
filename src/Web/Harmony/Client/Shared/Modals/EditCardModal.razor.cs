@@ -25,6 +25,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _loading = true;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
         public string NewListName { get; set; }
+        public bool NewListOpen { get; set; }
         [Parameter] public Guid CardId { get; set; }
 
         private void Cancel()

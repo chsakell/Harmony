@@ -82,14 +82,17 @@
                     </MudCard>
                 </MudItem>
                 <MudItem sm="3">
-
+                    <MudButton StartIcon="@Icons.Material.Filled.GroupAdd" Class="mt-2"
+                               Variant="Variant.Outlined" FullWidth="true" 
+                               Color="Color.Primary">MEMBERS</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Label" Class="mt-2"
+                               Variant="Variant.Outlined" FullWidth="true"
+                               Color="Color.Primary">LABELS</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Checklist" Class="mt-2"
+                               Variant="Variant.Outlined" FullWidth="true"
+                               Color="Color.Primary">CHECKLIST</MudButton>
                 </MudItem>
             </MudGrid>
-
-
-            @*  <MudTextField T="string" @bind-Value="NewListName" Placeholder="Add new checklist"></MudTextField>
-        <MudButton OnClick="AddCheckList">@_localizer["Add"]</MudButton> *@
-
         </DialogContent>
     </MudDialog>
 }
