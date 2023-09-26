@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
@@ -67,7 +68,7 @@ namespace Harmony.Client.Shared.Modals
             DisplayMessage(response);
         }
 
-        private async Task SaveCheckListDescription(Guid checkListItemId, string description)
+        private async Task SaveCheckListItemDescription(Guid checkListItemId, string description)
         {
             var response = await _checkListItemManager
                 .UpdateListItemDescriptionAsync(new UpdateListItemDescriptionCommand(checkListItemId, description));
@@ -119,6 +120,16 @@ namespace Harmony.Client.Shared.Modals
                     list.Items.Add(itemAdded);
                 }
             }
+
+            DisplayMessage(response);
+        }
+
+        private async Task ToggleListItemChecked(EditableCheckListItemModel item)
+        {
+            var response = await _checkListItemManager
+                .UpdateListItemCheckedAsync(new 
+                UpdateListItemCheckedCommand(item.Id, !item.IsChecked));
+
 
             DisplayMessage(response);
         }

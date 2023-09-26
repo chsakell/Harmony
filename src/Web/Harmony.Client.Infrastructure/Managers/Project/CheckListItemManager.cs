@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
+using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Client.Infrastructure.Extensions;
@@ -17,6 +18,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public CheckListItemManager(HttpClient client)
         {
             _httpClient = client;
+        }
+
+        public async Task<IResult<bool>> UpdateListItemCheckedAsync(UpdateListItemCheckedCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.CheckListItemEndpoints
+                .Checked(request.ListItemId), request);
+
+            return await response.ToResult<bool>();
         }
 
         public async Task<IResult<bool>> UpdateListItemDescriptionAsync(UpdateListItemDescriptionCommand request)
