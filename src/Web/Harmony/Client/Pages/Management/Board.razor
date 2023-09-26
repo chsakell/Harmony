@@ -31,7 +31,7 @@
                     }
                     else
                     {
-                        <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Task</MudButton>
+                        <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add a card</MudButton>
                     }
                 </MudPaper>
             }
@@ -41,8 +41,8 @@
                     <MudPaper Elevation="0" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
                         <EditForm Model="@_newListModel" OnValidSubmit="OnValidListSubmit">
                             <DataAnnotationsValidator />
-                            <MudTextField @bind-Value="_newListModel.Name" For="@(() => _newListModel.Name)" Placeholder="New List" DisableUnderLine="true"></MudTextField>
-                            <MudButton ButtonType="ButtonType.Submit" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add list</MudButton>
+                            <MudTextField @bind-Value="_newListModel.Name" For="@(() => _newListModel.Name)" Placeholder="Enter a name.." DisableUnderLine="true"></MudTextField>
+                            <MudButton ButtonType="ButtonType.Submit" Size="Size.Small" StartIcon="@Icons.Material.Rounded.Add" Color="Color.Primary" FullWidth="true">Create</MudButton>
                         </EditForm>
                     </MudPaper>
                 }
@@ -55,7 +55,7 @@
         <ItemRenderer>
             <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
                 <MudCardHeader Class="pa-0">
-                    <MudText Typo="Typo.body1">@context.Title</MudText>
+                    <MudText Style="font-weight:bold" Typo="Typo.body1">@context.Title</MudText>
                 </MudCardHeader>
                 <MudCardContent Class="pa-0 mt-2">
                     @if (!string.IsNullOrEmpty(context.Description))
