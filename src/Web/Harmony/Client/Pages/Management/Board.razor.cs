@@ -54,6 +54,11 @@ namespace Harmony.Client.Pages.Management
 			var currentListId = info.Item.BoardListId;
 			var newPosition = (byte)info.IndexInZone;
 
+			if(moveToListId == currentListId && info.Item.Position == newPosition)
+			{
+				return;
+			}
+
 			var result = await _cardManager
 				.MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, newPosition));
 

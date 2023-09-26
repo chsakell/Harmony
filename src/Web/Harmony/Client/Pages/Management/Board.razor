@@ -12,7 +12,7 @@
         <ChildContent>
             @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
             {
-                <MudPaper Elevation="0" Width="280px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
+                <MudPaper Elevation="0" Width="300px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
                     <MudToolBar DisableGutters="true">
                         <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
                         <MudSpacer />
@@ -35,7 +35,7 @@
                     }
                 </MudPaper>
             }
-            <MudPaper Class="pa-4" Elevation="0" Width="280px">
+            <MudPaper Class="pa-4" Elevation="0" Width="300px">
                 @if (_addNewListOpen)
                 {
                     <MudPaper Elevation="0" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
@@ -53,7 +53,17 @@
             </MudPaper>
         </ChildContent>
         <ItemRenderer>
-            <MudPaper Elevation="25" @onclick="() => EditCard(context)" Class="pa-4 rounded-lg my-3 cursor-pointer">@context.Title</MudPaper>
+            <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
+                <MudCardHeader Class="pa-0">
+                    <MudText Typo="Typo.body1">@context.Title</MudText>
+                </MudCardHeader>
+                <MudCardContent Class="pa-0 mt-2">
+                    @if (!string.IsNullOrEmpty(context.Description))
+                    {
+                        <MudPaper>@((MarkupString)context.Description)</MudPaper>
+                    }
+                </MudCardContent>
+            </MudCard>
         </ItemRenderer>
     </MudDropContainer>
 }
