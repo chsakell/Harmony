@@ -46,6 +46,11 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task SaveDescription(string cardDescription)
         {
+            if(cardDescription.Equals("<p> </p>") || cardDescription.Equals("<p><br></p>"))
+            {
+                cardDescription = null;
+            }
+
             _loading = true;
 
             var response = await _cardManager
