@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Domain.Entities;
 using Harmony.Persistence.DbContext;
+using Harmony.Persistence.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.Repositories
@@ -32,5 +33,19 @@ namespace Harmony.Infrastructure.Repositories
 
 			return await _context.SaveChangesAsync();
 		}
-	}
+
+        public async Task<List<CheckList>> GetCardCheckLists(Guid cardId)
+        {
+            return await _context.CheckLists
+				.Where(checklist => checklist.CardId == cardId)
+				.ToListAsync();
+        }
+
+        public async Task<int> CountCardCheckLists(Guid cardId)
+        {
+            return await _context.CheckLists
+                .Where(checklist => checklist.CardId == cardId)
+                .CountAsync();
+        }
+    }
 }

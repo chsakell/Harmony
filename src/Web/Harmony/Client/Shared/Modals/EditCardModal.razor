@@ -33,7 +33,7 @@
                                                     <MudProgressLinear Size="Size.Large" Color="checkList.ProgressColor" Value="checkList.TotalProgress" />
                                                 </CardHeaderContent>
                                             </MudCardHeader>
-                                            <MudCardContent>
+                                        <MudCardContent Class="pb-0">
                                                 @foreach (var item in checkList.Items)
                                                 {
                                                     <div class="d-flex flex-grow-1 gap-4 mb-4">
@@ -95,7 +95,7 @@
                     <MudButton StartIcon="@Icons.Material.Filled.Label" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary">LABELS</MudButton>
-                    <MudButton StartIcon="@Icons.Material.Filled.Checklist" Class="mt-2"
+                    <MudButton StartIcon="@Icons.Material.Filled.Checklist" OnClick="AddCheckList" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary">CHECKLIST</MudButton>
                     <MudButton StartIcon="@Icons.Material.Filled.EditCalendar" Class="mt-2"

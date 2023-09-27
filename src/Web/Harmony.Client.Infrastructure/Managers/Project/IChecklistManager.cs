@@ -13,7 +13,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 {
     public interface IChecklistManager : IManager
     {
-        Task<IResult<CheckListDto>> CreateCheckListAsync(CreateChecklistCommand request);
+        Task<IResult<CheckListDto>> CreateCheckListAsync(CreateCheckListCommand request);
         Task<IResult<CheckListItemDto>> CreateCheckListItemAsync(CreateCheckListItemCommand request);
         Task<IResult<bool>> UpdateTitleAsync(UpdateListTitleCommand request);
     }

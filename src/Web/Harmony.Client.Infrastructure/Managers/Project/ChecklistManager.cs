@@ -17,7 +17,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             _httpClient = client;
         }
 
-        public async Task<IResult<CheckListDto>> CreateCheckListAsync(CreateChecklistCommand request)
+        public async Task<IResult<CheckListDto>> CreateCheckListAsync(CreateCheckListCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.CheckListEndpoints.Index, request);
 

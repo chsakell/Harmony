@@ -9,7 +9,7 @@ using AutoMapper;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
-    public class CreateChecklistCommandHandler : IRequestHandler<CreateChecklistCommand, Result<CheckListDto>>
+    public class CreateChecklistCommandHandler : IRequestHandler<CreateCheckListCommand, Result<CheckListDto>>
     {
         private readonly IChecklistRepository _checklistRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -26,7 +26,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             _localizer = localizer;
             _mapper = mapper;
         }
-        public async Task<Result<CheckListDto>> Handle(CreateChecklistCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CheckListDto>> Handle(CreateCheckListCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
@@ -35,11 +35,13 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
                 return await Result<CheckListDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
+            var totalCardCheckLists = await _checklistRepository.CountCardCheckLists(request.CardId);
+
             var checkList = new CheckList
             {
                 CardId = request.CardId,
                 Title = request.Title,
-                Position = request.Position,
+                Position = (byte)totalCardCheckLists,
                 UserId = userId,
             };
 

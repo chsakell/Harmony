@@ -12,7 +12,7 @@ namespace Harmony.Server.Controllers.Management
     {
 
 		[HttpPost]
-		public async Task<IActionResult> Post(CreateChecklistCommand command)
+		public async Task<IActionResult> Post(CreateCheckListCommand command)
 		{
 			return Ok(await _mediator.Send(command));
 		}

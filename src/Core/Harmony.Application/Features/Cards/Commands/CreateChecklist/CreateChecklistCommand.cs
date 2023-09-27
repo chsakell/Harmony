@@ -5,16 +5,21 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist;
 
-public class CreateChecklistCommand : IRequest<Result<CheckListDto>>
+public class CreateCheckListCommand : IRequest<Result<CheckListDto>>
 {
     public Guid CardId { get; set; }
-    public string Title { get; set; }
-    public byte Position { get; set; }
 
-    public CreateChecklistCommand(Guid cardId, string title, byte position)
+    [Required]
+    public string Title { get; set; }
+
+    public CreateCheckListCommand()
+    {
+        
+    }
+
+    public CreateCheckListCommand(Guid cardId, string title)
     {
         CardId = cardId;
         Title = title;
-        Position = position;
     }
 }
