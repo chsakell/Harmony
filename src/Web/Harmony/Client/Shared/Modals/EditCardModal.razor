@@ -34,30 +34,28 @@
                                             <MudCardContent>
                                                 @foreach (var item in checkList.Items)
                                                 {
-                                                    <MudPaper>
-                                                        <MudGrid>
-                                                            <MudItem xs="12">
-                                                                <EditableTextField For="@(() => item.Description)"
-                                                                                   OnSave="(text) => SaveCheckListItemDescription(item.Id, text)"
-                                                                                   Text="@item.Description" Label="@_localizer["Description"]" />
-                                                            </MudItem>
-                                                            <MudItem xs="4" Class="pa-0">
-                                                                <MudCheckBox @bind-Checked="@item.IsChecked" @onclick="() => ToggleListItemChecked(item)" Color="Color.Success" />
-                                                            </MudItem>
-                                                            <MudItem xs="4" Class="pa-0" Style="margin-top: -20px;">
-                                                                <MudDatePicker Label="Due date" @ref="@item.DatePicker"
-                                                                @bind-Date="@item.DueDate"
-                                                                               DateFormat="yyyy-MM-dd"
-                                                                               IsDateDisabledFunc="@((DateTime dt)=>(dt < DateTime.Now))">
-                                                                    <PickerActions>
-                                                                        <MudButton Class="mr-auto align-self-start" OnClick="@(() => item.DatePicker.Clear())">Clear</MudButton>
-                                                                        <MudButton OnClick="@(() => item.DatePicker.Close(false))">Cancel</MudButton>
-                                                                        <MudButton Color="Color.Primary" OnClick="@(() => ListItemDueDateChanged(item))">Ok</MudButton>
-                                                                    </PickerActions>
-                                                                </MudDatePicker>
-                                                            </MudItem>
-                                                        </MudGrid>
-                                                    </MudPaper>
+                                                    <div class="d-flex flex-grow-1 gap-4">
+                                                        <MudPaper Class="flex-none d-flex" Width="64px" Elevation="0">
+                                                            <MudCheckBox Class="flex-none d-flex" @bind-Checked="@item.IsChecked" @onclick="() => ToggleListItemChecked(item)" Color="Color.Success" />
+                                                        </MudPaper>
+                                                        <MudPaper Class="flex-auto d-flex" Width="60%" Elevation="0" Style="margin-top:-18px">
+                                                            <EditableTextField For="@(() => item.Description)"
+                                                                               OnSave="(text) => SaveCheckListItemDescription(item.Id, text)"
+                                                                               Text="@item.Description" Label="@_localizer["Description"]" />
+                                                        </MudPaper>
+                                                        <MudPaper Class="flex-initial d-flex" Width="135px" Elevation="0" Style="margin-top:-18px">
+                                                            <MudDatePicker Label="Due date" @ref="@item.DatePicker"
+                                                            @bind-Date="@item.DueDate"
+                                                                           DateFormat="yyyy-MM-dd"
+                                                                           IsDateDisabledFunc="@((DateTime dt)=>(dt < DateTime.Now))">
+                                                                <PickerActions>
+                                                                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => item.DatePicker.Clear())">Clear</MudButton>
+                                                                    <MudButton OnClick="@(() => item.DatePicker.Close(false))">Cancel</MudButton>
+                                                                    <MudButton Color="Color.Primary" OnClick="@(() => ListItemDueDateChanged(item))">Ok</MudButton>
+                                                                </PickerActions>
+                                                            </MudDatePicker>
+                                                        </MudPaper>
+                                                    </div>
                                                 }
                                             </MudCardContent>
                                             <MudCardActions>
@@ -83,7 +81,7 @@
                 </MudItem>
                 <MudItem sm="3">
                     <MudButton StartIcon="@Icons.Material.Filled.GroupAdd" Class="mt-2"
-                               Variant="Variant.Outlined" FullWidth="true" 
+                               Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary">MEMBERS</MudButton>
                     <MudButton StartIcon="@Icons.Material.Filled.Label" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
@@ -91,6 +89,12 @@
                     <MudButton StartIcon="@Icons.Material.Filled.Checklist" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary">CHECKLIST</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.EditCalendar" Class="mt-2"
+                               Variant="Variant.Outlined" FullWidth="true"
+                               Color="Color.Primary">DATES</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Attachment" Class="mt-2"
+                               Variant="Variant.Outlined" FullWidth="true"
+                               Color="Color.Primary">ATTACHMENT</MudButton>
                 </MudItem>
             </MudGrid>
         </DialogContent>

@@ -55,7 +55,7 @@
         <ItemRenderer>
             <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
                 <MudCardHeader Class="pa-0">
-                    <MudText Style="font-weight:bold" Typo="Typo.body1">@context.Title</MudText>
+                    <MudText Style="font-weight:bold" Typo="Typo.body1">@context.Title - @context.Position</MudText>
                 </MudCardHeader>
                 <MudCardContent Class="pa-0 mt-2">
                     @if (!string.IsNullOrEmpty(context.Description))
