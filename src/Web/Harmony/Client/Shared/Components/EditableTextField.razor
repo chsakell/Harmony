@@ -2,7 +2,7 @@
 @if (_editing)
 {
     <MudForm @ref="_form" Style="width:100%" IsValidChanged="FormValidChanged">
-        <MudTextField Immediate="true"
+        <MudTextField Immediate="true" @ref="_textReference"
                       Adornment="Adornment.Start" AdornmentIcon="@AdornmentIcon"
                       For="For" @bind-Value="Text"
                       Label="@Label" />
@@ -26,12 +26,13 @@
 }
 else
 {
-    <MudTextField Adornment="Adornment.Start" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="() => _editing = true" />
+    <MudTextField Adornment="Adornment.Start" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="Edit" />
 }
 
 @code {
     private MudForm _form;
     private bool _isSaving;
+    private MudTextField<string> _textReference;
 
     [Parameter]
     public string Text { get; set; }
@@ -55,6 +56,13 @@ else
 
     }
 
+    private async Task Edit()
+    {
+        _editing = true;
+        await Task.Delay(50);
+        await _textReference.FocusAsync();
+    }
+
     private void CancelEditing()
     {
         _editing = false;
@@ -70,6 +78,7 @@ else
         _originalText = Text;
 
         _isSaving = false;
+        _editing = false;
     }
 
     [Parameter]
