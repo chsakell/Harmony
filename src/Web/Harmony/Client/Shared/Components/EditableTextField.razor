@@ -3,6 +3,7 @@
 {
     <MudForm @ref="_form" Style="width:100%" IsValidChanged="FormValidChanged">
         <MudTextField Immediate="true"
+                      Adornment="Adornment.Start" AdornmentIcon="@AdornmentIcon"
                       For="For" @bind-Value="Text"
                       Label="@Label" />
         <MudPaper Class="d-flex pa-2 flex-row-reverse">
@@ -25,7 +26,7 @@
 }
 else
 {
-    <MudTextField ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="() => _editing = true" />
+    <MudTextField Adornment="Adornment.Start" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="() => _editing = true" />
 }
 
 @code {
@@ -37,6 +38,9 @@ else
 
     [Parameter]
     public string Label { get; set; }
+
+    [Parameter]
+    public string AdornmentIcon { get; set; }
 
     [Parameter]
     public object? Validator { get; set; }

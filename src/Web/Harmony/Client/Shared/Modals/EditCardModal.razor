@@ -6,6 +6,7 @@
     <MudDialog>
         <TitleContent>
             <EditableTextField For="@(() => _card.Title)"
+                               AdornmentIcon="@Icons.Material.Filled.Edit"
                                OnSave="(newTitle) => SaveTitle(newTitle)"
                                Text="@_card.Title" Label="@_localizer["Title"]" />
         </TitleContent>
@@ -26,6 +27,7 @@
                                             <MudCardHeader>
                                                 <CardHeaderContent>
                                                     <EditableTextField For="@(() => checkList.Title)"
+                                                                       AdornmentIcon="@Icons.Material.Filled.Checklist"
                                                                        OnSave="(text) => SaveCheckListTitle(checkList.Id, text)"
                                                                        Text="@checkList.Title" Label="@_localizer["Title"]" />
                                                     <MudProgressLinear Size="Size.Large" Color="checkList.ProgressColor" Value="checkList.TotalProgress" />
@@ -34,8 +36,8 @@
                                             <MudCardContent>
                                                 @foreach (var item in checkList.Items)
                                                 {
-                                                    <div class="d-flex flex-grow-1 gap-4">
-                                                        <MudPaper Class="flex-none d-flex" Width="64px" Elevation="0">
+                                                    <div class="d-flex flex-grow-1 gap-4 mb-4">
+                                                        <MudPaper Class="flex-none d-flex" Elevation="0">
                                                             <MudCheckBox Class="flex-none d-flex" @bind-Checked="@item.IsChecked" @onclick="() => ToggleListItemChecked(item)" Color="Color.Success" />
                                                         </MudPaper>
                                                         <MudPaper Class="flex-auto d-flex" Width="60%" Elevation="0" Style="margin-top:-18px">
