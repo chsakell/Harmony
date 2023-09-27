@@ -60,17 +60,24 @@
                                                     </div>
                                                 }
                                             </MudCardContent>
-                                            <MudCardActions>
+                                            <MudCardActions Class="d-flex pa-2 justify-end">
                                                 @if (checkList.NewItem != null)
                                                 {
-                                                    <MudTextField For="@(() => checkList.NewItem.Description)" @bind-Value="checkList.NewItem.Description" Label="@_localizer["Description"]" />
-                                                    <MudTextField T="DateTime?" For="@(() => checkList.NewItem.DueDate)" @bind-Value="checkList.NewItem.DueDate" Format="yyyy-MM-dd" Label="Due date" InputType="InputType.Date" />
-                                                    <MudButton Variant="Variant.Text" OnClick="() => AddCheckListItem(checkList.NewItem)" Color="Color.Primary">@_localizer["Add item"]</MudButton>
-                                                    <MudButton Variant="Variant.Text" OnClick="() => checkList.NewItem = null" Color="Color.Primary">@_localizer["Cancel"]</MudButton>
+                                                    <div class="d-flex flex-grow-1 gap-4 mb-4">
+                                                        <MudPaper Class="flex-auto d-flex" Width="60%" Elevation="0">
+                                                            <MudTextField For="@(() => checkList.NewItem.Description)" @bind-Value="checkList.NewItem.Description" Label="@_localizer["Description"]" />
+                                                        </MudPaper>
+                                                        <MudPaper Class="flex-initial d-flex" Width="135px" Elevation="0">
+                                                            <MudTextField T="DateTime?" For="@(() => checkList.NewItem.DueDate)" @bind-Value="checkList.NewItem.DueDate" Format="yyyy-MM-dd" Label="Due date" InputType="InputType.Date" />
+                                                        </MudPaper>
+
+                                                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="() => AddCheckListItem(checkList.NewItem)">@_localizer["Add"]</MudIconButton>
+                                                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Cancel" OnClick="() => checkList.NewItem = null">@_localizer["Cancel"]</MudIconButton>
+                                                    </div>
                                                 }
                                                 else
                                                 {
-                                                    <MudButton Variant="Variant.Text" OnClick="() => checkList.NewItem = new() { CheckListId = checkList.Id }" Color="Color.Primary">@_localizer["Add item"]</MudButton>
+                                                    <MudButton Size="Size.Small" StartIcon="@Icons.Material.Filled.AddTask" OnClick="() => checkList.NewItem = new() { CheckListId = checkList.Id }" Color="Color.Primary">@_localizer["Add item"]</MudButton>
                                                 }
                                             </MudCardActions>
                                         </MudCard>
