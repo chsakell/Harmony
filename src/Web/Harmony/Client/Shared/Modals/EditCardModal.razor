@@ -33,7 +33,7 @@
                                                     <MudProgressLinear Size="Size.Large" Color="checkList.ProgressColor" Value="checkList.TotalProgress" />
                                                 </CardHeaderContent>
                                             </MudCardHeader>
-                                        <MudCardContent Class="pb-0">
+                                            <MudCardContent Class="pb-0">
                                                 @foreach (var item in checkList.Items)
                                                 {
                                                     <div class="d-flex flex-grow-1 gap-4 mb-4">
@@ -63,17 +63,19 @@
                                             <MudCardActions Class="d-flex pa-2 justify-end">
                                                 @if (checkList.NewItem != null)
                                                 {
-                                                    <div class="d-flex flex-grow-1 gap-4 mb-4">
-                                                        <MudPaper Class="flex-auto d-flex" Width="60%" Elevation="0">
-                                                            <MudTextField For="@(() => checkList.NewItem.Description)" @bind-Value="checkList.NewItem.Description" Label="@_localizer["Description"]" />
-                                                        </MudPaper>
-                                                        <MudPaper Class="flex-initial d-flex" Width="135px" Elevation="0">
-                                                            <MudTextField T="DateTime?" For="@(() => checkList.NewItem.DueDate)" @bind-Value="checkList.NewItem.DueDate" Format="yyyy-MM-dd" Label="Due date" InputType="InputType.Date" />
-                                                        </MudPaper>
+                                                    <MudForm Style="width:100%">
+                                                        <div class="d-flex flex-grow-1 gap-4 mb-4">
+                                                            <MudPaper Class="flex-auto d-flex" Width="60%" Elevation="0">
+                                                                <MudTextField For="@(() => checkList.NewItem.Description)" @bind-Value="checkList.NewItem.Description" Label="@_localizer["Description"]" />
+                                                            </MudPaper>
+                                                            <MudPaper Class="flex-initial d-flex" Width="135px" Elevation="0">
+                                                                <MudTextField T="DateTime?" For="@(() => checkList.NewItem.DueDate)" @bind-Value="checkList.NewItem.DueDate" Format="yyyy-MM-dd" Label="Due date" InputType="InputType.Date" />
+                                                            </MudPaper>
 
-                                                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="() => AddCheckListItem(checkList.NewItem)">@_localizer["Add"]</MudIconButton>
-                                                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Cancel" OnClick="() => checkList.NewItem = null">@_localizer["Cancel"]</MudIconButton>
-                                                    </div>
+                                                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="() => AddCheckListItem(checkList.NewItem)">@_localizer["Add"]</MudIconButton>
+                                                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Cancel" OnClick="() => checkList.NewItem = null">@_localizer["Cancel"]</MudIconButton>
+                                                        </div>
+                                                    </MudForm>
                                                 }
                                                 else
                                                 {

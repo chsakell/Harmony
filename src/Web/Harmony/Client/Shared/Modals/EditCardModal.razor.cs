@@ -16,7 +16,6 @@ using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {
@@ -25,8 +24,7 @@ namespace Harmony.Client.Shared.Modals
         private EditableCardModel _card = new();
         private bool _loading = true;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-        public string NewListName { get; set; }
-        public bool NewListOpen { get; set; }
+
         [Parameter] public Guid CardId { get; set; }
 
         private void Cancel()
@@ -111,10 +109,6 @@ namespace Harmony.Client.Shared.Modals
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<CreateCheckListModal>(_localizer["Create check list"], parameters, options);
             var result = await dialog.Result;
-            if (!result.Cancelled)
-            {
-                // TODO update workspace list or navigate to it
-            }
         }
 
         private async Task AddCheckListItem(EditableCheckListItemModel checkListItem)

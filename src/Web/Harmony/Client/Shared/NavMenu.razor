@@ -5,50 +5,9 @@
 <UserCard />
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">Home</MudNavLink>
-    @if (_canViewHangfire)
-    {
-        <MudNavLink Href="/jobs" Target="_blank" Icon="@Icons.Material.Outlined.Work">
-            Hangfire
-        </MudNavLink>
-    }
-    <MudNavLink Href="https://codewithmukesh.com/blog/blazor-hero-quick-start-guide/" Target="_blank" Icon="@Icons.Material.Outlined.ReadMore">
-        Quick Start Guide
-    </MudNavLink>
     <MudNavLink Href="/swagger/index.html" Target="_blank" Icon="@Icons.Material.Outlined.LiveHelp">
         Swagger
     </MudNavLink>
-    <MudListSubheader Class="mt-2 mb-n2">Personal</MudListSubheader>
-    @if (_canViewDashboards)
-    {
-        <MudNavLink Href="/dashboard" Icon="@Icons.Material.Outlined.Dashboard">
-            Dashboard
-        </MudNavLink>
-    }
-    <MudNavLink Href="/account" Icon="@Icons.Material.Outlined.SupervisorAccount">
-        Account
-    </MudNavLink>
-    @if (_canViewAuditTrails)
-    {
-        <MudNavLink Href="/audit-trails" Icon="@Icons.Material.Outlined.Security">
-            Audit Trails
-        </MudNavLink>
-    }
-    @if (_canViewDocuments || _canViewDocumentTypes)
-    {
-        <MudListSubheader Class="mt-2 mb-n2">Document Management</MudListSubheader>
-        @if (_canViewDocuments)
-        {
-            <MudNavLink Href="/document-store" Icon="@Icons.Material.Outlined.AttachFile">
-                Document Store
-            </MudNavLink>
-        }
-        @if (_canViewDocumentTypes)
-        {
-            <MudNavLink Href="/document-types" Icon="@Icons.Material.Outlined.FileCopy">
-                Document Types
-            </MudNavLink>
-        }
-    }
 
     @if (_canViewUsers || _canViewRoles)
     {
@@ -64,29 +23,7 @@
             <MudNavLink Href="/identity/roles" Icon="@Icons.Material.Outlined.Person">Roles</MudNavLink>
         }
     }
-    @if (_canViewChat)
-    {
-        <MudListSubheader Class="mt-2 mb-n2">Communication</MudListSubheader>
-        <MudNavLink Href="/chat" Icon="@Icons.Material.Outlined.Chat">
-            Chat
-        </MudNavLink>
-    }
-    @if (_canViewProducts || _canViewBrands)
-    {
-        <MudListSubheader Class="mt-2 mb-n2">Catalog Management</MudListSubheader>
-        @if (_canViewProducts)
-        {
-            <MudNavLink Href="/catalog/products" Icon="@Icons.Material.Outlined.CallToAction">
-                Products
-            </MudNavLink>
-        }
-        @if (_canViewBrands)
-        {
-            <MudNavLink Href="/catalog/brands" Icon="@Icons.Material.Outlined.CallToAction">
-                Brands
-            </MudNavLink>
-        }
-    }
+
 </MudNavMenu>
 
 @code {
