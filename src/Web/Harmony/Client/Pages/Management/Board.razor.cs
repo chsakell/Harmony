@@ -93,7 +93,7 @@ namespace Harmony.Client.Pages.Management
 		private async Task AddCard(BoardListDto list)
 		{
 			var result = await _cardManager
-				.CreateCardAsync(new CreateCardCommand(list.NewCardName, Guid.Parse(Id), list.Id));
+				.CreateCardAsync(new CreateCardCommand(list.CreateCard.Name, Guid.Parse(Id), list.Id));
 
 			if (result.Succeeded)
 			{

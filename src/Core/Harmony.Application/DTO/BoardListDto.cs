@@ -1,4 +1,5 @@
 ﻿using Harmony.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.DTO
 {
@@ -10,8 +11,8 @@ namespace Harmony.Application.DTO
 		public List<CardDto> Cards { get; set; }
 
 		// helpers for kanban
-        public string NewCardName { get; set; }
-        public bool NewTaskOpen { get; set; }
-		public BoardListStatus Status { get; set; }
+
+        public CreateCardDto CreateCard { get; set; } = new CreateCardDto();
+        public BoardListStatus Status { get; set; }
     }
 }

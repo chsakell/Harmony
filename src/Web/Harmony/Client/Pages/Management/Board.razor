@@ -22,16 +22,19 @@
                         </MudMenu>
                     </MudToolBar>
                     <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Class="mud-height-full" AllowReorder="true" />
-                    @if (item.NewTaskOpen)
+                    @if (item.CreateCard.NewTaskOpen)
                     {
-                        <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                            <MudTextField @bind-Value="item.NewCardName" Placeholder="Enter a title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-                            <MudButton OnClick="@(() => AddCard(item))" Size="Size.Small" StartIcon="@Icons.Material.Rounded.Add" Color="Color.Primary" FullWidth="true">Create</MudButton>
-                        </MudPaper>
+                        <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
+                            <DataAnnotationsValidator/>
+                            <MudPaper Elevation="25" Class="pa-2 rounded-lg">
+                                <MudTextField For="() => item.CreateCard.Name" @bind-Value="item.CreateCard.Name" Placeholder="Enter a name.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                <MudButton ButtonType="ButtonType.Submit" Size="Size.Small" StartIcon="@Icons.Material.Rounded.Add" Color="Color.Primary" FullWidth="true">Create</MudButton>
+                            </MudPaper>
+                        </EditForm>
                     }
                     else
                     {
-                        <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add a card</MudButton>
+                        <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add a card</MudButton>
                     }
                 </MudPaper>
             }
