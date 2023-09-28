@@ -25,10 +25,13 @@
                     @if (item.CreateCard.NewTaskOpen)
                     {
                         <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
-                            <DataAnnotationsValidator/>
+                            <DataAnnotationsValidator />
                             <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                                <MudTextField For="() => item.CreateCard.Name" @bind-Value="item.CreateCard.Name" Placeholder="Enter a name.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-                                <MudButton ButtonType="ButtonType.Submit" Size="Size.Small" StartIcon="@Icons.Material.Rounded.Add" Color="Color.Primary" FullWidth="true">Create</MudButton>
+                                <MudTextField Clearable="true" For="() => item.CreateCard.Name" @bind-Value="item.CreateCard.Name" Placeholder="Card's name.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                <div class="d-flex justify-space-around flex-grow-1 gap-4">
+                                    <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Primary">Cancel</MudButton>
+                                    <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Primary">Create</MudButton>
+                                </div>
                             </MudPaper>
                         </EditForm>
                     }
@@ -38,14 +41,17 @@
                     }
                 </MudPaper>
             }
-            <MudPaper Class="pa-4" Elevation="0" Width="300px">
+            <MudPaper Class="pa-4" Elevation="0" Width="250px">
                 @if (_addNewListOpen)
                 {
                     <MudPaper Elevation="0" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
                         <EditForm Model="@_newListModel" OnValidSubmit="OnValidListSubmit">
                             <DataAnnotationsValidator />
-                            <MudTextField @bind-Value="_newListModel.Name" For="@(() => _newListModel.Name)" Placeholder="Enter a name.." DisableUnderLine="true"></MudTextField>
-                            <MudButton ButtonType="ButtonType.Submit" Size="Size.Small" StartIcon="@Icons.Material.Rounded.Add" Color="Color.Primary" FullWidth="true">Create</MudButton>
+                            <MudTextField @bind-Value="_newListModel.Name" For="@(() => _newListModel.Name)" Placeholder="List's name.." DisableUnderLine="true"></MudTextField>
+                            <div class="d-flex justify-space-around flex-grow-1 gap-4">
+                                <MudButton OnClick="@(() => _addNewListOpen = false)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Primary">Cancel</MudButton>
+                                <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Primary">Create</MudButton>
+                            </div>
                         </EditForm>
                     </MudPaper>
                 }
