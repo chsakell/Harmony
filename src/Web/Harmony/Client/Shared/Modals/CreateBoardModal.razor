@@ -13,24 +13,32 @@
             }
         </TitleContent>
         <DialogContent>
-            <MudTextField For="@(() => _createBoardModel.Title)" @bind-Value="_createBoardModel.Title" Label="@_localizer["Title"]" />
-            <MudTextField For="@(() => _createBoardModel.Description)" @bind-Value="_createBoardModel.Description" Label="@_localizer["Description"]" />
-            <MudSelect T="string" @bind-Value="@_createBoardModel.WorkspaceId"
-                       Label="Select workspace" AnchorOrigin="Origin.BottomCenter" 
-            Variant="Variant.Outlined" Clearable>
-                @foreach(var workspace in _ownedWorkspaces)
-                {
-                    <MudSelectItem Value="workspace.Id.ToString()">@workspace.Name</MudSelectItem>
-                }
-            </MudSelect>
-            <MudSelect T="BoardVisibility" @bind-Value="@_createBoardModel.Visibility"
-                       Label="Visibility" AnchorOrigin="Origin.BottomCenter"
-                       Variant="Variant.Outlined" Clearable>
-                @foreach (var visibility in Enum.GetValues<BoardVisibility>())
-                {
-                    <MudSelectItem Value="visibility">@visibility.ToString()</MudSelectItem>
-                }
-            </MudSelect>
+            <MudPaper>
+                <MudStack Spacing="4">
+                    <MudStack Row="false">
+                        <MudTextField For="@(() => _createBoardModel.Title)" @bind-Value="_createBoardModel.Title" Label="@_localizer["Title"]" />
+                        <MudTextField For="@(() => _createBoardModel.Description)" @bind-Value="_createBoardModel.Description" Label="@_localizer["Description"]" />
+                    </MudStack>
+                    <MudStack Row="true">
+                        <MudSelect T="string" @bind-Value="@_createBoardModel.WorkspaceId"
+                                   Label="Select workspace" AnchorOrigin="Origin.BottomCenter"
+                                   Variant="Variant.Outlined" Clearable>
+                            @foreach (var workspace in _ownedWorkspaces)
+                            {
+                                <MudSelectItem Value="workspace.Id.ToString()">@workspace.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudSelect T="BoardVisibility" @bind-Value="@_createBoardModel.Visibility"
+                                   Label="Visibility" AnchorOrigin="Origin.BottomCenter"
+                                   Variant="Variant.Outlined" Clearable>
+                            @foreach (var visibility in Enum.GetValues<BoardVisibility>())
+                            {
+                                <MudSelectItem Value="visibility">@visibility.ToString()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
         </DialogContent>
         <DialogActions>
             <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>

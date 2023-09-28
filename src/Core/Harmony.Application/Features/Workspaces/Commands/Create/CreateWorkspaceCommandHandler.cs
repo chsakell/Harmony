@@ -10,14 +10,17 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
     public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceCommand, Result<Guid>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
+        private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<CreateWorkspaceCommandHandler> _localizer;
 
         public CreateWorkspaceCommandHandler(IWorkspaceRepository workspaceRepository,
+            IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<CreateWorkspaceCommandHandler> localizer)
         {
             _workspaceRepository = workspaceRepository;
+            _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
         }
@@ -38,9 +41,17 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
                 IsPublic = request.IsPublic,
             };
 
-            var dbResult = await _workspaceRepository.CreateAsync(workspace);
+            await _workspaceRepository.AddAsync(workspace);
 
-            if(dbResult > 0)
+            var userWorkspace = new UserWorkspace()
+            {
+                UserId = userId,
+                WorkspaceId = workspace.Id
+            };
+
+            var dbResult = await _userWorkspaceRepository.CreateAsync(userWorkspace);
+
+            if (dbResult > 0)
             {
                 return await Result<Guid>.SuccessAsync(workspace.Id, _localizer["Workspace Created"]);
             }

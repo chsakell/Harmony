@@ -14,6 +14,11 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task AddAsync(Workspace workspace)
+        {
+            await _context.Workspaces.AddAsync(workspace);
+        }
+
         public async Task<int> CreateAsync(Workspace workspace)
         {
             await _context.Workspaces.AddAsync(workspace);

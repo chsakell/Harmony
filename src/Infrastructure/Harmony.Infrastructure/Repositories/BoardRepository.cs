@@ -14,6 +14,11 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task AddAsync(Board Board)
+        {
+            await _context.Boards.AddAsync(Board);
+        }
+
         public async Task<int> CreateAsync(Board Board)
         {
             await _context.Boards.AddAsync(Board);
