@@ -3,7 +3,6 @@ using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
-using Harmony.Client.Infrastructure.Models.Kanban;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
@@ -24,14 +23,7 @@ namespace Harmony.Client.Pages.Management
 		[Inject] 
 		public IKanbanStore KanbanStore { get; set; }
 
-		#region Kanban
-
-		KanBanNewListForm _newListModel = new KanBanNewListForm();
-
 		private MudDropContainer<CardDto> _dropContainer;
-		private bool _addNewListOpen;
-
-		#endregion
 
 		protected async override Task OnInitializedAsync()
 		{
@@ -70,25 +62,28 @@ namespace Harmony.Client.Pages.Management
 			DisplayMessage(result);
 		}
 
-		private async Task OnValidListSubmit(EditContext context)
+		private async Task OpenCreateBoardListModal()
 		{
-			var result = await _boardListManager.CreateListAsync(new CreateListCommand(_newListModel.Name, Guid.Parse(Id)));
+            var parameters = new DialogParameters<CreateBoardListModal>
+            {
+                { 
+					modal => modal.CreateListCommandModel, 
+					new CreateListCommand(null, Guid.Parse(Id))
+				}
+            };
 
-			if(result.Succeeded)
-			{
-				KanbanStore.AddListToBoard(result.Data);
-
-				_newListModel.Name = string.Empty;
-				_addNewListOpen = false;
-			}
-			
-			DisplayMessage(result);
-		}
-
-		private void OpenAddNewList()
-		{
-			_addNewListOpen = true;
-		}
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateBoardListModal>(_localizer["Create board list"], parameters, options);
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            {
+				var createdList = result.Data as BoardListDto;
+				if (createdList != null)
+				{
+                    KanbanStore.AddListToBoard(createdList);
+                }
+            }
+        }
 
 		private async Task AddCard(BoardListDto list)
 		{
