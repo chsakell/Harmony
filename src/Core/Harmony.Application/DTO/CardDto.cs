@@ -8,6 +8,9 @@
 		//public BoardList BoardList { get; set; }
 		public Guid BoardListId { get; set; }
 		public byte Position { get; set; } // position on the board list
+		public int TotalItems { get; set; }
+		public int TotalItemsCompleted { get; set; }
+
 		//public List<Comment> Comments { get; set; }
 		//public List<CheckList> CheckLists { get; set; }
 		//public List<UserCard> Members { get; set; }

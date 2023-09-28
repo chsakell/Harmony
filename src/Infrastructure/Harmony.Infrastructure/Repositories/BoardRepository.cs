@@ -33,6 +33,8 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.Boards
                 .Include(b => b.Lists.Where(l => l.Status == Domain.Enums.BoardListStatus.Active))
                     .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active))
+                    .ThenInclude(c => c.CheckLists)
+                    .ThenInclude(cl => cl.Items)
                 .Include(b => b.Users)
                 .FirstAsync(board => board.Id == boardId);
         }

@@ -72,6 +72,19 @@
                         <MudPaper>@((MarkupString)context.Description)</MudPaper>
                     }
                 </MudCardContent>
+                <MudCardActions Class=" pa-0 pt-2">
+                    <MudPaper Class="d-flex justify-start flex-grow-1 gap-2" Elevation="0">
+
+                        @if (context.TotalItems > 0)
+                        {
+                            <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Checklist" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Default)" />
+                            <MudText Typo="Typo.body2">
+                                @context.TotalItemsCompleted / @context.TotalItems
+                            </MudText>
+                        }
+
+                    </MudPaper>
+                </MudCardActions>
             </MudCard>
         </ItemRenderer>
     </MudDropContainer>
