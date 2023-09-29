@@ -1,6 +1,8 @@
 using Harmony.Client;
 using Harmony.Client.Extensions;
+using Harmony.Client.Infrastructure.Authentication;
 using Harmony.Client.Infrastructure.Managers.Preferences;
+using Harmony.Client.Infrastructure.Managers.Project;
 using Harmony.Client.Infrastructure.Settings;
 using Harmony.Shared.Constants.Localization;
 using Microsoft.AspNetCore.Components.Web;
@@ -27,4 +29,12 @@ if (storageService != null)
     CultureInfo.DefaultThreadCurrentUICulture = culture;
 }
 
+var stateProvider = host.Services.GetService<HarmonyStateProvider>();
+var workspaceManager = host.Services.GetService<IWorkspaceManager>();
+var state = await stateProvider.GetAuthenticationStateAsync();
+var isAuthenticated = state?.User?.Identity?.IsAuthenticated == true;
+if(isAuthenticated)
+{
+    await workspaceManager.InitAsync();
+}
 await host.RunAsync();

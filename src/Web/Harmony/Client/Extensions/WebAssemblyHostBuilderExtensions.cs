@@ -53,7 +53,7 @@ namespace Harmony.Client.Extensions
                 .AddScoped<AuthenticationStateProvider, HarmonyStateProvider>()
                 .AddManagers()
                 .AddStores()
-                .AddTransient<AuthenticationHeaderHandler>()
+                .AddScoped<AuthenticationHeaderHandler>()
                 .AddScoped(sp => sp
                     .GetRequiredService<IHttpClientFactory>()
                     .CreateClient(ClientName).EnableIntercept(sp))
@@ -87,7 +87,7 @@ namespace Harmony.Client.Extensions
             {
                 if (managers.IsAssignableFrom(type.Service))
                 {
-                    services.AddTransient(type.Service, type.Implementation);
+                    services.AddScoped(type.Service, type.Implementation);
                 }
             }
 
@@ -113,7 +113,7 @@ namespace Harmony.Client.Extensions
 			{
 				if (managers.IsAssignableFrom(type.Service))
 				{
-					services.AddTransient(type.Service, type.Implementation);
+					services.AddScoped(type.Service, type.Implementation);
 				}
 			}
 

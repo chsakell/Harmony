@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Requests.Identity;
+﻿using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+using Harmony.Application.Requests.Identity;
+using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using System.Security.Claims;
@@ -29,6 +31,11 @@ namespace Harmony.Client.Pages.Authentication
                 {
                     _snackBar.Add(message, Severity.Error);
                 }
+            }
+            else
+            {
+                await _workspaceManager.InitAsync();
+                Navigate(_workspaceManager.SelectedWorkspace);
             }
         }
 
@@ -62,6 +69,12 @@ namespace Harmony.Client.Pages.Authentication
         {
             _tokenModel.Email = "john@blazorhero.com";
             _tokenModel.Password = "123Pa$$word!";
+        }
+
+        private void Navigate(GetAllForUserWorkspaceResponse workspace)
+        {
+            var slug = StringUtilities.SlugifyString(workspace.Name);
+            _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
         }
     }
 }

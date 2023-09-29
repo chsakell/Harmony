@@ -16,14 +16,14 @@ namespace Harmony.Infrastructure.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             return services
-                .AddTransient<IWorkspaceRepository, WorkspaceRepository>()
-                .AddTransient<IUserWorkspaceRepository, UserWorkspaceRepository>()
-                .AddTransient<IBoardRepository, BoardRepository>()
-                .AddTransient<IUserBoardRepository, UserBoardRepository>()
-                .AddTransient<IBoardListRepository, BoardListRepository>()
-				.AddTransient<ICardRepository, CardRepository>()
-                .AddTransient<IChecklistRepository, ChecklistRepository>()
-                .AddTransient<ICheckListItemRepository, CheckListItemRepository>();
+                .AddScoped<IWorkspaceRepository, WorkspaceRepository>()
+                .AddScoped<IUserWorkspaceRepository, UserWorkspaceRepository>()
+                .AddScoped<IBoardRepository, BoardRepository>()
+                .AddScoped<IUserBoardRepository, UserBoardRepository>()
+                .AddScoped<IBoardListRepository, BoardListRepository>()
+				.AddScoped<ICardRepository, CardRepository>()
+                .AddScoped<IChecklistRepository, ChecklistRepository>()
+                .AddScoped<ICheckListItemRepository, CheckListItemRepository>();
 		}
     }
 }

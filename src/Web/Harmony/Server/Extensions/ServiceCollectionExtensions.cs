@@ -43,14 +43,14 @@ namespace Harmony.Server.Extensions
 
         internal static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddTransient<IRoleClaimService, RoleClaimService>();
-            services.AddTransient<ITokenService, IdentityService>();
-            services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IUploadService, UploadService>();
-			services.AddTransient<ICardService, CardService>();
-			//services.AddTransient<IAuditService, AuditService>();
+            services.AddScoped<IRoleClaimService, RoleClaimService>();
+            services.AddScoped<ITokenService, IdentityService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUploadService, UploadService>();
+			services.AddScoped<ICardService, CardService>();
+			//services.AddScoped<IAuditService, AuditService>();
 			return services;
         }
 
@@ -182,7 +182,7 @@ namespace Harmony.Server.Extensions
             => services
                 .AddDbContext<HarmonyContext>(options => options
                     .UseSqlServer(configuration.GetConnectionString("DefaultConnection")))
-                .AddTransient<IDatabaseSeeder, DatabaseRolesSeeder>();
+                .AddScoped<IDatabaseSeeder, DatabaseRolesSeeder>();
 
         internal static IServiceCollection AddIdentity(this IServiceCollection services)
         {
@@ -271,7 +271,7 @@ namespace Harmony.Server.Extensions
         // we don't need this
         internal static IServiceCollection AddServerLocalization(this IServiceCollection services)
         {
-            //services.TryAddTransient(typeof(IStringLocalizer<>), typeof(ServerLocalizer<>));
+            //services.TryAddScoped(typeof(IStringLocalizer<>), typeof(ServerLocalizer<>));
             return services;
         }
     }

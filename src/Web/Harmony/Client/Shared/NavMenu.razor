@@ -1,6 +1,9 @@
-﻿@* @inject Microsoft.Extensions.Localization.IStringLocalizer<NavMenu> _localizer *@
+﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<NavMenu> _localizer
+
 @using System.Security.Claims
+@using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 @using Harmony.Shared.Constants.Permission;
+@using Harmony.Shared.Utilities;
 
 <UserCard />
 <MudNavMenu>
@@ -9,18 +12,18 @@
         Swagger
     </MudNavLink>
 
-    @if (_canViewUsers || _canViewRoles)
+    @if ((_canViewUsers || _canViewRoles) && _workspaceManager.SelectedWorkspace != null)
     {
         <MudListSubheader Class="mt-2 mb-n2">Administrator</MudListSubheader>
         @if (_canViewUsers)
         {
-            <MudNavLink Href="/identity/users" Icon="@Icons.Material.Outlined.Person">
+            <MudNavLink Href="@($"{WorkspaceUrl()}/boards")" Icon="@Icons.Material.Outlined.Person">
                 Users
             </MudNavLink>
         }
         @if (_canViewRoles)
         {
-            <MudNavLink Href="/identity/roles" Icon="@Icons.Material.Outlined.Person">Roles</MudNavLink>
+            <MudNavLink Href="@($"{WorkspaceUrl()}/members")" Icon="@Icons.Material.Outlined.Person">Roles</MudNavLink>
         }
     }
 
@@ -37,5 +40,12 @@
         _authenticationStateProviderUser = await _stateProvider.GetAuthenticationStateProviderUserAsync();
         _canViewRoles = (await _authorizationService.AuthorizeAsync(_authenticationStateProviderUser, Permissions.Roles.View)).Succeeded;
         _canViewUsers = (await _authorizationService.AuthorizeAsync(_authenticationStateProviderUser, Permissions.Users.View)).Succeeded;
+    }
+
+    private string WorkspaceUrl()
+    {
+        var workspace = _workspaceManager.SelectedWorkspace;
+        var slug = StringUtilities.SlugifyString(workspace.Name);
+        return $"/workspaces/{workspace.Id}/{slug}";
     }
 }

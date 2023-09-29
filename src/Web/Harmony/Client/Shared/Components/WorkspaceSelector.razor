@@ -2,7 +2,7 @@
 
 <MudMenu Color="Color.Inherit" Label="@_localizer["Workspaces"]" MaxHeight="350"
          EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Dense="true" AnchorOrigin="Origin.BottomLeft">
-    @foreach (var workspace in _ownedWorkspaces)
+    @foreach (var workspace in _workspaceManager.UserWorkspaces)
     {
         <MudMenuItem Style="max-width: 350px" @onclick="() => Navigate(workspace)">
             <MudCard>
