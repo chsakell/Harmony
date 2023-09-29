@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Commands.Create;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -10,8 +11,8 @@ namespace Harmony.Client.Shared.Modals
         private readonly CreateBoardCommand _createBoardModel = new();
         private bool _processing;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-        List<GetAllForUserWorkspaceResponse> _ownedWorkspaces = new List<GetAllForUserWorkspaceResponse>();
-        GetAllForUserWorkspaceResponse? _selectedWorkspace;
+        List<WorkspaceDto> _ownedWorkspaces = new List<WorkspaceDto>();
+        WorkspaceDto? _selectedWorkspace;
 
         private void Cancel()
         {
@@ -49,6 +50,6 @@ namespace Harmony.Client.Shared.Modals
             _processing = false;
         }
 
-        Func<GetAllForUserWorkspaceResponse, string> converter = p => p?.Name;
+        Func<WorkspaceDto, string> converter = p => p?.Name;
     }
 }

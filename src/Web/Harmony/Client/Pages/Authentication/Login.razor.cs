@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -71,7 +72,7 @@ namespace Harmony.Client.Pages.Authentication
             _tokenModel.Password = "123Pa$$word!";
         }
 
-        private void Navigate(GetAllForUserWorkspaceResponse workspace)
+        private void Navigate(WorkspaceDto workspace)
         {
             var slug = StringUtilities.SlugifyString(workspace.Name);
             _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");

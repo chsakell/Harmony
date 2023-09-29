@@ -12,7 +12,7 @@ namespace Harmony.Application.Mappings.Management
     {
         public WorkspaceProfile()
         {
-            CreateMap<Workspace, GetAllForUserWorkspaceResponse>().ReverseMap();
+            CreateMap<Workspace, WorkspaceDto>().ReverseMap();
 			CreateMap<Board, LoadWorkspaceResponse>().ReverseMap();
 			CreateMap<Board, GetBoardResponse>();
 

@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Workspaces.Commands.Create;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Client.Infrastructure.Extensions;
@@ -13,8 +14,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         private readonly HttpClient _httpClient;
         private readonly IClientPreferenceManager _clientPreferenceManager;
 
-        public List<GetAllForUserWorkspaceResponse> UserWorkspaces { get; private set; } = new List<GetAllForUserWorkspaceResponse>();
-        public GetAllForUserWorkspaceResponse SelectedWorkspace { get; private set; }
+        public List<WorkspaceDto> UserWorkspaces { get; private set; } = new List<WorkspaceDto>();
+        public WorkspaceDto SelectedWorkspace { get; private set; }
 
         public WorkspaceManager(HttpClient client, ClientPreferenceManager clientPreferenceManager)
         {
@@ -22,16 +23,16 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             _clientPreferenceManager = clientPreferenceManager;
         }
 
-        public async Task<IResult> CreateAsync(CreateWorkspaceCommand request)
+        public async Task<IResult<Guid>> CreateAsync(CreateWorkspaceCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.WorkspaceEndpoints.Index, request);
-            return await response.ToResult();
+            return await response.ToResult<Guid>();
         }
 
-        public async Task<IResult<List<GetAllForUserWorkspaceResponse>>> GetAllAsync()
+        public async Task<IResult<List<WorkspaceDto>>> GetAllAsync()
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Index);
-            return await response.ToResult<List<GetAllForUserWorkspaceResponse>>();
+            return await response.ToResult<List<WorkspaceDto>>();
         }
 
         public async Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId)
@@ -55,18 +56,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                     if (!string.IsNullOrEmpty(selectedWorkspacePreference))
                     {
                         SelectedWorkspace = UserWorkspaces
-                            .FirstOrDefault(w => w.Id.ToString().Equals(selectedWorkspacePreference));
+                            .FirstOrDefault(w => w.Id.ToString()
+                            .Equals(selectedWorkspacePreference));
                     }
                     else
                     {
                         SelectedWorkspace = UserWorkspaces.First();
                         await _clientPreferenceManager.SetSelectedWorkspace(SelectedWorkspace.Id);
                     }
-
-                    //if (SelectedWorkspace != null)
-                    //{
-                    //    Navigate(_selectedWorkspace);
-                    //}
                 }
             }
         }
