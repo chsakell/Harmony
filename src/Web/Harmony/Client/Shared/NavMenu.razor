@@ -1,6 +1,7 @@
 ﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<NavMenu> _localizer
 
 @using System.Security.Claims
+@using Harmony.Application.DTO;
 @using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 @using Harmony.Shared.Constants.Permission;
 @using Harmony.Shared.Utilities;
@@ -34,6 +35,21 @@
 
     private bool _canViewRoles;
     private bool _canViewUsers;
+    private WorkspaceDto _selectedWorkspace;
+
+    protected override void OnInitialized()
+    {
+        _workspaceManager.OnSelectedWorkspace += SelectedWorkspaceChanged;
+    }
+
+    protected void SelectedWorkspaceChanged(object sender, WorkspaceDto selectedWorkspace)
+    {
+        if (_selectedWorkspace == null || (_selectedWorkspace.Id != selectedWorkspace.Id)) 
+        {
+            _selectedWorkspace = selectedWorkspace;
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -44,7 +60,7 @@
 
     private string WorkspaceUrl()
     {
-        var workspace = _workspaceManager.SelectedWorkspace;
+        var workspace = _selectedWorkspace ?? _workspaceManager.SelectedWorkspace;
         var slug = StringUtilities.SlugifyString(workspace.Name);
         return $"/workspaces/{workspace.Id}/{slug}";
     }

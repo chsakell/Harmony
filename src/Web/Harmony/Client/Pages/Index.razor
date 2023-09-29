@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Harmony.Shared.Utilities;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Index> _localizer
 
 <PageTitle>@_localizer["Title"]</PageTitle>
@@ -8,3 +9,12 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var workspace = _workspaceManager.SelectedWorkspace;
+        var slug = StringUtilities.SlugifyString(workspace.Name);
+        _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
+    }
+}

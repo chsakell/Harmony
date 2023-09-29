@@ -15,7 +15,22 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         private readonly IClientPreferenceManager _clientPreferenceManager;
 
         public List<WorkspaceDto> UserWorkspaces { get; private set; } = new List<WorkspaceDto>();
-        public WorkspaceDto SelectedWorkspace { get; private set; }
+
+        private WorkspaceDto _selectedWorkspace;
+        public WorkspaceDto SelectedWorkspace
+        {
+            get
+            {
+                return _selectedWorkspace;
+            }
+            set
+            {
+                _selectedWorkspace = value;
+                OnSelectedWorkspace?.Invoke(this, _selectedWorkspace);
+            }
+        }
+
+        public event EventHandler<WorkspaceDto> OnSelectedWorkspace;
 
         public WorkspaceManager(HttpClient client, ClientPreferenceManager clientPreferenceManager)
         {
@@ -26,6 +41,19 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public async Task<IResult<Guid>> CreateAsync(CreateWorkspaceCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.WorkspaceEndpoints.Index, request);
+
+            var result = await response.ToResult<Guid>();
+
+            if(result.Succeeded)
+            {
+                UserWorkspaces.Add(new WorkspaceDto()
+                {
+                    Id = result.Data,
+                    Name = request.Name,
+                    Description = request.Description
+                });
+            }
+            
             return await response.ToResult<Guid>();
         }
 
@@ -62,9 +90,20 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                     else
                     {
                         SelectedWorkspace = UserWorkspaces.First();
-                        await _clientPreferenceManager.SetSelectedWorkspace(SelectedWorkspace.Id);
+                        await _clientPreferenceManager.SetSelectedWorkspace(_selectedWorkspace.Id);
                     }
                 }
+            }
+        }
+
+        public async Task SelectWorkspace(Guid id)
+        {
+            var workspace = UserWorkspaces.FirstOrDefault(w => w.Id == id);
+
+            if(workspace != null)
+            {
+                SelectedWorkspace = workspace;
+                await _clientPreferenceManager.SetSelectedWorkspace(_selectedWorkspace.Id);
             }
         }
     }

@@ -8,16 +8,16 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Workspaces.Queries.GetAllForUser
 {
-    public class GetAllForUserWorkspacesHandler : IRequestHandler<GetAllForUserWorkspacesQuery, IResult<List<WorkspaceDto>>>
+    public class GetUserWorkspacesHandler : IRequestHandler<GetUserWorkspacesQuery, IResult<List<WorkspaceDto>>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IStringLocalizer<GetAllForUserWorkspacesHandler> _localizer;
+        private readonly IStringLocalizer<GetUserWorkspacesHandler> _localizer;
         private readonly IMapper _mapper;
 
-        public GetAllForUserWorkspacesHandler(IWorkspaceRepository workspaceRepository,
+        public GetUserWorkspacesHandler(IWorkspaceRepository workspaceRepository,
             ICurrentUserService currentUserService,
-            IStringLocalizer<GetAllForUserWorkspacesHandler> localizer,
+            IStringLocalizer<GetUserWorkspacesHandler> localizer,
             IMapper mapper)
         {
             _workspaceRepository = workspaceRepository;
@@ -26,7 +26,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetAllForUser
             _mapper = mapper;
         }
 
-        public async Task<IResult<List<WorkspaceDto>>> Handle(GetAllForUserWorkspacesQuery request, CancellationToken cancellationToken)
+        public async Task<IResult<List<WorkspaceDto>>> Handle(GetUserWorkspacesQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 

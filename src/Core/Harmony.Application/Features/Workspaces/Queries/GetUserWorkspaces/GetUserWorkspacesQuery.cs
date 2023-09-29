@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Harmony.Application.Features.Workspaces.Queries.GetAllForUser
 {
-    public class GetAllForUserWorkspacesQuery : IRequest<IResult<List<WorkspaceDto>>>
+    public class GetUserWorkspacesQuery : IRequest<IResult<List<WorkspaceDto>>>
     {
     }
 }

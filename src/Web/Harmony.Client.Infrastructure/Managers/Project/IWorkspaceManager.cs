@@ -12,7 +12,9 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         List<WorkspaceDto> UserWorkspaces { get; }
         WorkspaceDto SelectedWorkspace { get; }
         Task<IResult<Guid>> CreateAsync(CreateWorkspaceCommand request);
+        Task SelectWorkspace(Guid id);
         Task<IResult<List<WorkspaceDto>>> GetAllAsync();
         Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId);
+        event EventHandler<WorkspaceDto> OnSelectedWorkspace;
     }
 }
