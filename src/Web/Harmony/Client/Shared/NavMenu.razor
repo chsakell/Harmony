@@ -18,13 +18,13 @@
         <MudListSubheader Class="mt-2 mb-n2">Administrator</MudListSubheader>
         @if (_canViewUsers)
         {
-            <MudNavLink Href="@($"{WorkspaceUrl()}/boards")" Icon="@Icons.Material.Outlined.Person">
-                Users
+            <MudNavLink Href="@($"{WorkspaceUrl()}/boards")" Icon="@Icons.Material.Outlined.Dashboard">
+                Boards
             </MudNavLink>
         }
         @if (_canViewRoles)
         {
-            <MudNavLink Href="@($"{WorkspaceUrl()}/members")" Icon="@Icons.Material.Outlined.Person">Roles</MudNavLink>
+            <MudNavLink Href="@($"{WorkspaceUrl()}/members")" Icon="@Icons.Material.Outlined.Groups2">Members</MudNavLink>
         }
     }
 
