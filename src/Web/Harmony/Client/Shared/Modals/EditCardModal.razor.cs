@@ -108,7 +108,14 @@ namespace Harmony.Client.Shared.Modals
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<CreateCheckListModal>(_localizer["Create check list"], parameters, options);
+            
             var result = await dialog.Result;
+
+            if(result.Data is CheckListDto checkList)
+            {
+                var checkListAdded = _mapper.Map<EditableCheckListModel>(checkList);
+                _card.CheckLists.Add(checkListAdded);
+            }
         }
 
         private async Task AddCheckListItem(EditableCheckListItemModel checkListItem)

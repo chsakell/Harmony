@@ -28,7 +28,7 @@ namespace Harmony.Client.Shared.Modals
             var response = await _checkListManager
                 .CreateCheckListAsync(new CreateCheckListCommand(CardId, _createCheckListModel.Title));
 
-            MudDialog.Close();
+            MudDialog.Close(DialogResult.Ok(response.Data));
 
             DisplayMessage(response);
 
