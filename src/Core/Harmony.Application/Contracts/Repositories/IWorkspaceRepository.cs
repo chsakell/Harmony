@@ -20,5 +20,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<List<Workspace>> GetAllForUser(string userId);
 
         Task<List<Board>> LoadWorkspace(string userId, Guid workspaceId);
+        Task<List<Board>> GetWorkspaceBoards(Guid workspaceId);
     }
 }

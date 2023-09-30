@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Managers.Preferences;
@@ -67,6 +68,12 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Get(workspaceId));
             return await response.ToResult<List<LoadWorkspaceResponse>>();
+        }
+
+        public async Task<IResult<List<GetWorkspaceBoardResponse>>> GetWorkspaceBoards(string workspaceId)
+        {
+            var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.GetBoards(workspaceId));
+            return await response.ToResult<List<GetWorkspaceBoardResponse>>();
         }
 
         public async Task InitAsync()

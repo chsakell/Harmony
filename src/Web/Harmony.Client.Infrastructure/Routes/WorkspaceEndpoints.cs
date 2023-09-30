@@ -8,5 +8,15 @@
         {
             return $"{Index}{workspaceId}";
         }
+
+        public static string GetBoards(string workspaceId)
+        {
+            return $"{Get(workspaceId)}/boards/";
+        }
+
+        public static string GetMembers(string workspaceId)
+        {
+            return $"{Get(workspaceId)}/members/";
+        }
     }
 }
