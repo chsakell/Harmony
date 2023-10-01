@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
 {
-    public class GetWorkspaceUsersQuery : IRequest<IResult<List<UserResponse>>>
+    public class GetWorkspaceUsersQuery : IRequest<IResult<List<UserWorkspaceResponse>>>
     {
         public Guid WorkspaceId { get; set; }
 

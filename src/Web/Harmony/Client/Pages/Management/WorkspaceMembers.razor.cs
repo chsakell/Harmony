@@ -1,4 +1,5 @@
 ﻿
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Responses;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -13,13 +14,18 @@ namespace Harmony.Client.Pages.Management
         [Parameter]
         public string Name { get; set; }
 
-        private List<UserResponse> _members = new();
-        private UserResponse _user = new();
+        private List<UserWorkspaceResponse> _members = new();
+        private UserWorkspaceResponse _user = new();
         private string _searchString = "";
 
         private bool _loading;
 
         protected override async Task OnInitializedAsync()
+        {
+            await GetUsers();
+        }
+
+        private async Task GetUsers()
         {
             _loading = true;
 
@@ -33,20 +39,9 @@ namespace Harmony.Client.Pages.Management
             _loading = false;
         }
 
-        private async Task GetUsersAsync()
+        private async Task ReloadUsers()
         {
-            var response = await _userManager.GetAllAsync();
-            if (response.Succeeded)
-            {
-                _members = response.Data.ToList();
-            }
-            else
-            {
-                foreach (var message in response.Messages)
-                {
-                    _snackBar.Add(message, Severity.Error);
-                }
-            }
+            await GetUsers();
         }
 
         private bool Search(UserResponse user)

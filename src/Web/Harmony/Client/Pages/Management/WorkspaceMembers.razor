@@ -1,20 +1,21 @@
 ﻿@page "/workspaces/{id}/{name}/members"
+@using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 @using Harmony.Application.Responses;
 
-<MudTable Hover="true" Elevation="25" Items="_members" Dense="true" Striped="true" Filter="new Func<UserResponse, bool>(Search)" @bind-user="_user">
+<MudTable Hover="true" Elevation="25" Items="_members" Dense="true" Striped="true" Filter="new Func<UserWorkspaceResponse, bool>(Search)" @bind-user="_user">
     <ToolBarContent>
-        <div class="justify-center mud-text-align-center">
-            <MudButton DisableElevation Variant="Variant.Filled" OnClick="GetUsersAsync" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">Reload</MudButton>
+          <div class="justify-center mud-text-align-center">
+            <MudButton DisableElevation Variant="Variant.Filled" OnClick="ReloadUsers" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">Reload</MudButton>
          </div>
          <MudSpacer />
          <MudTextField @bind-Value="_searchString" Immediate="true" FullWidth=false Placeholder="Search users to add or remove from workspace" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
      </ToolBarContent>
      <HeaderContent>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.FirstName)">First Name</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.LastName)">Last Name</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.UserName)">UserName</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.EmailConfirmed)">Email Confirmation</MudTableSortLabel></MudTh>
+         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.FirstName)">First Name</MudTableSortLabel></MudTh>
+         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.LastName)">Last Name</MudTableSortLabel></MudTh>
+         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.UserName)">UserName</MudTableSortLabel></MudTh>
+         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.EmailConfirmed)">Email Confirmation</MudTableSortLabel></MudTh>
          <MudTh Style="text-align:right"></MudTh>
      </HeaderContent>
      <RowTemplate>
@@ -32,7 +33,15 @@
          </MudTd>
          <MudTd DataLabel="EmailConfirmed"><MudCheckBox @bind-Checked="@context.EmailConfirmed" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd>
          <MudTd DataLabel="Actions" Style="text-align:right">
-             @* <MudButton @onclick="()=>Manage(context)" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default">Edit</MudButton> *@
+             @if(context.IsMember)
+            {
+                <MudButton EndIcon="@Icons.Material.Outlined.PersonRemove" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error">Remove</MudButton>
+            }
+            else
+            {
+                <MudButton EndIcon="@Icons.Material.Outlined.PersonAdd" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error">Add</MudButton>
+            }
+            @* <MudButton @onclick="()=>Manage(context)" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default">Edit</MudButton> *@
          </MudTd>
      </RowTemplate>
      <PagerContent>

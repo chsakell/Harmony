@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Extensions;
@@ -77,10 +78,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<List<GetWorkspaceBoardResponse>>();
         }
 
-        public async Task<IResult<List<UserResponse>>> GetWorkspaceMembers(string workspaceId)
+        public async Task<IResult<List<UserWorkspaceResponse>>> GetWorkspaceMembers(string workspaceId)
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.GetMembers(workspaceId));
-            return await response.ToResult<List<UserResponse>>();
+            return await response.ToResult<List<UserWorkspaceResponse>>();
         }
 
         public async Task InitAsync()

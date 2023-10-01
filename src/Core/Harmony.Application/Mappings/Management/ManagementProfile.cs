@@ -4,7 +4,9 @@ using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
+using Harmony.Application.Responses;
 using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Mappings.Management
@@ -14,7 +16,9 @@ namespace Harmony.Application.Mappings.Management
         public WorkspaceProfile()
         {
             CreateMap<Workspace, WorkspaceDto>().ReverseMap();
-			CreateMap<Board, LoadWorkspaceResponse>().ReverseMap();
+            CreateMap<UserResponse, UserWorkspaceResponse>();
+
+            CreateMap<Board, LoadWorkspaceResponse>().ReverseMap();
 			CreateMap<Board, GetBoardResponse>();
             CreateMap<Board, GetWorkspaceBoardResponse>()
                 .ForMember(dto => dto.TotalUsers, opt =>
