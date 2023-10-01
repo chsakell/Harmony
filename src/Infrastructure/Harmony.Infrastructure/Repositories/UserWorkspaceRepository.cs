@@ -14,6 +14,14 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<List<string>> GetWorkspaceUsers(Guid workspaceId)
+        {
+            return await _context.UserWorkspaces
+                .Where(userWorkspace => userWorkspace.WorkspaceId == workspaceId)
+                .Select(userWorkspace => userWorkspace.UserId)
+                .ToListAsync();
+        }
+
         public async Task<int> CreateAsync(UserWorkspace userWorkspaceRepository)
         {
             await _context.UserWorkspaces.AddAsync(userWorkspaceRepository);

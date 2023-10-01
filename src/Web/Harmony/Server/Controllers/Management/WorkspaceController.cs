@@ -3,6 +3,7 @@ using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Microsoft.AspNetCore.Mvc;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 
 namespace Harmony.Server.Controllers.Management
 {
@@ -36,6 +37,13 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> GetBoards(Guid id)
         {
             return Ok(await _mediator.Send(new GetWorkspaceBoardsQuery(id)));
+        }
+        
+
+        [HttpGet("{id:guid}/members")]
+        public async Task<IActionResult> GetMembers(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetWorkspaceUsersQuery(id)));
         }
     }
 }

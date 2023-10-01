@@ -10,5 +10,7 @@ namespace Harmony.Application.Contracts.Repositories
         /// <param name="workspace"></param>
         /// <returns></returns>
         Task<int> CreateAsync(UserWorkspace userWorkspace);
+
+        Task<List<string>> GetWorkspaceUsers(Guid workspaceId);
     }
 }

@@ -15,7 +15,7 @@
 
     @if ((_canViewUsers || _canViewRoles) && _workspaceManager.SelectedWorkspace != null)
     {
-        <MudListSubheader Class="mt-2 mb-n2">Administrator</MudListSubheader>
+        <MudListSubheader Class="mt-2 mb-n2">@(_selectedWorkspace?.Name ?? _workspaceManager.SelectedWorkspace?.Name)</MudListSubheader>
         @if (_canViewUsers)
         {
             <MudNavLink Href="@($"{WorkspaceUrl()}/boards")" Icon="@Icons.Material.Outlined.Dashboard">

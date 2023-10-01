@@ -3,6 +3,7 @@ using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
+using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
@@ -17,6 +18,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<WorkspaceDto>>> GetAllAsync();
         Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId);
         Task<IResult<List<GetWorkspaceBoardResponse>>> GetWorkspaceBoards(string workspaceId);
+        Task<IResult<List<UserResponse>>> GetWorkspaceMembers(string workspaceId);
+
         event EventHandler<WorkspaceDto> OnSelectedWorkspace;
     }
 }
