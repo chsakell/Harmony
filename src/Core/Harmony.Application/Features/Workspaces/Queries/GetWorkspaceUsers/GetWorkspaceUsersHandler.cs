@@ -7,10 +7,11 @@ using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
+using Harmony.Application.Extensions;
 
 namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
 {
-    public class GetWorkspaceUsersHandler : IRequestHandler<GetWorkspaceUsersQuery, IResult<List<UserWorkspaceResponse>>>
+    public class GetWorkspaceUsersHandler : IRequestHandler<GetWorkspaceUsersQuery, PaginatedResult<UserWorkspaceResponse>>
     {
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -31,20 +32,35 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
             _mapper = mapper;
         }
 
-        public async Task<IResult<List<UserWorkspaceResponse>>> Handle(GetWorkspaceUsersQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<UserWorkspaceResponse>> Handle(GetWorkspaceUsersQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
+            Result<List<UserResponse>> users = null;
+            request.PageNumber = request.PageNumber == 0 ? 1 : request.PageNumber;
+            request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+            var totalWorkspaceUsers = await _userWorkspaceRepository.CountWorkspaceUsers(request.WorkspaceId);
+            List<string> userIds = null;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(request.SearchTerm))
             {
-                return await Result<List<UserWorkspaceResponse>>.FailAsync(_localizer["Login required to complete this operator"]);
+                userIds = await _userWorkspaceRepository
+                    .GetWorkspaceUsers(request.WorkspaceId, request.PageNumber, request.PageSize);
+
+                users = await _userService.GetAllAsync(userIds);
+            }
+            else
+            {
+                users = await _userService.Search(request.SearchTerm, 
+                            request.PageNumber, request.PageSize);
+
+                userIds = await _userWorkspaceRepository
+                    .SearchWorkspaceUsers(request.WorkspaceId, users.Data.Select(u => u.Id).ToList());
             }
 
-            var userIds = await _userWorkspaceRepository.GetWorkspaceUsers(request.WorkspaceId);
-
-            var users = await _userService.GetAllAsync(userIds);
-
             var workspaceUsers = _mapper.Map<List<UserWorkspaceResponse>>(users.Data);
+
+            var result = PaginatedResult<UserWorkspaceResponse>
+                .Success(workspaceUsers, totalWorkspaceUsers, request.PageNumber, request.PageSize);
 
             foreach (var user in workspaceUsers )
             {
@@ -54,7 +70,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
                 }
             }
 
-            return await Result<List<UserWorkspaceResponse>>.SuccessAsync(workspaceUsers);
+            return result;
         }
     }
 }

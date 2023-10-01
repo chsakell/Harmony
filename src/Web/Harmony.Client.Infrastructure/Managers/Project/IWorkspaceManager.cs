@@ -19,7 +19,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<WorkspaceDto>>> GetAllAsync();
         Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId);
         Task<IResult<List<GetWorkspaceBoardResponse>>> GetWorkspaceBoards(string workspaceId);
-        Task<IResult<List<UserWorkspaceResponse>>> GetWorkspaceMembers(string workspaceId);
+        Task<PaginatedResult<UserWorkspaceResponse>> GetWorkspaceMembers(GetWorkspaceUsersQuery request);
 
         event EventHandler<WorkspaceDto> OnSelectedWorkspace;
     }

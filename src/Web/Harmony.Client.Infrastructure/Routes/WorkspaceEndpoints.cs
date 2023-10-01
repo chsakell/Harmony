@@ -14,9 +14,18 @@
             return $"{Get(workspaceId)}/boards/";
         }
 
-        public static string GetMembers(string workspaceId)
+        public static string GetMembers(Guid workspaceId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
         {
-            return $"{Get(workspaceId)}/members/";
+            var url = $"{Get(workspaceId.ToString())}/members/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";
+            if (orderBy?.Any() == true)
+            {
+                foreach (var orderByPart in orderBy)
+                {
+                    url += $"{orderByPart},";
+                }
+                url = url[..^1];
+            }
+            return url;
         }
     }
 }

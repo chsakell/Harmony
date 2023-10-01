@@ -78,10 +78,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<List<GetWorkspaceBoardResponse>>();
         }
 
-        public async Task<IResult<List<UserWorkspaceResponse>>> GetWorkspaceMembers(string workspaceId)
+        public async Task<PaginatedResult<UserWorkspaceResponse>> GetWorkspaceMembers(GetWorkspaceUsersQuery request)
         {
-            var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.GetMembers(workspaceId));
-            return await response.ToResult<List<UserWorkspaceResponse>>();
+            var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints
+                .GetMembers(request.WorkspaceId, request.PageNumber, request.PageSize,
+                     request.SearchTerm, request.OrderBy));
+
+            return await response.ToPaginatedResult<UserWorkspaceResponse>();
         }
 
         public async Task InitAsync()
