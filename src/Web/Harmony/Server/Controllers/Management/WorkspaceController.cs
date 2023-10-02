@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
+using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 
 namespace Harmony.Server.Controllers.Management
 {
@@ -49,8 +50,14 @@ namespace Harmony.Server.Controllers.Management
                 GetWorkspaceUsersQuery(id, pageNumber, pageSize, searchTerm, orderBy, membersOnly)));
         }
 
-        [HttpPost("{id:guid}/members")]
+        [HttpPost("{id:guid}/members/add")]
         public async Task<IActionResult> AddMember(AddWorkspaceMemberCommand request)
+        {
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPost("{id:guid}/members/remove")]
+        public async Task<IActionResult> DeleteMember(RemoveWorkspaceMemberCommand request)
         {
             return Ok(await _mediator.Send(request));
         }

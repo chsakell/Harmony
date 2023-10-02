@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.Create;
+using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
@@ -22,6 +23,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<GetWorkspaceBoardResponse>>> GetWorkspaceBoards(string workspaceId);
         Task<PaginatedResult<UserWorkspaceResponse>> GetWorkspaceMembers(GetWorkspaceUsersQuery request);
         Task<IResult<bool>> AddWorkspaceMember(AddWorkspaceMemberCommand request);
+        Task<IResult<bool>> RemoveWorkspaceMember(RemoveWorkspaceMemberCommand request);
         event EventHandler<WorkspaceDto> OnSelectedWorkspace;
     }
 }

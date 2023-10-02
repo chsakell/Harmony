@@ -19,6 +19,16 @@
             return $"{Get(workspaceId)}/members/";
         }
 
+        public static string GetAddMembers(string workspaceId)
+        {
+            return $"{Get(workspaceId)}/members/add/";
+        }
+
+        public static string GetRemoveMembers(string workspaceId)
+        {
+            return $"{Get(workspaceId)}/members/remove/";
+        }
+
         public static string GetMembers(Guid workspaceId, int pageNumber, int pageSize, string searchTerm, string[] orderBy, bool membersOnly)
         {
             var url = $"{Get(workspaceId.ToString())}/members/?pageNumber={pageNumber}&pageSize={pageSize}&membersOnly={membersOnly}&searchTerm={searchTerm}&orderBy=";

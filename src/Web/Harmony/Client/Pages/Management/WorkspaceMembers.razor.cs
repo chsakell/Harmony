@@ -1,5 +1,6 @@
 ﻿
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
+using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Responses;
 using Harmony.Client.Shared.Dialogs;
@@ -92,7 +93,7 @@ namespace Harmony.Client.Pages.Management
             var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
             var result = await dialog.Result;
 
-            if (!result.Cancelled)
+            if (!result.Canceled)
             {
                 var addMemberResult = await _workspaceManager.AddWorkspaceMember(new AddWorkspaceMemberCommand()
                 {
@@ -134,11 +135,23 @@ namespace Harmony.Client.Pages.Management
                 { x => x.Color, Color.Error }
             };
 
-            var result = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var result = await dialog.Result;
 
-            if (!result.Result.IsCanceled)
+            if (!result.Canceled)
             {
+                var removeMemberResult = await _workspaceManager.RemoveWorkspaceMember(new RemoveWorkspaceMemberCommand()
+                {
+                    UserId = user.Id,
+                    WorkspaceId = Guid.Parse(Id)
+                });
 
+                if (removeMemberResult.Succeeded)
+                {
+                    user.IsMember = false;
+                }
+
+                DisplayMessage(removeMemberResult);
             }
         }
     }
