@@ -43,10 +43,16 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
 
             if (request.MembersOnly)
             {
-                userIds = await _userWorkspaceRepository
-                    .GetWorkspaceUsers(request.WorkspaceId, request.PageNumber, request.PageSize);
+                var totalUsersFound = await _userWorkspaceRepository
+                    .CountWorkspaceUsers(request.WorkspaceId, request.SearchTerm,
+                    request.PageNumber, request.PageSize);
 
-                users = await _userService.GetAllAsync(userIds);
+                var usersFound = await _userWorkspaceRepository
+                    .SearchWorkspaceUsers(request.WorkspaceId, request.SearchTerm, 
+                    request.PageNumber, request.PageSize);
+
+                return PaginatedResult<UserWorkspaceResponse>
+                .Success(usersFound, totalUsersFound, request.PageNumber, request.PageSize);
             }
             else
             {
@@ -54,7 +60,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
                             request.PageNumber, request.PageSize);
 
                 userIds = await _userWorkspaceRepository
-                    .SearchWorkspaceUsers(request.WorkspaceId, users.Data.Select(u => u.Id).ToList());
+                    .FindWorkspaceUsers(request.WorkspaceId, users.Data.Select(u => u.Id).ToList());
             }
 
             var workspaceUsers = _mapper.Map<List<UserWorkspaceResponse>>(users.Data);

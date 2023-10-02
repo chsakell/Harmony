@@ -44,7 +44,7 @@ namespace Harmony.Client.Pages.Management
 
         private void OnSearch(string text)
         {
-            _searchString = text;
+            _searchString = string.IsNullOrEmpty(text) ? null : text;
             _table.ReloadServerData();
         }
 
