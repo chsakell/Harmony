@@ -1,6 +1,7 @@
 ﻿
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Responses;
+using Harmony.Client.Shared.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -18,33 +19,11 @@ namespace Harmony.Client.Pages.Management
         private MudTable<UserWorkspaceResponse> _table;
         private string _searchString = "";
         private int _totalItems;
+        public bool _filterMembersOnly { get; set; } = true;
 
         private bool _loading;
 
-        //protected override async Task OnInitializedAsync()
-        //{
-        //    await GetUsers();
-        //}
-
-        //private async Task GetUsers()
-        //{
-        //    _loading = true;
-
-        //    var workspaceMembersResult = await _workspaceManager.GetWorkspaceMembers(Id);
-
-        //    if (workspaceMembersResult.Succeeded)
-        //    {
-        //        _members = workspaceMembersResult.Data;
-        //    }
-
-        //    _loading = false;
-        //}
-
-        //private async Task ReloadUsers()
-        //{
-        //    await GetUsers();
-        //}
-
+       
         private async Task<TableData<UserWorkspaceResponse>> ReloadData(TableState state)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
@@ -80,7 +59,8 @@ namespace Harmony.Client.Pages.Management
                 PageSize = pageSize, 
                 PageNumber = pageNumber + 1, 
                 SearchTerm = _searchString, 
-                OrderBy = orderings 
+                OrderBy = orderings,
+                MembersOnly = _filterMembersOnly
             };
 
             var response = await _workspaceManager.GetWorkspaceMembers(request);
@@ -98,26 +78,39 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        //private bool Search(UserWorkspaceResponse user)
-        //{
-        //    if (string.IsNullOrWhiteSpace(_searchString)) return true;
-        //    if (user.FirstName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-        //    {
-        //        return true;
-        //    }
-        //    if (user.LastName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-        //    {
-        //        return true;
-        //    }
-        //    if (user.Email?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-        //    {
-        //        return true;
-        //    }
-        //    if (user.UserName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
+        private async Task AddMember(UserWorkspaceResponse user)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to add {user.UserName} as a member to the workspace?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Success }
+            };
+
+            var result = _dialogService.Show<Confirmation>("Confirm", parameters);
+
+            if (!result.Result.IsCanceled)
+            {
+
+            }
+
+        }
+
+        private async Task RemoveMember(UserWorkspaceResponse user)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to remove {user.UserName} from the workspace?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var result = _dialogService.Show<Confirmation>("Confirm", parameters);
+
+            if (!result.Result.IsCanceled)
+            {
+
+            }
+        }
     }
 }

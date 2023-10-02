@@ -14,9 +14,9 @@
             return $"{Get(workspaceId)}/boards/";
         }
 
-        public static string GetMembers(Guid workspaceId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
+        public static string GetMembers(Guid workspaceId, int pageNumber, int pageSize, string searchTerm, string[] orderBy, bool membersOnly)
         {
-            var url = $"{Get(workspaceId.ToString())}/members/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";
+            var url = $"{Get(workspaceId.ToString())}/members/?pageNumber={pageNumber}&pageSize={pageSize}&membersOnly={membersOnly}&searchTerm={searchTerm}&orderBy=";
             if (orderBy?.Any() == true)
             {
                 foreach (var orderByPart in orderBy)

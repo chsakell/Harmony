@@ -41,7 +41,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
             var totalWorkspaceUsers = await _userWorkspaceRepository.CountWorkspaceUsers(request.WorkspaceId);
             List<string> userIds = null;
 
-            if (string.IsNullOrEmpty(request.SearchTerm))
+            if (request.MembersOnly)
             {
                 userIds = await _userWorkspaceRepository
                     .GetWorkspaceUsers(request.WorkspaceId, request.PageNumber, request.PageSize);

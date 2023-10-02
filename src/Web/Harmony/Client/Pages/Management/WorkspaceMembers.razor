@@ -4,49 +4,48 @@
 
 <MudTable Hover="true" Elevation="25"
           T="UserWorkspaceResponse"
-          ServerData="@(new Func<TableState, Task<TableData<UserWorkspaceResponse>>>(ReloadData))" Dense="true" Striped="true"  @ref="_table">
+          ServerData="@(new Func<TableState, Task<TableData<UserWorkspaceResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
-          <div class="justify-center mud-text-align-center">
-            <MudButton DisableElevation Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">Reload</MudButton>
-         </div>
-         <MudSpacer />
-         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Type text and press Enter" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-     </ToolBarContent>
-     <HeaderContent>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.FirstName)">First Name</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.LastName)">Last Name</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.UserName)">UserName</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
-         <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.EmailConfirmed)">Email Confirmation</MudTableSortLabel></MudTh>
-         <MudTh Style="text-align:right"></MudTh>
-     </HeaderContent>
-     <RowTemplate>
-         <MudTd DataLabel="FirstName">
-             <MudHighlighter Text="@context.FirstName" HighlightedText="@_searchString" />
-         </MudTd>
-         <MudTd DataLabel="LastName">
-             <MudHighlighter Text="@context.LastName" HighlightedText="@_searchString" />
-         </MudTd>
-         <MudTd DataLabel="UserName">
-             <MudHighlighter Text="@context.UserName" HighlightedText="@_searchString" />
-         </MudTd>
-         <MudTd DataLabel="Email">
-             <MudHighlighter Text="@context.Email" HighlightedText="@_searchString" />
-         </MudTd>
-         <MudTd DataLabel="EmailConfirmed"><MudCheckBox @bind-Checked="@context.EmailConfirmed" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd>
+        <div class="justify-center mud-text-align-center">
+            <MudCheckBox @bind-Checked="@_filterMembersOnly" Label="Members only"></MudCheckBox>
+        </div>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Type text and press Enter" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.FirstName)">First Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.LastName)">Last Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.UserName)">UserName</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserWorkspaceResponse, object>(x => x.EmailConfirmed)">Email Confirmation</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:right"></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="FirstName">
+            <MudHighlighter Text="@context.FirstName" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="LastName">
+            <MudHighlighter Text="@context.LastName" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="UserName">
+            <MudHighlighter Text="@context.UserName" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="Email">
+            <MudHighlighter Text="@context.Email" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="EmailConfirmed"><MudCheckBox @bind-Checked="@context.EmailConfirmed" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd>
          <MudTd DataLabel="Actions" Style="text-align:right">
-             @if(context.IsMember)
+             @if (context.IsMember)
             {
-                <MudButton EndIcon="@Icons.Material.Outlined.PersonRemove" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error">Remove</MudButton>
+                <MudButton OnClick="() => RemoveMember(context)" EndIcon="@Icons.Material.Outlined.PersonRemove" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error">Remove</MudButton>
             }
             else
             {
-                <MudButton EndIcon="@Icons.Material.Outlined.PersonAdd" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Success">Add</MudButton>
+                <MudButton OnClick="() => AddMember(context)" EndIcon="@Icons.Material.Outlined.PersonAdd" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Success">Add</MudButton>
             }
-            @* <MudButton @onclick="()=>Manage(context)" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default">Edit</MudButton> *@
-         </MudTd>
-     </RowTemplate>
-     <PagerContent>
-         <MudTablePager />
-     </PagerContent>
- </MudTable>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

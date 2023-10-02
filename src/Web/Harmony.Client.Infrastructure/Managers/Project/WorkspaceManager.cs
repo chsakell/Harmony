@@ -82,7 +82,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints
                 .GetMembers(request.WorkspaceId, request.PageNumber, request.PageSize,
-                     request.SearchTerm, request.OrderBy));
+                     request.SearchTerm, request.OrderBy, request.MembersOnly));
 
             return await response.ToPaginatedResult<UserWorkspaceResponse>();
         }

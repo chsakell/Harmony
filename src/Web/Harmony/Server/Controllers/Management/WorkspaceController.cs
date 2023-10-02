@@ -42,10 +42,10 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpGet("{id:guid}/members")]
         public async Task<IActionResult> GetMembers(Guid id, int pageNumber, int pageSize,
-            string searchTerm = null, string orderBy = null)
+            string searchTerm = null, string orderBy = null, bool membersOnly = false)
         {
             return Ok(await _mediator.Send(new 
-                GetWorkspaceUsersQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+                GetWorkspaceUsersQuery(id, pageNumber, pageSize, searchTerm, orderBy, membersOnly)));
         }
     }
 }
