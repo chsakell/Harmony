@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
@@ -85,6 +86,22 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                      request.SearchTerm, request.OrderBy, request.MembersOnly));
 
             return await response.ToPaginatedResult<UserWorkspaceResponse>();
+        }
+
+        public async Task<IResult<bool>> AddWorkspaceMember(AddWorkspaceMemberCommand request)
+        {
+            var response = await _httpClient.PostAsJsonAsync(Routes.WorkspaceEndpoints
+                .GetMembers(request.WorkspaceId.ToString()), request);
+
+            return await response.ToResult<bool>();
+        }
+
+        public async Task<IResult<bool>> RemoveWorkspaceMember(AddWorkspaceMemberCommand request)
+        {
+            var response = await _httpClient.PostAsJsonAsync(Routes.WorkspaceEndpoints
+                .GetMembers(request.WorkspaceId.ToString()), request);
+
+            return await response.ToResult<bool>();
         }
 
         public async Task InitAsync()

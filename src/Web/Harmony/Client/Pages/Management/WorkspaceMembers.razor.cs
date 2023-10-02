@@ -1,7 +1,9 @@
 ﻿
+using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Responses;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -87,13 +89,40 @@ namespace Harmony.Client.Pages.Management
                 { x => x.Color, Color.Success }
             };
 
-            var result = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var result = await dialog.Result;
 
-            if (!result.Result.IsCanceled)
+            if (!result.Cancelled)
             {
+                var addMemberResult = await _workspaceManager.AddWorkspaceMember(new AddWorkspaceMemberCommand()
+                {
+                    UserId = user.Id,
+                    WorkspaceId = Guid.Parse(Id)
+                });
 
+                if (addMemberResult.Succeeded)
+                {
+                    user.IsMember = true;
+                }
+
+                DisplayMessage(addMemberResult);
             }
 
+        }
+
+        private void DisplayMessage(IResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var severity = result.Succeeded ? Severity.Success : Severity.Error;
+
+            foreach (var message in result.Messages)
+            {
+                _snackBar.Add(message, severity);
+            }
         }
 
         private async Task RemoveMember(UserWorkspaceResponse user)

@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
@@ -20,7 +21,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId);
         Task<IResult<List<GetWorkspaceBoardResponse>>> GetWorkspaceBoards(string workspaceId);
         Task<PaginatedResult<UserWorkspaceResponse>> GetWorkspaceMembers(GetWorkspaceUsersQuery request);
-
+        Task<IResult<bool>> AddWorkspaceMember(AddWorkspaceMemberCommand request);
         event EventHandler<WorkspaceDto> OnSelectedWorkspace;
     }
 }

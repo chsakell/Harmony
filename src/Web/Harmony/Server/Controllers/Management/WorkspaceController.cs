@@ -4,6 +4,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Microsoft.AspNetCore.Mvc;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
+using Harmony.Application.Features.Workspaces.Commands.AddMember;
 
 namespace Harmony.Server.Controllers.Management
 {
@@ -46,6 +47,12 @@ namespace Harmony.Server.Controllers.Management
         {
             return Ok(await _mediator.Send(new 
                 GetWorkspaceUsersQuery(id, pageNumber, pageSize, searchTerm, orderBy, membersOnly)));
+        }
+
+        [HttpPost("{id:guid}/members")]
+        public async Task<IActionResult> AddMember(AddWorkspaceMemberCommand request)
+        {
+            return Ok(await _mediator.Send(request));
         }
     }
 }
