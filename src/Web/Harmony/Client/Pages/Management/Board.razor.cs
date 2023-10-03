@@ -5,11 +5,13 @@ using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Client.Infrastructure.Store.Kanban;
+using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Client.Pages.Management
 {
@@ -126,16 +128,29 @@ namespace Harmony.Client.Pages.Management
 
         private async Task ArchiveList(BoardListDto list)
         {
-            var result = await _boardListManager
-                .UpdateListStatusAsync(new UpdateListStatusCommand(list.Id, Domain.Enums.BoardListStatus.Archived));
-
-            if (result.Succeeded && result.Data)
+            var parameters = new DialogParameters<Confirmation>
             {
-                KanbanStore.ArchiveList(list);
-                _dropContainer.Refresh();
-            }
+                { x => x.ContentText, $"Are you sure you want to archive this list?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
 
-            DisplayMessage(result);
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var result = await _boardListManager
+                    .UpdateListStatusAsync(new UpdateListStatusCommand(list.Id, Domain.Enums.BoardListStatus.Archived));
+
+                if (result.Succeeded && result.Data)
+                {
+                    KanbanStore.ArchiveList(list);
+                    _dropContainer.Refresh();
+                }
+
+                DisplayMessage(result);
+            }
         }
 
         private async Task EditCard(CardDto card)
