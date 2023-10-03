@@ -14,7 +14,7 @@
             <MudGrid>
                 <MudItem sm="9">
                     <MudCard>
-                        <MudCardContent >
+                        <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="12">
                                     <EditableTextEditorField Text="@_card.Description"
@@ -106,6 +106,10 @@
                     <MudButton StartIcon="@Icons.Material.Filled.Attachment" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary">ATTACHMENT</MudButton>
+
+                    <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
+                               Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
+                               Color="Color.Error">ARCHIVE CARD</MudButton>
                 </MudItem>
             </MudGrid>
         </DialogContent>

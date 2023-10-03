@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Client.Infrastructure.Extensions;
@@ -51,6 +52,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public async Task<IResult<bool>> UpdateTitleAsync(UpdateCardTitleCommand request)
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Title(request.CardId), request);
+
+            return await response.ToResult<bool>();
+        }
+
+        public async Task<IResult<bool>> UpdateStatusAsync(UpdateCardStatusCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Status(request.CardId), request);
 
             return await response.ToResult<bool>();
         }

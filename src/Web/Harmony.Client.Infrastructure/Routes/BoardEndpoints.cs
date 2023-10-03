@@ -11,5 +11,6 @@
         public static string Description(Guid cardId) => $"{Index}/{cardId}/description/";
         public static string Title(Guid cardId) => $"{Index}/{cardId}/title/";
         public static string Checklists(Guid cardId) => $"{Index}/{cardId}/checklists/";
+        public static string Status(Guid cardId) => $"{Index}/{cardId}/status/";
     }
 }

@@ -3,15 +3,19 @@ using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Client.Infrastructure.Models.Board;
+using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Components;
+using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -158,6 +162,33 @@ namespace Harmony.Client.Shared.Modals
 
 
             DisplayMessage(response);
+        }
+
+        private async Task ArchiveCard()
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to archive this card?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var command = new UpdateCardStatusCommand(CardId, Domain.Enums.CardStatus.Archived);
+                var result = await _cardManager
+                    .UpdateStatusAsync(command);
+
+                if (result.Succeeded && result.Data)
+                {
+                    MudDialog.Close(command);
+                }
+
+                DisplayMessage(result);
+            }
         }
 
         private void DisplayMessage(IResult result)

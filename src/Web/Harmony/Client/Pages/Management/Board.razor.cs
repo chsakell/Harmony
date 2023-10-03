@@ -3,6 +3,7 @@ using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
@@ -163,9 +164,12 @@ namespace Harmony.Client.Pages.Management
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
             var result = await dialog.Result;
-            if (!result.Cancelled)
+
+            if (result.Data is UpdateCardStatusCommand command &&
+                command.Status == Domain.Enums.CardStatus.Archived)
             {
-                // TODO update workspace list or navigate to it
+                KanbanStore.ArchiveCard(command.CardId);
+                _dropContainer.Refresh();
             }
         }
 
