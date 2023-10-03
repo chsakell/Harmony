@@ -63,7 +63,7 @@
                                             <MudCardActions Class="d-flex pa-2 justify-end">
                                                 @if (checkList.NewItem != null)
                                                 {
-                                                    <MudForm Style="width:100%">
+                                                    <EditForm Model="checkList.NewItem" Style="width:100%" OnValidSubmit="() => AddCheckListItem(checkList.NewItem)">
                                                         <div class="d-flex flex-grow-1 gap-4 mb-4">
                                                             <MudPaper Class="flex-auto d-flex" Width="60%" Elevation="0">
                                                                 <MudTextField For="@(() => checkList.NewItem.Description)" @bind-Value="checkList.NewItem.Description" Label="@_localizer["Description"]" />
@@ -71,11 +71,12 @@
                                                             <MudPaper Class="flex-initial d-flex" Width="135px" Elevation="0">
                                                                 <MudTextField T="DateTime?" For="@(() => checkList.NewItem.DueDate)" @bind-Value="checkList.NewItem.DueDate" Format="yyyy-MM-dd" Label="Due date" InputType="InputType.Date" />
                                                             </MudPaper>
-
-                                                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="() => AddCheckListItem(checkList.NewItem)">@_localizer["Add"]</MudIconButton>
-                                                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Cancel" OnClick="() => checkList.NewItem = null">@_localizer["Cancel"]</MudIconButton>
                                                         </div>
-                                                    </MudForm>
+                                                        <MudPaper Class="d-flex pa-2 justify-end">
+                                                            <MudButton ButtonType="ButtonType.Submit" Disabled="string.IsNullOrEmpty(checkList.NewItem.Description)" Size="Size.Small" StartIcon="@Icons.Material.Filled.Save">@_localizer["Add"]</MudButton>
+                                                            <MudButton Size="Size.Small" StartIcon="@Icons.Material.Filled.Cancel" OnClick="() => checkList.NewItem = null">@_localizer["Cancel"]</MudButton>
+                                                        </MudPaper>
+                                                    </EditForm>
                                                 }
                                                 else
                                                 {
