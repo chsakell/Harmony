@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
@@ -13,63 +14,77 @@ using MudBlazor;
 namespace Harmony.Client.Pages.Management
 {
     public partial class Board
-	{
-		[Parameter]
-		public string Id { get; set; }
+    {
+        [Parameter]
+        public string Id { get; set; }
 
-		[Parameter]
-		public string Name { get; set; }
+        [Parameter]
+        public string Name { get; set; }
 
-		[Inject] 
-		public IKanbanStore KanbanStore { get; set; }
+        [Inject]
+        public IKanbanStore KanbanStore { get; set; }
 
-		private MudDropContainer<CardDto> _dropContainer;
+        private MudDropContainer<CardDto> _dropContainer;
 
-		protected async override Task OnInitializedAsync()
-		{
-			var result = await _boardManager.GetBoardAsync(Id);
+        protected async override Task OnInitializedAsync()
+        {
+            var result = await _boardManager.GetBoardAsync(Id);
 
-			if (result.Succeeded)
-			{
-				KanbanStore.LoadBoard(result.Data);
-			}
-		}
+            if (result.Succeeded)
+            {
+                KanbanStore.LoadBoard(result.Data);
 
-		private async Task CardMoved(MudItemDropInfo<CardDto> info)
-		{
-			if(info?.Item == null)
-			{
-				return;
-			};
+                _checkListItemManager.OnCardItemChecked += CheckListItemManager_OnCardItemChecked;
+            }
+        }
 
-			var moveToListId = Guid.Parse(info.DropzoneIdentifier);
-			var currentListId = info.Item.BoardListId;
-			var newPosition = (byte)info.IndexInZone;
+        private void CheckListItemManager_OnCardItemChecked(object? sender, CardItemCheckedEvent e)
+        {
+            KanbanStore.UpdateTodalCardItemsCompleted(e.CardId, e.IsChecked);
 
-			if(moveToListId == currentListId && info.Item.Position == newPosition)
-			{
-				return;
-			}
+            _dropContainer.Refresh();
+        }
 
-			var result = await _cardManager
-				.MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, newPosition));
+        private async Task CardMoved(MudItemDropInfo<CardDto> info)
+        {
+            if (info?.Item == null)
+            {
+                return;
+            };
 
-			if (result.Succeeded)
-			{
-				KanbanStore.MoveCard(result.Data, currentListId, moveToListId, newPosition);
-			}
+            var moveToListId = Guid.Parse(info.DropzoneIdentifier);
+            var currentListId = info.Item.BoardListId;
+            var newPosition = (byte)info.IndexInZone;
 
-			DisplayMessage(result);
-		}
+            if (moveToListId == currentListId && info.Item.Position == newPosition)
+            {
+                return;
+            }
 
-		private async Task OpenCreateBoardListModal()
-		{
+            var result = await _cardManager
+                .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, newPosition));
+
+            if (result.Succeeded)
+            {
+                KanbanStore.MoveCard(result.Data, currentListId, moveToListId, newPosition);
+
+                if (currentListId != moveToListId)
+                {
+                    _dropContainer.Refresh();
+                }
+            }
+
+            DisplayMessage(result);
+        }
+
+        private async Task OpenCreateBoardListModal()
+        {
             var parameters = new DialogParameters<CreateBoardListModal>
             {
-                { 
-					modal => modal.CreateListCommandModel, 
-					new CreateListCommand(null, Guid.Parse(Id))
-				}
+                {
+                    modal => modal.CreateListCommandModel,
+                    new CreateListCommand(null, Guid.Parse(Id))
+                }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
@@ -77,32 +92,32 @@ namespace Harmony.Client.Pages.Management
             var result = await dialog.Result;
             if (!result.Canceled)
             {
-				var createdList = result.Data as BoardListDto;
-				if (createdList != null)
-				{
+                var createdList = result.Data as BoardListDto;
+                if (createdList != null)
+                {
                     KanbanStore.AddListToBoard(createdList);
                 }
             }
         }
 
-		private async Task AddCard(BoardListDto list)
-		{
-			var result = await _cardManager
-				.CreateCardAsync(new CreateCardCommand(list.CreateCard.Name, Guid.Parse(Id), list.Id));
+        private async Task AddCard(BoardListDto list)
+        {
+            var result = await _cardManager
+                .CreateCardAsync(new CreateCardCommand(list.CreateCard.Name, Guid.Parse(Id), list.Id));
 
-			if (result.Succeeded)
-			{
-				var cardAdded = result.Data;
-				
-				KanbanStore.AddCardToList(cardAdded, list);
-				_dropContainer.Refresh();
-			}
+            if (result.Succeeded)
+            {
+                var cardAdded = result.Data;
 
-			DisplayMessage(result);
-		}
+                KanbanStore.AddCardToList(cardAdded, list);
+                _dropContainer.Refresh();
+            }
 
-		private async Task ArchiveList(BoardListDto list)
-		{
+            DisplayMessage(result);
+        }
+
+        private async Task ArchiveList(BoardListDto list)
+        {
             var result = await _boardListManager
                 .UpdateListStatusAsync(new UpdateListStatusCommand(list.Id, Domain.Enums.BoardListStatus.Archived));
 
@@ -113,10 +128,10 @@ namespace Harmony.Client.Pages.Management
             }
 
             DisplayMessage(result);
-		}
+        }
 
-		private async Task EditCard(CardDto card)
-		{
+        private async Task EditCard(CardDto card)
+        {
             var parameters = new DialogParameters<EditCardModal>
             {
                 { c => c.CardId, card.Id }
@@ -133,18 +148,18 @@ namespace Harmony.Client.Pages.Management
 
 
         private void DisplayMessage(IResult result)
-		{
-			if(result == null)
-			{
-				return;
-			}
+        {
+            if (result == null)
+            {
+                return;
+            }
 
-			var severity = result.Succeeded ? Severity.Success : Severity.Error;
+            var severity = result.Succeeded ? Severity.Success : Severity.Error;
 
-			foreach (var message in result.Messages)
-			{
-				_snackBar.Add(message, severity);
-			}
-		}
-	}
+            foreach (var message in result.Messages)
+            {
+                _snackBar.Add(message, severity);
+            }
+        }
+    }
 }

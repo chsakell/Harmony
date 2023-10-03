@@ -83,5 +83,23 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 		{
 			_board.Lists.RemoveAll(l => l.Id == list.Id);
 		}
+
+		public void UpdateTodalCardItemsCompleted(Guid cardId, bool increase)
+		{
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                switch (increase)
+                {
+                    case true:
+                        card.TotalItemsCompleted++;
+                        break;
+                    case false:
+                        card.TotalItemsCompleted--;
+                        break;
+                }
+            }
+        }
 	}
 }

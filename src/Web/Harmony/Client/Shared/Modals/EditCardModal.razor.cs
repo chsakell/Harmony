@@ -143,8 +143,7 @@ namespace Harmony.Client.Shared.Modals
         {
             var response = await _checkListItemManager
                 .UpdateListItemCheckedAsync(new 
-                UpdateListItemCheckedCommand(item.Id, !item.IsChecked));
-
+                UpdateListItemCheckedCommand(item.Id, !item.IsChecked, CardId));
 
             DisplayMessage(response);
         }
