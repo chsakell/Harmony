@@ -101,5 +101,23 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 }
             }
         }
-	}
+
+        public void UpdateTodalCardItems(Guid cardId, bool increase)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                switch (increase)
+                {
+                    case true:
+                        card.TotalItems++;
+                        break;
+                    case false:
+                        card.TotalItems--;
+                        break;
+                }
+            }
+        }
+    }
 }

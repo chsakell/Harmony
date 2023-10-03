@@ -122,7 +122,7 @@ namespace Harmony.Client.Shared.Modals
         {
             var response = await _checkListManager
                 .CreateCheckListItemAsync(new CreateCheckListItemCommand(checkListItem.CheckListId,
-                checkListItem.Description, checkListItem.DueDate));
+                checkListItem.Description, checkListItem.DueDate, CardId));
 
             var list = _card.CheckLists.FirstOrDefault(list => list.Id == checkListItem.CheckListId);
             if (list != null)

@@ -33,7 +33,7 @@
                         <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
                             <DataAnnotationsValidator />
                             <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                                <MudTextField Clearable="true" For="() => item.CreateCard.Name" @bind-Value="item.CreateCard.Name" Placeholder="Card's name.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                <MudTextField Clearable="true" For="() => item.CreateCard.Name" Lines="2" @bind-Value="item.CreateCard.Name" Placeholder="Card's name.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
                                 <div class="d-flex justify-space-around flex-grow-1 gap-4">
                                     <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Primary">Cancel</MudButton>
                                     <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Primary">Create</MudButton>

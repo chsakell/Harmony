@@ -17,6 +17,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     {
         private readonly HttpClient _httpClient;
         public event EventHandler<CardItemCheckedEvent> OnCardItemChecked;
+        public event EventHandler<CardItemAddedEvent> OnCardItemAdded;
 
         public CheckListItemManager(HttpClient client)
         {

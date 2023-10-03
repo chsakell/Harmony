@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
@@ -11,6 +12,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public class ChecklistManager : IChecklistManager
     {
         private readonly HttpClient _httpClient;
+        public event EventHandler<CardItemAddedEvent> OnCardItemAdded;
 
         public ChecklistManager(HttpClient client)
         {
@@ -28,7 +30,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.CheckListEndpoints.GetListItems(request.CheckListId), request);
 
-            return await response.ToResult<CheckListItemDto>();
+            var result = await response.ToResult<CheckListItemDto>();
+
+            if (result.Succeeded)
+            {
+                OnCardItemAdded?.Invoke(this, new CardItemAddedEvent(request.CardId));
+            }
+
+            return result;
         }
 
         public async Task<IResult<bool>> UpdateTitleAsync(UpdateListTitleCommand request)
