@@ -4,9 +4,9 @@
     /// Class to represent a board's labels
     /// Can be referenced to board's cards
     /// </summary>
-    public class BoardLabel : AuditableEntity<Guid>
+    public class Label : AuditableEntity<Guid>
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Colour { get; set; }
         public Board Board { get; set; }
         public Guid BoardId { get; set; }

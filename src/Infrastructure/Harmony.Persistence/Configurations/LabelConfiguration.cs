@@ -7,13 +7,13 @@ namespace Harmony.Persistence.Configurations
     /// <summary>
     /// EF Core entity configuration for Board List
     /// </summary>
-    public class BoardLabelConfiguration : IEntityTypeConfiguration<BoardLabel>
+    public class LabelConfiguration : IEntityTypeConfiguration<Label>
     {
-        public void Configure(EntityTypeBuilder<BoardLabel> builder)
+        public void Configure(EntityTypeBuilder<Label> builder)
         {
-            builder.ToTable("BoardBoardLabels");
+            builder.ToTable("Labels");
 
-            builder.Property(b => b.Name).HasMaxLength(100).IsRequired();
+            builder.Property(b => b.Title).HasMaxLength(100).IsRequired();
             builder.Property(b => b.Colour).HasMaxLength(50).IsRequired();
             builder.Property(b => b.BoardId).IsRequired();
         }

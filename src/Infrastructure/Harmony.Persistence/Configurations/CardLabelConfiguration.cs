@@ -14,7 +14,7 @@ namespace Harmony.Persistence.Configurations
             builder.ToTable("CardLabels");
 
             // composite primary key
-            builder.HasKey(cardLabel => new { cardLabel.CardId, cardLabel.BoardLabelId}); // M2M with intermediate table
+            builder.HasKey(cardLabel => new { cardLabel.CardId, cardLabel.LabelId}); // M2M with intermediate table
 
             // M-M relationship is actuall 2 X 1-M relationships
             // from intermidiate table to the two tables
@@ -26,9 +26,9 @@ namespace Harmony.Persistence.Configurations
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             builder
-                .HasOne(cardLabel => cardLabel.BoardLabel)
+                .HasOne(cardLabel => cardLabel.Label)
                 .WithMany(boardLabel => boardLabel.Labels)
-                .HasForeignKey(cardLabel => cardLabel.BoardLabelId);
+                .HasForeignKey(cardLabel => cardLabel.LabelId);
         }
     }
 }
