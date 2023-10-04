@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.Contracts.Repositories
 {
-    public interface IBoardLabelRepository
+    public interface ICardLabelRepository
     {
-        Task<List<Label>> GetLabels(Guid boardId);
+        Task<List<CardLabel>> GetLabels(Guid cardId);
         Task AddAsync(Label label);
         Task<int> CreateAsync(Label label);
     }

@@ -19,6 +19,15 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.Cards.FirstOrDefaultAsync(card => card.Id == cardId);
 		}
 
+        public async Task<Guid> GetBoardId(Guid cardId)
+        {
+			var card = (await _context.Cards
+					.Include(c => c.BoardList)
+				.FirstOrDefaultAsync(c => c.Id == cardId));
+
+			return card.BoardList.BoardId;
+        }
+
         public async Task<Card?> Load(Guid cardId)
         {
             return await _context.Cards
@@ -70,5 +79,5 @@ namespace Harmony.Infrastructure.Repositories
 		{
 			return await _context.Cards.Where(c => c.BoardListId == boardListId && c.Position >= position).ToListAsync();
 		}
-	}
+    }
 }

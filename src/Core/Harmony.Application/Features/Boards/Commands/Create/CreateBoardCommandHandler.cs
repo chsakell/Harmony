@@ -37,8 +37,6 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 return await Result<Guid>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            
-
             var board = new Board()
             {
                 Title = request.Title,

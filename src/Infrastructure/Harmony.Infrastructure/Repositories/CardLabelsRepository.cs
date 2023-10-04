@@ -5,19 +5,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.Repositories
 {
-    public class BoardLabelRepository : IBoardLabelRepository
+    public class CardLabelRepository : ICardLabelRepository
     {
         private readonly HarmonyContext _context;
 
-        public BoardLabelRepository(HarmonyContext context)
+        public CardLabelRepository(HarmonyContext context)
         {
             _context = context;
         }
 
-        public async Task<List<Label>> GetLabels(Guid boardId)
+        public async Task<List<CardLabel>> GetLabels(Guid cardId)
         {
-            return await _context.Labels
-                .Where(l => l.BoardId == boardId)
+            return await _context.CardLabels
+                    .Include(cl => cl.Label)
+                .Where(cl => cl.CardId == cardId)
                 .ToListAsync();
         }
 

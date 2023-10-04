@@ -4,6 +4,7 @@ using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
+using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
@@ -26,7 +27,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
             return await response.ToResult<LoadCardResponse>();
         }
-
 
         public async Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request)
 		{
@@ -62,5 +62,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
             return await response.ToResult<bool>();
         }
+
+        public async Task<IResult<GetCardLabelsResponse>> GetCardLabelsAsync(GetCardLabelsQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.CardEndpoints.GetLabels(request.CardId));
+
+            return await response.ToResult<GetCardLabelsResponse>();
+        }
+
+
     }
 }
