@@ -191,6 +191,19 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
+        private async Task EditLabels()
+        {
+            var parameters = new DialogParameters<EditCardLabelsModal>
+            {
+                { c => c.CardId, CardId }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<EditCardLabelsModal>(_localizer["Edit labels"], parameters, options);
+
+            var result = await dialog.Result;
+        }
+
         private void DisplayMessage(IResult result)
         {
             if (result == null)
