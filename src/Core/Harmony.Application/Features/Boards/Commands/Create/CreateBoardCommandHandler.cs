@@ -4,6 +4,7 @@ using MediatR;
 using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
+using Harmony.Shared.Constants.Application;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
@@ -12,16 +13,19 @@ namespace Harmony.Application.Features.Boards.Commands.Create
         private readonly IBoardRepository _boardRepository;
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IBoardLabelRepository _boardLabelRepository;
         private readonly IStringLocalizer<CreateBoardCommandHandler> _localizer;
 
         public CreateBoardCommandHandler(IBoardRepository boardRepository,
             IUserBoardRepository userBoardRepository,
             ICurrentUserService currentUserService,
+            IBoardLabelRepository boardLabelRepository,
             IStringLocalizer<CreateBoardCommandHandler> localizer)
         {
             _boardRepository = boardRepository;
             _userBoardRepository = userBoardRepository;
             _currentUserService = currentUserService;
+            _boardLabelRepository = boardLabelRepository;
             _localizer = localizer;
         }
         public async Task<Result<Guid>> Handle(CreateBoardCommand request, CancellationToken cancellationToken)
@@ -32,6 +36,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
             {
                 return await Result<Guid>.FailAsync(_localizer["Login required to complete this operator"]);
             }
+
+            
 
             var board = new Board()
             {
@@ -49,6 +55,18 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 UserId = userId,
                 BoardId = board.Id
             };
+
+            var labels = new List<Label>();
+            foreach (var colour in LabelColorsConstants.GetDefaultColors())
+            {
+                labels.Add(new Label()
+                {
+                    Colour = colour,
+                    BoardId = board.Id
+                });
+            }
+
+            board.Labels = labels;
 
             var dbResult = await _userBoardRepository.CreateAsync(userBoard);
 

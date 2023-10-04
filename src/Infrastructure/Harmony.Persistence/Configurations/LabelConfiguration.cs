@@ -13,7 +13,7 @@ namespace Harmony.Persistence.Configurations
         {
             builder.ToTable("Labels");
 
-            builder.Property(b => b.Title).HasMaxLength(100).IsRequired();
+            builder.Property(b => b.Title).HasMaxLength(50);
             builder.Property(b => b.Colour).HasMaxLength(50).IsRequired();
             builder.Property(b => b.BoardId).IsRequired();
         }

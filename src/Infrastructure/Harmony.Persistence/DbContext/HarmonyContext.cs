@@ -15,6 +15,9 @@ namespace Harmony.Persistence.DbContext
         public DbSet<CheckList> CheckLists { get; set; }
         public DbSet<CheckListItem> CheckListItems { get; set; }
 
+        public DbSet<Label> Labels { get; set; }
+        public DbSet<CardLabel> CardLabels { get; set; }
+
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {
 
