@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
@@ -11,16 +12,26 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public class BoardManager : IBoardManager
     {
         private readonly HttpClient _httpClient;
+        public event EventHandler<BoardCreatedEvent> OnBoardCreated;
 
         public BoardManager(HttpClient client)
         {
             _httpClient = client;
         }
 
-        public async Task<IResult> CreateAsync(CreateBoardCommand request)
+        public async Task<IResult<Guid>> CreateAsync(CreateBoardCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints.Index, request);
-            return await response.ToResult();
+
+            var result = await response.ToResult<Guid>();
+
+            if (result.Succeeded)
+            {
+                OnBoardCreated?.Invoke(this, new BoardCreatedEvent(request.WorkspaceId,
+                    result.Data, request.Title, request.Description, request.Visibility));
+            }
+
+            return result;
         }
 
 		public async Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request)

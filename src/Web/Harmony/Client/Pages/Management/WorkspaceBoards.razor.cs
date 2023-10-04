@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Microsoft.AspNetCore.Components;
 
 namespace Harmony.Client.Pages.Management
@@ -25,7 +27,26 @@ namespace Harmony.Client.Pages.Management
                 _boards = workspaceBoardsResult.Data;
             }
 
+            _boardManager.OnBoardCreated += BoardManager_OnBoardCreated;
+
             _loading = false;
+        }
+
+        private void BoardManager_OnBoardCreated(object? sender, BoardCreatedEvent e)
+        {
+            if(e.WorkspaceId.Equals(Id))
+            {
+                _boards.Add(new GetWorkspaceBoardResponse()
+                {
+                    Description = e.Description,
+                    Title = e.Title,
+                    Id = e.BoardId,
+                    Lists = new List<BoardListDto>(),
+                    Visibility = e.Visibility
+                });
+
+                StateHasChanged();
+            }
         }
     }
 }
