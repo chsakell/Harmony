@@ -14,7 +14,11 @@ Welcome to your new app.
     protected override async Task OnInitializedAsync()
     {
         var workspace = _workspaceManager.SelectedWorkspace;
-        var slug = StringUtilities.SlugifyString(workspace.Name);
-        _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
+
+        if (workspace != null)
+        {
+            var slug = StringUtilities.SlugifyString(workspace.Name);
+            _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
+        }
     }
 }

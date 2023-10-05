@@ -1,4 +1,8 @@
-﻿using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
+using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 
@@ -13,6 +17,27 @@ namespace Harmony.Client.Pages.Management
         public string Name { get; set; }
 
         private List<LoadWorkspaceResponse> _userBoards = new List<LoadWorkspaceResponse>();
+
+        protected override void OnInitialized()
+        {
+            _boardManager.OnBoardCreated += BoardManager_OnBoardCreated;
+        }
+
+        private void BoardManager_OnBoardCreated(object? sender, BoardCreatedEvent e)
+        {
+            if (e.WorkspaceId.Equals(Id))
+            {
+                _userBoards.Add(new LoadWorkspaceResponse()
+                {
+                    Description = e.Description,
+                    Title = e.Title,
+                    Id = e.BoardId,
+                    WorkspaceId = Guid.Parse(Id)
+                });
+
+                StateHasChanged();
+            }
+        }
 
         private void NavigateToBoard(LoadWorkspaceResponse board)
         {

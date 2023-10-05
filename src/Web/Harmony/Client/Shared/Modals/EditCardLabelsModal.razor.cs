@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Commands.Create;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
@@ -10,7 +11,7 @@ namespace Harmony.Client.Shared.Modals
 {
     public partial class EditCardLabelsModal
     {
-        private readonly CreateCheckListCommand _createCheckListModel = new();
+        private List<LabelDto> _cardLabels = new();
         private bool _processing;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
@@ -24,7 +25,18 @@ namespace Harmony.Client.Shared.Modals
 
         protected override async Task OnInitializedAsync()
         {
-            var cardLabelsResponse = await _cardManager.GetCardLabelsAsync(new GetCardLabelsQuery(CardId));
+            var cardLabelsResponse = await _cardManager
+                .GetCardLabelsAsync(new GetCardLabelsQuery(CardId));
+
+            if(cardLabelsResponse.Succeeded)
+            {
+                _cardLabels = cardLabelsResponse.Data;
+            }
+        }
+
+        private Task UpdateLabel()
+        {
+            return Task.CompletedTask;
         }
 
         private async Task SubmitAsync()

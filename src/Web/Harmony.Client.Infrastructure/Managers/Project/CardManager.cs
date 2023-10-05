@@ -63,11 +63,11 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<bool>();
         }
 
-        public async Task<IResult<GetCardLabelsResponse>> GetCardLabelsAsync(GetCardLabelsQuery request)
+        public async Task<IResult<List<LabelDto>>> GetCardLabelsAsync(GetCardLabelsQuery request)
         {
             var response = await _httpClient.GetAsync(Routes.CardEndpoints.GetLabels(request.CardId));
 
-            return await response.ToResult<GetCardLabelsResponse>();
+            return await response.ToResult<List<LabelDto>>();
         }
 
 

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Cards.Queries.GetLabels
 {
-    public class GetCardLabelsHandler : IRequestHandler<GetCardLabelsQuery, IResult<GetCardLabelsResponse>>
+    public class GetCardLabelsHandler : IRequestHandler<GetCardLabelsQuery, IResult<List<LabelDto>>>
     {
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -32,13 +32,13 @@ namespace Harmony.Application.Features.Cards.Queries.GetLabels
             _mapper = mapper;
         }
 
-        public async Task<IResult<GetCardLabelsResponse>> Handle(GetCardLabelsQuery request, CancellationToken cancellationToken)
+        public async Task<IResult<List<LabelDto>>> Handle(GetCardLabelsQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<GetCardLabelsResponse>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<List<LabelDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var boardId = await _cardRepository.GetBoardId(request.CardId);
@@ -47,19 +47,23 @@ namespace Harmony.Application.Features.Cards.Queries.GetLabels
 
             var cardLabels = await _cardLabelRepository.GetLabels(request.CardId);
 
-            var result = new GetCardLabelsResponse();
+            var labels = new List<LabelDto>();
 
             foreach (var label in boardLabels)
             {
-                result.BoardLabels.Add(_mapper.Map<LabelDto>(label));
+                labels.Add(_mapper.Map<LabelDto>(label));
             }
 
             foreach(var cardLabel in cardLabels)
             {
-                result.CardLabels.Add(cardLabel.Label.Id);
+                var label = labels.FirstOrDefault(l => l.Id == cardLabel.Label.Id);
+                if (label != null)
+                {
+                    label.IsChecked = true;
+                }
             }
 
-            return await Result<GetCardLabelsResponse>.SuccessAsync(result);
+            return await Result<List<LabelDto>>.SuccessAsync(labels);
         }
     }
 }

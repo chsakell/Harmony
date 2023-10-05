@@ -1,7 +1,7 @@
 ﻿@using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<EditCardLabelsModal> _localizer
 
-<EditForm Model="@_createCheckListModel" OnValidSubmit="SubmitAsync">
+<EditForm Model="@_cardLabels" OnValidSubmit="SubmitAsync">
     <DataAnnotationsValidator />
     <MudDialog>
         <TitleContent>
@@ -13,7 +13,25 @@
             }
         </TitleContent>
         <DialogContent>
-            <MudTextField For="@(() => _createCheckListModel.Title)" @bind-Value="_createCheckListModel.Title" Label="@_localizer["Title"]" />
+
+            <MudStack>
+                @foreach (var label in _cardLabels)
+                {
+                    <MudPaper>
+                        <MudStack Row="true">
+                            <MudPaper Width="120px"
+                                      Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"></MudPaper>
+                            <EditableTextField For="@(() => label.Title)"
+                                               AdornmentIcon="@Icons.Material.Filled.Edit"
+                                               OnSave="UpdateLabel"
+                                               Text="@label.Title" Label="@_localizer["Title"]" />
+                            <div class="d-flex align-center">
+                                <MudCheckBox @bind-Checked="@label.IsChecked" Dense="true" Color="Color.Success"></MudCheckBox>
+                            </div>
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudStack>
         </DialogContent>
         <DialogActions>
             <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>

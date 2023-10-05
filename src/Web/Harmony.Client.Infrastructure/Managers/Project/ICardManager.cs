@@ -18,6 +18,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<bool>> UpdateDescriptionAsync(UpdateCardDescriptionCommand request);
         Task<IResult<bool>> UpdateTitleAsync(UpdateCardTitleCommand request);
         Task<IResult<bool>> UpdateStatusAsync(UpdateCardStatusCommand request);
-        Task<IResult<GetCardLabelsResponse>> GetCardLabelsAsync(GetCardLabelsQuery request);
+        Task<IResult<List<LabelDto>>> GetCardLabelsAsync(GetCardLabelsQuery request);
     }
 }

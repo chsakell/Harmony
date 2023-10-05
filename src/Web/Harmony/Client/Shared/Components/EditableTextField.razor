@@ -49,7 +49,18 @@ else
     [Parameter]
     public EventCallback<string> OnSave { get; set; }
 
-    public bool IsSaveEnabled => _form.IsValid && !_originalText.Equals(Text) && !_isSaving;
+    public bool IsSaveEnabled
+    {
+        get
+        {
+            if (_originalText == null)
+            {
+                return _form.IsValid && !_isSaving;
+            }
+
+            return _form.IsValid && !_originalText.Equals(Text) && !_isSaving;
+        }
+    }
 
     private void FormValidChanged(bool isValid)
     {
