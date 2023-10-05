@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
+using Harmony.Application.Features.Labels.Commands.UpdateTitle;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -34,23 +35,17 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
-        private Task UpdateLabel()
+        private async Task UpdateLabelTitle(LabelDto label, string title)
         {
-            return Task.CompletedTask;
-        }
+            var result = await _labelManager
+                .UpdateLabelTitle(new UpdateLabelTitleCommand(label.Id, title));
 
-        private async Task SubmitAsync()
-        {
-            //_processing = true;
+            if(result.Succeeded)
+            {
+                label.Title = title;
+            }
 
-            //var response = await _checkListManager
-            //    .CreateCheckListAsync(new CreateCheckListCommand(CardId, _createCheckListModel.Title));
-
-            //MudDialog.Close(DialogResult.Ok(response.Data));
-
-            //DisplayMessage(response);
-
-            //_processing = false;
+            DisplayMessage(result);
         }
 
         private void DisplayMessage(IResult result)

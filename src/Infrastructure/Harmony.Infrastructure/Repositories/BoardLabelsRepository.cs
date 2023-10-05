@@ -14,6 +14,12 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Label?> GetLabel(Guid labelId)
+        {
+            return await _context.Labels
+                .FirstOrDefaultAsync(label => label.Id == labelId);
+        }
+
         public async Task<List<Label>> GetLabels(Guid boardId)
         {
             return await _context.Labels
@@ -32,5 +38,12 @@ namespace Harmony.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync();
         }
-	}
+
+        public async Task<int> Update(Label label)
+        {
+            _context.Labels.Update(label);
+
+            return await _context.SaveChangesAsync();
+        }
+    }
 }

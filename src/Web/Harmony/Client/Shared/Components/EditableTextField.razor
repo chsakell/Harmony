@@ -3,7 +3,7 @@
 {
     <MudForm @ref="_form" Style="width:100%" IsValidChanged="FormValidChanged">
         <MudTextField Immediate="true" @ref="_textReference"
-                      Adornment="Adornment.Start" AdornmentIcon="@AdornmentIcon"
+                      Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon"
                       For="For" @bind-Value="Text"
                       Label="@Label" />
         <MudPaper Class="d-flex pa-2 flex-row-reverse">
@@ -26,7 +26,7 @@
 }
 else
 {
-    <MudTextField Adornment="Adornment.Start" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="Edit" />
+    <MudTextField Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="Edit" />
 }
 
 @code {
