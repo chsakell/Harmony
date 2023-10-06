@@ -134,5 +134,25 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 }
             }
         }
+
+        public void UpdateCardDescription(Guid cardId, string description)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.Description = description;
+            }
+        }
+
+        public void UpdateCardTitle(Guid cardId, string title)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.Title = title;
+            }
+        }
     }
 }

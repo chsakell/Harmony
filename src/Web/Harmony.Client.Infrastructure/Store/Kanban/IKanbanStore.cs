@@ -17,5 +17,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         void ArchiveCard(Guid cardId);
         void UpdateTodalCardItemsCompleted(Guid cardId, bool increase);
         void UpdateTodalCardItems(Guid cardId, bool increase);
+        void UpdateCardDescription(Guid cardId, string description);
+        void UpdateCardTitle(Guid cardId, string title);
     }
 }

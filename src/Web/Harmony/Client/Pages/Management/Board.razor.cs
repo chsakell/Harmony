@@ -39,7 +39,23 @@ namespace Harmony.Client.Pages.Management
 
                 _checkListItemManager.OnCardItemChecked += CheckListItemManager_OnCardItemChecked;
                 _checkListManager.OnCardItemAdded += CheckListManager_OnCardItemAdded;
+                _cardManager.OnCardDescriptionChanged += CardManager_OnCardDescriptionChanged;
+                _cardManager.OnCardTitleChanged += CardManager_OnCardTitleChanged;
             }
+        }
+
+        private void CardManager_OnCardTitleChanged(object? sender, CardTitleChangedEvent e)
+        {
+            KanbanStore.UpdateCardTitle(e.CardId, e.Title);
+
+            _dropContainer.Refresh();
+        }
+
+        private void CardManager_OnCardDescriptionChanged(object? sender, CardDescriptionChangedEvent e)
+        {
+            KanbanStore.UpdateCardDescription(e.CardId, e.Description);
+
+            _dropContainer.Refresh();
         }
 
         private void CheckListManager_OnCardItemAdded(object? sender, CardItemAddedEvent e)

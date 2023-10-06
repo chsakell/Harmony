@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
@@ -13,6 +14,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 {
     public interface ICardManager : IManager
     {
+        event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
+        event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         Task<IResult<LoadCardResponse>> LoadCardAsync(LoadCardQuery request);
         Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request);
         Task<IResult<CardDto>> MoveCardAsync(MoveCardCommand request);

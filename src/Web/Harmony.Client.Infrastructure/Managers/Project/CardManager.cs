@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
@@ -17,6 +18,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public class CardManager : ICardManager
     {
         private readonly HttpClient _httpClient;
+        public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
+        public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
 
         public CardManager(HttpClient client)
         {
@@ -48,14 +51,28 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Description(request.CardId), request);
 
-            return await response.ToResult<bool>();
+            var result = await response.ToResult<bool>();
+
+            if (result.Succeeded)
+            {
+                OnCardDescriptionChanged?.Invoke(this, new CardDescriptionChangedEvent(request.CardId, request.Description));
+            }
+
+            return result;
         }
 
         public async Task<IResult<bool>> UpdateTitleAsync(UpdateCardTitleCommand request)
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Title(request.CardId), request);
 
-            return await response.ToResult<bool>();
+            var result = await response.ToResult<bool>();
+
+            if (result.Succeeded)
+            {
+                OnCardTitleChanged?.Invoke(this, new CardTitleChangedEvent(request.CardId, request.Title));
+            }
+
+            return result;
         }
 
         public async Task<IResult<bool>> UpdateStatusAsync(UpdateCardStatusCommand request)

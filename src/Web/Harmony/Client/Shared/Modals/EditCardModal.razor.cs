@@ -55,16 +55,12 @@ namespace Harmony.Client.Shared.Modals
                 cardDescription = null;
             }
 
-            _loading = true;
-
             var response = await _cardManager
                 .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription));
 
             _card.Description = cardDescription;
 
             DisplayMessage(response);
-
-            _loading = false;
         }
 
         private async Task SaveCheckListTitle(Guid checkListId, string title)
