@@ -39,6 +39,9 @@ namespace Harmony.Application.Mappings.Management
             CreateMap<Card, LoadCardResponse>();
 
             CreateMap<Label, LabelDto>();
+            CreateMap<CardLabel, LabelDto>()
+                .ForMember(dto => dto.Title, opt => 
+                    opt.MapFrom(c => c.Label.Title));
         }
 
         
