@@ -26,7 +26,7 @@
                                                        OnSave="(labelTitle) => UpdateLabelTitle(label, labelTitle)"
                                                        Text="@label.Title" Label="@_localizer["Title"]" />
                                     <div class="d-flex align-center">
-                                        <MudCheckBox @bind-Checked="@label.IsChecked" Dense="true" Color="Color.Success"></MudCheckBox>
+                                        <MudCheckBox T="bool" @bind-Checked:get="label.IsChecked" @bind-Checked:set="(isChecked) => ToggleCardLabel(label, isChecked)" Dense="true" Color="Color.Success"></MudCheckBox>
                                     </div>
                                     <div class="d-flex align-center">
                                         <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>

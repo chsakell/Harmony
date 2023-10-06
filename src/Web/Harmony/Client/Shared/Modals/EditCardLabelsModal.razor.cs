@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
+using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Labels.Commands.UpdateTitle;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
@@ -50,6 +51,16 @@ namespace Harmony.Client.Shared.Modals
             }
 
             DisplayMessage(result);
+        }
+
+        private async Task ToggleCardLabel(LabelDto label, bool isChecked)
+        {
+            var result = await _cardManager.ToggleCardLabel(new ToggleCardLabelCommand(CardId, label.Id));
+
+            if(result.Succeeded)
+            {
+                label.IsChecked = isChecked;
+            }
         }
 
         private void DisplayMessage(IResult result)

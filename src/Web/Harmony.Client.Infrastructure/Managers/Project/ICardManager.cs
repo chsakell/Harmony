@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
@@ -19,5 +20,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<bool>> UpdateTitleAsync(UpdateCardTitleCommand request);
         Task<IResult<bool>> UpdateStatusAsync(UpdateCardStatusCommand request);
         Task<IResult<List<LabelDto>>> GetCardLabelsAsync(GetCardLabelsQuery request);
+        Task<IResult<LabelDto>> ToggleCardLabel(ToggleCardLabelCommand request);
     }
 }
