@@ -77,7 +77,12 @@ namespace Harmony.Client.Pages.Management
 
             if (result.Succeeded)
             {
-                KanbanStore.MoveCard(result.Data, currentListId, moveToListId, newPosition);
+                var cardDto = result.Data;
+                cardDto.Labels = info.Item.Labels;
+                cardDto.TotalItems = info.Item.TotalItems;
+                cardDto.TotalItemsCompleted = info.Item.TotalItemsCompleted;
+
+                KanbanStore.MoveCard(cardDto, currentListId, moveToListId, newPosition);
 
                 if (currentListId != moveToListId)
                 {
