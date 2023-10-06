@@ -54,6 +54,16 @@
                     <MudText Style="font-weight:bold" Typo="Typo.body1">@context.Title</MudText>
                 </MudCardHeader>
                 <MudCardContent Class="pa-0 mt-2">
+                    @if (context.Labels.Any())
+                    {
+                        <MudPaper Class="d-flex flex-wrap" Elevation="0">
+                            @foreach (var label in context.Labels)
+                            {
+                                <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
+                                          Height="10px" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
+                            }
+                        </MudPaper>
+                    }
                     @if (!string.IsNullOrEmpty(context.Description))
                     {
                         <MudPaper>@((MarkupString)context.Description)</MudPaper>

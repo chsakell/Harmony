@@ -30,7 +30,9 @@ namespace Harmony.Application.Mappings.Management
                     opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items).Count()))
                 .ForMember(dto => dto.TotalItemsCompleted, opt =>
                     opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items)
-                            .Where(i => i.IsChecked).Count()));
+                            .Where(i => i.IsChecked).Count()))
+                .ForMember(dto => dto.Labels, opt =>
+                    opt.MapFrom(c => c.Labels.Select(cl => cl.Label)));
 
             CreateMap<CheckList, CheckListDto>();
             CreateMap<CheckListItem, CheckListItemDto>();
@@ -38,5 +40,15 @@ namespace Harmony.Application.Mappings.Management
 
             CreateMap<Label, LabelDto>();
         }
+
+        
     }
+
+    //public class LabelResolver : IValueResolver<CardLabel, LabelDto, int>
+    //{
+    //    public int Resolve(CardLabel source, LabelDto destination, int member, ResolutionContext context)
+    //    {
+    //        return source.Value1 + source.Value2;
+    //    }
+    //}
 }

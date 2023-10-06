@@ -31,6 +31,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
 
             if (string.IsNullOrEmpty(userId))
             {
+
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 

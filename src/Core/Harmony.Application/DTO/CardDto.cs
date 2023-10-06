@@ -10,5 +10,6 @@
 		public byte Position { get; set; } // position on the board list
 		public int TotalItems { get; set; }
 		public int TotalItemsCompleted { get; set; }
+		public List<LabelDto> Labels { get; set; }
 	}
 }
