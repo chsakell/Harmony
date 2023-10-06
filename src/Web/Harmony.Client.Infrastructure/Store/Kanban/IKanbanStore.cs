@@ -19,5 +19,6 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         void UpdateTodalCardItems(Guid cardId, bool increase);
         void UpdateCardDescription(Guid cardId, string description);
         void UpdateCardTitle(Guid cardId, string title);
+		void ToggleCardLabel(Guid cardId, LabelDto label);
     }
 }

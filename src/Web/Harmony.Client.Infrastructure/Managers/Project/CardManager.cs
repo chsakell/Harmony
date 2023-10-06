@@ -20,6 +20,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         private readonly HttpClient _httpClient;
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
+        public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
 
         public CardManager(HttpClient client)
         {
@@ -85,7 +86,21 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public async Task<IResult<LabelDto>> ToggleCardLabel(ToggleCardLabelCommand request)
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Labels(request.LabelId), request);
-            return await response.ToResult<LabelDto>();
+            
+            var result = await response.ToResult<LabelDto>();
+
+            if (result.Succeeded)
+            {
+                var label = result.Data ?? new LabelDto()
+                {
+                    Id = request.LabelId,
+                    IsChecked = false
+                };
+
+                OnCardLabelToggled?.Invoke(this, new CardLabelToggledEvent(request.CardId, label));
+            }
+
+            return result;
         }
 
         public async Task<IResult<List<LabelDto>>> GetCardLabelsAsync(GetCardLabelsQuery request)
