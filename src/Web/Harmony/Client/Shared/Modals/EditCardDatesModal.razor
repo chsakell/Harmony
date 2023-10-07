@@ -1,0 +1,35 @@
+﻿@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<EditCardLabelsModal> _localizer
+
+<EditForm Model="@_card">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <TitleContent>
+            @{
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Label" Class="mr-3 mb-n1" />
+                    @_localizer["Edit card dates"]
+                </MudText>
+            }
+        </TitleContent>
+        <DialogContent>
+            <MudDateRangePicker PickerVariant="PickerVariant.Static" 
+            Label="Clearable" @bind-DateRange="_dateRange" Clearable="true" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+                       ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                @if (_processing)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+                }
+                else
+                {
+                    <MudText>@_localizer["Create"]</MudText>
+                }
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

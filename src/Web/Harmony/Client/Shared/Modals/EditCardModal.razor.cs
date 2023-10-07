@@ -200,6 +200,19 @@ namespace Harmony.Client.Shared.Modals
             var result = await dialog.Result;
         }
 
+        private async Task EditDates()
+        {
+            var parameters = new DialogParameters<EditCardDatesModal>
+            {
+                { c => c.Card, _card }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<EditCardDatesModal>(_localizer["Edit dates"], parameters, options);
+
+            var result = await dialog.Result;
+        }
+
         private void DisplayMessage(IResult result)
         {
             if (result == null)

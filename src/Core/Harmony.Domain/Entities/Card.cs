@@ -19,6 +19,8 @@ namespace Harmony.Domain.Entities
         public List<CardActivity> Activities { get; set; }
         public CardStatus Status { get; set; }
         public List<CardLabel> Labels { get; set; }
+
+        public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
         public List<Attachment> Attachments { get; set; }
