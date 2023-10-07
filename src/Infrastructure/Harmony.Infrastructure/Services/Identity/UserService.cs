@@ -11,6 +11,8 @@ using Harmony.Persistence.Identity;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
+using Harmony.Domain.Entities;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Harmony.Infrastructure.Services.Identity
 {
@@ -144,6 +146,24 @@ namespace Harmony.Infrastructure.Services.Identity
             var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
             var result = _mapper.Map<UserResponse>(user);
             return await Result<UserResponse>.SuccessAsync(result);
+        }
+
+        public async Task<IResult<List<Workspace>>> GetAccessWorkspacesAsync(string userId)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.AccessWorkspaces)
+                    .ThenInclude(ac => ac.Workspace)
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
+
+            if(user == null)
+            {
+                return  await Result<List<Workspace>>.FailAsync("User not found");
+            }
+
+            var workspaces = user.AccessWorkspaces.Select(aw => aw.Workspace).ToList();
+
+            return await Result<List<Workspace>>.SuccessAsync(workspaces);
         }
 
         public async Task<IResult<UserRolesResponse>> GetRolesAsync(string userId)

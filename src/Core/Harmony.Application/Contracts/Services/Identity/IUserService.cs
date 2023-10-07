@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Application.Contracts.Services.Identity
@@ -24,6 +25,8 @@ namespace Harmony.Application.Contracts.Services.Identity
         Task<IResult> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
 
         Task<IResult> ResetPasswordAsync(ResetPasswordRequest request);
+
+        Task<IResult<List<Workspace>>> GetAccessWorkspacesAsync(string userId);
 
     }
 }

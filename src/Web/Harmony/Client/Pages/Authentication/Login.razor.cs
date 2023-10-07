@@ -36,7 +36,11 @@ namespace Harmony.Client.Pages.Authentication
             else
             {
                 await _workspaceManager.InitAsync();
-                Navigate(_workspaceManager.SelectedWorkspace);
+
+                if (_workspaceManager.SelectWorkspace != null)
+                {
+                    Navigate(_workspaceManager.SelectedWorkspace);
+                }
             }
         }
 

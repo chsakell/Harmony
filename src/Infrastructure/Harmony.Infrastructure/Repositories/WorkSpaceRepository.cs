@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Domain.Entities;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,12 @@ namespace Harmony.Infrastructure.Repositories
     public class WorkspaceRepository : IWorkspaceRepository
     {
         private readonly HarmonyContext _context;
+        private readonly IUserService _userService;
 
-        public WorkspaceRepository(HarmonyContext context)
+        public WorkspaceRepository(HarmonyContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         public async Task AddAsync(Workspace workspace)
@@ -28,6 +31,8 @@ namespace Harmony.Infrastructure.Repositories
 
         public async Task<List<Workspace>> GetAllForUser(string userId)
         {
+            var user = await _userService.GetAsync(userId);
+
             return await _context.Workspaces
                 .Where(workspace => workspace.UserId == userId)
                 .ToListAsync();

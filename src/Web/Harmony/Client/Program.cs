@@ -35,6 +35,14 @@ var state = await stateProvider.GetAuthenticationStateAsync();
 var isAuthenticated = state?.User?.Identity?.IsAuthenticated == true;
 if(isAuthenticated)
 {
-    await workspaceManager.InitAsync();
+    try
+    {
+        await workspaceManager.InitAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+    }
+    
 }
 await host.RunAsync();

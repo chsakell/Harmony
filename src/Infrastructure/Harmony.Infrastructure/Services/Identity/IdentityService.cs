@@ -42,7 +42,12 @@ namespace Harmony.Infrastructure.Services.Identity
 
             if (user == null)
             {
-                return await Result<TokenResponse>.FailAsync("User Not Found.");
+                user = await _userManager.FindByNameAsync(model.Email);
+
+                if (user == null)
+                {
+                    return await Result<TokenResponse>.FailAsync("Invalid credentials.");
+                }
             }
 
             if (!user.IsActive)

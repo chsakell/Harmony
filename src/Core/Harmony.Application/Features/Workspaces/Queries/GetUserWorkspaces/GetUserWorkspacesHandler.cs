@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.DTO;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -13,16 +14,19 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetAllForUser
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetUserWorkspacesHandler> _localizer;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
         public GetUserWorkspacesHandler(IWorkspaceRepository workspaceRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<GetUserWorkspacesHandler> localizer,
+            IUserService userService,
             IMapper mapper)
         {
             _workspaceRepository = workspaceRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -35,9 +39,9 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetAllForUser
                 return await Result<List<WorkspaceDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var userWorkspaces = await _workspaceRepository.GetAllForUser(userId);
+            var userAccessWorkspaces = await _userService.GetAccessWorkspacesAsync(userId);
 
-            var result = _mapper.Map<List<WorkspaceDto>>(userWorkspaces);
+            var result = _mapper.Map<List<WorkspaceDto>>(userAccessWorkspaces.Data);
 
             return await Result<List<WorkspaceDto>>.SuccessAsync(result);
         }
