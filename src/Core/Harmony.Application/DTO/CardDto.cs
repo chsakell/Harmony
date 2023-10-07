@@ -11,5 +11,9 @@
 		public int TotalItems { get; set; }
 		public int TotalItemsCompleted { get; set; }
 		public List<LabelDto> Labels { get; set; }
-	}
+
+        public DateTime? StartDate { get; set; }
+        public DateTime? DueDate { get; set; }
+        public DateTime? ReminderDate { get; set; }
+    }
 }

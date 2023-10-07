@@ -76,10 +76,17 @@
 
                         @if (context.TotalItems > 0)
                         {
-                            <MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Checklist" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Default)" />
-                            <MudText Typo="Typo.body2">
-                                @context.TotalItemsCompleted / @context.TotalItems
-                            </MudText>
+                            <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
+                                      Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.Checklist">
+                                <MudChip Size="Size.Small" Label="true" Color="Color.Warning" Style="color:black;">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
+                            </MudBadge>
+                        }
+                        @if (context.StartDate != null || context.DueDate != null)
+                        {
+                            <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
+                                      Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.DateRange">
+                                <MudChip Size="Size.Small" Label="true" Color="Color.Warning" Style="color:black;">@DisplayDates(context.StartDate, context.DueDate)</MudChip>
+                            </MudBadge>
                         }
 
                     </MudPaper>

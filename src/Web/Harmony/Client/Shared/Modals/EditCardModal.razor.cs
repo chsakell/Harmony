@@ -204,7 +204,9 @@ namespace Harmony.Client.Shared.Modals
         {
             var parameters = new DialogParameters<EditCardDatesModal>
             {
-                { c => c.Card, _card }
+                { c => c.CardId, CardId },
+                { c => c.StartDate, _card.StartDate },
+                { c => c.DueDate, _card.DueDate }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };

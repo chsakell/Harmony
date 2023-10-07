@@ -14,5 +14,6 @@
         public static string Checklists(Guid cardId) => $"{Index}/{cardId}/checklists/";
         public static string Status(Guid cardId) => $"{Index}/{cardId}/status/";
         public static string Labels(Guid cardId) => $"{Index}/{cardId}/labels/";
+        public static string Dates(Guid cardId) => $"{Index}/{cardId}/dates/";
     }
 }

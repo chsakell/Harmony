@@ -78,6 +78,11 @@ namespace Harmony.Client.Pages.Authentication
 
         private void Navigate(WorkspaceDto workspace)
         {
+            if(string.IsNullOrEmpty(workspace?.Name))
+            {
+                return;
+            }
+
             var slug = StringUtilities.SlugifyString(workspace.Name);
             _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
         }

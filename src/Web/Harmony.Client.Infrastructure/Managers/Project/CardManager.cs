@@ -3,6 +3,7 @@ using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
+using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
@@ -21,6 +22,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
+        public event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
 
         public CardManager(HttpClient client)
         {
@@ -110,6 +112,18 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<List<LabelDto>>();
         }
 
+        public async Task<IResult<bool>> UpdateDatesAsync(UpdateCardDatesCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Dates(request.CardId), request);
 
+            var result = await response.ToResult<bool>();
+
+            if (result.Succeeded)
+            {
+                OnCardDatesChanged?.Invoke(this, new CardDatesChangedEvent(request.CardId, request.StartDate, request.DueDate));
+            }
+
+            return result;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
+using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
@@ -69,6 +70,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("{id:guid}/labels")]
         public async Task<IActionResult> ToggleLabel(ToggleCardLabelCommand request)
+        {
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPut("{id:guid}/dates")]
+        public async Task<IActionResult> UpdateDates(UpdateCardDatesCommand request)
         {
             return Ok(await _mediator.Send(request));
         }
