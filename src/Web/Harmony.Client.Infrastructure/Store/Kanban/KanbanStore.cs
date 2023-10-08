@@ -36,7 +36,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
 
             boardList.Cards.Add(card);
-            list.CreateCard.Name = string.Empty;
+            list.CreateCard.Title = string.Empty;
             list.CreateCard.NewTaskOpen = false;
         }
 

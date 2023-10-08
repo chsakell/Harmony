@@ -10,7 +10,7 @@ namespace Harmony.Application.DTO
     public class CreateCardDto
     {
         [Required]
-        public string Name { get; set; }
+        public string Title { get; set; }
         public bool NewTaskOpen { get; set; }
     }
 }

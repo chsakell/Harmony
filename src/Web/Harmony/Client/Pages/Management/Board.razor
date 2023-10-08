@@ -2,7 +2,32 @@
 @using Harmony.Application.DTO;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Board> _localizer
 
-@if (!KanbanStore.BoardLoading)
+@if (KanbanStore.BoardLoading)
+{
+    <MudGrid>
+        @for (var i = 0; i < 3; i++)
+        {
+            <MudItem sm="4">
+                <MudCard Class="my-2" Style="position:relative;width:300px">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
+                    <MudCardContent>
+                        <MudSkeleton Width="30%" Height="42px;" />
+                        <MudSkeleton Width="80%" />
+                        <MudSkeleton Width="100%" />
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+                        <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+                    </MudCardActions>
+                    <MudOverlay Visible="KanbanStore.BoardLoading" DarkBackground="true" Absolute="true">
+                        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                    </MudOverlay>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
+else
 {
     <MudPaper Elevation="25">
         <MudToolBar>
@@ -16,37 +41,38 @@
                       ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)"
                       ItemDropped="CardMoved" Class="d-flex flex-row">
         <ChildContent>
-            @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
-            {
-                <MudPaper Elevation="0" Width="300px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
-                    <MudToolBar DisableGutters="true">
-                        <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
-                        <MudSpacer />
-                        <MudMenu Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-                            <MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
-                            <MudButton Size="Size.Small" Color="Color.Default" StartIcon="@Icons.Material.Rounded.Edit">Rename Section</MudButton>
-                        </MudMenu>
-                    </MudToolBar>
-                    <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Class="mud-height-full" AllowReorder="true" />
-                    @if (item.CreateCard.NewTaskOpen)
-                    {
-                        <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
-                            <DataAnnotationsValidator />
-                            <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                                <MudTextField Clearable="true" For="() => item.CreateCard.Name" Lines="2" @bind-Value="item.CreateCard.Name" Placeholder="Card's name.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-                                <div class="d-flex justify-space-around flex-grow-1 gap-4">
-                                    <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Primary">Cancel</MudButton>
-                                    <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Primary">Create</MudButton>
-                                </div>
-                            </MudPaper>
-                        </EditForm>
-                    }
-                    else
-                    {
-                        <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add a card</MudButton>
-                    }
-                </MudPaper>
-            }
+            <MudContainer Fixed="true" MaxWidth="MaxWidth.ExtraLarge" Class="d-flex flex-nowrap gap-4 overflow-auto flex-row mud-height-full">
+                @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
+                {
+                    <MudPaper Elevation="0" Width="300px" Class="pa-4 ma-4 flex-none mud-background-gray rounded-lg mud-height-full">
+                        <MudToolBar DisableGutters="true">
+                            <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
+                            <MudSpacer />
+                            <MudMenu Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
+                                <MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
+                            </MudMenu>
+                        </MudToolBar>
+                        <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Class="mud-height-full" AllowReorder="true" />
+                        @if (item.CreateCard.NewTaskOpen)
+                        {
+                            <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
+                                <DataAnnotationsValidator />
+                                <MudPaper Elevation="25" Class="pa-2 rounded-lg">
+                                    <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter a title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                    <div class="d-flex justify-space-around flex-grow-1 gap-4">
+                                        <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Default">Cancel</MudButton>
+                                        <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Default">Create</MudButton>
+                                    </div>
+                                </MudPaper>
+                            </EditForm>
+                        }
+                        else
+                        {
+                            <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add a card</MudButton>
+                        }
+                    </MudPaper>
+                }
+            </MudContainer>
         </ChildContent>
         <ItemRenderer>
             <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
