@@ -42,7 +42,15 @@ namespace Harmony.Client.Pages.Management
                 _cardManager.OnCardDescriptionChanged += CardManager_OnCardDescriptionChanged;
                 _cardManager.OnCardTitleChanged += CardManager_OnCardTitleChanged;
                 _cardManager.OnCardLabelToggled += CardManager_OnCardLabelToggled;
+                _cardManager.OnCardDatesChanged += CardManager_OnCardDatesChanged;
             }
+        }
+
+        private void CardManager_OnCardDatesChanged(object? sender, CardDatesChangedEvent e)
+        {
+            KanbanStore.UpdateCardDates(e.CardId, e.StartDate, e.DueDate);
+
+            _dropContainer.Refresh();
         }
 
         private void CardManager_OnCardLabelToggled(object? sender, CardLabelToggledEvent e)

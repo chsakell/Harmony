@@ -176,5 +176,16 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 }
             }
         }
+
+        public void UpdateCardDates(Guid cardId, DateTime? startDate, DateTime? dueDate)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.StartDate = startDate;
+                card.DueDate = dueDate;
+            }
+        }
     }
 }
