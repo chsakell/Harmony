@@ -4,6 +4,7 @@
 
 
 @using AutoMapper;
+@using Harmony.Client.Infrastructure.Managers.Content;
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -56,4 +57,6 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 @inject IChecklistManager _checkListManager
 @inject ICheckListItemManager _checkListItemManager
 @inject ILabelManager _labelManager
+@inject IFileManager _fileManager
+
 @inject IMapper _mapper

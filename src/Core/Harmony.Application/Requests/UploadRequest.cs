@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Enums;
+﻿using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Requests
 {
@@ -6,7 +6,7 @@ namespace Harmony.Application.Requests
     {
         public string FileName { get; set; }
         public string Extension { get; set; }
-        public UploadType UploadType { get; set; }
+        public AttachmentType Type { get; set; }
         public byte[] Data { get; set; }
     }
 }

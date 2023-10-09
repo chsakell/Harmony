@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Files\" />
+    <Folder Include="Files\Cards\Images\" />
   </ItemGroup>
 
 

@@ -4,7 +4,8 @@ namespace Harmony.Application.Contracts.Repositories
 {
     public interface ICardRepository
     {
-		Task<Card> Get(Guid cardId);
+        IQueryable<Card> Entities { get; }
+        Task<Card> Get(Guid cardId);
         Task<Guid> GetBoardId(Guid cardId);
         Task<Card> Load(Guid cardId);
         Task<Card> GetByPosition(Guid boardListId, byte position);

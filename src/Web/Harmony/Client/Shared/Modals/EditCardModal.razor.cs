@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
+using Harmony.Application.Features.Cards.Commands.UploadFile;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
@@ -17,8 +18,10 @@ using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
 namespace Harmony.Client.Shared.Modals
@@ -30,6 +33,34 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter] public Guid CardId { get; set; }
+
+        IList<IBrowserFile> files = new List<IBrowserFile>();
+        private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
+        {
+            const long maxAllowedImageSize = 10000000;
+
+            foreach (var file in files)
+            {
+                this.files.Add(file);
+
+                var extension = Path.GetExtension(file.Name);
+                var fileName = file.Name;
+                var buffer = new byte[file.Size];
+                await file.OpenReadStream(maxAllowedImageSize).ReadAsync(buffer);
+                var request = new UploadFileCommand
+                {
+                    Data = buffer,
+                    FileName = fileName,
+                    Extension = extension,
+                    CardId = CardId,
+                    Type = AttachmentType.CardImage
+                };
+
+                var result = await _fileManager.UploadFile(request);
+
+                DisplayMessage(result);
+            }
+        }
 
         private void Cancel()
         {

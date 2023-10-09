@@ -14,7 +14,9 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
-		public async Task<Card?> Get(Guid cardId)
+        public IQueryable<Card> Entities => _context.Set<Card>();
+
+        public async Task<Card?> Get(Guid cardId)
 		{
 			return await _context.Cards.FirstOrDefaultAsync(card => card.Id == cardId);
 		}

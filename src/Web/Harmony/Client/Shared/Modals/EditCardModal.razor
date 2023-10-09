@@ -104,10 +104,18 @@
                     <MudButton StartIcon="@Icons.Material.Filled.EditCalendar" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary" OnClick="EditDates">DATES</MudButton>
-                    <MudButton StartIcon="@Icons.Material.Filled.Attachment" Class="mt-2"
-                               Variant="Variant.Outlined" FullWidth="true"
-                               Color="Color.Primary">ATTACHMENT</MudButton>
-
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                       Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       FullWidth="true"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       for="@context">
+                                Upload Files
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
                     <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
                                Color="Color.Error">ARCHIVE CARD</MudButton>

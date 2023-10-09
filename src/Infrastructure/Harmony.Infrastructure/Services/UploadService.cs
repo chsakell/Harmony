@@ -12,25 +12,24 @@ namespace Harmony.Infrastructure.Services
             var streamData = new MemoryStream(request.Data);
             if (streamData.Length > 0)
             {
-                var folder = request.UploadType.ToDescriptionString();
+                var folder = request.Type.ToDescriptionString();
                 var folderName = Path.Combine("Files", folder);
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 bool exists = Directory.Exists(pathToSave);
+
                 if (!exists)
                     Directory.CreateDirectory(pathToSave);
-                var fileName = request.FileName.Trim('"');
+
+                var extension = Path.GetExtension(request.FileName);
+                var fileName = $"{Guid.NewGuid()}{extension}";
                 var fullPath = Path.Combine(pathToSave, fileName);
-                var dbPath = Path.Combine(folderName, fileName);
-                if (File.Exists(dbPath))
-                {
-                    dbPath = NextAvailableFilename(dbPath);
-                    fullPath = NextAvailableFilename(fullPath);
-                }
+
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     streamData.CopyTo(stream);
                 }
-                return dbPath;
+
+                return fileName;
             }
             else
             {

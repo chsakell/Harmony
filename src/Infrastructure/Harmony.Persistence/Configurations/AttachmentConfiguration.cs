@@ -14,7 +14,7 @@ namespace Harmony.Persistence.Configurations
             builder.ToTable("Attachments");
 
             builder.Property(a => a.FileName).HasMaxLength(300).IsRequired();
-            builder.Property(a => a.Location).HasMaxLength(300).IsRequired();
+            builder.Property(a => a.OriginalFileName).HasMaxLength(300).IsRequired();
         }
     }
 }
