@@ -108,6 +108,13 @@ else
                                 <MudChip Size="Size.Small" Label="true" Color="Color.Warning" Style="color:black;">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
                             </MudBadge>
                         }
+                        @if (context.TotalAttachments > 0)
+                        {
+                            <MudBadge Origin="Origin.TopRight" Content="context.TotalAttachments"
+                                      Overlap="true" Dot="false" Bordered="true" Color="Color.Primary">
+                                <MudIcon Icon="@Icons.Material.Filled.Attachment" Color="Color.Default" Size="Size.Medium" />
+                            </MudBadge>
+                        }
                         @if (context.StartDate != null || context.DueDate != null)
                         {
                             <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"

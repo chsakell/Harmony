@@ -32,7 +32,9 @@ namespace Harmony.Application.Mappings.Management
                     opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items)
                             .Where(i => i.IsChecked).Count()))
                 .ForMember(dto => dto.Labels, opt =>
-                    opt.MapFrom(c => c.Labels.Select(cl => cl.Label)));
+                    opt.MapFrom(c => c.Labels.Select(cl => cl.Label)))
+                .ForMember(dto => dto.TotalAttachments, opt => 
+                    opt.MapFrom(c => c.Attachments != null ? c.Attachments.Count : 0));
 
             CreateMap<CheckList, CheckListDto>();
             CreateMap<CheckListItem, CheckListItemDto>();

@@ -57,7 +57,8 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
                 Extension = command.Extension,
                 FileName = command.FileName,
                 UploadType = command.Type,
-                Url = ""
+                Url = $"files/{command.Type.ToDescriptionString()}/{newFileName}"
+                        .Replace(@"\", "/").ToLower(),
             };
 
             return await Result<UploadFileResponse>.SuccessAsync(result, "File uploaded successfully.");
