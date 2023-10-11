@@ -7,6 +7,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
+using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Shared.Wrapper;
@@ -28,5 +29,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<LabelDto>>> GetCardLabelsAsync(GetCardLabelsQuery request);
         Task<IResult<LabelDto>> ToggleCardLabel(ToggleCardLabelCommand request);
         Task<IResult<bool>> UpdateDatesAsync(UpdateCardDatesCommand request);
+        Task<IResult<List<CardActivityDto>>> GetCardActivityAsync(GetCardActivityQuery request);
     }
 }

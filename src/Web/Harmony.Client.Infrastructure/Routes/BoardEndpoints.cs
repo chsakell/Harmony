@@ -6,7 +6,7 @@
 
         public static string Get(Guid id) => $"api/cards/{id}/";
         public static string GetLabels(Guid id) => $"api/cards/{id}/labels/";
-
+        public static string GetActivity(Guid id) => $"api/cards/{id}/activity/";
         public static string Move(Guid cardId) => $"{Index}/{cardId}/move/";
 
         public static string Description(Guid cardId) => $"{Index}/{cardId}/description/";

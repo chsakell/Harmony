@@ -14,6 +14,12 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<List<CardActivity>> GetAsync(Guid cardId)
+        {
+            return await _context.CardActivities.Where(ca => ca.CardId == cardId)
+                .ToListAsync();
+        }
+
         public async Task<int> CreateAsync(CardActivity activity)
         {
             await _context.CardActivities.AddAsync(activity);

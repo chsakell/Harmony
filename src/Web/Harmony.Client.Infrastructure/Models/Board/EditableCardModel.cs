@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Client.Infrastructure.Models.Board
 {
@@ -26,6 +27,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
+        public List<CardActivityDto> Activities { get; set; } = new List<CardActivityDto>();
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

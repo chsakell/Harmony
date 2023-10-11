@@ -7,6 +7,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
+using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Client.Infrastructure.Extensions;
@@ -124,6 +125,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             }
 
             return result;
+        }
+
+        public async Task<IResult<List<CardActivityDto>>> GetCardActivityAsync(GetCardActivityQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.CardEndpoints.GetActivity(request.CardId));
+
+            return await response.ToResult<List<CardActivityDto>>();
         }
     }
 }

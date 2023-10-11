@@ -121,7 +121,7 @@
                                 </MudItem>
                                 <MudItem xs="12">
                                     <MudExpansionPanels>
-                                        <MudExpansionPanel>
+                                        <MudExpansionPanel IsExpandedChanged="LoadCardActivity">
                                             <TitleContent>
                                                 <div class="d-flex">
                                                     <MudIcon Icon="@Icons.Material.Filled.Article" class="mr-3"></MudIcon>
@@ -129,7 +129,13 @@
                                                 </div>
                                             </TitleContent>
                                             <ChildContent>
-                                                
+                                                @foreach (var activity in _card.Activities)
+                                                {
+                                                    <MudStack>
+                                                        <MudText Typo="Typo.body1">@activity.Activity</MudText>
+                                                        <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
+                                                    </MudStack>
+                                                }
                                             </ChildContent>
                                         </MudExpansionPanel>
                                     </MudExpansionPanels>

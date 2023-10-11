@@ -6,6 +6,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Commands.UploadFile;
+using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
@@ -57,7 +58,7 @@ namespace Harmony.Client.Shared.Modals
 
                 var result = await _fileManager.UploadFile(request);
 
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     _card.Attachments.Add(result.Data.Attachment);
                 }
@@ -87,7 +88,7 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task SaveDescription(string cardDescription)
         {
-            if(cardDescription.Equals("<p> </p>") || cardDescription.Equals("<p><br></p>"))
+            if (cardDescription.Equals("<p> </p>") || cardDescription.Equals("<p><br></p>"))
             {
                 cardDescription = null;
             }
@@ -145,10 +146,10 @@ namespace Harmony.Client.Shared.Modals
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<CreateCheckListModal>(_localizer["Create check list"], parameters, options);
-            
+
             var result = await dialog.Result;
 
-            if(result.Data is CheckListDto checkList)
+            if (result.Data is CheckListDto checkList)
             {
                 var checkListAdded = _mapper.Map<EditableCheckListModel>(checkList);
                 _card.CheckLists.Add(checkListAdded);
@@ -179,7 +180,7 @@ namespace Harmony.Client.Shared.Modals
         private async Task ToggleListItemChecked(EditableCheckListItemModel item)
         {
             var response = await _checkListItemManager
-                .UpdateListItemCheckedAsync(new 
+                .UpdateListItemCheckedAsync(new
                 UpdateListItemCheckedCommand(item.Id, !item.IsChecked, CardId));
 
             DisplayMessage(response);
@@ -265,6 +266,25 @@ namespace Harmony.Client.Shared.Modals
             {
                 _snackBar.Add(message, severity);
             }
+        }
+
+
+        private async Task LoadCardActivity(bool newVal)
+        {
+            if (newVal)
+            {
+                var activityResult = await _cardManager.GetCardActivityAsync(new GetCardActivityQuery(CardId));
+
+                if(activityResult.Succeeded)
+                {
+                    _card.Activities.AddRange(activityResult.Data);
+                }
+            }
+            //else
+            //{
+            //    // Reset after a while to prevent sudden collapse.
+            //    Task.Delay(350).ContinueWith(t => _panelContent = null).AndForget();
+            //}
         }
     }
 }

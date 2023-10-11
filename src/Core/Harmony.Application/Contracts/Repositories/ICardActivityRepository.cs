@@ -9,6 +9,7 @@ namespace Harmony.Application.Contracts.Repositories
 {
     public interface ICardActivityRepository
     {
+        Task<List<CardActivity>> GetAsync(Guid cardId);
         Task<int> CreateAsync(CardActivity activity);
     }
 }

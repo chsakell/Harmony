@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
+using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +67,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> GetLabels(Guid id)
         {
             return Ok(await _mediator.Send(new GetCardLabelsQuery(id)));
+        }
+
+        [HttpGet("{id:guid}/activity")]
+        public async Task<IActionResult> GetActivity(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetCardActivityQuery(id)));
         }
 
         [HttpPut("{id:guid}/labels")]

@@ -37,7 +37,6 @@ namespace Harmony.Infrastructure.Repositories
 				.Include(card => card.CheckLists)
 					.ThenInclude(list => list.Items)
 				.Include(card => card.Comments)
-				.Include(card => card.Activities)
 				.Include(card => card.Attachments)
 				.FirstOrDefaultAsync(card => card.Id == cardId);
         }

@@ -36,7 +36,10 @@ namespace Harmony.Infrastructure.Services.Management
             switch (type)
             {
                 case CardActivityType.CardTitleUpdated:
-                    activity.Activity = $"{_currentUserService.FullName} updated card's title at {date.ToString("ddd, dd MMM yyyy HH:mm")}";
+                    activity.Activity = $"{_currentUserService.FullName} updated card's title";
+                    break;
+                case CardActivityType.CardDescriptionUpdated:
+                    activity.Activity = $"{_currentUserService.FullName} updated card's description";
                     break;
 
                 default:

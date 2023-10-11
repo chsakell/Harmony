@@ -49,8 +49,8 @@ namespace Harmony.Application.Mappings.Management
             CreateMap<Attachment, AttachmentDto>()
                 .ForMember(dto => dto.Url, opt =>
                     opt.MapFrom(c => $"files/{c.Type.ToDescriptionString()}/{c.FileName}"));
-        }
 
-        
+            CreateMap<CardActivity, CardActivityDto>();
+        }
     }
 }
