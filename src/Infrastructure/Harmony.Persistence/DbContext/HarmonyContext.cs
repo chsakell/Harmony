@@ -17,6 +17,7 @@ namespace Harmony.Persistence.DbContext
 
         public DbSet<Label> Labels { get; set; }
         public DbSet<CardLabel> CardLabels { get; set; }
+        public DbSet<CardActivity> CardActivities { get; set; }
 
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {
@@ -31,7 +32,7 @@ namespace Harmony.Persistence.DbContext
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
-            configurationBuilder.Properties<DateTime>().HaveColumnType("date");
+            // configurationBuilder.Properties<DateTime>().HaveColumnType("date");
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

@@ -6,6 +6,8 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 
@@ -13,15 +15,18 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 {
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
-	private readonly IStringLocalizer<UpdateCardTitleCommandHandler> _localizer;
+    private readonly ICardActivityService _cardActivityService;
+    private readonly IStringLocalizer<UpdateCardTitleCommandHandler> _localizer;
 
 	public UpdateCardTitleCommandHandler(ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
-		IStringLocalizer<UpdateCardTitleCommandHandler> localizer)
+        ICardActivityService cardActivityService,
+        IStringLocalizer<UpdateCardTitleCommandHandler> localizer)
 	{
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
-		_localizer = localizer;
+        _cardActivityService = cardActivityService;
+        _localizer = localizer;
 	}
 	public async Task<Result<bool>> Handle(UpdateCardTitleCommand request, CancellationToken cancellationToken)
 	{
@@ -41,7 +46,9 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 
 		if (updateResult > 0)
 		{
-			
+			await _cardActivityService.CreateActivity(card.Id, userId,
+				CardActivityType.CardTitleUpdated, card.DateUpdated.Value);
+
 			return await Result<bool>.SuccessAsync(true, _localizer["Title updated"]);
 		}
 

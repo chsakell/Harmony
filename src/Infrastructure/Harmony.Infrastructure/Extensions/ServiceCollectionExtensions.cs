@@ -25,7 +25,8 @@ namespace Harmony.Infrastructure.Extensions
                 .AddScoped<IChecklistRepository, ChecklistRepository>()
                 .AddScoped<ICheckListItemRepository, CheckListItemRepository>()
                 .AddScoped<IBoardLabelRepository, BoardLabelRepository>()
-                .AddScoped<ICardLabelRepository, CardLabelRepository>();
+                .AddScoped<ICardLabelRepository, CardLabelRepository>()
+                .AddScoped<ICardActivityRepository, CardActivityRepository>();
 		}
     }
 }
