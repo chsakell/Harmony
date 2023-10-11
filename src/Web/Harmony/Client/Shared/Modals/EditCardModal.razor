@@ -20,7 +20,7 @@
                                     <EditableTextEditorField Text="@_card.Description"
                                                              OnSave="(html) => SaveDescription(html)" />
                                 </MudItem>
-                                <MudItem xs="12">
+                                <MudItem xs="12" Class="overflow-auto" Style="max-height:315px">
                                     @if (_card.Attachments.Any())
                                     {
                                         <MudStack>
@@ -32,6 +32,22 @@
                                                         <MudText Typo="Typo.body1">@attachment.OriginalFileName</MudText>
                                                         <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
                                                     </MudStack>
+                                                </MudStack>
+                                            }
+                                            @if (_card.UploadingAttachment)
+                                            {
+                                                <MudStack Row="true">
+                                                    <MudCard Style="width:100%;">
+                                                        <MudCardHeader>
+                                                            <CardHeaderAvatar>
+                                                                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Height="40px" Width="40px" />
+                                                            </CardHeaderAvatar>
+                                                            <CardHeaderContent>
+                                                                <MudSkeleton Animation="Animation.Wave" Width="40%" />
+                                                                <MudSkeleton Animation="Animation.Wave" Width="60%" />
+                                                            </CardHeaderContent>
+                                                        </MudCardHeader>
+                                                    </MudCard>
                                                 </MudStack>
                                             }
                                         </MudStack>

@@ -34,14 +34,13 @@ namespace Harmony.Client.Shared.Modals
 
         [Parameter] public Guid CardId { get; set; }
 
-        IList<IBrowserFile> files = new List<IBrowserFile>();
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
         {
             const long maxAllowedImageSize = 10000000;
 
             foreach (var file in files)
             {
-                this.files.Add(file);
+                _card.UploadingAttachment = true;
 
                 var extension = Path.GetExtension(file.Name);
                 var fileName = file.Name;
@@ -64,6 +63,8 @@ namespace Harmony.Client.Shared.Modals
                 }
 
                 DisplayMessage(result);
+
+                _card.UploadingAttachment = false;
             }
         }
 
