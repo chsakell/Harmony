@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Domain.Entities;
+using Harmony.Persistence.Converters;
 
 namespace Harmony.Persistence.Configurations
 {
@@ -16,6 +17,7 @@ namespace Harmony.Persistence.Configurations
             builder.Property(c => c.CardId).IsRequired();
             builder.Property(c => c.UserId).IsRequired();
             builder.Property(c => c.Activity).HasMaxLength(300).IsRequired();
+            builder.Property(a => a.Type).HasConversion<CardActivityTypeConverter>();
         }
     }
 }
