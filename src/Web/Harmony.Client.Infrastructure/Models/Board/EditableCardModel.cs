@@ -21,7 +21,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public EditableBoardListModel BoardList { get; set; }
         public CardStatus Status { get; set; }
         public List<EditableCheckListModel> CheckLists { get; set; }
-
+        public List<AttachmentDto> Attachments { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }

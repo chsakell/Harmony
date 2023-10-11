@@ -12,7 +12,7 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public BoardListDto BoardList { get; set; }
         public CardStatus Status { get; set; }
         public List<CheckListDto> CheckLists { get; set; }
-        //public List<CardLabel> Labels { get; set; }
+        public List<AttachmentDto> Attachments { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
     }

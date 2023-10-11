@@ -4,10 +4,10 @@ namespace Harmony.Domain.Enums
 {
     public enum AttachmentType : byte
     {
-        [Description(@"Cards\Images")]
+        [Description(@"Cards/Images")]
         CardImage,
 
-        [Description(@"Cards\Documents")]
+        [Description(@"Cards/Documents")]
         CardDocument
     }
 }

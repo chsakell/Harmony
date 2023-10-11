@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Harmony.Application.DTO;
+using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
@@ -44,16 +45,12 @@ namespace Harmony.Application.Mappings.Management
             CreateMap<CardLabel, LabelDto>()
                 .ForMember(dto => dto.Title, opt => 
                     opt.MapFrom(c => c.Label.Title));
+
+            CreateMap<Attachment, AttachmentDto>()
+                .ForMember(dto => dto.Url, opt =>
+                    opt.MapFrom(c => $"files/{c.Type.ToDescriptionString()}/{c.FileName}"));
         }
 
         
     }
-
-    //public class LabelResolver : IValueResolver<CardLabel, LabelDto, int>
-    //{
-    //    public int Resolve(CardLabel source, LabelDto destination, int member, ResolutionContext context)
-    //    {
-    //        return source.Value1 + source.Value2;
-    //    }
-    //}
 }

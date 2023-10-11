@@ -21,6 +21,23 @@
                                                              OnSave="(html) => SaveDescription(html)" />
                                 </MudItem>
                                 <MudItem xs="12">
+                                    @if (_card.Attachments.Any())
+                                    {
+                                        <MudStack>
+                                            @foreach (var attachment in _card.Attachments)
+                                            {
+                                                <MudStack Row="true">
+                                                    <MudAvatar Square="true" Image="@attachment.Url" Size="Size.Large" />
+                                                    <MudStack Justify="Justify.Center" Spacing="0">
+                                                        <MudText Typo="Typo.body1">@attachment.OriginalFileName</MudText>
+                                                        <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
+                                                    </MudStack>
+                                                </MudStack>
+                                            }
+                                        </MudStack>
+                                    }
+                                </MudItem>
+                                <MudItem xs="12">
                                     @foreach (var checkList in _card.CheckLists)
                                     {
                                         <MudCard>
