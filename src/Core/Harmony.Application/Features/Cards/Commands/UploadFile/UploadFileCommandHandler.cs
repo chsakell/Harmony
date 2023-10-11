@@ -1,6 +1,8 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Requests;
 using Harmony.Application.Specifications.Cards;
@@ -14,12 +16,15 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
     public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Result<UploadFileResponse>>
     {
         private readonly IUploadService _uploadService;
+        private readonly IMapper _mapper;
         private readonly ICardRepository _cardRepository;
 
         public UploadFileCommandHandler(IUploadService uploadService,
+            IMapper mapper,
             ICardRepository cardRepository)
         {
             _uploadService = uploadService;
+            _mapper = mapper;
             _cardRepository = cardRepository;
         }
 
@@ -52,17 +57,11 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
 
             await _cardRepository.Update(card);
 
-            var result = new UploadFileResponse()
-            {
-                Extension = command.Extension,
-                FileName = command.FileName,
-                UploadType = command.Type,
-                Url = $"files/{command.Type.ToDescriptionString()}/{newFileName}"
-                        .Replace(@"\", "/").ToLower(),
-            };
+            var attachmentDto = _mapper.Map<AttachmentDto>(attachment);
+
+            var result = new UploadFileResponse(command.CardId, attachmentDto);
 
             return await Result<UploadFileResponse>.SuccessAsync(result, "File uploaded successfully.");
         }
-
     }
 }

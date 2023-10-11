@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Cards.Commands.UploadFile;
+﻿using Harmony.Application.Events;
+using Harmony.Application.Features.Cards.Commands.UploadFile;
 using Harmony.Shared.Wrapper;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Harmony.Client.Infrastructure.Managers.Content
 {
     public interface IFileManager : IManager
     {
+        event EventHandler<AttachmentAddedEvent> OnCardAttachmentAdded;
         Task<IResult<UploadFileResponse>> UploadFile(UploadFileCommand command);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.UploadFile;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Managers.Project;
@@ -17,6 +18,7 @@ namespace Harmony.Client.Infrastructure.Managers.Content
     public class FileManager : IFileManager
     {
         private readonly HttpClient _client;
+        public event EventHandler<AttachmentAddedEvent> OnCardAttachmentAdded;
 
         public FileManager(HttpClient client)
         {
@@ -27,7 +29,15 @@ namespace Harmony.Client.Infrastructure.Managers.Content
         {
             var response = await _client.PostAsJsonAsync(Routes.FileEndpoints.Index, command);
 
-            return await response.ToResult<UploadFileResponse>();
+            var result = await response.ToResult<UploadFileResponse>();
+
+            if (result.Succeeded)
+            {
+                OnCardAttachmentAdded?.Invoke(this, 
+                    new AttachmentAddedEvent(command.CardId, result.Data.Attachment));
+            }
+
+            return result;
         }
     }
 }

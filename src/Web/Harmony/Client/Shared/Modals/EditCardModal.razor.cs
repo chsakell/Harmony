@@ -58,6 +58,11 @@ namespace Harmony.Client.Shared.Modals
 
                 var result = await _fileManager.UploadFile(request);
 
+                if(result.Succeeded)
+                {
+                    _card.Attachments.Add(result.Data.Attachment);
+                }
+
                 DisplayMessage(result);
             }
         }
