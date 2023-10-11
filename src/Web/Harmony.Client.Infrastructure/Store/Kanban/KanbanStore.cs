@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
+using Microsoft.VisualBasic;
 
 
 namespace Harmony.Client.Infrastructure.Store.Kanban
@@ -185,6 +186,16 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             {
                 card.StartDate = startDate;
                 card.DueDate = dueDate;
+            }
+        }
+
+        public void ChangeTotalCardAttachments(Guid cardId, bool increase)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.TotalAttachments += increase ? +1 : -1;
             }
         }
     }
