@@ -5,6 +5,7 @@ using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Shared.Constants.Application;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
@@ -51,7 +52,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
             var userBoard = new UserBoard()
             {
                 UserId = userId,
-                BoardId = board.Id
+                BoardId = board.Id,
+                Access = UserBoardAccess.Admin
             };
 
             var labels = new List<Label>();
