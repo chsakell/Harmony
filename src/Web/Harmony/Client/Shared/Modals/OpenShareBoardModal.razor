@@ -1,0 +1,31 @@
+﻿@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<OpenShareBoardModal> _localizer
+
+<MudDialog>
+    <TitleContent>
+        @{
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-3 mb-n1" />
+                @_localizer["Share Board"]
+            </MudText>
+        }
+    </TitleContent>
+    <DialogContent>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+        <MudButton Disabled="@(_processing)"
+                   ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+            @if (_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+            }
+            else
+            {
+                <MudText>@_localizer["Create"]</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -156,6 +156,20 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private async Task OpenShareBoardModal()
+        {
+            var parameters = new DialogParameters<OpenShareBoardModal>
+            {
+                {
+                    modal => modal.BoardId, Guid.Parse(Id)
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<OpenShareBoardModal>(_localizer["Share board"], parameters, options);
+            var result = await dialog.Result;
+        }
+
         private async Task AddCard(BoardListDto list)
         {
             var result = await _cardManager
