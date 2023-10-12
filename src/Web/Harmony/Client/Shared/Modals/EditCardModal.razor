@@ -151,6 +151,9 @@
                                                                     case CardActivityType.CardDescriptionUpdated:
                                                                         <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Default" />
                                                                         break;
+                                                                    case CardActivityType.CardDatesUpdated:
+                                                                        <MudIcon Icon="@Icons.Material.Filled.DateRange" Color="Color.Default" />
+                                                                        break;
                                                                     case CardActivityType.CheckListAdded:
                                                                     case CardActivityType.CheckListItemAdded:
                                                                         <MudIcon Icon="@Icons.Material.Filled.Checklist" Color="Color.Default" />
@@ -159,7 +162,7 @@
                                                                         <MudIcon Icon="@Icons.Material.Filled.Update" Color="Color.Default" />
                                                                         break;
                                                                 }
-                                                                <MudText Typo="Typo.body2">@activity.Activity</MudText>
+                                                                <MudText Typo="Typo.body2" Style="margin-top:2px">@((MarkupString)activity.Activity)</MudText>
                                                             </MudStack>
 
                                                         </MudCardContent>

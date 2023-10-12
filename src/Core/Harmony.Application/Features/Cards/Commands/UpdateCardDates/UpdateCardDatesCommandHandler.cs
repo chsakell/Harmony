@@ -7,6 +7,8 @@ using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
+using Harmony.Application.Helpers;
+using Microsoft.VisualBasic;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 
@@ -53,7 +55,8 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		if (updateResult > 0)
 		{
             await _cardActivityService.CreateActivity(card.Id, userId,
-                CardActivityType.CardDatesUpdated, card.DateUpdated.Value);
+                CardActivityType.CardDatesUpdated, card.DateUpdated.Value,
+                CardHelper.DisplayDates(card.StartDate, card.DueDate));
 
             return await Result<bool>.SuccessAsync(true, _localizer["Dates updated"]);
 		}

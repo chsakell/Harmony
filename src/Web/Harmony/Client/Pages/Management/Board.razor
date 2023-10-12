@@ -1,5 +1,6 @@
 ﻿@page "/boards/{id}/{name}"
 @using Harmony.Application.DTO;
+@using Harmony.Application.Helpers;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Board> _localizer
 
 @if (KanbanStore.BoardLoading)
@@ -119,7 +120,7 @@ else
                         {
                             <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
                                       Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.DateRange">
-                                <MudChip Size="Size.Small" Label="true" Color="Color.Warning" Style="color:black;">@DisplayDates(context.StartDate, context.DueDate)</MudChip>
+                                <MudChip Size="Size.Small" Label="true" Color="Color.Warning" Style="color:black;">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
                             </MudBadge>
                         }
 

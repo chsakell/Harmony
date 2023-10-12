@@ -58,19 +58,19 @@ namespace Harmony.Infrastructure.Services.Management
             switch (type)
             {
                 case CardActivityType.CardTitleUpdated:
-                    activity.Activity = $"updated card's title to {extraInfo}";
+                    activity.Activity = $"Updated card's title to <b>{extraInfo}</b>";
                     break;
                 case CardActivityType.CardDescriptionUpdated:
-                    activity.Activity = $"updated card's description";
+                    activity.Activity = $"Updated card's description";
                     break;
                 case CardActivityType.CardDatesUpdated:
-                    activity.Activity = $"updated card's dates";
+                    activity.Activity = $"Updated card's dates to <b>{extraInfo}</b>";
                     break;
                 case CardActivityType.CheckListAdded:
-                    activity.Activity = $"created check list {extraInfo}";
+                    activity.Activity = $"Created check list <b>{extraInfo}</b>";
                     break;
                 case CardActivityType.CheckListItemAdded:
-                    activity.Activity = $"added an item in {extraInfo}";
+                    activity.Activity = $"Added an item in <b>{extraInfo}</b>";
                     break;
                 default:
                     activity = null;
