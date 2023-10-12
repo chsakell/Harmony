@@ -47,7 +47,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 		if (updateResult > 0)
 		{
 			await _cardActivityService.CreateActivity(card.Id, userId,
-				CardActivityType.CardTitleUpdated, card.DateUpdated.Value);
+				CardActivityType.CardTitleUpdated, card.DateUpdated.Value, card.Title);
 
 			return await Result<bool>.SuccessAsync(true, _localizer["Title updated"]);
 		}

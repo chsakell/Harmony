@@ -6,6 +6,8 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
+using Harmony.Application.Contracts.Services.Management;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
@@ -13,16 +15,19 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
     {
         private readonly IChecklistRepository _checklistRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ICardActivityService _cardActivityService;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public CreateChecklistCommandHandler(IChecklistRepository checklistRepository,
             ICurrentUserService currentUserService,
+            ICardActivityService cardActivityService,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,
             IMapper mapper)
         {
             _checklistRepository = checklistRepository;
             _currentUserService = currentUserService;
+            _cardActivityService = cardActivityService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -49,6 +54,9 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 
             if (dbResult > 0)
             {
+                await _cardActivityService.CreateActivity(checkList.CardId, userId,
+                    CardActivityType.CheckListAdded, checkList.DateCreated, checkList.Title);
+
                 var result = _mapper.Map<CheckListDto>(checkList);
                 return await Result<CheckListDto>.SuccessAsync(result, _localizer["Card Created"]);
             }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -13,17 +14,20 @@ namespace Harmony.Application.Features.Cards.Queries.GetActivity
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetCardActivityHandler> _localizer;
         private readonly ICardActivityRepository _cardActivityRepository;
+        private readonly ICardActivityService _cardActivityService;
         private readonly IMapper _mapper;
 
         public GetCardActivityHandler(ICurrentUserService currentUserService,
             IStringLocalizer<GetCardActivityHandler> localizer,
             ICardActivityRepository cardActivityRepository,
+            ICardActivityService cardActivityService,
             IMapper mapper)
         {
 
             _currentUserService = currentUserService;
             _localizer = localizer;
             _cardActivityRepository = cardActivityRepository;
+            _cardActivityService = cardActivityService;
             _mapper = mapper;
         }
 
@@ -36,9 +40,7 @@ namespace Harmony.Application.Features.Cards.Queries.GetActivity
                 return await Result<List<CardActivityDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var activities = await _cardActivityRepository.GetAsync(request.CardId);
-
-            var result = _mapper.Map<List<CardActivityDto>>(activities);
+            var result = await _cardActivityService.GetAsync(request.CardId);
 
             return await Result<List<CardActivityDto>>.SuccessAsync(result);
         }

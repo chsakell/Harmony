@@ -1,4 +1,5 @@
-﻿using Harmony.Domain.Entities;
+﻿using Harmony.Application.DTO;
+using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Harmony.Application.Contracts.Services.Management
 {
     public interface ICardActivityService
     {
-        Task CreateActivity(Guid cardId, string userId, CardActivityType type, DateTime date);
+        Task<List<CardActivityDto>> GetAsync(Guid cardId);
+        Task CreateActivity(Guid cardId, string userId, CardActivityType type, DateTime date, string extraInfo = null);
     }
 }

@@ -7,6 +7,8 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
+using Harmony.Application.Contracts.Services.Management;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
@@ -14,16 +16,22 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
     {
         private readonly ICheckListItemRepository _checkListItemRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ICardActivityService _cardActivityService;
+        private readonly IChecklistRepository _checklistRepository;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public CreateCheckListItemCommandHandler(ICheckListItemRepository checkListItemRepository,
             ICurrentUserService currentUserService,
+            ICardActivityService cardActivityService,
+            IChecklistRepository checklistRepository,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,
             IMapper mapper)
         {
             _checkListItemRepository = checkListItemRepository;
             _currentUserService = currentUserService;
+            _cardActivityService = cardActivityService;
+            _checklistRepository = checklistRepository;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -50,6 +58,11 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 
             if (dbResult > 0)
             {
+                var checkList = await _checklistRepository.Get(request.CheckListId);
+
+                await _cardActivityService.CreateActivity(checkList.CardId, userId,
+                    CardActivityType.CheckListItemAdded, newItem.DateCreated, checkList.Title);
+
                 var result = _mapper.Map<CheckListItemDto>(newItem);
 
                 return await Result<CheckListItemDto>.SuccessAsync(result, _localizer["Item Created"]);

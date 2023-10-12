@@ -1,8 +1,12 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.DTO;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Harmony.Persistence.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,17 +18,35 @@ namespace Harmony.Infrastructure.Services.Management
 {
     public class CardActivityService : ICardActivityService
     {
-        private readonly ICurrentUserService _currentUserService;
+        private readonly UserManager<HarmonyUser> _userManager;
         private readonly ICardActivityRepository _cardActivityRepository;
 
-        public CardActivityService(ICurrentUserService currentUserService,
+        public CardActivityService(UserManager<HarmonyUser> userManager,
             ICardActivityRepository cardActivityRepository)
         {
-            _currentUserService = currentUserService;
+            _userManager = userManager;
             _cardActivityRepository = cardActivityRepository;
         }
 
-        public async Task CreateActivity(Guid cardId, string userId, CardActivityType type, DateTime date)
+        public async Task<List<CardActivityDto>> GetAsync(Guid cardId)
+        {
+            var query = from cardActivity in _cardActivityRepository.Entities
+                        join user in _userManager.Users on cardActivity.UserId equals user.Id
+                        where cardActivity.CardId == cardId
+                        select new CardActivityDto
+                        {
+                            Id = cardActivity.Id,
+                            CardId = cardActivity.CardId,
+                            Activity = cardActivity.Activity,
+                            Actor = $"{user.FirstName} {user.LastName}",
+                            DateCreated = cardActivity.DateCreated,
+                            Type = cardActivity.Type
+                        };
+
+            return await query.ToListAsync();
+        }
+
+        public async Task CreateActivity(Guid cardId, string userId, CardActivityType type, DateTime date, string? extraInfo = null)
         {
             var activity = new CardActivity()
             {
@@ -36,18 +58,26 @@ namespace Harmony.Infrastructure.Services.Management
             switch (type)
             {
                 case CardActivityType.CardTitleUpdated:
-                    activity.Activity = $"{_currentUserService.FullName} updated card's title";
+                    activity.Activity = $"updated card's title to {extraInfo}";
                     break;
                 case CardActivityType.CardDescriptionUpdated:
-                    activity.Activity = $"{_currentUserService.FullName} updated card's description";
+                    activity.Activity = $"updated card's description";
                     break;
-
+                case CardActivityType.CardDatesUpdated:
+                    activity.Activity = $"updated card's dates";
+                    break;
+                case CardActivityType.CheckListAdded:
+                    activity.Activity = $"created check list {extraInfo}";
+                    break;
+                case CardActivityType.CheckListItemAdded:
+                    activity.Activity = $"added an item in {extraInfo}";
+                    break;
                 default:
                     activity = null;
                     break;
             }
 
-            if(activity == null)
+            if (activity == null)
             {
                 return;
             }

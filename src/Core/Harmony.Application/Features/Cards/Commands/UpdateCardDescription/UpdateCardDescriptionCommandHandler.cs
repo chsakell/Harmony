@@ -6,6 +6,7 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 
@@ -14,19 +15,22 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 	private readonly ICardService _cardService;
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
-	private readonly IStringLocalizer<UpdateCardDescriptionCommandHandler> _localizer;
+    private readonly ICardActivityService _cardActivityService;
+    private readonly IStringLocalizer<UpdateCardDescriptionCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
 	public UpdateCardDescriptionCommandHandler(ICardService cardService,
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
+		ICardActivityService cardActivityService,
 		IStringLocalizer<UpdateCardDescriptionCommandHandler> localizer,
 		IMapper mapper)
 	{
 		_cardService = cardService;
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
-		_localizer = localizer;
+        _cardActivityService = cardActivityService;
+        _localizer = localizer;
 		_mapper = mapper;
 	}
 	public async Task<Result<bool>> Handle(UpdateCardDescriptionCommand request, CancellationToken cancellationToken)
@@ -47,8 +51,10 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 
 		if (updateResult > 0)
 		{
-			
-			return await Result<bool>.SuccessAsync(true, _localizer["Description updated"]);
+            await _cardActivityService.CreateActivity(card.Id, userId,
+                CardActivityType.CardDescriptionUpdated, card.DateUpdated.Value);
+
+            return await Result<bool>.SuccessAsync(true, _localizer["Description updated"]);
 		}
 
 		return await Result<bool>.FailAsync(_localizer["Operation failed"]);

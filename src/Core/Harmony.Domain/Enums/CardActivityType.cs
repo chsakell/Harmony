@@ -19,5 +19,6 @@ namespace Harmony.Domain.Enums
         CheckListItemCompleted,
         CheckListItemPending,
         CommentAdded,
+        CardDatesUpdated
     }
 }

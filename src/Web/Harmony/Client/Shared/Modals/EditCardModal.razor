@@ -131,24 +131,43 @@
                                             <ChildContent>
                                                 @foreach (var activity in _card.Activities)
                                                 {
-                                                    <MudStack>
-                                                        <MudText Typo="Typo.body1">@activity.Activity</MudText>
-                                                        <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
-                                                    </MudStack>
+                                                    <MudCard>
+                                                        <MudCardHeader Class="pb-0">
+                                                            <CardHeaderAvatar>
+                                                                <MudAvatar Color="Color.Secondary">@(activity.Actor[0])</MudAvatar>
+                                                                </CardHeaderAvatar>
+                                                                <CardHeaderContent>
+                                                                    <MudText Typo="Typo.body1"><b>@activity.Actor</b></MudText>
+                                                                    <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
+                                                                </CardHeaderContent>
+                                                            </MudCardHeader>
+                                                            <MudCardContent>
+                                                                <MudStack Row="true">
+                                                                    @switch (activity.Type)
+                                                                {
+                                                                    case CardActivityType.CardTitleUpdated:
+                                                                        <MudIcon Icon="@Icons.Material.Filled.Title" Color="Color.Default" />
+                                                                        break;
+                                                                    case CardActivityType.CardDescriptionUpdated:
+                                                                        <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Default" />
+                                                                        break;
+                                                                    case CardActivityType.CheckListAdded:
+                                                                    case CardActivityType.CheckListItemAdded:
+                                                                        <MudIcon Icon="@Icons.Material.Filled.Checklist" Color="Color.Default" />
+                                                                        break;
+                                                                    default:
+                                                                        <MudIcon Icon="@Icons.Material.Filled.Update" Color="Color.Default" />
+                                                                        break;
+                                                                }
+                                                                <MudText Typo="Typo.body2">@activity.Activity</MudText>
+                                                            </MudStack>
+
+                                                        </MudCardContent>
+                                                    </MudCard>
                                                 }
                                             </ChildContent>
                                         </MudExpansionPanel>
                                     </MudExpansionPanels>
-                                    @* <MudPaper Outlined="true" Class="border-dashed">
-                                        <MudStack Justify="Justify.SpaceBetween" Row="true">
-                                            <MudStack Row="true" Class="flex-wrap align-content-center pl-2">
-                                                <MudIcon Icon="@Icons.Material.Outlined.LocalActivity" Title="Favorite" />
-                                                <MudText>Activity</MudText>
-                                            </MudStack>
-                                            <MudButton StartIcon="@Icons.Material.Outlined.CallToAction"
-                                                       Variant="Variant.Text" Color="Color.Primary">Hide details</MudButton>
-                                        </MudStack>
-                                    </MudPaper> *@
                                 </MudItem>
                             </MudGrid>
 

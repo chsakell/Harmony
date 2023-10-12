@@ -277,6 +277,7 @@ namespace Harmony.Client.Shared.Modals
 
                 if(activityResult.Succeeded)
                 {
+                    _card.Activities.Clear();
                     _card.Activities.AddRange(activityResult.Data);
                 }
             }
