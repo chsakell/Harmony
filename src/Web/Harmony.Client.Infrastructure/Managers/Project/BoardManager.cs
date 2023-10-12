@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
@@ -46,6 +47,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints.Get(boardId));
             return await response.ToResult<GetBoardResponse>();
+        }
+
+        public async Task<IResult<List<UserBoardResponse>>> GetBoardMembersAsync(string boardId)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.GetMembers(boardId));
+
+            return await response.ToResult<List<UserBoardResponse>>();
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿@using Harmony.Domain.Enums;
-@inject Microsoft.Extensions.Localization.IStringLocalizer<OpenShareBoardModal> _localizer
+﻿@using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
+@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<BoardMembersModal> _localizer
 
 <MudDialog>
     <TitleContent>
@@ -11,7 +12,20 @@
         }
     </TitleContent>
     <DialogContent>
-
+        @foreach(var member in _boardMembers)
+        {
+            <MudStack>
+                <MudPaper Class="pa-4">
+                    <MudStack Row="true">
+                        <MudAvatar Color="Color.Secondary">@(member.FirstName[0])</MudAvatar>
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.body1">@member.FullName</MudText>
+                            <MudText Typo="Typo.body2">@@@member.UserName</MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudPaper>
+            </MudStack>
+        }
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>

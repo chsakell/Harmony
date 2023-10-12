@@ -158,7 +158,7 @@ namespace Harmony.Client.Pages.Management
 
         private async Task OpenShareBoardModal()
         {
-            var parameters = new DialogParameters<OpenShareBoardModal>
+            var parameters = new DialogParameters<BoardMembersModal>
             {
                 {
                     modal => modal.BoardId, Guid.Parse(Id)
@@ -166,7 +166,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
-            var dialog = _dialogService.Show<OpenShareBoardModal>(_localizer["Share board"], parameters, options);
+            var dialog = _dialogService.Show<BoardMembersModal>(_localizer["Share board"], parameters, options);
             var result = await dialog.Result;
         }
 
