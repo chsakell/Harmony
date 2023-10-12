@@ -40,19 +40,22 @@ namespace Harmony.Infrastructure.Services.Management
                             Activity = cardActivity.Activity,
                             Actor = $"{user.FirstName} {user.LastName}",
                             DateCreated = cardActivity.DateCreated,
-                            Type = cardActivity.Type
+                            Type = cardActivity.Type,
+                            Url = cardActivity.Url,
                         };
 
             return await query.ToListAsync();
         }
 
-        public async Task CreateActivity(Guid cardId, string userId, CardActivityType type, DateTime date, string? extraInfo = null)
+        public async Task CreateActivity(Guid cardId, string userId, CardActivityType type,
+            DateTime date, string? extraInfo = null, string url = null)
         {
             var activity = new CardActivity()
             {
                 CardId = cardId,
                 Type = type,
-                UserId = userId
+                UserId = userId,
+                Url = url,
             };
 
             switch (type)
@@ -71,6 +74,9 @@ namespace Harmony.Infrastructure.Services.Management
                     break;
                 case CardActivityType.CheckListItemAdded:
                     activity.Activity = $"Added an item in <b>{extraInfo}</b>";
+                    break;
+                case CardActivityType.AttachmentAdded:
+                    activity.Activity = $"Attached <b>{extraInfo}</b>";
                     break;
                 default:
                     activity = null;

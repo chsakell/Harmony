@@ -12,5 +12,6 @@ namespace Harmony.Domain.Entities
         public Guid CardId { get; set; }
         public string UserId { get; set; }
         public CardActivityType Type { get; set; }
+        public string Url { get; set; }
     }
 }

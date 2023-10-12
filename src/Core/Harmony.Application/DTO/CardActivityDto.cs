@@ -16,5 +16,6 @@ namespace Harmony.Application.DTO
         public Guid CardId { get; set; }
         public CardActivityType Type { get; set; }
         public DateTime DateCreated { get; set; }
+        public string Url { get; set; }
     }
 }

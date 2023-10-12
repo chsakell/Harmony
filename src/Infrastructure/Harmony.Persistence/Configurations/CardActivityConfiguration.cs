@@ -18,6 +18,7 @@ namespace Harmony.Persistence.Configurations
             builder.Property(c => c.UserId).IsRequired();
             builder.Property(c => c.Activity).HasMaxLength(300).IsRequired();
             builder.Property(a => a.Type).HasConversion<CardActivityTypeConverter>();
+            builder.Property(c => c.Url).HasMaxLength(300);
         }
     }
 }
