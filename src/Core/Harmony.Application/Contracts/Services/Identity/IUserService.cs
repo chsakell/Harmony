@@ -8,6 +8,7 @@ namespace Harmony.Application.Contracts.Services.Identity
     public interface IUserService
     {
         Task<Result<List<UserResponse>>> GetAllAsync();
+        Task<Result<List<UserResponse>>> Search(string term);
         Task<Result<List<UserResponse>>> Search(string term, int pageNumber, int pageSize);
         Task<Result<List<UserResponse>>> GetAllAsync(List<string> ids);
         Task<int> GetCountAsync();

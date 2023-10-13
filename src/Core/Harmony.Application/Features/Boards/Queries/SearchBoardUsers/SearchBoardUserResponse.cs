@@ -6,13 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Features.Boards.Queries.GetBoardUsers
+namespace Harmony.Application.Features.Boards.Queries.SearchBoardUsers
 {
-    public class UserBoardResponse : UserResponse
+    public class SearchBoardUserResponse : UserResponse
     {
         public bool IsMember { get; set; }
-
         public string FullName => $"{FirstName} {LastName}";
-        public UserBoardAccess Access { get; set; }
+        public UserBoardAccess? Access { get; set; }
     }
 }

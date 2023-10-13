@@ -3,6 +3,7 @@ using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
@@ -13,5 +14,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId);
         event EventHandler<BoardCreatedEvent> OnBoardCreated;
         Task<IResult<List<UserBoardResponse>>> GetBoardMembersAsync(string boardId);
+        Task<IResult<List<SearchBoardUserResponse>>> SearchBoardMembersAsync(string boardId, string term);
     }
 }

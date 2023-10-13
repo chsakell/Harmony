@@ -1,4 +1,6 @@
-﻿@using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
+﻿@using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+@using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
+@using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<BoardMembersModal> _localizer
 
@@ -12,6 +14,21 @@
         }
     </TitleContent>
     <DialogContent>
+        <MudPaper Elevation="25">
+            <MudToolBar>
+                <MudAutocomplete ShowProgressIndicator="true" T="SearchBoardUserResponse" Label="Search users" @bind-Value="_newBoardMember"
+                                 SearchFunc="@SearchUsers" ToStringFunc="@(e=> e==null?null : $"{e.FirstName} ({e.LastName})")">
+                    <BeforeItemsTemplate>
+                        <MudText Color="Color.Primary" Class="px-4 py-1">Always Shows Before List</MudText>
+                    </BeforeItemsTemplate>
+                </MudAutocomplete>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
+                <MudIconButton Icon="@Icons.Material.Outlined.PushPin" />
+                <MudIconButton Icon="@Icons.Material.Outlined.PeopleAlt" />
+                <MudIconButton Icon="@Icons.Material.Outlined.MoreVert" Color="Color.Inherit" />
+            </MudToolBar>
+        </MudPaper>
         @foreach(var member in _boardMembers)
         {
             <MudStack>

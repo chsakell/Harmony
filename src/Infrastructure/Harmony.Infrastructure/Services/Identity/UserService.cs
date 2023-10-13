@@ -67,6 +67,18 @@ namespace Harmony.Infrastructure.Services.Identity
             return await Result<List<UserResponse>>.SuccessAsync(result);
         }
 
+        public async Task<Result<List<UserResponse>>> Search(string term)
+        {
+            var users = await _userManager.Users
+                .Where(u => u.UserName.Contains(term) || u.FirstName.Contains(term) ||
+                    u.LastName.Contains(term) || u.Email.Contains(term))
+                .Take(40)
+                .ToListAsync();
+
+            var result = _mapper.Map<List<UserResponse>>(users);
+            return await Result<List<UserResponse>>.SuccessAsync(result);
+        }
+
         public async Task<IResult> RegisterAsync(RegisterRequest request, string origin)
         {
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);

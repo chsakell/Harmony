@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
@@ -15,6 +16,8 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         private List<UserBoardResponse> _boardMembers = new List<UserBoardResponse>();
+        private SearchBoardUserResponse _newBoardMember;
+        private bool _searching;
 
         [Parameter]
         public Guid BoardId { get; set; }
@@ -29,11 +32,29 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
+        private async Task<IEnumerable<SearchBoardUserResponse>> SearchUsers(string value)
+        {
+            if(string.IsNullOrEmpty(value) || value.Length < 4 || _searching)
+            {
+                return Enumerable.Empty<SearchBoardUserResponse>();
+            }
+
+            _searching = true;
+            var searchResult = await _boardManager.SearchBoardMembersAsync(BoardId.ToString(), value);
+
+            if(searchResult.Succeeded) {
+                _searching = false;
+                return searchResult.Data;
+            }
+
+            _searching = false;
+            return Enumerable.Empty<SearchBoardUserResponse>();
+        }
+
         private void Cancel()
         {
             MudDialog.Cancel();
         }
-
         
         private async Task AddMember(UserWorkspaceResponse user)
         {
