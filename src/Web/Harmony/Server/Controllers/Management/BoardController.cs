@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Commands.Create;
+﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
+using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
@@ -37,6 +38,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> SearchMembers(Guid id, string term)
         {
             return Ok(await _mediator.Send(new SearchBoardUsersQuery(id, term)));
+        }
+
+        [HttpPost("{id:guid}/members")]
+        public async Task<IActionResult> AddUserToBoard(Guid id, AddUserBoardCommand command)
+        {
+            return Ok(await _mediator.Send(command));
         }
     }
 }

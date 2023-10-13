@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
@@ -62,6 +63,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints.SearchMembers(boardId, term));
 
             return await response.ToResult<List<SearchBoardUserResponse>>();
+        }
+
+        public async Task<IResult<UserBoardResponse>> AddBoardMemberAsync(AddUserBoardCommand command)
+        {
+            var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints
+                .GetMembers(command.BoardId.ToString()), command);
+
+            return await response.ToResult<UserBoardResponse>();
         }
     }
 }

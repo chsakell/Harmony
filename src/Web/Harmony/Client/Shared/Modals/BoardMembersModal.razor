@@ -16,12 +16,29 @@
     <DialogContent>
         <MudPaper Elevation="25">
             <MudToolBar>
-                <MudAutocomplete ShowProgressIndicator="true" T="SearchBoardUserResponse" Label="Search users" @bind-Value="_newBoardMember"
-                                 SearchFunc="@SearchUsers" ToStringFunc="@(e=> e==null?null : $"{e.FirstName} ({e.LastName})")">
+                <MudAutocomplete DebounceInterval="300" ShowProgressIndicator="_searching" T="SearchBoardUserResponse" Label="Search users" @bind-Value="_newBoardMember"
+                                 SearchFunc="@SearchUsers" ToStringFunc="@(e=> e==null?null : $"{e.FullName} ({e.UserName})")">
                     <BeforeItemsTemplate>
                         <MudText Color="Color.Primary" Class="px-4 py-1">Always Shows Before List</MudText>
                     </BeforeItemsTemplate>
+                    <ItemTemplate>
+                        <MudPaper Class="pa-4">
+                            <MudStack Row="true">
+                                <MudAvatar Color="Color.Secondary">@(context.FirstName[0])</MudAvatar>
+                                <MudStack Justify="Justify.Center" Spacing="0">
+                                        <MudText Typo="Typo.body1">@context.FullName</MudText>
+                                        <MudText Typo="Typo.body2">@@@context.UserName</MudText>
+                                </MudStack>
+                            </MudStack>
+                        </MudPaper>
+                    </ItemTemplate>
                 </MudAutocomplete>
+                    <MudSelect T="UserBoardAccess" Disabled="_newBoardMember == null" @bind-Value="_newBoardMemberAccessLevel"
+                            Label="Access" AnchorOrigin="Origin.BottomCenter" Style="width:45px">
+                        <MudSelectItem Value="@(UserBoardAccess.Member)" />
+                        <MudSelectItem Value="@(UserBoardAccess.Observer)" />
+                        <MudSelectItem Value="@(UserBoardAccess.Admin)" />
+                    </MudSelect>
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
                 <MudIconButton Icon="@Icons.Material.Outlined.PushPin" />
@@ -46,7 +63,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-        <MudButton Disabled="@(_processing)"
+        <MudButton Disabled="@(_processing || _newBoardMember == null)" OnClick="ShareBoard"
                    ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
             @if (_processing)
             {
@@ -55,7 +72,7 @@
             }
             else
             {
-                <MudText>@_localizer["Create"]</MudText>
+                <MudText>@_localizer["Share"]</MudText>
             }
         </MudButton>
     </DialogActions>

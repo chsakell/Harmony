@@ -53,5 +53,29 @@ namespace Harmony.Infrastructure.Repositories
 
             return boardUsers;
         }
+
+        public async Task<UserBoardResponse?> GetBoardAccessMember(Guid boardId, string userId)
+        {
+            var boardUser = await (from userBoard in _context.UserBoards
+                                    join user in _context.Users
+                                    on userBoard.UserId equals user.Id
+                                    where userBoard.BoardId == boardId && user.Id == userId
+                                    select new UserBoardResponse
+                                    {
+                                        Id = user.Id,
+                                        UserName = user.UserName,
+                                        FirstName = user.FirstName,
+                                        LastName = user.LastName,
+                                        Email = user.Email,
+                                        EmailConfirmed = user.EmailConfirmed,
+                                        IsActive = user.IsActive,
+                                        IsMember = true,
+                                        PhoneNumber = user.PhoneNumber,
+                                        Access = userBoard.Access
+                                    })
+                          .FirstOrDefaultAsync();
+
+            return boardUser;
+        }
     }
 }

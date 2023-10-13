@@ -15,6 +15,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CountBoardUsers(Guid boardId);
 
         Task<List<UserBoardResponse>> GetBoardAccessMembers(Guid boardId);
+        Task<UserBoardResponse?> GetBoardAccessMember(Guid boardId, string userId);
 
     }
 }

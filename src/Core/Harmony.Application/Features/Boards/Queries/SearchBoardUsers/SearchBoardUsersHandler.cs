@@ -49,6 +49,7 @@ namespace Harmony.Application.Features.Boards.Queries.SearchBoardUsers
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
+                    UserName = user.UserName,
                     ProfilePictureDataUrl = user.ProfilePictureDataUrl,
                 };
 

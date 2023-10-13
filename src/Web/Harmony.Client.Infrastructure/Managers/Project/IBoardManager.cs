@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
@@ -15,5 +16,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         event EventHandler<BoardCreatedEvent> OnBoardCreated;
         Task<IResult<List<UserBoardResponse>>> GetBoardMembersAsync(string boardId);
         Task<IResult<List<SearchBoardUserResponse>>> SearchBoardMembersAsync(string boardId, string term);
+        Task<IResult<UserBoardResponse>> AddBoardMemberAsync(AddUserBoardCommand command);
     }
 }

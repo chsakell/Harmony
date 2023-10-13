@@ -1,9 +1,11 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
+using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -17,6 +19,8 @@ namespace Harmony.Client.Shared.Modals
 
         private List<UserBoardResponse> _boardMembers = new List<UserBoardResponse>();
         private SearchBoardUserResponse _newBoardMember;
+        private UserBoardAccess _newBoardMemberAccessLevel = UserBoardAccess.Member;
+
         private bool _searching;
 
         [Parameter]
@@ -49,6 +53,29 @@ namespace Harmony.Client.Shared.Modals
 
             _searching = false;
             return Enumerable.Empty<SearchBoardUserResponse>();
+        }
+
+        private async Task ShareBoard()
+        {
+            _processing = true;
+
+            var result = await _boardManager
+                .AddBoardMemberAsync(new AddUserBoardCommand(BoardId, 
+                _newBoardMember.Id, _newBoardMemberAccessLevel));
+
+            if(result.Succeeded)
+            {
+                var member = result.Data;
+
+                _boardMembers.Add(member);
+            }
+
+            _newBoardMember = null;
+            _newBoardMemberAccessLevel = UserBoardAccess.Member;
+
+            _processing = false;
+
+            DisplayMessage(result);
         }
 
         private void Cancel()
