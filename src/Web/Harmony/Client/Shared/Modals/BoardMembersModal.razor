@@ -25,55 +25,70 @@
                         <MudPaper Class="pa-4">
                             <MudStack Row="true">
                                 <MudAvatar Color="Color.Secondary">@(context.FirstName[0])</MudAvatar>
-                                <MudStack Justify="Justify.Center" Spacing="0">
+                                    <MudStack Justify="Justify.Center" Spacing="0">
                                         <MudText Typo="Typo.body1">@context.FullName</MudText>
                                         <MudText Typo="Typo.body2">@@@context.UserName</MudText>
+                                    </MudStack>
                                 </MudStack>
-                            </MudStack>
-                        </MudPaper>
-                    </ItemTemplate>
-                </MudAutocomplete>
+                            </MudPaper>
+                        </ItemTemplate>
+                    </MudAutocomplete>
                     <MudSelect T="UserBoardAccess" Disabled="_newBoardMember == null" @bind-Value="_newBoardMemberAccessLevel"
-                            Label="Access" AnchorOrigin="Origin.BottomCenter" Style="width:45px">
+                               Label="Access" AnchorOrigin="Origin.BottomCenter" Style="width:45px">
                         <MudSelectItem Value="@(UserBoardAccess.Member)" />
                         <MudSelectItem Value="@(UserBoardAccess.Observer)" />
                         <MudSelectItem Value="@(UserBoardAccess.Admin)" />
                     </MudSelect>
-                <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
-                <MudIconButton Icon="@Icons.Material.Outlined.PushPin" />
-                <MudIconButton Icon="@Icons.Material.Outlined.PeopleAlt" />
-                <MudIconButton Icon="@Icons.Material.Outlined.MoreVert" Color="Color.Inherit" />
+                    <MudSpacer />
+                    <MudButton Disabled="@(_processing || _newBoardMember == null)" OnClick="ShareBoard"
+                               ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                        @if (_processing)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+                    }
+                    else
+                    {
+                        <MudText>@_localizer["Share"]</MudText>
+                    }
+                </MudButton>
             </MudToolBar>
         </MudPaper>
-        @foreach(var member in _boardMembers)
+        @foreach (var member in _boardMembers)
         {
             <MudStack>
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
                         <MudAvatar Color="Color.Secondary">@(member.FirstName[0])</MudAvatar>
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.body1">@member.FullName</MudText>
-                            <MudText Typo="Typo.body2">@@@member.UserName</MudText>
-                        </MudStack>
+                            <MudStack Justify="Justify.Center" Spacing="0">
+                                <MudText Typo="Typo.body1">@member.FullName</MudText>
+                                <MudText Typo="Typo.body2">@@@member.UserName</MudText>
+                            </MudStack>
+                            <div class="d-flex justify-end flex-grow-1 gap-4">
+                                <MudSelect T="UserBoardAccess" @bind-Value="member.Access"
+                                           Class="flex-grow-0"
+                                           Label="Access" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@(UserBoardAccess.Member)" />
+                                    <MudSelectItem Value="@(UserBoardAccess.Observer)" />
+                                    <MudSelectItem Value="@(UserBoardAccess.Admin)" />
+                                </MudSelect>
+                                <MudButton Disabled="@(_removingMember)" OnClick="() => RemoveMember(member)"
+                                           ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Error">
+                                    @if (_removingMember)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>@_localizer["Remove"]</MudText>
+                                }
+                            </MudButton>
+                        </div>
+
                     </MudStack>
                 </MudPaper>
             </MudStack>
         }
     </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-        <MudButton Disabled="@(_processing || _newBoardMember == null)" OnClick="ShareBoard"
-                   ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-            @if (_processing)
-            {
-                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                <MudText Class="ms-2">@_localizer["Processing"]</MudText>
-            }
-            else
-            {
-                <MudText>@_localizer["Share"]</MudText>
-            }
-        </MudButton>
-    </DialogActions>
 </MudDialog>

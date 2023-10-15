@@ -16,6 +16,12 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<UserBoard?> GetUserBoard(Guid boardId, string userId)
+        {
+            return await _context.UserBoards
+                .FirstOrDefaultAsync(ub => ub.BoardId == boardId && ub.UserId == userId);
+        }
+
         public async Task<int> CreateAsync(UserBoard Board)
         {
             await _context.UserBoards.AddAsync(Board);
@@ -76,6 +82,13 @@ namespace Harmony.Infrastructure.Repositories
                           .FirstOrDefaultAsync();
 
             return boardUser;
+        }
+
+        public async Task<int> Delete(UserBoard userBoard)
+        {
+            _context.UserBoards.Remove(userBoard);
+
+            return await _context.SaveChangesAsync();
         }
     }
 }

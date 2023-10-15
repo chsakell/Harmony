@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
+using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
@@ -15,6 +16,8 @@ namespace Harmony.Client.Shared.Modals
     public partial class BoardMembersModal
     {
         private bool _processing;
+        private bool _removingMember;
+
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         private List<UserBoardResponse> _boardMembers = new List<UserBoardResponse>();
@@ -83,41 +86,11 @@ namespace Harmony.Client.Shared.Modals
             MudDialog.Cancel();
         }
         
-        private async Task AddMember(UserWorkspaceResponse user)
+        private async Task RemoveMember(UserBoardResponse user)
         {
             var parameters = new DialogParameters<Confirmation>
             {
-                { x => x.ContentText, $"Are you sure you want to add {user.UserName} as a member to the workspace?" },
-                { x => x.ButtonText, "Yes" },
-                { x => x.Color, Color.Success }
-            };
-
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
-            var result = await dialog.Result;
-
-            if (!result.Canceled)
-            {
-                var addMemberResult = await _workspaceManager.AddWorkspaceMember(new AddWorkspaceMemberCommand()
-                {
-                    UserId = user.Id,
-                    WorkspaceId = BoardId
-                });
-
-                if (addMemberResult.Succeeded)
-                {
-                    user.IsMember = true;
-                }
-
-                DisplayMessage(addMemberResult);
-            }
-
-        }
-
-        private async Task RemoveMember(UserWorkspaceResponse user)
-        {
-            var parameters = new DialogParameters<Confirmation>
-            {
-                { x => x.ContentText, $"Are you sure you want to remove {user.UserName} from the workspace?" },
+                { x => x.ContentText, $"Are you sure you want to remove {user.UserName} from the the board?" },
                 { x => x.ButtonText, "Yes" },
                 { x => x.Color, Color.Error }
             };
@@ -127,18 +100,19 @@ namespace Harmony.Client.Shared.Modals
 
             if (!result.Canceled)
             {
-                var removeMemberResult = await _workspaceManager.RemoveWorkspaceMember(new RemoveWorkspaceMemberCommand()
-                {
-                    UserId = user.Id,
-                    WorkspaceId = BoardId
-                });
+                _removingMember = true;
+
+                var removeMemberResult = await _boardManager
+                    .RemoveBoardMemberAsync(new RemoveUserBoardCommand(BoardId, user.Id));
 
                 if (removeMemberResult.Succeeded)
                 {
-                    user.IsMember = false;
+                    _boardMembers.Remove(user);
                 }
 
                 DisplayMessage(removeMemberResult);
+
+                _removingMember = false;
             }
         }
 

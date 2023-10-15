@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
@@ -71,6 +72,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .GetMembers(command.BoardId.ToString()), command);
 
             return await response.ToResult<UserBoardResponse>();
+        }
+
+        public async Task<IResult<RemoveUserBoardResponse>> RemoveBoardMemberAsync(RemoveUserBoardCommand command)
+        {
+            var response = await _httpClient.DeleteAsync(Routes.BoardEndpoints
+                .RemoveMember(command.BoardId.ToString(), command.UserId));
+
+            return await response.ToResult<RemoveUserBoardResponse>();
         }
     }
 }

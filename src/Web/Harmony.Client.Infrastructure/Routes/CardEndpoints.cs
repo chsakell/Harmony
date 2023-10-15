@@ -14,6 +14,11 @@
             return $"{Index}{boardId}/members/";
         }
 
+        public static string RemoveMember(string boardId, string userId)
+        {
+            return $"{Index}{boardId}/members/{userId}/";
+        }
+
         public static string SearchMembers(string boardId, string term)
         {
             return $"{Index}{boardId}/members/search?term={term}";
