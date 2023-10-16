@@ -51,6 +51,12 @@ namespace Harmony.Application.Mappings.Management
                     opt.MapFrom(c => $"files/{c.Type.ToDescriptionString()}/{c.FileName}"));
 
             CreateMap<CardActivity, CardActivityDto>();
+
+            CreateMap<UserCard, CardMemberDto>()
+                .ForMember(dto => dto.Id, opt =>
+                    opt.MapFrom(source => source.UserId));
+
+            CreateMap<UserResponse, CardMemberDto>();
         }
     }
 }

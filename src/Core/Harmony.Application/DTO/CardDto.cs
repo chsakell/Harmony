@@ -14,5 +14,6 @@
         public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
+		public List<CardMemberDto> Members { get; set; }
     }
 }

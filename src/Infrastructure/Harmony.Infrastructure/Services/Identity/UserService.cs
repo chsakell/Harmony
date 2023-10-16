@@ -45,7 +45,7 @@ namespace Harmony.Infrastructure.Services.Identity
             return await Result<List<UserResponse>>.SuccessAsync(result);
         }
 
-        public async Task<Result<List<UserResponse>>> GetAllAsync(List<string> ids)
+        public async Task<Result<List<UserResponse>>> GetAllAsync(IEnumerable<string> ids)
         {
             var users = await _userManager.Users
                 .Where(u => ids.Contains(u.Id))
