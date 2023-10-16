@@ -5,11 +5,7 @@ namespace Harmony.Application.Contracts.Repositories
 {
     public interface IUserBoardRepository
     {
-        /// <summary>
-        /// Create a User Board
-        /// </summary>
-        /// <param name="userBoard"></param>
-        /// <returns></returns>
+        Task AddAsync(UserBoard Board);
         Task<int> CreateAsync(UserBoard userBoard);
         Task<UserBoard?> GetUserBoard(Guid boardId, string userId);
         Task<int> CountBoardUsers(Guid boardId);

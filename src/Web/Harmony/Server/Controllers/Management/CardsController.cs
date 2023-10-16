@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
@@ -93,6 +94,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> GetMembers(Guid id)
         {
             return Ok(await _mediator.Send(new GetCardMembersQuery(id)));
+        }
+
+        [HttpPost("{id:guid}/members")]
+        public async Task<IActionResult> GetMembers(AddUserCardCommand command)
+        {
+            return Ok(await _mediator.Send(command));
         }
     }
 }

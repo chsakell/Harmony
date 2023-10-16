@@ -22,6 +22,11 @@ namespace Harmony.Infrastructure.Repositories
                 .FirstOrDefaultAsync(ub => ub.BoardId == boardId && ub.UserId == userId);
         }
 
+        public async Task AddAsync(UserBoard Board)
+        {
+            await _context.UserBoards.AddAsync(Board);
+        }
+
         public async Task<int> CreateAsync(UserBoard Board)
         {
             await _context.UserBoards.AddAsync(Board);

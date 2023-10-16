@@ -14,18 +14,21 @@ namespace Harmony.Application.Features.Cards.Queries.GetCardMembers
     public class GetCardMembersHandler : IRequestHandler<GetCardMembersQuery, Result<List<CardMemberResponse>>>
     {
         private readonly IUserCardRepository _userCardRepository;
+        private readonly ICardRepository _cardRepository;
         private readonly IUserBoardRepository _userBoardRepository;
 
         public GetCardMembersHandler(IUserCardRepository userCardRepository,
+            ICardRepository cardRepository,
             IUserBoardRepository userBoardRepository)
         {
             _userCardRepository = userCardRepository;
+            _cardRepository = cardRepository;
             _userBoardRepository = userBoardRepository;
         }
 
         public async Task<Result<List<CardMemberResponse>>> Handle(GetCardMembersQuery request, CancellationToken cancellationToken)
         {
-            var boardId = await _userCardRepository.GetBoardId(request.CardId);
+            var boardId = await _cardRepository.GetBoardId(request.CardId);
 
             var cardMembers = await _userCardRepository.GetCardUsers(request.CardId);
             var boardMembers = await _userBoardRepository.GetBoardAccessMembers(boardId);

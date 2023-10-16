@@ -38,18 +38,6 @@ namespace Harmony.Infrastructure.Repositories
                 .CountAsync();
         }
 
-        public async Task<Guid> GetBoardId(Guid cardId)
-        {
-            var cardBoard = await (from card in _context.Cards
-                   join boardList in _context.BoardLists on card.BoardListId equals boardList.Id
-                   join board in _context.Boards on boardList.BoardId equals board.Id
-                   where card.Id == cardId
-                   select new { BoardId = board.Id })
-                   .FirstOrDefaultAsync();
-
-            return cardBoard.BoardId;
-        }
-
         public async Task<List<CardMemberResponse>> GetCardUsers(Guid cardId)
         {
             var boardUsers = await (from userCard in _context.UserCards

@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
@@ -33,5 +34,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<bool>> UpdateDatesAsync(UpdateCardDatesCommand request);
         Task<IResult<List<CardActivityDto>>> GetCardActivityAsync(GetCardActivityQuery request);
         Task<IResult<List<CardMemberResponse>>> GetCardMembersAsync(string cardId);
+        Task<IResult<AddUserCardResponse>> AddCardMemberAsync(AddUserCardCommand command);
     }
 }
