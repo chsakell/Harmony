@@ -6,6 +6,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
+using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 
@@ -24,6 +25,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<PaginatedResult<UserWorkspaceResponse>> GetWorkspaceMembers(GetWorkspaceUsersQuery request);
         Task<IResult<bool>> AddWorkspaceMember(AddWorkspaceMemberCommand request);
         Task<IResult<bool>> RemoveWorkspaceMember(RemoveWorkspaceMemberCommand request);
+        Task<IResult<List<SearchWorkspaceUserResponse>>> SearchWorkspaceMembers(SearchWorkspaceUsersQuery request);
         event EventHandler<WorkspaceDto> OnSelectedWorkspace;
     }
 }

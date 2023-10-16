@@ -6,6 +6,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
+using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Managers.Preferences;
@@ -87,6 +88,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                      request.SearchTerm, request.OrderBy, request.MembersOnly));
 
             return await response.ToPaginatedResult<UserWorkspaceResponse>();
+        }
+
+        public async Task<IResult<List<SearchWorkspaceUserResponse>>> SearchWorkspaceMembers(SearchWorkspaceUsersQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints
+                .SearchMembers(request.WorkspaceId.ToString(), request.SearchTerm));
+
+            return await response.ToResult<List<SearchWorkspaceUserResponse>>();
         }
 
         public async Task<IResult<bool>> AddWorkspaceMember(AddWorkspaceMemberCommand request)

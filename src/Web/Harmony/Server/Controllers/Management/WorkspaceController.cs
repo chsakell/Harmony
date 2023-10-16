@@ -6,6 +6,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
+using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 
 namespace Harmony.Server.Controllers.Management
 {
@@ -48,6 +49,12 @@ namespace Harmony.Server.Controllers.Management
         {
             return Ok(await _mediator.Send(new 
                 GetWorkspaceUsersQuery(id, pageNumber, pageSize, searchTerm, orderBy, membersOnly)));
+        }
+
+        [HttpGet("{id:guid}/members/search")]
+        public async Task<IActionResult> SearchMembers(Guid id, string term)
+        {
+            return Ok(await _mediator.Send(new SearchWorkspaceUsersQuery(id, term)));
         }
 
         [HttpPost("{id:guid}/members/add")]

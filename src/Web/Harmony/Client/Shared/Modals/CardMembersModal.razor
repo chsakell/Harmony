@@ -1,7 +1,9 @@
-﻿@using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+﻿@using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
+@using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 @using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 @using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 @using Harmony.Domain.Enums;
+
 @inject Microsoft.Extensions.Localization.IStringLocalizer<BoardMembersModal> _localizer
 
 <MudDialog>
@@ -16,7 +18,7 @@
     <DialogContent>
         <MudPaper Elevation="25">
             <MudToolBar>
-                <MudAutocomplete DebounceInterval="300" ShowProgressIndicator="_searching" T="SearchBoardUserResponse" Label="Search users" @bind-Value="_newBoardMember"
+                <MudAutocomplete DebounceInterval="300" ShowProgressIndicator="_searching" T="SearchWorkspaceUserResponse" Label="Search workspace users" @bind-Value="_newBoardMember"
                                  SearchFunc="@SearchUsers" ToStringFunc="@(e=> e==null?null : $"{e.FullName} ({e.UserName})")">
                     <BeforeItemsTemplate>
                         <MudText Color="Color.Primary" Class="px-4 py-1">Always Shows Before List</MudText>
@@ -33,14 +35,8 @@
                             </MudPaper>
                         </ItemTemplate>
                     </MudAutocomplete>
-                    <MudSelect T="UserBoardAccess" Disabled="_newBoardMember == null" @bind-Value="_newBoardMemberAccessLevel"
-                               Label="Access" AnchorOrigin="Origin.BottomCenter" Style="width:45px">
-                        <MudSelectItem Value="@(UserBoardAccess.Member)" />
-                        <MudSelectItem Value="@(UserBoardAccess.Observer)" />
-                        <MudSelectItem Value="@(UserBoardAccess.Admin)" />
-                    </MudSelect>
                     <MudSpacer />
-                    <MudButton Disabled="@(_processing || _newBoardMember == null)" OnClick="ShareBoard"
+                    <MudButton Disabled="@(_processing || _newBoardMember == null)" OnClick="AddWorkspaceUserToCard"
                                ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
                         @if (_processing)
                     {

@@ -19,6 +19,11 @@
             return $"{Get(workspaceId)}/members/";
         }
 
+        public static string SearchMembers(string workspaceId, string term)
+        {
+            return $"{Get(workspaceId)}/members/search/?term={term}";
+        }
+
         public static string GetAddMembers(string workspaceId)
         {
             return $"{Get(workspaceId)}/members/add/";

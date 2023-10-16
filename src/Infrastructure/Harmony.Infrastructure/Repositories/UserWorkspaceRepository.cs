@@ -74,6 +74,31 @@ namespace Harmony.Infrastructure.Repositories
             return workspaceUsers;
         }
 
+        public async Task<List<UserWorkspaceResponse>> SearchWorkspaceUsers(Guid workspaceId, string term)
+        {
+            var workspaceUsers = await (from userWorkspace in _context.UserWorkspaces
+                                        join user in _context.Users
+                                        on userWorkspace.UserId equals user.Id
+                                        where userWorkspace.WorkspaceId == workspaceId
+                                          && string.IsNullOrEmpty(term) ? true : (user.UserName.Contains(term) || user.FirstName.Contains(term) ||
+                                              user.LastName.Contains(term) || user.Email.Contains(term))
+                                        select new UserWorkspaceResponse
+                                        {
+                                            Id = user.Id,
+                                            UserName = user.UserName,
+                                            FirstName = user.FirstName,
+                                            LastName = user.LastName,
+                                            Email = user.Email,
+                                            EmailConfirmed = user.EmailConfirmed,
+                                            IsActive = user.IsActive,
+                                            IsMember = true,
+                                            PhoneNumber = user.PhoneNumber
+                                        })
+                          .ToListAsync();
+
+            return workspaceUsers;
+        }
+
         public async Task<int> CountWorkspaceUsers(Guid workspaceId, string term, int pageNumber, int pageSize)
         {
             var totalWorkspaceUsers = await (from userWorkspace in _context.UserWorkspaces

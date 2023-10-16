@@ -17,6 +17,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> RemoveAsync(UserWorkspace userWorkspace);
         Task<UserWorkspace?> GetUserWorkspace(Guid workspaceId, string userId);
         Task<List<UserWorkspaceResponse>> SearchWorkspaceUsers(Guid workspaceId, string term, int pageNumber, int pageSize);
+        Task<List<UserWorkspaceResponse>> SearchWorkspaceUsers(Guid workspaceId, string term);
         Task<int> CountWorkspaceUsers(Guid workspaceId, string term, int pageNumber, int pageSize);
     }
 }
