@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
+using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
@@ -13,25 +14,25 @@ using MudBlazor;
 
 namespace Harmony.Client.Shared.Modals
 {
-    public partial class BoardMembersModal
+    public partial class CardMembersModal
     {
         private bool _processing;
-        private bool _removingMember;
+        private bool _processingMember;
 
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
-        private List<UserBoardResponse> _boardMembers = new List<UserBoardResponse>();
+        private List<CardMemberResponse> _boardMembers = new List<CardMemberResponse>();
         private SearchBoardUserResponse _newBoardMember;
         private UserBoardAccess _newBoardMemberAccessLevel = UserBoardAccess.Member;
 
         private bool _searching;
 
         [Parameter]
-        public Guid BoardId { get; set; }
+        public Guid CardId { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            var boardMembersResult = await _boardManager.GetBoardMembersAsync(BoardId.ToString());
+            var boardMembersResult = await _cardManager.GetCardMembersAsync(CardId.ToString());
 
             if (boardMembersResult.Succeeded)
             {
@@ -47,7 +48,7 @@ namespace Harmony.Client.Shared.Modals
             }
 
             _searching = true;
-            var searchResult = await _boardManager.SearchBoardMembersAsync(BoardId.ToString(), value);
+            var searchResult = await _boardManager.SearchBoardMembersAsync(CardId.ToString(), value);
 
             if(searchResult.Succeeded) {
                 _searching = false;
@@ -63,14 +64,14 @@ namespace Harmony.Client.Shared.Modals
             _processing = true;
 
             var result = await _boardManager
-                .AddBoardMemberAsync(new AddUserBoardCommand(BoardId, 
+                .AddBoardMemberAsync(new AddUserBoardCommand(CardId, 
                 _newBoardMember.Id, _newBoardMemberAccessLevel));
 
             if(result.Succeeded)
             {
                 var member = result.Data;
 
-                _boardMembers.Add(member);
+                //_boardMembers.Add(member);
             }
 
             _newBoardMember = null;
@@ -81,11 +82,11 @@ namespace Harmony.Client.Shared.Modals
             DisplayMessage(result);
         }
         
-        private async Task RemoveMember(UserBoardResponse user)
+        private async Task RemoveMember(CardMemberResponse user)
         {
             var parameters = new DialogParameters<Confirmation>
             {
-                { x => x.ContentText, $"Are you sure you want to remove {user.UserName} from the the board?" },
+                { x => x.ContentText, $"Are you sure you want to remove {user.UserName} from the board?" },
                 { x => x.ButtonText, "Yes" },
                 { x => x.Color, Color.Error }
             };
@@ -95,19 +96,49 @@ namespace Harmony.Client.Shared.Modals
 
             if (!result.Canceled)
             {
-                _removingMember = true;
+                _processingMember = true;
 
                 var removeMemberResult = await _boardManager
-                    .RemoveBoardMemberAsync(new RemoveUserBoardCommand(BoardId, user.Id));
+                    .RemoveBoardMemberAsync(new RemoveUserBoardCommand(CardId, user.Id));
 
                 if (removeMemberResult.Succeeded)
                 {
-                    _boardMembers.Remove(user);
+                    //_boardMembers.Remove(user);
                 }
 
                 DisplayMessage(removeMemberResult);
 
-                _removingMember = false;
+                _processingMember = false;
+            }
+        }
+
+        private async Task AddMember(CardMemberResponse user)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to add {user.UserName} to the board?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Success }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                _processingMember = true;
+
+                var removeMemberResult = await _boardManager
+                    .RemoveBoardMemberAsync(new RemoveUserBoardCommand(CardId, user.Id));
+
+                if (removeMemberResult.Succeeded)
+                {
+                    //_boardMembers.Remove(user);
+                }
+
+                DisplayMessage(removeMemberResult);
+
+                _processingMember = false;
             }
         }
 

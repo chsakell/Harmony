@@ -12,6 +12,7 @@ namespace Harmony.Persistence.DbContext
         public DbSet<UserBoard> UserBoards { get; set; }
         public DbSet<BoardList> BoardLists { get; set; }
         public DbSet<Card> Cards { get; set; }
+        public DbSet<UserCard> UserCards { get; set; }
         public DbSet<CheckList> CheckLists { get; set; }
         public DbSet<CheckListItem> CheckListItems { get; set; }
 

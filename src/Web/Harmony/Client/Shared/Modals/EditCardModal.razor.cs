@@ -156,6 +156,19 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
+        private async Task AddCardMembers()
+        {
+            var parameters = new DialogParameters<CardMembersModal>
+            {
+                { c => c.CardId, CardId }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CardMembersModal>(_localizer["Add card member"], parameters, options);
+
+            var result = await dialog.Result;
+        }
+
         private async Task AddCheckListItem(EditableCheckListItemModel checkListItem)
         {
             var response = await _checkListManager

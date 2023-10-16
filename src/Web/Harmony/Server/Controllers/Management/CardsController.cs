@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Cards.Commands.CreateCard;
+﻿using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
@@ -6,6 +7,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
+using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Microsoft.AspNetCore.Mvc;
@@ -85,6 +87,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> UpdateDates(UpdateCardDatesCommand request)
         {
             return Ok(await _mediator.Send(request));
+        }
+
+        [HttpGet("{id:guid}/members")]
+        public async Task<IActionResult> GetMembers(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetCardMembersQuery(id)));
         }
     }
 }
