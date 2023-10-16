@@ -3,6 +3,7 @@ using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
+using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
@@ -87,7 +88,7 @@ namespace Harmony.Client.Shared.Modals
         {
             var parameters = new DialogParameters<Confirmation>
             {
-                { x => x.ContentText, $"Are you sure you want to remove {user.UserName} from the board?" },
+                { x => x.ContentText, $"Are you sure you want to remove {user.UserName} from the card?" },
                 { x => x.ButtonText, "Yes" },
                 { x => x.Color, Color.Error }
             };
@@ -99,12 +100,12 @@ namespace Harmony.Client.Shared.Modals
             {
                 _processingMember = true;
 
-                var removeMemberResult = await _boardManager
-                    .RemoveBoardMemberAsync(new RemoveUserBoardCommand(CardId, user.Id));
+                var removeMemberResult = await _cardManager
+                    .RemoveCardMemberAsync(new RemoveUserCardCommand(CardId, user.Id));
 
                 if (removeMemberResult.Succeeded)
                 {
-                    //_boardMembers.Remove(user);
+                    user.IsMember = false;
                 }
 
                 DisplayMessage(removeMemberResult);

@@ -19,5 +19,10 @@
         {
             return $"{Index}/{cardId}/members/";
         }
+
+        public static string GetCardMember(string cardId, string userId)
+        {
+            return $"{Index}/{cardId}/members/{userId}/";
+        }
     }
 }

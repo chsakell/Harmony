@@ -1,10 +1,12 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
+using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
@@ -151,6 +153,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .GetMembers(command.CardId.ToString()), command);
 
             return await response.ToResult<AddUserCardResponse>();
+        }
+
+        public async Task<IResult<RemoveUserCardResponse>> RemoveCardMemberAsync(RemoveUserCardCommand command)
+        {
+            var response = await _httpClient.DeleteAsync(Routes.CardEndpoints
+                .GetCardMember(command.CardId.ToString(), command.UserId));
+
+            return await response.ToResult<RemoveUserCardResponse>();
         }
     }
 }

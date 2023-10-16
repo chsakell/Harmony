@@ -1,7 +1,9 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+﻿using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
+using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
@@ -100,6 +102,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> GetMembers(AddUserCardCommand command)
         {
             return Ok(await _mediator.Send(command));
+        }
+
+        [HttpDelete("{id:guid}/members/{userId}")]
+        public async Task<IActionResult> RemoveMember(Guid id, string userId)
+        {
+            return Ok(await _mediator.Send(new RemoveUserCardCommand(id, userId)));
         }
     }
 }
