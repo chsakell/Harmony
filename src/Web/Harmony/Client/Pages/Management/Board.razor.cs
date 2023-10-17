@@ -44,6 +44,8 @@ namespace Harmony.Client.Pages.Management
                 _cardManager.OnCardLabelToggled += CardManager_OnCardLabelToggled;
                 _cardManager.OnCardDatesChanged += CardManager_OnCardDatesChanged;
                 _fileManager.OnCardAttachmentAdded += FileManager_OnCardAttachmentAdded;
+
+                await _hubSubscriptionManager.RegisterBoardEvents(Id);
             }
         }
 

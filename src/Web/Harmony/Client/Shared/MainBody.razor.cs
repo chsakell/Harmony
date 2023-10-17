@@ -50,6 +50,9 @@ namespace Harmony.Client.Shared
             _interceptor.RegisterEvent();
             hubConnection = hubConnection.TryInitialize(_navigationManager, _localStorage);
             await hubConnection.StartAsync();
+
+            _hubSubscriptionManager.Init(hubConnection);
+
             hubConnection.On<string, string, string>(ApplicationConstants.SignalR.ReceiveChatNotification, (message, receiverUserId, senderUserId) =>
             {
                 if (CurrentUserId == receiverUserId)

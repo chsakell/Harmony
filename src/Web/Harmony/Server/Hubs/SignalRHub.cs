@@ -44,5 +44,10 @@ namespace Harmony.Server.Hubs
         {
             await Clients.All.SendAsync(ApplicationConstants.SignalR.ReceiveRegenerateTokens);
         }
+
+        public async Task RegisterBoardEvents(string boardId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, boardId);
+        }
     }
 }

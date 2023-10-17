@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Account;
+using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Infrastructure.Seed;
@@ -207,6 +208,13 @@ namespace Harmony.Server.Extensions
         {
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            return services;
+        }
+
+        internal static IServiceCollection AddClientNotificationService(this IServiceCollection services)
+        {
+            services.AddHttpContextAccessor();
+            services.AddScoped<IHubClientNotifierService, HubClientNotifierService>();
             return services;
         }
 

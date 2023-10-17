@@ -24,6 +24,10 @@
             public const string PingRequest = "PingRequestAsync";
             public const string PingResponse = "PingResponseAsync";
 
+            public const string RegisterBoardEvents = "RegisterBoardEvents";
+
+            public const string OnCardTitleChanged = "OnCardTitleChanged";
+
         }
         public static class Cache
         {

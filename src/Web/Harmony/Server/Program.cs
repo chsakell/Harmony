@@ -21,6 +21,7 @@ builder.Services.AddServerLocalization();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));
 builder.Services.AddSignalR();
+builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
 
