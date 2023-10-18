@@ -1,4 +1,5 @@
 ﻿using Harmony.Client.Extensions;
+using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.Components;
@@ -48,10 +49,7 @@ namespace Harmony.Client.Shared
         {
             _rightToLeft = await _clientPreferenceManager.IsRTL();
             _interceptor.RegisterEvent();
-            hubConnection = hubConnection.TryInitialize(_navigationManager, _localStorage);
-            await hubConnection.StartAsync();
-
-            _hubSubscriptionManager.Init(hubConnection);
+            hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage);
 
             hubConnection.On(ApplicationConstants.SignalR.ReceiveRegenerateTokens, async () =>
             {

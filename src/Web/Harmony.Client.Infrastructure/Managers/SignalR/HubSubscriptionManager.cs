@@ -1,6 +1,9 @@
-﻿using Harmony.Application.Events;
+﻿using Blazored.LocalStorage;
+using Harmony.Application.Events;
+using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
 using MediatR;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
@@ -15,21 +18,30 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         private HubConnection _hubConnection;
         public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
 
-        #region Events
-        public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
-        #endregion
-
-        public void Init(HubConnection hubConnection)
+        public async Task<HubConnection> StartAsync(NavigationManager navigationManager, ILocalStorageService localStorageService)
         {
-            _hubConnection = hubConnection;
+            _hubConnection = _hubConnection.TryInitialize(navigationManager, localStorageService);
+            await _hubConnection.StartAsync();
 
             HandleEvents();
+
+            return _hubConnection;
         }
 
+        #region Events
+
+        public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
+
+        #endregion
+
+        #region Listeners
         public async Task ListenForBoardEvents(string boardId)
         {
             await _hubConnection.SendAsync(ApplicationConstants.SignalR.ListenForBoardEvents, boardId);
         }
+        #endregion
+
+        #region Handlers
 
         private void HandleEvents()
         {
@@ -38,5 +50,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
                 OnCardTitleChanged?.Invoke(this, new CardTitleChangedEvent(cardTitleChangedEvent.CardId, cardTitleChangedEvent.Title));
             });
         }
+
+        #endregion
     }
 }

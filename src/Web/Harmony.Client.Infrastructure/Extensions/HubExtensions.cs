@@ -3,7 +3,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.SignalR.Client;
 using Harmony.Shared.Constants.Application;
 
-namespace Harmony.Client.Extensions
+namespace Harmony.Client.Infrastructure.Extensions
 {
     public static class HubExtensions
     {

@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Events;
+﻿using Blazored.LocalStorage;
+using Harmony.Application.Events;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
@@ -10,8 +12,11 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
 {
     public interface IHubSubscriptionManager : IManager
     {
-        void Init(HubConnection hubConnection);
+        Task<HubConnection> StartAsync(NavigationManager navigationManager, ILocalStorageService localStorageService);
+
+        #region Listeners
         Task ListenForBoardEvents(string boardId);
+        #endregion
 
         #region Events
         event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
