@@ -53,26 +53,6 @@ namespace Harmony.Client.Shared
 
             _hubSubscriptionManager.Init(hubConnection);
 
-            hubConnection.On<string, string, string>(ApplicationConstants.SignalR.ReceiveChatNotification, (message, receiverUserId, senderUserId) =>
-            {
-                if (CurrentUserId == receiverUserId)
-                {
-                    _jsRuntime.InvokeAsync<string>("PlayAudio", "notification");
-                    _snackBar.Add(message, Severity.Info, config =>
-                    {
-                        config.VisibleStateDuration = 10000;
-                        config.HideTransitionDuration = 500;
-                        config.ShowTransitionDuration = 500;
-                        config.Action = "Chat?";
-                        config.ActionColor = Color.Primary;
-                        config.Onclick = snackbar =>
-                        {
-                            _navigationManager.NavigateTo($"chat/{senderUserId}");
-                            return Task.CompletedTask;
-                        };
-                    });
-                }
-            });
             hubConnection.On(ApplicationConstants.SignalR.ReceiveRegenerateTokens, async () =>
             {
                 try
@@ -91,33 +71,6 @@ namespace Harmony.Client.Shared
                     await _authenticationManager.Logout();
                     _navigationManager.NavigateTo("/");
                 }
-            });
-            hubConnection.On<string, string>(ApplicationConstants.SignalR.LogoutUsersByRole, async (userId, roleId) =>
-            {
-                if (CurrentUserId != userId)
-                {
-                    var rolesResponse = await RoleManager.GetRolesAsync();
-                    if (rolesResponse.Succeeded)
-                    {
-                        var role = rolesResponse.Data.FirstOrDefault(x => x.Id == roleId);
-                        if (role != null)
-                        {
-                            var currentUserRolesResponse = await _userManager.GetRolesAsync(CurrentUserId);
-                            if (currentUserRolesResponse.Succeeded && currentUserRolesResponse.Data.UserRoles.Any(x => x.RoleName == role.Name))
-                            {
-                                _snackBar.Add("You are logged out because the Permissions of one of your Roles have been updated.", Severity.Error);
-                                await hubConnection.SendAsync(ApplicationConstants.SignalR.OnDisconnect, CurrentUserId);
-                                await _authenticationManager.Logout();
-                                _navigationManager.NavigateTo("/login");
-                            }
-                        }
-                    }
-                }
-            });
-            hubConnection.On<string>(ApplicationConstants.SignalR.PingRequest, async (userName) =>
-            {
-                await hubConnection.SendAsync(ApplicationConstants.SignalR.PingResponse, CurrentUserId, userName);
-
             });
 
             await hubConnection.SendAsync(ApplicationConstants.SignalR.OnConnect, CurrentUserId);

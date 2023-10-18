@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Events;
 using Harmony.Shared.Constants.Application;
+using MediatR;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
@@ -14,23 +15,27 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         private HubConnection _hubConnection;
         public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
 
+        #region Events
+        public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
+        #endregion
+
         public void Init(HubConnection hubConnection)
         {
             _hubConnection = hubConnection;
 
-            RegisterEvents();
+            HandleEvents();
         }
 
-        public async Task RegisterBoardEvents(string boardId)
+        public async Task ListenForBoardEvents(string boardId)
         {
-            await _hubConnection.SendAsync(ApplicationConstants.SignalR.RegisterBoardEvents, boardId);
+            await _hubConnection.SendAsync(ApplicationConstants.SignalR.ListenForBoardEvents, boardId);
         }
 
-        private void RegisterEvents()
+        private void HandleEvents()
         {
             _hubConnection.On<CardTitleChangedEvent>(ApplicationConstants.SignalR.OnCardTitleChanged, (cardTitleChangedEvent) =>
             {
-                Console.WriteLine(cardTitleChangedEvent.Title);
+                OnCardTitleChanged?.Invoke(this, new CardTitleChangedEvent(cardTitleChangedEvent.CardId, cardTitleChangedEvent.Title));
             });
         }
     }

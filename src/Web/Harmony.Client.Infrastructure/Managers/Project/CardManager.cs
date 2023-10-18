@@ -27,7 +27,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     {
         private readonly HttpClient _httpClient;
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
-        public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
         public event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
 
@@ -75,14 +74,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Title(request.CardId), request);
 
-            var result = await response.ToResult<bool>();
-
-            if (result.Succeeded)
-            {
-                OnCardTitleChanged?.Invoke(this, new CardTitleChangedEvent(request.CardId, request.Title));
-            }
-
-            return result;
+            return await response.ToResult<bool>();
         }
 
         public async Task<IResult<bool>> UpdateStatusAsync(UpdateCardStatusCommand request)

@@ -40,12 +40,12 @@ namespace Harmony.Client.Pages.Management
                 _checkListItemManager.OnCardItemChecked += CheckListItemManager_OnCardItemChecked;
                 _checkListManager.OnCardItemAdded += CheckListManager_OnCardItemAdded;
                 _cardManager.OnCardDescriptionChanged += CardManager_OnCardDescriptionChanged;
-                _cardManager.OnCardTitleChanged += CardManager_OnCardTitleChanged;
+                _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
                 _cardManager.OnCardLabelToggled += CardManager_OnCardLabelToggled;
                 _cardManager.OnCardDatesChanged += CardManager_OnCardDatesChanged;
                 _fileManager.OnCardAttachmentAdded += FileManager_OnCardAttachmentAdded;
 
-                await _hubSubscriptionManager.RegisterBoardEvents(Id);
+                await _hubSubscriptionManager.ListenForBoardEvents(Id);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Harmony.Client.Pages.Management
             _dropContainer.Refresh();
         }
 
-        private void CardManager_OnCardTitleChanged(object? sender, CardTitleChangedEvent e)
+        private void OnCardTitleChanged(object? sender, CardTitleChangedEvent e)
         {
             KanbanStore.UpdateCardTitle(e.CardId, e.Title);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using Harmony.Application.Events;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
     public interface IHubSubscriptionManager : IManager
     {
         void Init(HubConnection hubConnection);
-        Task RegisterBoardEvents(string boardId);
+        Task ListenForBoardEvents(string boardId);
+
+        #region Events
+        event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
+        #endregion
     }
 }
