@@ -9,6 +9,7 @@ using AutoMapper;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
+using Harmony.Application.Contracts.Services.Hubs;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
@@ -18,6 +19,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardActivityService _cardActivityService;
         private readonly IChecklistRepository _checklistRepository;
+        private readonly IHubClientNotifierService _hubClientNotifierService;
+        private readonly ICardRepository _cardRepository;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
@@ -25,6 +28,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             ICurrentUserService currentUserService,
             ICardActivityService cardActivityService,
             IChecklistRepository checklistRepository,
+            IHubClientNotifierService hubClientNotifierService,
+            ICardRepository cardRepository,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,
             IMapper mapper)
         {
@@ -32,6 +37,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             _currentUserService = currentUserService;
             _cardActivityService = cardActivityService;
             _checklistRepository = checklistRepository;
+            _hubClientNotifierService = hubClientNotifierService;
+            _cardRepository = cardRepository;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -64,6 +71,10 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
                     CardActivityType.CheckListItemAdded, newItem.DateCreated, checkList.Title);
 
                 var result = _mapper.Map<CheckListItemDto>(newItem);
+
+                var boardId = await _cardRepository.GetBoardId(request.CardId);
+                await _hubClientNotifierService
+                    .CreateCheckListItem(boardId, request.CardId);
 
                 return await Result<CheckListItemDto>.SuccessAsync(result, _localizer["Item Created"]);
             }

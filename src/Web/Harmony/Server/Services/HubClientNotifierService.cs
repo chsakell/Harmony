@@ -58,5 +58,12 @@ namespace Harmony.Server.Services
                 .SendAsync(ApplicationConstants.SignalR.OnCardItemChecked,
                     new CardItemCheckedEvent(cardId, listItemId, isChecked));
         }
+
+        public async Task CreateCheckListItem(Guid boardId, Guid cardId)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardItemAdded,
+                    new CardItemAddedEvent(cardId));
+        }
     }
 }

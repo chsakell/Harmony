@@ -14,7 +14,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 {
     public interface IChecklistManager : IManager
     {
-        event EventHandler<CardItemAddedEvent> OnCardItemAdded;
         Task<IResult<CheckListDto>> CreateCheckListAsync(CreateCheckListCommand request);
         Task<IResult<CheckListItemDto>> CreateCheckListItemAsync(CreateCheckListItemCommand request);
         Task<IResult<bool>> UpdateTitleAsync(UpdateListTitleCommand request);

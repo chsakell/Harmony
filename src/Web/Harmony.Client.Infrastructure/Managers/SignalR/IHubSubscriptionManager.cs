@@ -25,8 +25,9 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
         event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
         event EventHandler<AttachmentAddedEvent> OnCardAttachmentAdded;
-
+        event EventHandler<CardItemAddedEvent> OnCardItemAdded;
         event EventHandler<CardItemCheckedEvent> OnCardItemChecked;
+
         #endregion
     }
 }
