@@ -23,7 +23,10 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 
         public void AddListToBoard(BoardListDto list)
         {
-            _board.Lists.Add(list);
+            if(!_board.Lists.Any(l => l.Id == list.Id))
+            {
+                _board.Lists.Add(list);
+            }
         }
 
         public void AddCardToList(CardDto card, BoardListDto list)

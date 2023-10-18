@@ -1,10 +1,10 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
-using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
+using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
@@ -35,6 +35,7 @@ namespace Harmony.Client.Pages.Management
             {
                 KanbanStore.LoadBoard(result.Data);
 
+                _hubSubscriptionManager.OnBoardListAdded += OnBoardListAdded;
                 _hubSubscriptionManager.OnCardItemChecked += OnCardItemChecked;
                 _hubSubscriptionManager.OnCardItemAdded += OnCardItemAdded;
                 _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
@@ -42,9 +43,16 @@ namespace Harmony.Client.Pages.Management
                 _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
                 _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
                 _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
+                
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
             }
+        }
+
+        private void OnBoardListAdded(object? sender, BoardListAddedEvent e)
+        {
+            KanbanStore.AddListToBoard(e.BoardList);
+            StateHasChanged();
         }
 
         private void OnCardAttachmentAdded(object? sender, AttachmentAddedEvent e)

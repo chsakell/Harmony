@@ -64,5 +64,12 @@ namespace Harmony.Server.Services
                 .SendAsync(ApplicationConstants.SignalR.OnCardItemAdded,
                     new CardItemAddedEvent(cardId));
         }
+
+        public async Task AddBoardList(Guid boardId, BoardListDto boardList)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnBoardListAdded,
+                    new BoardListAddedEvent(boardList));
+        }
     }
 }

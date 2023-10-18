@@ -14,6 +14,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #endregion
 
         #region Events
+        event EventHandler<BoardListAddedEvent> OnBoardListAdded;
 
         event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;

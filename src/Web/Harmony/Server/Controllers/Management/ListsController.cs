@@ -1,5 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Commands.CreateList;
-using Harmony.Application.Features.Lists.Commands.ArchiveList;
+﻿using Harmony.Application.Features.Lists.Commands.ArchiveList;
+using Harmony.Application.Features.Lists.Commands.CreateList;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management

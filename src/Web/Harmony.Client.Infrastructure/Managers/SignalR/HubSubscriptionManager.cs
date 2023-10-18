@@ -24,6 +24,8 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
 
         #region Events
 
+        public event EventHandler<BoardListAddedEvent> OnBoardListAdded;
+
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
         public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
@@ -84,6 +86,11 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             _hubConnection.On<CardItemAddedEvent>(ApplicationConstants.SignalR.OnCardItemAdded, (@event) =>
             {
                 OnCardItemAdded?.Invoke(this, new CardItemAddedEvent(@event.CardId));
+            });
+
+            _hubConnection.On<BoardListAddedEvent>(ApplicationConstants.SignalR.OnBoardListAdded, (@event) =>
+            {
+                OnBoardListAdded?.Invoke(this, new BoardListAddedEvent(@event.BoardList));
             });
         }
 

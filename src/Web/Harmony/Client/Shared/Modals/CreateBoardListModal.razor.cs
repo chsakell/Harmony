@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Features.Boards.Commands.CreateList;
+﻿using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
