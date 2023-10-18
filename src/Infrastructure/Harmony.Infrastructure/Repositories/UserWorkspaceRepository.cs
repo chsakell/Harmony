@@ -139,6 +139,17 @@ namespace Harmony.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<List<Board>> GetUserBoards(Guid workspaceId, string userId)
+        {
+            return await _context.UserWorkspaces
+                .Include(uw => uw.Workspace)
+                    .ThenInclude(workspace => workspace.Boards)
+                .Where(userWorkspace => userWorkspace.WorkspaceId == workspaceId
+                    && userWorkspace.UserId == userId)
+                .SelectMany(uw => uw.Workspace.Boards)
+                .ToListAsync();
+        }
+
         public async Task<int> RemoveAsync(UserWorkspace userWorkspaceRepository)
         {
             _context.UserWorkspaces.Remove(userWorkspaceRepository);

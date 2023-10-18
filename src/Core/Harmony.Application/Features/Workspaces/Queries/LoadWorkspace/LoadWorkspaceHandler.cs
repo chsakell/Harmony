@@ -10,16 +10,19 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
     public class LoadWorkspaceHandler : IRequestHandler<LoadWorkspaceQuery, IResult<List<LoadWorkspaceResponse>>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
+        private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<LoadWorkspaceHandler> _localizer;
         private readonly IMapper _mapper;
 
         public LoadWorkspaceHandler(IWorkspaceRepository workspaceRepository,
+            IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<LoadWorkspaceHandler> localizer,
             IMapper mapper)
         {
             _workspaceRepository = workspaceRepository;
+            _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
             _mapper = mapper;
@@ -34,7 +37,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
                 return await Result<List<LoadWorkspaceResponse>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var userBoards = await _workspaceRepository.LoadWorkspace(userId, request.WorkspaceId);
+            var userBoards = await _userWorkspaceRepository.GetUserBoards(request.WorkspaceId, userId);
 
             var result = _mapper.Map<List<LoadWorkspaceResponse>>(userBoards);
 
