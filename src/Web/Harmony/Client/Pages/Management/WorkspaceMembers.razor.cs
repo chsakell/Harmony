@@ -93,11 +93,8 @@ namespace Harmony.Client.Pages.Management
 
             if (!result.Canceled)
             {
-                var addMemberResult = await _workspaceManager.AddWorkspaceMember(new AddWorkspaceMemberCommand()
-                {
-                    UserId = user.Id,
-                    WorkspaceId = Guid.Parse(Id)
-                });
+                var addMemberResult = await _workspaceManager
+                    .AddWorkspaceMember(new AddWorkspaceMemberCommand(user.Id, Guid.Parse(Id)));
 
                 if (addMemberResult.Succeeded)
                 {

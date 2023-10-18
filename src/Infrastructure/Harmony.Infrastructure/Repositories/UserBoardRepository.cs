@@ -88,6 +88,16 @@ namespace Harmony.Infrastructure.Repositories
             return boardUser;
         }
 
+        public async Task<Workspace?> GetWorkspace(Guid boardId)
+        {
+            return await _context.UserBoards
+                .Include(ub => ub.Board)
+                .ThenInclude(b => b.Workspace)
+                .Where(ub => ub.BoardId == boardId)
+                .Select(ub => ub.Board.Workspace)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<int> Delete(UserBoard userBoard)
         {
             _context.UserBoards.Remove(userBoard);
