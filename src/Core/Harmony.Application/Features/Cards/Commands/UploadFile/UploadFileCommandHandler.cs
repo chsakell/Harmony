@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
@@ -20,18 +21,21 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
     {
         private readonly IUploadService _uploadService;
         private readonly ICardActivityService _cardActivityService;
+        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
         private readonly ICardRepository _cardRepository;
 
         public UploadFileCommandHandler(IUploadService uploadService,
             ICardActivityService cardActivityService,
+            IHubClientNotifierService hubClientNotifierService,
             ICurrentUserService currentUserService,
             IMapper mapper,
             ICardRepository cardRepository)
         {
             _uploadService = uploadService;
             _cardActivityService = cardActivityService;
+            _hubClientNotifierService = hubClientNotifierService;
             _currentUserService = currentUserService;
             _mapper = mapper;
             _cardRepository = cardRepository;
@@ -68,13 +72,17 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
             var dbResult = await _cardRepository.Update(card);
 
             if (dbResult > 0)
-            {
+            { 
                 await _cardActivityService.CreateActivity(card.Id, userId,
                     CardActivityType.AttachmentAdded, card.DateUpdated.Value, 
                     command.FileName, url: $"files/{attachment.Type.ToDescriptionString()}/{attachment.FileName}");
             }
 
             var attachmentDto = _mapper.Map<AttachmentDto>(attachment);
+
+            var boardId = await _cardRepository.GetBoardId(card.Id);
+
+            await _hubClientNotifierService.AddCardAttachment(boardId, card.Id, attachmentDto);
 
             var result = new UploadFileResponse(command.CardId, attachmentDto);
 

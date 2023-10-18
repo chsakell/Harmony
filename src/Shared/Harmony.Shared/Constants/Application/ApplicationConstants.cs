@@ -19,7 +19,7 @@
             public const string OnCardDescriptionChanged = "OnCardDescriptionChanged";
             public const string OnCardDatesChanged = "OnCardDatesChanged";
             public const string OnCardLabelToggled = "OnCardLabelToggled";
+            public const string OnCardAttachmentAdded = "OnCardAttachmentAdded";
         }
-
     }
 }

@@ -11,7 +11,6 @@ namespace Harmony.Client.Infrastructure.Managers.Content
 {
     public interface IFileManager : IManager
     {
-        event EventHandler<AttachmentAddedEvent> OnCardAttachmentAdded;
         Task<IResult<UploadFileResponse>> UploadFile(UploadFileCommand command);
     }
 }

@@ -44,5 +44,12 @@ namespace Harmony.Server.Services
                 .SendAsync(ApplicationConstants.SignalR.OnCardLabelToggled,
                     new CardLabelToggledEvent(cardId, label));
         }
+
+        public async Task AddCardAttachment(Guid boardId, Guid cardId, AttachmentDto attachment)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardAttachmentAdded,
+                    new AttachmentAddedEvent(cardId, attachment));
+        }
     }
 }

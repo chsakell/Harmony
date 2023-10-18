@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
+using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {
@@ -34,6 +36,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
         public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
         public event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
+        public event EventHandler<AttachmentAddedEvent> OnCardAttachmentAdded;
 
         #endregion
 
@@ -44,7 +47,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         }
         #endregion
 
-        #region Handlers
+        #region Event Handlers
 
         private void HandleEvents()
         {
@@ -71,6 +74,12 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             _hubConnection.On<CardLabelToggledEvent>(ApplicationConstants.SignalR.OnCardLabelToggled, (@event) =>
             {
                 OnCardLabelToggled?.Invoke(this, new CardLabelToggledEvent(@event.CardId, @event.Label));
+            });
+
+            _hubConnection.On<AttachmentAddedEvent>(ApplicationConstants.SignalR.OnCardAttachmentAdded, (@event) =>
+            {
+                OnCardAttachmentAdded?.Invoke(this,
+                    new AttachmentAddedEvent(@event.CardId, @event.Attachment));
             });
         }
 

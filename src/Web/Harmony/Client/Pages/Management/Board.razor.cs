@@ -43,13 +43,13 @@ namespace Harmony.Client.Pages.Management
                 _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
                 _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
                 _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
-                _fileManager.OnCardAttachmentAdded += FileManager_OnCardAttachmentAdded;
+                _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
             }
         }
 
-        private void FileManager_OnCardAttachmentAdded(object? sender, AttachmentAddedEvent e)
+        private void OnCardAttachmentAdded(object? sender, AttachmentAddedEvent e)
         {
             KanbanStore.ChangeTotalCardAttachments(e.CardId, true);
 
