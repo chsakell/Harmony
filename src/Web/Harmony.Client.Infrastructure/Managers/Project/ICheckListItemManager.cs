@@ -10,7 +10,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 {
     public interface ICheckListItemManager : IManager
     {
-        event EventHandler<CardItemCheckedEvent> OnCardItemChecked;
         Task<IResult<bool>> UpdateListItemDescriptionAsync(UpdateListItemDescriptionCommand request);
         Task<IResult<bool>> UpdateListItemCheckedAsync(UpdateListItemCheckedCommand request);
         Task<IResult<bool>> UpdateListItemDueDateAsync(UpdateListItemDueDateCommand request);

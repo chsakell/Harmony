@@ -20,6 +20,7 @@
             public const string OnCardDatesChanged = "OnCardDatesChanged";
             public const string OnCardLabelToggled = "OnCardLabelToggled";
             public const string OnCardAttachmentAdded = "OnCardAttachmentAdded";
+            public const string OnCardItemChecked = "OnCardItemChecked";
         }
     }
 }

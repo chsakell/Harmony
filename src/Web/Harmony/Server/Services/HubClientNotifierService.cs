@@ -51,5 +51,12 @@ namespace Harmony.Server.Services
                 .SendAsync(ApplicationConstants.SignalR.OnCardAttachmentAdded,
                     new AttachmentAddedEvent(cardId, attachment));
         }
+
+        public async Task ToggleCardListItemChecked(Guid boardId, Guid cardId, Guid listItemId, bool isChecked)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardItemChecked,
+                    new CardItemCheckedEvent(cardId, listItemId, isChecked));
+        }
     }
 }

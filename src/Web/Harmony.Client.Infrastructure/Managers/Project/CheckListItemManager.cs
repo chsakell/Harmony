@@ -16,7 +16,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public class CheckListItemManager : ICheckListItemManager
     {
         private readonly HttpClient _httpClient;
-        public event EventHandler<CardItemCheckedEvent> OnCardItemChecked;
+        
         public event EventHandler<CardItemAddedEvent> OnCardItemAdded;
 
         public CheckListItemManager(HttpClient client)
@@ -29,14 +29,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             var response = await _httpClient.PutAsJsonAsync(Routes.CheckListItemEndpoints
                 .Checked(request.ListItemId), request);
 
-            var result = await response.ToResult<bool>();
-
-            if (result.Succeeded)
-            {
-                OnCardItemChecked?.Invoke(this, new CardItemCheckedEvent(request.CardId, request.ListItemId, request.IsChecked) );
-            }
-
-            return result;
+            return await response.ToResult<bool>();
         }
 
         public async Task<IResult<bool>> UpdateListItemDescriptionAsync(UpdateListItemDescriptionCommand request)

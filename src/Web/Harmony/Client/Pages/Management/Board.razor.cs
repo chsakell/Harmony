@@ -37,7 +37,7 @@ namespace Harmony.Client.Pages.Management
             {
                 KanbanStore.LoadBoard(result.Data);
 
-                _checkListItemManager.OnCardItemChecked += CheckListItemManager_OnCardItemChecked;
+                _hubSubscriptionManager.OnCardItemChecked += OnCardItemChecked;
                 _checkListManager.OnCardItemAdded += CheckListManager_OnCardItemAdded;
                 _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
                 _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
@@ -91,7 +91,7 @@ namespace Harmony.Client.Pages.Management
             _dropContainer.Refresh();
         }
 
-        private void CheckListItemManager_OnCardItemChecked(object? sender, CardItemCheckedEvent e)
+        private void OnCardItemChecked(object? sender, CardItemCheckedEvent e)
         {
             KanbanStore.UpdateTodalCardItemsCompleted(e.CardId, e.IsChecked);
 
