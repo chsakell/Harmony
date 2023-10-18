@@ -9,6 +9,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Application.Helpers;
 using Microsoft.VisualBasic;
+using Harmony.Application.Contracts.Services.Hubs;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 
@@ -18,6 +19,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly ICardActivityService _cardActivityService;
+    private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly IStringLocalizer<UpdateCardDatesCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
@@ -25,6 +27,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		ICardActivityService cardActivityService,
+		IHubClientNotifierService hubClientNotifierService,
 		IStringLocalizer<UpdateCardDatesCommandHandler> localizer,
 		IMapper mapper)
 	{
@@ -32,6 +35,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _cardActivityService = cardActivityService;
+        _hubClientNotifierService = hubClientNotifierService;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -57,6 +61,9 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
             await _cardActivityService.CreateActivity(card.Id, userId,
                 CardActivityType.CardDatesUpdated, card.DateUpdated.Value,
                 CardHelper.DisplayDates(card.StartDate, card.DueDate));
+
+            var boardId = await _cardRepository.GetBoardId(card.Id);
+            await _hubClientNotifierService.UpdateCardDates(boardId, card.Id, card.StartDate, card.DueDate);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Dates updated"]);
 		}

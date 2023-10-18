@@ -19,7 +19,12 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #endregion
 
         #region Events
+
         event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
+        event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
+        event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
+        event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
+
         #endregion
     }
 }

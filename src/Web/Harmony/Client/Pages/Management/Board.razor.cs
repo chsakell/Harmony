@@ -39,10 +39,10 @@ namespace Harmony.Client.Pages.Management
 
                 _checkListItemManager.OnCardItemChecked += CheckListItemManager_OnCardItemChecked;
                 _checkListManager.OnCardItemAdded += CheckListManager_OnCardItemAdded;
-                _cardManager.OnCardDescriptionChanged += CardManager_OnCardDescriptionChanged;
+                _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
                 _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
-                _cardManager.OnCardLabelToggled += CardManager_OnCardLabelToggled;
-                _cardManager.OnCardDatesChanged += CardManager_OnCardDatesChanged;
+                _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
+                _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
                 _fileManager.OnCardAttachmentAdded += FileManager_OnCardAttachmentAdded;
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
@@ -56,14 +56,14 @@ namespace Harmony.Client.Pages.Management
             _dropContainer.Refresh();
         }
 
-        private void CardManager_OnCardDatesChanged(object? sender, CardDatesChangedEvent e)
+        private void OnCardDatesChanged(object? sender, CardDatesChangedEvent e)
         {
             KanbanStore.UpdateCardDates(e.CardId, e.StartDate, e.DueDate);
 
             _dropContainer.Refresh();
         }
 
-        private void CardManager_OnCardLabelToggled(object? sender, CardLabelToggledEvent e)
+        private void OnCardLabelToggled(object? sender, CardLabelToggledEvent e)
         {
             KanbanStore.ToggleCardLabel(e.CardId, e.Label);
 
@@ -77,7 +77,7 @@ namespace Harmony.Client.Pages.Management
             _dropContainer.Refresh();
         }
 
-        private void CardManager_OnCardDescriptionChanged(object? sender, CardDescriptionChangedEvent e)
+        private void OnCardDescriptionChanged(object? sender, CardDescriptionChangedEvent e)
         {
             KanbanStore.UpdateCardDescription(e.CardId, e.Description);
 

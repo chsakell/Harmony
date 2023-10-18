@@ -31,6 +31,9 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #region Events
 
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
+        public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
+        public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
+        public event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
 
         #endregion
 
@@ -45,9 +48,29 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
 
         private void HandleEvents()
         {
-            _hubConnection.On<CardTitleChangedEvent>(ApplicationConstants.SignalR.OnCardTitleChanged, (cardTitleChangedEvent) =>
+            HandleCardChanges();
+        }
+
+        private void HandleCardChanges()
+        {
+            _hubConnection.On<CardTitleChangedEvent>(ApplicationConstants.SignalR.OnCardTitleChanged, (@event) =>
             {
-                OnCardTitleChanged?.Invoke(this, new CardTitleChangedEvent(cardTitleChangedEvent.CardId, cardTitleChangedEvent.Title));
+                OnCardTitleChanged?.Invoke(this, new CardTitleChangedEvent(@event.CardId, @event.Title));
+            });
+
+            _hubConnection.On<CardDescriptionChangedEvent>(ApplicationConstants.SignalR.OnCardDescriptionChanged, (@event) =>
+            {
+                OnCardDescriptionChanged?.Invoke(this, new CardDescriptionChangedEvent(@event.CardId, @event.Description));
+            });
+
+            _hubConnection.On<CardDatesChangedEvent>(ApplicationConstants.SignalR.OnCardDatesChanged, (@event) =>
+            {
+                OnCardDatesChanged?.Invoke(this, new CardDatesChangedEvent(@event.CardId, @event.StartDate, @event.DueDate));
+            });
+
+            _hubConnection.On<CardLabelToggledEvent>(ApplicationConstants.SignalR.OnCardLabelToggled, (@event) =>
+            {
+                OnCardLabelToggled?.Invoke(this, new CardLabelToggledEvent(@event.CardId, @event.Label));
             });
         }
 

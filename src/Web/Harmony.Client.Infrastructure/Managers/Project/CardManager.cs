@@ -26,9 +26,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public class CardManager : ICardManager
     {
         private readonly HttpClient _httpClient;
-        public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
-        public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
-        public event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
+        
 
         public CardManager(HttpClient client)
         {
@@ -60,14 +58,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Description(request.CardId), request);
 
-            var result = await response.ToResult<bool>();
-
-            if (result.Succeeded)
-            {
-                OnCardDescriptionChanged?.Invoke(this, new CardDescriptionChangedEvent(request.CardId, request.Description));
-            }
-
-            return result;
+            return await response.ToResult<bool>();
         }
 
         public async Task<IResult<bool>> UpdateTitleAsync(UpdateCardTitleCommand request)
@@ -88,20 +79,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Labels(request.LabelId), request);
             
-            var result = await response.ToResult<LabelDto>();
-
-            if (result.Succeeded)
-            {
-                var label = result.Data ?? new LabelDto()
-                {
-                    Id = request.LabelId,
-                    IsChecked = false
-                };
-
-                OnCardLabelToggled?.Invoke(this, new CardLabelToggledEvent(request.CardId, label));
-            }
-
-            return result;
+            return await response.ToResult<LabelDto>();
         }
 
         public async Task<IResult<List<LabelDto>>> GetCardLabelsAsync(GetCardLabelsQuery request)
@@ -115,14 +93,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Dates(request.CardId), request);
 
-            var result = await response.ToResult<bool>();
-
-            if (result.Succeeded)
-            {
-                OnCardDatesChanged?.Invoke(this, new CardDatesChangedEvent(request.CardId, request.StartDate, request.DueDate));
-            }
-
-            return result;
+            return await response.ToResult<bool>();
         }
 
         public async Task<IResult<List<CardActivityDto>>> GetCardActivityAsync(GetCardActivityQuery request)

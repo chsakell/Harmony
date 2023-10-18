@@ -16,7 +16,9 @@
             public const string ListenForBoardEvents = "ListenForBoardEvents";
 
             public const string OnCardTitleChanged = "OnCardTitleChanged";
-
+            public const string OnCardDescriptionChanged = "OnCardDescriptionChanged";
+            public const string OnCardDatesChanged = "OnCardDatesChanged";
+            public const string OnCardLabelToggled = "OnCardLabelToggled";
         }
 
     }

@@ -7,6 +7,8 @@ using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
+using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 
@@ -16,6 +18,7 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly ICardActivityService _cardActivityService;
+    private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly IStringLocalizer<UpdateCardDescriptionCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
@@ -23,6 +26,7 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		ICardActivityService cardActivityService,
+		IHubClientNotifierService hubClientNotifierService,
 		IStringLocalizer<UpdateCardDescriptionCommandHandler> localizer,
 		IMapper mapper)
 	{
@@ -30,6 +34,7 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _cardActivityService = cardActivityService;
+        _hubClientNotifierService = hubClientNotifierService;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -48,11 +53,13 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 
 		// commit all the changes
 		var updateResult = await _cardRepository.Update(card);
-
-		if (updateResult > 0)
-		{
+        if (updateResult > 0)
+        {
             await _cardActivityService.CreateActivity(card.Id, userId,
                 CardActivityType.CardDescriptionUpdated, card.DateUpdated.Value);
+
+            var boardId = await _cardRepository.GetBoardId(card.Id);
+            await _hubClientNotifierService.UpdateCardDescription(boardId, card.Id, card.Description);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Description updated"]);
 		}

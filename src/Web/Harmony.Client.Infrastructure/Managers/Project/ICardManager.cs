@@ -20,9 +20,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 {
     public interface ICardManager : IManager
     {
-        event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
-        event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
-        event EventHandler<CardDatesChangedEvent> OnCardDatesChanged;
         Task<IResult<LoadCardResponse>> LoadCardAsync(LoadCardQuery request);
         Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request);
         Task<IResult<CardDto>> MoveCardAsync(MoveCardCommand request);
