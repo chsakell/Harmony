@@ -1,5 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Domain.Enums;
+﻿using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 

@@ -1,7 +1,5 @@
-﻿using Harmony.Domain.Enums;
-using Harmony.Shared.Wrapper;
+﻿using Harmony.Shared.Wrapper;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {

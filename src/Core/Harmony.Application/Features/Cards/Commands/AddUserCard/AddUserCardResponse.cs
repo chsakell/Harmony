@@ -1,12 +1,4 @@
-﻿using Harmony.Shared.Wrapper;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Harmony.Application.Features.Cards.Commands.AddUserCard
+﻿namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
     public class AddUserCardResponse 
     {

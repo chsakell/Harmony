@@ -12,7 +12,6 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
 using Harmony.Domain.Entities;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Harmony.Infrastructure.Services.Identity
 {

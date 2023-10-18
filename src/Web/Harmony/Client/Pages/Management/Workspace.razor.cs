@@ -1,8 +1,5 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Events;
-using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
+﻿using Harmony.Application.Events;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
-using Harmony.Domain.Entities;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 

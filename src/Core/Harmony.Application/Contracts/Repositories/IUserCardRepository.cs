@@ -1,7 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
-using Harmony.Application.Features.Cards.Queries.GetCardMembers;
+﻿using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Application.Contracts.Repositories
 {

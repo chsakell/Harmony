@@ -1,6 +1,4 @@
-﻿using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
-using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
-using Harmony.Application.Features.Cards.Commands.AddUserCard;
+﻿using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;

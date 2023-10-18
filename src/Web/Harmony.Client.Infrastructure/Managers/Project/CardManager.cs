@@ -1,8 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Events;
-using Harmony.Application.Features.Boards.Commands.AddUserBoard;
-using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
-using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
@@ -18,7 +14,6 @@ using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
-using MediatR;
 using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project

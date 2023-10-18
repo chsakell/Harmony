@@ -1,6 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Events;
-using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;

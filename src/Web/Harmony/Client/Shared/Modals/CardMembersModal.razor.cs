@@ -1,13 +1,6 @@
-﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
-using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
-using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
-using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
-using Harmony.Application.Features.Cards.Commands.AddUserCard;
+﻿using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
-using Harmony.Application.Features.Workspaces.Commands.AddMember;
-using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
-using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Enums;

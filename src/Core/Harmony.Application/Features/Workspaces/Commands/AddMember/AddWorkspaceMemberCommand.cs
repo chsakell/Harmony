@@ -1,6 +1,5 @@
 ﻿using Harmony.Shared.Wrapper;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Workspaces.Commands.AddMember
 {

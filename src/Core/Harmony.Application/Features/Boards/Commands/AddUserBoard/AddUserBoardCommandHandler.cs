@@ -4,11 +4,6 @@ using MediatR;
 using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Shared.Constants.Application;
-using Harmony.Domain.Enums;
-using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
-using Harmony.Application.Responses;
-using static Harmony.Shared.Constants.Permission.Permissions;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 
 namespace Harmony.Application.Features.Boards.Commands.AddUserBoard

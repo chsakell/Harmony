@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Shared.Utilities;
 
 namespace Harmony.Client.Shared.Components

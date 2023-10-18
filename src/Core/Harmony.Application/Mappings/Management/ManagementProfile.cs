@@ -3,7 +3,6 @@ using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
-using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;

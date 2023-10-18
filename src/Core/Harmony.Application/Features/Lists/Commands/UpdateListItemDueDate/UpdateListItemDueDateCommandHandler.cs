@@ -3,7 +3,6 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using AutoMapper;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate
 {

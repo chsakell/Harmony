@@ -1,12 +1,7 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Events;
-using Harmony.Application.Features.Cards.Commands.CreateChecklist;
-using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
-using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
+﻿using Harmony.Application.Events;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;

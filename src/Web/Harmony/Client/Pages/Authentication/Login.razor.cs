@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Harmony.Application.Requests.Identity;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components.Authorization;

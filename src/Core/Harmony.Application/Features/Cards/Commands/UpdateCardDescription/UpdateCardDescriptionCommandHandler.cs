@@ -3,12 +3,10 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Hubs;
-using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 

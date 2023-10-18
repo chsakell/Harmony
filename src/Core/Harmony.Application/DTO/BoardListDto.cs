@@ -1,5 +1,4 @@
 ﻿using Harmony.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.DTO
 {

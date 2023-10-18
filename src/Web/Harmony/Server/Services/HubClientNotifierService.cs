@@ -4,7 +4,6 @@ using Harmony.Application.Events;
 using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.VisualBasic;
 
 namespace Harmony.Server.Services
 {

@@ -1,9 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Commands.Create;
-using Harmony.Application.Features.Boards.Commands.CreateList;
-using Harmony.Application.Features.Cards.Commands.CreateChecklist;
-using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
-using Harmony.Client.Infrastructure.Store.Kanban;
+﻿using Harmony.Application.Features.Boards.Commands.CreateList;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;

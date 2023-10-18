@@ -1,8 +1,6 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 

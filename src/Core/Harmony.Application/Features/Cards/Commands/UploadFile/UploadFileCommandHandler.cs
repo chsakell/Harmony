@@ -1,19 +1,16 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
-using Harmony.Application.Requests;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Application.Features.Cards.Commands.UploadFile
 {

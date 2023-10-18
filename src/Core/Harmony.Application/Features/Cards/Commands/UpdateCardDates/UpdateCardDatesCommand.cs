@@ -1,6 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Domain.Enums;
-using Harmony.Shared.Wrapper;
+﻿using Harmony.Shared.Wrapper;
 using MediatR;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDates;

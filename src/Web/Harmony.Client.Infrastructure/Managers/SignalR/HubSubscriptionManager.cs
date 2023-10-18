@@ -2,16 +2,8 @@
 using Harmony.Application.Events;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
-using Harmony.Shared.Wrapper;
-using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {

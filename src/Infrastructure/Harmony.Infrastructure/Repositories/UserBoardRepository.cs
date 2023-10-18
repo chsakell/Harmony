@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
-using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Domain.Entities;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;

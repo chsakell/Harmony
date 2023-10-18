@@ -1,16 +1,12 @@
 ﻿using Bogus;
 using Harmony.Application.Contracts.Persistence;
-using Harmony.Infrastructure.Helpers;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
-using Harmony.Shared.Constants.Permission;
 using Harmony.Shared.Constants.Role;
-using Harmony.Shared.Constants.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using static Harmony.Shared.Storage.StorageConstants;
 
 namespace Harmony.Infrastructure.Seed
 {

@@ -10,9 +10,7 @@ using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Client.Pages.Management
 {

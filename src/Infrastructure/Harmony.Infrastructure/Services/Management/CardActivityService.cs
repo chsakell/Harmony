@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Domain.Entities;
@@ -7,12 +6,6 @@ using Harmony.Domain.Enums;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Services.Management
 {
