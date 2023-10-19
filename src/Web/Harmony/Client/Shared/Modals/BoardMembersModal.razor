@@ -67,7 +67,8 @@
                                 <MudText Typo="Typo.body2">@@@member.UserName</MudText>
                             </MudStack>
                             <div class="d-flex justify-end flex-grow-1 gap-4">
-                                <MudSelect T="UserBoardAccess" @bind-Value="member.Access"
+                                <MudSelect T="UserBoardAccess" @bind-Value:get="member.Access"
+                                            @bind-Value:set="(value) => UpdateBoardMemberAccess(member,value)"
                                            Class="flex-grow-0"
                                            Label="Access" AnchorOrigin="Origin.BottomCenter">
                                     <MudSelectItem Value="@(UserBoardAccess.Member)" />

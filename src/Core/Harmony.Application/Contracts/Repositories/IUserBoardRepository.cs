@@ -13,6 +13,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<List<UserBoardResponse>> GetBoardAccessMembers(Guid boardId);
         Task<UserBoardResponse?> GetBoardAccessMember(Guid boardId, string userId);
         Task<Workspace?> GetWorkspace(Guid boardId);
-
+        Task<int> Update(UserBoard userBoard);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
+using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Client.Shared.Dialogs;
@@ -77,7 +78,33 @@ namespace Harmony.Client.Shared.Modals
 
             DisplayMessage(result);
         }
-        
+
+        private async Task UpdateBoardMemberAccess(UserBoardResponse user, UserBoardAccess access)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want switch {user.UserName} to {access} level?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Info }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                var updateResult = await _boardManager
+                     .UpdateBoardUserAccessAsync(new UpdateUserBoardAccessCommand(BoardId, user.Id, access));
+
+                if(updateResult.Succeeded)
+                {
+                    user.Access = access;
+                }
+
+                DisplayMessage(updateResult);
+            }
+        }
+
         private async Task RemoveMember(UserBoardResponse user)
         {
             var parameters = new DialogParameters<Confirmation>

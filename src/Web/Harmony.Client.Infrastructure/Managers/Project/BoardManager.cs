@@ -3,10 +3,12 @@ using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
+using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -77,9 +79,17 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public async Task<IResult<RemoveUserBoardResponse>> RemoveBoardMemberAsync(RemoveUserBoardCommand command)
         {
             var response = await _httpClient.DeleteAsync(Routes.BoardEndpoints
-                .RemoveMember(command.BoardId.ToString(), command.UserId));
+                .Member(command.BoardId.ToString(), command.UserId));
 
             return await response.ToResult<RemoveUserBoardResponse>();
+        }
+
+        public async Task<IResult<UpdateUserBoardAccessResponse>> UpdateBoardUserAccessAsync(UpdateUserBoardAccessCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.BoardEndpoints
+                .MemberStatus(request.BoardId.ToString(), request.UserId), request);
+
+            return await response.ToResult<UpdateUserBoardAccessResponse>();
         }
     }
 }

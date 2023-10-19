@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
+using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
@@ -18,5 +19,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<SearchBoardUserResponse>>> SearchBoardMembersAsync(string boardId, string term);
         Task<IResult<UserBoardResponse>> AddBoardMemberAsync(AddUserBoardCommand command);
         Task<IResult<RemoveUserBoardResponse>> RemoveBoardMemberAsync(RemoveUserBoardCommand command);
+        Task<IResult<UpdateUserBoardAccessResponse>> UpdateBoardUserAccessAsync(UpdateUserBoardAccessCommand request);
     }
 }

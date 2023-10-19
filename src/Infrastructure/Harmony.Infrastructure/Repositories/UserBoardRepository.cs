@@ -104,5 +104,12 @@ namespace Harmony.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<int> Update(UserBoard userboard)
+        {
+            _context.UserBoards.Update(userboard);
+
+            return await _context.SaveChangesAsync();
+        }
     }
 }
