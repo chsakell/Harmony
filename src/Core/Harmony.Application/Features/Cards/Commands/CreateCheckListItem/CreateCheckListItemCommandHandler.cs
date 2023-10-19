@@ -18,7 +18,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
         private readonly ICheckListItemRepository _checkListItemRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardActivityService _cardActivityService;
-        private readonly IChecklistRepository _checklistRepository;
+        private readonly ICheckListRepository _checklistRepository;
         private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly ICardRepository _cardRepository;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
@@ -27,7 +27,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
         public CreateCheckListItemCommandHandler(ICheckListItemRepository checkListItemRepository,
             ICurrentUserService currentUserService,
             ICardActivityService cardActivityService,
-            IChecklistRepository checklistRepository,
+            ICheckListRepository checklistRepository,
             IHubClientNotifierService hubClientNotifierService,
             ICardRepository cardRepository,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,

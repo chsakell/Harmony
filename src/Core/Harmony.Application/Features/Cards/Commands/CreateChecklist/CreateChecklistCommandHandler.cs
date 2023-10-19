@@ -13,13 +13,13 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
     public class CreateChecklistCommandHandler : IRequestHandler<CreateCheckListCommand, Result<CheckListDto>>
     {
-        private readonly IChecklistRepository _checklistRepository;
+        private readonly ICheckListRepository _checklistRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardActivityService _cardActivityService;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
-        public CreateChecklistCommandHandler(IChecklistRepository checklistRepository,
+        public CreateChecklistCommandHandler(ICheckListRepository checklistRepository,
             ICurrentUserService currentUserService,
             ICardActivityService cardActivityService,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,

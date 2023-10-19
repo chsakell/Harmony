@@ -9,12 +9,12 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
 {
     public class UpdateListTitleCommandHandler : IRequestHandler<UpdateListTitleCommand, Result<bool>>
     {
-        private readonly IChecklistRepository _checkListRepository;
+        private readonly ICheckListRepository _checkListRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<UpdateListTitleCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
-        public UpdateListTitleCommandHandler(IChecklistRepository checkListRepository,
+        public UpdateListTitleCommandHandler(ICheckListRepository checkListRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<UpdateListTitleCommandHandler> localizer,
             IMapper mapper)

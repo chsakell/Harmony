@@ -22,7 +22,7 @@ namespace Harmony.Infrastructure.Extensions
                 .AddScoped<IUserBoardRepository, UserBoardRepository>()
                 .AddScoped<IBoardListRepository, BoardListRepository>()
 				.AddScoped<ICardRepository, CardRepository>()
-                .AddScoped<IChecklistRepository, ChecklistRepository>()
+                .AddScoped<ICheckListRepository, CheckListRepository>()
                 .AddScoped<ICheckListItemRepository, CheckListItemRepository>()
                 .AddScoped<IBoardLabelRepository, BoardLabelRepository>()
                 .AddScoped<ICardLabelRepository, CardLabelRepository>()

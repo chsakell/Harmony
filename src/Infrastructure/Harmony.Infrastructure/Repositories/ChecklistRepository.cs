@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.Repositories
 {
-    public class ChecklistRepository : IChecklistRepository
+    public class CheckListRepository : ICheckListRepository
     {
         private readonly HarmonyContext _context;
 
-        public ChecklistRepository(HarmonyContext context)
+        public CheckListRepository(HarmonyContext context)
         {
             _context = context;
         }

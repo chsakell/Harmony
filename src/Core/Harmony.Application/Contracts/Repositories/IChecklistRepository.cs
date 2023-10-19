@@ -2,7 +2,7 @@
 
 namespace Harmony.Application.Contracts.Repositories
 {
-    public interface IChecklistRepository
+    public interface ICheckListRepository
     {
         Task<int> Add(CheckList card);
         Task<CheckList?> Get(Guid checklistId);
