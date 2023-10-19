@@ -47,7 +47,9 @@ else
             <MudContainer Fixed="true" MaxWidth="MaxWidth.ExtraLarge" Class="d-flex flex-nowrap gap-4 overflow-auto flex-row mud-height-full">
                 @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
                 {
-                    <MudPaper Elevation="0" Width="300px" Class="pa-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
+                    <MudPaper Elevation="0" Width="300px"
+                              Style="height:calc(100vh - 200px);overflow:auto"
+                        Class="pa-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
                         <MudToolBar DisableGutters="true">
                             <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
                             <MudSpacer />
@@ -55,7 +57,7 @@ else
                                 <MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
                             </MudMenu>
                         </MudToolBar>
-                        <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Class="mud-height-full" Style="min-height:10px" AllowReorder="true" />
+                        <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
                         @if (item.CreateCard.NewTaskOpen)
                         {
                             <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
@@ -97,7 +99,7 @@ else
                     }
                     @if (!string.IsNullOrEmpty(context.Description))
                     {
-                        <MudPaper>@((MarkupString)context.Description)</MudPaper>
+                        <MudPaper Style="max-height:170px;overflow-y:auto">@((MarkupString)context.Description)</MudPaper>
                     }
                 </MudCardContent>
                 <MudCardActions Class=" pa-0 pt-2">
