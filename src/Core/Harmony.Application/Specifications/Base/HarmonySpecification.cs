@@ -1,9 +1,8 @@
 ﻿using System.Linq.Expressions;
 using Harmony.Application.Extensions;
-using Harmony.Application.Specifications.Base;
 using Harmony.Domain.Contracts;
 
-namespace BlazorHero.CleanArchitecture.Application.Specifications.Base
+namespace Harmony.Application.Specifications.Base
 {
     public abstract class HarmonySpecification<T> : ISpecification<T> where T : class, IEntity
     {

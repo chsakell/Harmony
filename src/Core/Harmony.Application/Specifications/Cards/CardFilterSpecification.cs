@@ -1,4 +1,4 @@
-﻿using BlazorHero.CleanArchitecture.Application.Specifications.Base;
+﻿using Harmony.Application.Specifications.Base;
 using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Specifications.Cards

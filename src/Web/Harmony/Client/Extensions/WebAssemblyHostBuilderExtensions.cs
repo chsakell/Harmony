@@ -17,14 +17,7 @@ namespace Harmony.Client.Extensions
 {
     public static class WebAssemblyHostBuilderExtensions
     {
-        private const string ClientName = "BlazorHero.API";
-
-        //public static WebAssemblyHostBuilder AddRootComponents(this WebAssemblyHostBuilder builder)
-        //{
-        //    builder.RootComponents.Add<App>("#app");
-
-        //    return builder;
-        //}
+        private const string ClientName = "Harmony.Client";
 
         public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder)
         {

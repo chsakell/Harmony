@@ -63,18 +63,6 @@ namespace Harmony.Client.Pages.Authentication
             }
         }
 
-        private void FillAdministratorCredentials()
-        {
-            _tokenModel.Email = "mukesh@blazorhero.com";
-            _tokenModel.Password = "123Pa$$word!";
-        }
-
-        private void FillBasicUserCredentials()
-        {
-            _tokenModel.Email = "john@blazorhero.com";
-            _tokenModel.Password = "123Pa$$word!";
-        }
-
         private void Navigate(WorkspaceDto workspace)
         {
             if(string.IsNullOrEmpty(workspace?.Name))

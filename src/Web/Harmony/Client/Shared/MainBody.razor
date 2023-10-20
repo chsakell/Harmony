@@ -1,7 +1,6 @@
-﻿@* @inject Microsoft.Extensions.Localization.IStringLocalizer<MainLayout> _localizer *@
+﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<MainLayout> _localizer 
 
 <MudAppBar Elevation="25">
-    @* <MudIcon Icon="@CustomIcons.BlazorHero" Size="Size.Large" ViewBox="0 0 500 500" /> *@
     <MudText Typo="Typo.h6" Class="ml-4">Harmony</MudText>
     <MudToolBar DisableGutters="true">
         <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
@@ -35,7 +34,6 @@
             <MudMenuItem Link="https://www.linkedin.com/in/iammukeshm/" Target="_blank">LinkedIn</MudMenuItem>
             <MudText Typo="Typo.body2" Class="px-4 py-2"><b>Resources</b></MudText>
             <MudMenuItem Link="https://mudblazor.com/getting-started/installation" Target="_blank">MudBlazor Documentation</MudMenuItem>
-            <MudMenuItem Link="https://codewithmukesh.com/blog/blazor-hero-quick-start-guide/" Target="_blank">Quick-Start Guide</MudMenuItem>
         </MudMenu>
     </MudHidden>
     <MudMenu Direction="_rightToLeft ? Direction.Right : Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
