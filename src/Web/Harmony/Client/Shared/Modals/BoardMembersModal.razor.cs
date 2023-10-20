@@ -15,6 +15,7 @@ namespace Harmony.Client.Shared.Modals
     {
         private bool _processing;
         private bool _removingMember;
+        private bool _loading;
 
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
@@ -29,12 +30,16 @@ namespace Harmony.Client.Shared.Modals
 
         protected override async Task OnInitializedAsync()
         {
+            _loading = true;
+
             var boardMembersResult = await _boardManager.GetBoardMembersAsync(BoardId.ToString());
 
             if (boardMembersResult.Succeeded)
             {
                 _boardMembers = boardMembersResult.Data;
             }
+
+            _loading = false;
         }
 
         private async Task<IEnumerable<SearchBoardUserResponse>> SearchUsers(string value)

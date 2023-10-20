@@ -14,6 +14,8 @@ namespace Harmony.Client.Shared.Modals
     {
         private List<LabelDto> _cardLabels = new();
         private bool _processing;
+        private bool _loading;
+
         private MudColorPicker colorPicker;
         private CreateLabelModel _createLabelModel = new();
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
@@ -28,6 +30,8 @@ namespace Harmony.Client.Shared.Modals
 
         protected override async Task OnInitializedAsync()
         {
+            _loading = true;
+
             var cardLabelsResponse = await _cardManager
                 .GetCardLabelsAsync(new GetCardLabelsQuery(CardId));
 
@@ -35,6 +39,8 @@ namespace Harmony.Client.Shared.Modals
             {
                 _cardLabels = cardLabelsResponse.Data;
             }
+
+            _loading = false;
         }
 
         private async Task UpdateLabelTitle(LabelDto label, string title)

@@ -5,28 +5,7 @@
 
 @if (KanbanStore.BoardLoading)
 {
-    <MudGrid>
-        @for (var i = 0; i < 3; i++)
-        {
-            <MudItem sm="4">
-                <MudCard Class="my-2" Style="position:relative;width:300px">
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
-                    <MudCardContent>
-                        <MudSkeleton Width="30%" Height="42px;" />
-                        <MudSkeleton Width="80%" />
-                        <MudSkeleton Width="100%" />
-                    </MudCardContent>
-                    <MudCardActions>
-                        <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
-                        <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
-                    </MudCardActions>
-                    <MudOverlay Visible="KanbanStore.BoardLoading" DarkBackground="true" Absolute="true">
-                        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-                    </MudOverlay>
-                </MudCard>
-            </MudItem>
-        }
-    </MudGrid>
+    <Loader/>
 }
 else
 {

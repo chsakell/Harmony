@@ -1,15 +1,22 @@
 ﻿@page "/workspaces/{id}/{name}"
 
-<MudGrid>
-    @foreach (var board in _userBoards)
-    {
-        <MudItem xs="3" md="6" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
-            <MudCard>
-                <MudCardContent>
-                    <MudText>@board.Title</MudText>
-                    <MudText Typo="Typo.body2">@board.Description</MudText>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-    }
-</MudGrid>
+@if (_userBoardsLoading)
+{
+    <Loader />
+}
+else
+{
+    <MudGrid>
+        @foreach (var board in _userBoards)
+        {
+            <MudItem xs="3" md="6" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
+                <MudCard>
+                    <MudCardContent>
+                        <MudText>@board.Title</MudText>
+                        <MudText Typo="Typo.body2">@board.Description</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}

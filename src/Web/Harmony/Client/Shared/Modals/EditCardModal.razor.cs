@@ -69,6 +69,8 @@ namespace Harmony.Client.Shared.Modals
 
         protected async override Task OnInitializedAsync()
         {
+            _loading = true;
+
             var loadCardResult = await _cardManager.LoadCardAsync(new LoadCardQuery(CardId));
 
             if (loadCardResult.Succeeded)

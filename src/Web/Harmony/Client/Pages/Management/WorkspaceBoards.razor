@@ -1,6 +1,10 @@
 ﻿@page "/workspaces/{id}/{name}/boards/"
 
-@if (!_loading)
+@if(_loading)
+{
+    <Loader />
+}
+else
 {
     <MudPaper Class="d-flex flex-wrap gap-4" Elevation="0">
 

@@ -14,6 +14,7 @@ namespace Harmony.Client.Pages.Management
         public string Name { get; set; }
 
         private List<LoadWorkspaceResponse> _userBoards = new List<LoadWorkspaceResponse>();
+        private bool _userBoardsLoading;
 
         protected override void OnInitialized()
         {
@@ -45,6 +46,8 @@ namespace Harmony.Client.Pages.Management
 
         protected async override Task OnParametersSetAsync()
         {
+            _userBoardsLoading = true;
+
             var result = await _workspaceManager.LoadWorkspaceAsync(Id);
 
             if (result.Succeeded)
@@ -52,6 +55,8 @@ namespace Harmony.Client.Pages.Management
                 await _workspaceManager.SelectWorkspace(Guid.Parse(Id));
                 _userBoards = result.Data;
             }
+
+            _userBoardsLoading = false;
         }
     }
 }

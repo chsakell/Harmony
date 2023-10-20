@@ -1,7 +1,11 @@
 ﻿@using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardModal> _localizer
 
-@if (!_loading)
+@if (_loading)
+{
+    <ModalLoader />
+}
+else
 {
     <MudDialog>
         <TitleContent>

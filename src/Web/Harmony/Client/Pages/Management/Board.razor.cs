@@ -228,7 +228,7 @@ namespace Harmony.Client.Pages.Management
                 { c => c.CardId, card.Id }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
             var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
             var result = await dialog.Result;
 
