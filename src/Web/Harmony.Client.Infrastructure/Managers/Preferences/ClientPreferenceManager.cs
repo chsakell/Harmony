@@ -34,18 +34,6 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
 
             return false;
         }
-        public async Task<bool> ToggleLayoutDirection()
-        {
-            var preference = await GetPreference() as ClientPreference;
-            if (preference != null)
-            {
-                preference.IsRTL = !preference.IsRTL;
-                await SetPreference(preference);
-                return preference.IsRTL;
-            }
-
-            return false;
-        }
 
         public async Task<IResult> ChangeLanguageAsync(string languageCode)
         {
@@ -76,16 +64,6 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
                 if (preference.IsDarkMode == true) return HarmonyTheme.DarkTheme;
             }
             return HarmonyTheme.DefaultTheme;
-        }
-
-        public async Task<bool> IsRTL()
-        {
-            var preference = await GetPreference() as ClientPreference;
-            if (preference != null)
-            {
-                if (preference.IsDarkMode == true) return false;
-            }
-            return preference.IsRTL;
         }
 
         public async Task<IPreference> GetPreference()

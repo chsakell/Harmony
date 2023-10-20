@@ -28,15 +28,6 @@ namespace Harmony.Client.Shared
         private string SecondName { get; set; }
         private string Email { get; set; }
         private char FirstLetterOfName { get; set; }
-        private bool _rightToLeft = false;
-
-        private async Task RightToLeftToggle()
-        {
-            var isRtl = await _clientPreferenceManager.ToggleLayoutDirection();
-            _rightToLeft = isRtl;
-
-            await OnRightToLeftToggle.InvokeAsync(isRtl);
-        }
 
         public async Task ToggleDarkMode()
         {
@@ -45,7 +36,6 @@ namespace Harmony.Client.Shared
 
         protected override async Task OnInitializedAsync()
         {
-            _rightToLeft = await _clientPreferenceManager.IsRTL();
             _interceptor.RegisterEvent();
             hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage);
 

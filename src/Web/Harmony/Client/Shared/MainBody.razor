@@ -12,9 +12,6 @@
         <MudDivider Vertical="true" FlexItem="true" DividerType="DividerType.Middle" Class="mx-4 my-5" />
         <CreateWorkspaceBoard />
         <LanguageSelector />
-        <MudTooltip Text="Toggle right-to-left/left-to-right">
-            <MudIconButton Icon="@Icons.Material.Filled.FormatTextdirectionRToL" Color="Color.Inherit" OnClick="@((e) => RightToLeftToggle())" />
-        </MudTooltip>
         <MudTooltip Text="Toggle Dark Mode">
             <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
         </MudTooltip>
@@ -36,7 +33,7 @@
             <MudMenuItem Link="https://mudblazor.com/getting-started/installation" Target="_blank">MudBlazor Documentation</MudMenuItem>
         </MudMenu>
     </MudHidden>
-    <MudMenu Direction="_rightToLeft ? Direction.Right : Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+    <MudMenu Dense="true" Class="mt-1 ml-4">
         <ActivatorContent>
             @if (string.IsNullOrEmpty(ImageDataUrl))
             {
