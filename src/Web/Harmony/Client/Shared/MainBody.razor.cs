@@ -49,28 +49,6 @@ namespace Harmony.Client.Shared
             _interceptor.RegisterEvent();
             hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage);
 
-            hubConnection.On(ApplicationConstants.SignalR.ReceiveRegenerateTokens, async () =>
-            {
-                try
-                {
-                    var token = await _authenticationManager.TryForceRefreshToken();
-                    if (!string.IsNullOrEmpty(token))
-                    {
-                        _snackBar.Add("Refreshed Token.", Severity.Success);
-                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    _snackBar.Add("You are Logged Out.", Severity.Error);
-                    await _authenticationManager.Logout();
-                    _navigationManager.NavigateTo("/");
-                }
-            });
-
-            await hubConnection.SendAsync(ApplicationConstants.SignalR.OnConnect, CurrentUserId);
-
             _snackBar.Add(string.Format("Welcome {0}", FirstName), Severity.Success);
         }
 
