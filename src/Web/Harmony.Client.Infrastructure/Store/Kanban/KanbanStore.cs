@@ -1,6 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
-
+using static Harmony.Application.Events.BoardListArchivedEvent;
 
 namespace Harmony.Client.Infrastructure.Store.Kanban
 {
@@ -85,6 +85,21 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         public void ArchiveList(BoardListDto list)
         {
             _board.Lists.RemoveAll(l => l.Id == list.Id);
+        }
+
+        public void ArchiveListAndReorder(Guid listId, List<BoardListOrder> listPositions)
+        {
+            _board.Lists.RemoveAll(l => l.Id == listId);
+
+            foreach (var listPosition in listPositions)
+            {
+                var list = _board.Lists.FirstOrDefault(l => l.Id == listPosition.Id);
+
+                if (list != null)
+                {
+                    list.Position = listPosition.Position;
+                }
+            }
         }
 
         public void ArchiveCard(Guid cardId)

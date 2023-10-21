@@ -40,14 +40,14 @@ namespace Harmony.Application.Features.Lists.Commands.CreateList
                 return await Result<BoardListDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var totalLists = await _boardListRepository.CountLists(request.BoardId);
+            var totalLists = await _boardListRepository.CountActiveLists(request.BoardId);
 
             var boardList = new BoardList()
             {
                 Name = request.Name,
                 UserId = userId,
                 BoardId = request.BoardId,
-                Position = (byte)totalLists
+                Position = (short)totalLists
             };
 
             var dbResult = await _boardListRepository.Add(boardList);

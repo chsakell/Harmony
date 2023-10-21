@@ -1,9 +1,11 @@
 ﻿using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Domain.Entities;
 using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.SignalR;
+using static Harmony.Application.Events.BoardListArchivedEvent;
 
 namespace Harmony.Server.Services
 {
@@ -70,6 +72,13 @@ namespace Harmony.Server.Services
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnBoardListAdded,
                     new BoardListAddedEvent(boardList));
+        }
+
+        public async Task ArchiveBoardList(Guid boardId, Guid archivedList, List<BoardListOrder> positions)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnBoardListArchived,
+                    new BoardListArchivedEvent(boardId, archivedList, positions));
         }
     }
 }

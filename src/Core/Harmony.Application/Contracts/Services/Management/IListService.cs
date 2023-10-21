@@ -1,9 +1,10 @@
 ﻿using Harmony.Domain.Entities;
+using static Harmony.Application.Events.BoardListArchivedEvent;
 
 namespace Harmony.Application.Contracts.Services.Management
 {
     public interface IListService
 	{
-		Task ReorderAfterArchive(BoardList list);
+		Task<List<BoardListOrder>> ReorderAfterArchive(BoardList list);
 	}
 }

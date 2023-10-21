@@ -14,9 +14,11 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
-		public async Task<int> CountLists(Guid boardId)
+		public async Task<int> CountActiveLists(Guid boardId)
 		{
-			return await _context.BoardLists.Where(bl => bl.BoardId == boardId).CountAsync();
+			return await _context.BoardLists
+                .Where(bl => bl.BoardId == boardId 
+                && bl.Status == Domain.Enums.BoardListStatus.Active).CountAsync();
 		}
 
 		public async Task<int> Add(BoardList boardList)

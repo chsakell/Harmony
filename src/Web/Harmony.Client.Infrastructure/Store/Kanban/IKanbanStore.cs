@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
+using static Harmony.Application.Events.BoardListArchivedEvent;
 
 namespace Harmony.Client.Infrastructure.Store.Kanban
 {
@@ -14,6 +15,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 		void AddCardToList(CardDto card, BoardListDto list);
 		void MoveCard(CardDto card, Guid previousListId, Guid nextListId, byte newPosition);
 		void ArchiveList(BoardListDto list);
+		void ArchiveListAndReorder(Guid listId, List<BoardListOrder> listPositions);
         void ArchiveCard(Guid cardId);
         void UpdateTodalCardItemsCompleted(Guid cardId, bool increase);
         void UpdateTodalCardItems(Guid cardId, bool increase);

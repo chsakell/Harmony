@@ -4,6 +4,7 @@ using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using System.Text.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {
@@ -25,7 +26,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #region Events
 
         public event EventHandler<BoardListAddedEvent> OnBoardListAdded;
-
+        public event EventHandler<BoardListArchivedEvent> OnBoardListArchived;
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
         public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
@@ -91,6 +92,23 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             _hubConnection.On<BoardListAddedEvent>(ApplicationConstants.SignalR.OnBoardListAdded, (@event) =>
             {
                 OnBoardListAdded?.Invoke(this, new BoardListAddedEvent(@event.BoardList));
+            });
+
+            _hubConnection.On<BoardListArchivedEvent>(ApplicationConstants.SignalR.OnBoardListArchived, (@event) =>
+            {
+                try
+                {
+                    //var json = @event.ToString();
+                    //var update = JsonSerializer.Deserialize<BoardListArchivedEvent>(json);
+                    OnBoardListArchived?.Invoke(this,
+                        new BoardListArchivedEvent(@event.BoardId, @event.ArchivedList, @event.Positions));
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+                
             });
         }
 

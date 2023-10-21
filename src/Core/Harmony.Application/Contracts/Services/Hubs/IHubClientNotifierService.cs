@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using static Harmony.Application.Events.BoardListArchivedEvent;
 
 namespace Harmony.Application.Contracts.Services.Hubs
 {
@@ -12,5 +13,6 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task AddCardAttachment(Guid boardId, Guid cardId, AttachmentDto attachment);
         Task CreateCheckListItem(Guid boardId, Guid cardId);
         Task ToggleCardListItemChecked(Guid boardId, Guid cardId, Guid listItemId, bool isChecked);
+        Task ArchiveBoardList(Guid boardId, Guid archivedList, List<BoardListOrder> positions);
     }
 }
