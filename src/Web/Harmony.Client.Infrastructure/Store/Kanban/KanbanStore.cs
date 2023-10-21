@@ -225,5 +225,15 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 list.Title = title;
             }
         }
+
+        public void RemoveCardLabel(Guid labelId)
+        {
+            var cards = _board.Lists.SelectMany(l => l.Cards);
+
+            foreach (var card in cards)
+            {
+                var totalRemoved = card.Labels.RemoveAll(l => l.Id == labelId);
+            }
+        }
     }
 }

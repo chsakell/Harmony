@@ -46,9 +46,16 @@ namespace Harmony.Client.Pages.Management
                 _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
                 _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
                 _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
+                _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
             }
+        }
+
+        private void OnCardLabelRemoved(object? sender, CardLabelRemovedEvent e)
+        {
+            KanbanStore.RemoveCardLabel(e.CardLabelId);
+            StateHasChanged();
         }
 
         private void OnBoardListTitleChanged(object? sender, BoardListTitleChangedEvent e)

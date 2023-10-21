@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Client.Pages.Management;
 using Harmony.Domain.Entities;
 using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
@@ -86,6 +87,13 @@ namespace Harmony.Server.Services
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnBoardListArchived,
                     new BoardListArchivedEvent(boardId, archivedList, positions));
+        }
+
+        public async Task RemoveCardLabel(Guid boardId, Guid cardLabelId)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardLabelRemoved,
+                    new CardLabelRemovedEvent(cardLabelId));
         }
     }
 }

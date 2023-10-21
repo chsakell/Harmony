@@ -18,6 +18,7 @@
             public const string OnCardAttachmentAdded = "OnCardAttachmentAdded";
             public const string OnCardItemAdded = "OnCardItemAdded";
             public const string OnCardItemChecked = "OnCardItemChecked";
+            public const string OnCardLabelRemoved = "OnCardLabelRemoved";
         }
     }
 }
