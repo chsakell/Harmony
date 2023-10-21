@@ -41,7 +41,7 @@ namespace Harmony.Infrastructure.Repositories
 				.FirstOrDefaultAsync(card => card.Id == cardId);
         }
 
-        public async Task<Card?> GetByPosition(Guid boardListId, byte position)
+        public async Task<Card?> GetByPosition(Guid boardListId, short position)
 		{
 			return await _context.Cards
 				.FirstOrDefaultAsync(card => card.BoardListId == boardListId && card.Position == position);
@@ -71,12 +71,12 @@ namespace Harmony.Infrastructure.Repositories
 			_context.Cards.Update(Card);
 		}
 
-		public async Task<List<Card>> GetCardsInPositionGreaterThan(Guid boardListId, byte position)
+		public async Task<List<Card>> GetCardsInPositionGreaterThan(Guid boardListId, short position)
 		{
 			return await _context.Cards.Where(c => c.BoardListId == boardListId && c.Position > position).ToListAsync();
 		}
 
-		public async Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, byte position)
+		public async Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, short position)
 		{
 			return await _context.Cards.Where(c => c.BoardListId == boardListId && c.Position >= position).ToListAsync();
 		}

@@ -118,8 +118,8 @@ namespace Harmony.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<byte>("Position")
-                        .HasColumnType("tinyint");
+                    b.Property<short>("Position")
+                        .HasColumnType("smallint");
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
@@ -160,8 +160,8 @@ namespace Harmony.Persistence.Migrations
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte>("Position")
-                        .HasColumnType("tinyint");
+                    b.Property<short>("Position")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime?>("ReminderDate")
                         .HasColumnType("datetime2");

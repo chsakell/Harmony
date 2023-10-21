@@ -25,7 +25,7 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-		private async Task<bool> ReorderOtherCardsAndMove(Card card, Guid newListId, byte newPosition)
+		private async Task<bool> ReorderOtherCardsAndMove(Card card, Guid newListId, short newPosition)
 		{
 			var currentPosition = card.Position;
 
@@ -34,7 +34,7 @@ namespace Harmony.Infrastructure.Services.Management
 			return await MoveCard(card, newListId, newPosition);
 		}
 
-		private async Task<bool> MoveCard(Card card, Guid newListId, byte newPosition)
+		private async Task<bool> MoveCard(Card card, Guid newListId, short newPosition)
 		{
 			// reorder cards in the new list
 			await ReorderCards(newListId, newPosition, false);
@@ -48,7 +48,7 @@ namespace Harmony.Infrastructure.Services.Management
 			return dbResult > 0;
 		}
 
-		private async Task ReorderCards(Guid currentListId, byte position, bool belongsToSameList)
+		private async Task ReorderCards(Guid currentListId, short position, bool belongsToSameList)
 		{
 			var offset = belongsToSameList ? -1 : 1;
 
@@ -64,7 +64,7 @@ namespace Harmony.Infrastructure.Services.Management
 			}
 		}
 
-		private async Task<bool> SwapCards(Card card, byte newPosition)
+		private async Task<bool> SwapCards(Card card, short newPosition)
 		{
 			var currentPosition = card.Position;
 

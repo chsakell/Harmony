@@ -164,6 +164,24 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private async Task ReorderLists()
+        {
+            var parameters = new DialogParameters<ReorderBoardListsModal>
+            {
+                {
+                    modal => modal.BoardId, Guid.Parse(Id)
+                },
+                {
+                    modal => modal.Lists, KanbanStore.KanbanLists.ToList()
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<ReorderBoardListsModal>(_localizer["Reorder lists"], parameters, options);
+            var result = await dialog.Result;
+
+        }
+
         private async Task OpenShareBoardModal()
         {
             var parameters = new DialogParameters<BoardMembersModal>

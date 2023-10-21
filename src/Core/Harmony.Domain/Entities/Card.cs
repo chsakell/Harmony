@@ -12,7 +12,7 @@ namespace Harmony.Domain.Entities
 		public string UserId { get; set; } // User created the card
 		public BoardList BoardList { get; set; }
         public Guid BoardListId { get; set; }
-        public byte Position { get; set; } // position on the board list
+        public short Position { get; set; } // position on the board list
         public List<Comment> Comments { get; set; }
         public List<CheckList> CheckLists { get; set; }
         public List<UserCard> Members { get; set; }

@@ -6,7 +6,7 @@
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public Guid BoardListId { get; set; }
-		public byte Position { get; set; } // position on the board list
+		public short Position { get; set; } // position on the board list
 		public int TotalItems { get; set; }
 		public int TotalItemsCompleted { get; set; }
 		public int TotalAttachments { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -20,8 +21,8 @@ namespace Harmony.Persistence.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -39,14 +40,14 @@ namespace Harmony.Persistence.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "date", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "date", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProfilePictureDataUrl = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -78,9 +79,9 @@ namespace Harmony.Persistence.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Group = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -200,8 +201,8 @@ namespace Harmony.Persistence.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsPublic = table.Column<bool>(type: "bit", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -224,8 +225,8 @@ namespace Harmony.Persistence.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     WorkspaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Visibility = table.Column<int>(type: "int", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -277,10 +278,10 @@ namespace Harmony.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Position = table.Column<byte>(type: "tinyint", nullable: false),
+                    Position = table.Column<short>(type: "smallint", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -307,8 +308,8 @@ namespace Harmony.Persistence.Migrations
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Colour = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -326,7 +327,8 @@ namespace Harmony.Persistence.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Access = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -354,13 +356,13 @@ namespace Harmony.Persistence.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BoardListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Position = table.Column<byte>(type: "tinyint", nullable: false),
+                    Position = table.Column<short>(type: "smallint", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    StartDate = table.Column<DateTime>(type: "date", nullable: true),
-                    DueDate = table.Column<DateTime>(type: "date", nullable: true),
-                    ReminderDate = table.Column<DateTime>(type: "date", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ReminderDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -385,10 +387,11 @@ namespace Harmony.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    OriginalFileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    Type = table.Column<byte>(type: "tinyint", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -409,8 +412,10 @@ namespace Harmony.Persistence.Migrations
                     Activity = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -461,8 +466,8 @@ namespace Harmony.Persistence.Migrations
                     CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Position = table.Column<byte>(type: "tinyint", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -489,8 +494,8 @@ namespace Harmony.Persistence.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -542,9 +547,9 @@ namespace Harmony.Persistence.Migrations
                     CheckListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsChecked = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     Position = table.Column<byte>(type: "tinyint", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "date", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "date", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "date", nullable: true)
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

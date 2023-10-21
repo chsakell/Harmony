@@ -5,15 +5,19 @@
 
 @if (KanbanStore.BoardLoading)
 {
-    <Loader/>
+    <Loader />
 }
 else
 {
     <MudPaper Elevation="25">
         <MudToolBar>
             <MudButton Variant="Variant.Text" OnClick="OpenCreateBoardListModal" StartIcon="@Icons.Material.Outlined.Checklist">Create list</MudButton>
-            <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
+            @if (KanbanStore.KanbanLists.Count() > 1)
+            {
+                <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">Reorder lists</MudButton>
+            }
             <MudSpacer />
+            <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
             <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
         </MudToolBar>
     </MudPaper>
@@ -23,12 +27,12 @@ else
                       ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)"
                       ItemDropped="CardMoved" Class="d-flex flex-row">
         <ChildContent>
-            <MudContainer Fixed="true" MaxWidth="MaxWidth.ExtraLarge" Class="d-flex flex-nowrap gap-4 overflow-auto flex-row mud-height-full">
+            <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="d-flex flex-nowrap gap-4 overflow-auto flex-row mud-height-full">
                 @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
                 {
                     <MudPaper Elevation="0" Width="300px"
                               Style="height:calc(100vh - 200px);overflow:auto"
-                        Class="pa-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
+                              Class="pa-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
                         <MudToolBar DisableGutters="true">
                             <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
                             <MudSpacer />
