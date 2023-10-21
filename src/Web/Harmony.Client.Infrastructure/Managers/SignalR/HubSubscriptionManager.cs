@@ -26,6 +26,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #region Events
 
         public event EventHandler<BoardListAddedEvent> OnBoardListAdded;
+        public event EventHandler<BoardListTitleChangedEvent> OnBoardListTitleChanged;
         public event EventHandler<BoardListArchivedEvent> OnBoardListArchived;
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
@@ -98,6 +99,12 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             {
                 OnBoardListArchived?.Invoke(this,
                     new BoardListArchivedEvent(@event.BoardId, @event.ArchivedList, @event.Positions));
+            });
+
+            _hubConnection.On<BoardListTitleChangedEvent>(ApplicationConstants.SignalR.OnBoardListTitleChanged, (@event) =>
+            {
+                OnBoardListTitleChanged?.Invoke(this,
+                    new BoardListTitleChangedEvent(@event.BoardId, @event.BoardListId, @event.Title));
             });
         }
 

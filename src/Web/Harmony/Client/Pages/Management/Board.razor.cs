@@ -37,6 +37,7 @@ namespace Harmony.Client.Pages.Management
                 KanbanStore.LoadBoard(result.Data);
 
                 _hubSubscriptionManager.OnBoardListAdded += OnBoardListAdded;
+                _hubSubscriptionManager.OnBoardListTitleChanged += OnBoardListTitleChanged;
                 _hubSubscriptionManager.OnBoardListArchived += OnBoardListArchived;
                 _hubSubscriptionManager.OnCardItemChecked += OnCardItemChecked;
                 _hubSubscriptionManager.OnCardItemAdded += OnCardItemAdded;
@@ -45,10 +46,15 @@ namespace Harmony.Client.Pages.Management
                 _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
                 _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
                 _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
-                
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
             }
+        }
+
+        private void OnBoardListTitleChanged(object? sender, BoardListTitleChangedEvent e)
+        {
+            KanbanStore.UpdateBoardListTitle(e.BoardListId, e.Title);
+            StateHasChanged();
         }
 
         private void OnBoardListArchived(object? sender, BoardListArchivedEvent e)

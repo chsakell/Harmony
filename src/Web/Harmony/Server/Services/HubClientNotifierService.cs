@@ -18,6 +18,13 @@ namespace Harmony.Server.Services
             _hubContext = hubContext;
         }
 
+        public async Task UpdateBoardListTitle(Guid boardId, Guid boardListId, string title)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnBoardListTitleChanged,
+                    new BoardListTitleChangedEvent(boardId, boardListId, title));
+        }
+
         public async Task UpdateCardTitle(Guid boardId, Guid cardId, string title)
         {
             await _hubContext.Clients.Group(boardId.ToString())

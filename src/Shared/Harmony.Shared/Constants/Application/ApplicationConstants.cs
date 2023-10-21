@@ -9,6 +9,7 @@
             public const string ListenForBoardEvents = "ListenForBoardEvents";
 
             public const string OnBoardListAdded = "OnBoardListAdded";
+            public const string OnBoardListTitleChanged = "OnBoardListTitleChanged";
             public const string OnBoardListArchived = "OnBoardListArchived";
             public const string OnCardTitleChanged = "OnCardTitleChanged";
             public const string OnCardDescriptionChanged = "OnCardDescriptionChanged";

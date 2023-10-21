@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
+using Harmony.Application.Contracts.Services.Hubs;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
 {
@@ -11,16 +12,19 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
     {
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IStringLocalizer<UpdateListTitleCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public UpdateListTitleCommandHandler(IBoardListRepository ListRepository,
             ICurrentUserService currentUserService,
+            IHubClientNotifierService hubClientNotifierService,
             IStringLocalizer<UpdateListTitleCommandHandler> localizer,
             IMapper mapper)
         {
             _boardListRepository = ListRepository;
             _currentUserService = currentUserService;
+            _hubClientNotifierService = hubClientNotifierService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -42,6 +46,9 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
             if (dbResult > 0)
             {
                 var result = new UpdateListTitleResponse(request.BoardId, list.Id, list.Title);
+
+                await _hubClientNotifierService
+                        .UpdateBoardListTitle(list.BoardId, list.Id, list.Title);
 
                 return await Result<UpdateListTitleResponse>.SuccessAsync(result, _localizer["List title updated"]);
             }
