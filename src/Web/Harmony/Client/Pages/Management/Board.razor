@@ -34,9 +34,9 @@ else
                               Style="height:calc(100vh - 200px);overflow:auto"
                               Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
                         <MudToolBar DisableGutters="true">
-                            @* <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText> *@
-                            <EditableTextField For="@(() => item.Name)"
-                                               Text="@item.Name" Label="@_localizer["Title"]" />
+                            <EditableTextField For="@(() => item.Title)"
+                                               OnSave="(text) => SaveBoardListTitle(item.Id, text)"
+                                               Text="@item.Title" Label="@_localizer["Title"]" />
                             <MudSpacer />
                             <MudIconButton Size="Size.Medium"  Class="align-self-end" Icon="@Icons.Material.Filled.Add"
                                            OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"

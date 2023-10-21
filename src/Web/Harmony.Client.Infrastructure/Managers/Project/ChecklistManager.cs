@@ -1,7 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -31,7 +31,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<CheckListItemDto>();
         }
 
-        public async Task<IResult<bool>> UpdateTitleAsync(UpdateListTitleCommand request)
+        public async Task<IResult<bool>> UpdateTitleAsync(UpdateCheckListTitleCommand request)
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CheckListEndpoints.Title(request.ListId), request);
 

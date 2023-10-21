@@ -1,6 +1,6 @@
 ﻿using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -21,7 +21,7 @@ namespace Harmony.Server.Controllers.Management
         }
 
         [HttpPut("{id:guid}/title")]
-        public async Task<IActionResult> UpdateTitle(Guid id, UpdateListTitleCommand command)
+        public async Task<IActionResult> UpdateTitle(Guid id, UpdateCheckListTitleCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

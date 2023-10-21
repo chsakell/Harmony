@@ -44,7 +44,7 @@ namespace Harmony.Application.Features.Lists.Commands.CreateList
 
             var boardList = new BoardList()
             {
-                Name = request.Name,
+                Title = request.Name,
                 UserId = userId,
                 BoardId = request.BoardId,
                 Position = (short)totalLists

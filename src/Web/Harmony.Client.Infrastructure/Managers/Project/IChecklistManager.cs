@@ -1,7 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
@@ -10,6 +10,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     {
         Task<IResult<CheckListDto>> CreateCheckListAsync(CreateCheckListCommand request);
         Task<IResult<CheckListItemDto>> CreateCheckListItemAsync(CreateCheckListItemCommand request);
-        Task<IResult<bool>> UpdateTitleAsync(UpdateListTitleCommand request);
+        Task<IResult<bool>> UpdateTitleAsync(UpdateCheckListTitleCommand request);
     }
 }

@@ -6,6 +6,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Commands.UploadFile;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
@@ -99,7 +100,7 @@ namespace Harmony.Client.Shared.Modals
         private async Task SaveCheckListTitle(Guid checkListId, string title)
         {
             var response = await _checkListManager
-                .UpdateTitleAsync(new UpdateListTitleCommand(checkListId, title));
+                .UpdateTitleAsync(new UpdateCheckListTitleCommand(checkListId, title));
 
             var checkList = _card.CheckLists.FirstOrDefault(x => x.Id == checkListId);
             checkList.Title = title;

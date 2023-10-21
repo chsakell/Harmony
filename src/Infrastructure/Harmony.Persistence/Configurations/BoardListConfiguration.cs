@@ -16,7 +16,7 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(b => b.BoardId).IsRequired();
 
-            builder.Property(b => b.Name).IsRequired().HasMaxLength(100);
+            builder.Property(b => b.Title).IsRequired().HasMaxLength(100);
 
             builder.Property(b => b.Status).IsRequired().HasDefaultValue(BoardListStatus.Active);
 

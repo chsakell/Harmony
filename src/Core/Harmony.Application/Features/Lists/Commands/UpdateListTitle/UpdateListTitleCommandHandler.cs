@@ -7,44 +7,46 @@ using AutoMapper;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
 {
-    public class UpdateListTitleCommandHandler : IRequestHandler<UpdateListTitleCommand, Result<bool>>
+    public class UpdateListTitleCommandHandler : IRequestHandler<UpdateListTitleCommand, Result<UpdateListTitleResponse>>
     {
-        private readonly ICheckListRepository _checkListRepository;
+        private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<UpdateListTitleCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
-        public UpdateListTitleCommandHandler(ICheckListRepository checkListRepository,
+        public UpdateListTitleCommandHandler(IBoardListRepository ListRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<UpdateListTitleCommandHandler> localizer,
             IMapper mapper)
         {
-            _checkListRepository = checkListRepository;
+            _boardListRepository = ListRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
             _mapper = mapper;
         }
-        public async Task<Result<bool>> Handle(UpdateListTitleCommand request, CancellationToken cancellationToken)
+        public async Task<Result<UpdateListTitleResponse>> Handle(UpdateListTitleCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<bool>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<UpdateListTitleResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var list = await _checkListRepository.Get(request.ListId);
+            var list = await _boardListRepository.Get(request.ListId);
 
             list.Title = request.Title;
 
-            var dbResult = await _checkListRepository.Update(list);
+            var dbResult = await _boardListRepository.Update(list);
 
             if (dbResult > 0)
             {
-                return await Result<bool>.SuccessAsync(true, _localizer["List title updated"]);
+                var result = new UpdateListTitleResponse(request.BoardId, list.Id, list.Title);
+
+                return await Result<UpdateListTitleResponse>.SuccessAsync(result, _localizer["List title updated"]);
             }
 
-            return await Result<bool>.FailAsync(_localizer["Operation failed"]);
+            return await Result<UpdateListTitleResponse>.FailAsync(_localizer["Operation failed"]);
         }
     }
 }

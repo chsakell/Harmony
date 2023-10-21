@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.CreateList;
+using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
@@ -109,6 +110,19 @@ namespace Harmony.Client.Pages.Management
             KanbanStore.UpdateTodalCardItemsCompleted(e.CardId, e.IsChecked);
 
             _dropContainer.Refresh();
+        }
+
+        private async Task SaveBoardListTitle(Guid listId, string title)
+        {
+            var result = await _boardListManager
+                .UpdateBoardListTitleAsync(new UpdateListTitleCommand(Guid.Parse(Id), listId, title));
+
+            if(result.Succeeded)
+            {
+                KanbanStore.UpdateBoardListTitle(listId, title);
+            }
+
+            DisplayMessage(result);
         }
 
         private async Task CardMoved(MudItemDropInfo<CardDto> info)

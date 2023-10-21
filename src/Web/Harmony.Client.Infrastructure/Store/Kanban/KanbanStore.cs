@@ -215,5 +215,15 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 card.TotalAttachments += increase ? +1 : -1;
             }
         }
+
+        public void UpdateBoardListTitle(Guid listId, string title)
+        {
+            var list = _board.Lists.FirstOrDefault(l => l.Id == listId);
+
+            if(list != null)
+            {
+                list.Title = title;
+            }
+        }
     }
 }
