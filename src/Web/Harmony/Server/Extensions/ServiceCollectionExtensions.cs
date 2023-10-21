@@ -51,7 +51,8 @@ namespace Harmony.Server.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUploadService, UploadService>();
 			services.AddScoped<ICardService, CardService>();
-			services.AddScoped<ICardActivityService, CardActivityService>();
+            services.AddScoped<IListService, ListService>();
+            services.AddScoped<ICardActivityService, CardActivityService>();
 			return services;
         }
 

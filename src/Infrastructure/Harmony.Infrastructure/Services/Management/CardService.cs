@@ -59,7 +59,7 @@ namespace Harmony.Infrastructure.Services.Management
 
 			foreach (var cardToReorder in cardsInCurrentListToReorder)
 			{
-				cardToReorder.Position = (byte)(cardToReorder.Position + offset);
+				cardToReorder.Position = (short)(cardToReorder.Position + offset);
 				_cardRepository.UpdateEntry(cardToReorder);
 			}
 		}

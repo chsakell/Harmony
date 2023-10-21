@@ -31,11 +31,23 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.BoardLists.FirstOrDefaultAsync(l => l.Id == boardListId);
         }
 
+        public void UpdateEntry(BoardList list)
+        {
+            _context.BoardLists.Update(list);
+        }
+
         public async Task<int> Update(BoardList list)
         {
             _context.BoardLists.Update(list);
 
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<BoardList>> GetListsInPositionGreaterThan(Guid boardId, short position)
+        {
+            return await _context.BoardLists
+                .Where(l => l.BoardId == boardId && l.Position > position 
+                    && l.Status == Domain.Enums.BoardListStatus.Active).ToListAsync();
         }
     }
 }

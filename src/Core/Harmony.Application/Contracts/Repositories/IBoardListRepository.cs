@@ -8,5 +8,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CountLists(Guid boardId);
         Task<int> Add(BoardList boardList);
         Task<int> Update(BoardList list);
+        void UpdateEntry(BoardList list);
+        Task<List<BoardList>> GetListsInPositionGreaterThan(Guid boardId, short position);
     }
 }
