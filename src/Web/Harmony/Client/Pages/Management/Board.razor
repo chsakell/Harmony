@@ -32,21 +32,27 @@ else
                 {
                     <MudPaper Elevation="0" Width="300px"
                               Style="height:calc(100vh - 200px);overflow:auto"
-                              Class="pa-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
+                              Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
                         <MudToolBar DisableGutters="true">
-                            <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
+                            @* <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText> *@
+                            <EditableTextField For="@(() => item.Name)"
+                                               Text="@item.Name" Label="@_localizer["Title"]" />
                             <MudSpacer />
-                            <MudMenu Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-                                <MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
+                            <MudIconButton Size="Size.Medium"  Class="align-self-end" Icon="@Icons.Material.Filled.Add"
+                                           OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
+                            aria-label="add"></MudIconButton>
+                            <MudMenu Size="Size.Medium" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
+                                     Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
+                                <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
                             </MudMenu>
+
                         </MudToolBar>
-                        <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
                         @if (item.CreateCard.NewTaskOpen)
                         {
                             <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
                                 <DataAnnotationsValidator />
                                 <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                                    <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter a title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                    <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter a title for the card.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
                                     <div class="d-flex justify-space-around flex-grow-1 gap-4">
                                         <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Default">Cancel</MudButton>
                                         <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Default">Create</MudButton>
@@ -54,10 +60,7 @@ else
                                 </MudPaper>
                             </EditForm>
                         }
-                        else
-                        {
-                            <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add a card</MudButton>
-                        }
+                        <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
                     </MudPaper>
                 }
             </MudContainer>
