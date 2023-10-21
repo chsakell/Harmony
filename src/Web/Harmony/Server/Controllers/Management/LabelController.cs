@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Labels.Commands.UpdateTitle;
+﻿using Harmony.Application.Features.Labels.Commands.RemoveCardLabel;
+using Harmony.Application.Features.Labels.Commands.UpdateTitle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -22,5 +23,11 @@ namespace Harmony.Server.Controllers.Management
         {
             return Ok(await _mediator.Send(request));
         }
-	}
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            return Ok(await _mediator.Send(new RemoveCardLabelCommand(id)));
+        }
+    }
 }

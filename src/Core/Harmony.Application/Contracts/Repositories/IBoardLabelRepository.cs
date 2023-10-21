@@ -9,5 +9,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task AddAsync(Label label);
         Task<int> CreateAsync(Label label);
         Task<int> Update(Label label);
+        Task<int> Delete(Label label);
     }
 }

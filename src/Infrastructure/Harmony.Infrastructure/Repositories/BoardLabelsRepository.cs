@@ -45,5 +45,12 @@ namespace Harmony.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<int> Delete(Label label)
+        {
+            _context.Labels.Remove(label);
+
+            return await _context.SaveChangesAsync();
+        }
     }
 }

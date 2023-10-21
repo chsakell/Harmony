@@ -35,7 +35,9 @@ else
                                             <MudCheckBox T="bool" @bind-Checked:get="label.IsChecked" @bind-Checked:set="(isChecked) => ToggleCardLabel(label, isChecked)" Dense="true" Color="Color.Success"></MudCheckBox>
                                         </div>
                                         <div class="d-flex align-center">
-                                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                                            <MudIconButton Color="Color.Error" OnClick="() => DeleteLabel(label)"
+                                            Icon="@Icons.Material.Filled.Delete" aria-label="delete"
+                                            ></MudIconButton>
                                         </div>
                                     </MudStack>
                                 </MudPaper>

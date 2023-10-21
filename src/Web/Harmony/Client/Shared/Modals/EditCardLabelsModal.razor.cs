@@ -1,12 +1,17 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
+using Harmony.Application.Features.Labels.Commands.RemoveCardLabel;
 using Harmony.Application.Features.Labels.Commands.UpdateTitle;
+using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Client.Infrastructure.Models.Labels;
+using Harmony.Client.Infrastructure.Store.Kanban;
+using Harmony.Client.Shared.Dialogs;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using MudBlazor.Utilities;
+using System.Runtime.CompilerServices;
 
 namespace Harmony.Client.Shared.Modals
 {
@@ -41,6 +46,33 @@ namespace Harmony.Client.Shared.Modals
             }
 
             _loading = false;
+        }
+
+        private async Task DeleteLabel(LabelDto label)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to delete this label? " +
+                    $"Label will be removed from all cards in the board" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var result = await _labelManager
+                    .RemoveCardLabel(new RemoveCardLabelCommand(label.Id));
+
+                if (result.Succeeded && result.Data)
+                {
+                    _cardLabels.Remove(label);
+                }
+
+                DisplayMessage(result);
+            }
         }
 
         private async Task UpdateLabelTitle(LabelDto label, string title)
