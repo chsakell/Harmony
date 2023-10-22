@@ -1,6 +1,8 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
+using Harmony.Application.Features.Labels.Commands.CreateCardLabel;
 using Harmony.Application.Features.Labels.Commands.RemoveCardLabel;
 using Harmony.Application.Features.Labels.Commands.UpdateTitle;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
@@ -27,6 +29,9 @@ namespace Harmony.Client.Shared.Modals
 
         [Parameter]
         public Guid CardId { get; set; }
+
+        [Parameter]
+        public Guid BoardId { get; set; }
 
         private void Cancel()
         {
@@ -73,6 +78,30 @@ namespace Harmony.Client.Shared.Modals
 
                 DisplayMessage(result);
             }
+        }
+
+        private async Task CreateNewLabel()
+        {
+            Guid? cardId = _createLabelModel.IsChecked ? CardId : null;
+            var result = await _labelManager
+                .CreateCardLabel(new CreateCardLabelCommand(BoardId, cardId,
+                _createLabelModel.Color, _createLabelModel.Title));
+
+            if(result.Succeeded)
+            {
+                _cardLabels.Add(new LabelDto()
+                {
+                    Colour = result.Data.Color,
+                    IsChecked = result.Data.CardId.HasValue,
+                    Title = result.Data.Title
+                });
+            }
+
+            DisplayMessage(result);
+
+            _createLabelModel.Color = null;
+            _createLabelModel.Title = null;
+            _createLabelModel.IsChecked = false;
         }
 
         private async Task UpdateLabelTitle(LabelDto label, string title)

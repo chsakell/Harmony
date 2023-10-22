@@ -277,7 +277,8 @@ namespace Harmony.Client.Pages.Management
         {
             var parameters = new DialogParameters<EditCardModal>
             {
-                { c => c.CardId, card.Id }
+                { c => c.CardId, card.Id },
+                { c => c.BoardId, Guid.Parse(Id) }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };

@@ -28,6 +28,7 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter] public Guid CardId { get; set; }
+        [Parameter] public Guid BoardId { get; set; }
 
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
         {
@@ -238,7 +239,8 @@ namespace Harmony.Client.Shared.Modals
         {
             var parameters = new DialogParameters<EditCardLabelsModal>
             {
-                { c => c.CardId, CardId }
+                { c => c.CardId, CardId },
+                { c => c.BoardId,  BoardId }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };

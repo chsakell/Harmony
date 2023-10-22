@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Features.Labels.Commands.RemoveCardLabel;
+﻿using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Labels.Commands.CreateCardLabel;
+using Harmony.Application.Features.Labels.Commands.RemoveCardLabel;
 using Harmony.Application.Features.Labels.Commands.UpdateTitle;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
@@ -13,6 +15,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public LabelManager(HttpClient client)
         {
             _httpClient = client;
+        }
+
+        public async Task<IResult<CreateCardLabelResponse>> CreateCardLabel(CreateCardLabelCommand request)
+        {
+            var response = await _httpClient
+                .PostAsJsonAsync(Routes.LabelEndpoints.Index, request);
+
+            return await response.ToResult<CreateCardLabelResponse>();
         }
 
         public async Task<IResult<bool>> RemoveCardLabel(RemoveCardLabelCommand request)
