@@ -38,10 +38,10 @@ else
                                                OnSave="(text) => SaveBoardListTitle(item.Id, text)"
                                                Text="@item.Title" Label="@_localizer["Title"]" />
                             <MudSpacer />
-                            <MudIconButton Size="Size.Medium"  Class="align-self-end" Icon="@Icons.Material.Filled.Add"
+                            <MudIconButton Size="Size.Small"  Class="align-self-end" Icon="@Icons.Material.Filled.Add"
                                            OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
                             aria-label="add"></MudIconButton>
-                            <MudMenu Size="Size.Medium" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
+                            <MudMenu Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
                                      Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
                                 <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
                             </MudMenu>
