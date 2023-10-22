@@ -6,6 +6,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
@@ -206,7 +207,13 @@ namespace Harmony.Client.Pages.Management
                     modal => modal.BoardId, Guid.Parse(Id)
                 },
                 {
-                    modal => modal.Lists, KanbanStore.KanbanLists.ToList()
+                    modal => modal.Lists, KanbanStore.KanbanLists
+                    .OrderBy(l => l.Position).Select(list => new OrderedBoardListModel()
+                    {
+                        Id = list.Id,
+                        Position = list.Position,
+                        Title = list.Title
+                    }).ToList()
                 }
             };
 

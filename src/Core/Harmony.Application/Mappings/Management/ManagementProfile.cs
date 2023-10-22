@@ -3,6 +3,7 @@ using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
@@ -56,6 +57,8 @@ namespace Harmony.Application.Mappings.Management
                     opt.MapFrom(source => source.UserId));
 
             CreateMap<UserResponse, CardMemberDto>();
+
+            CreateMap<UpdateListsPositionsCommand, UpdateListsPositionsResponse>();
         }
     }
 }

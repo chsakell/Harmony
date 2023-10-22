@@ -33,5 +33,10 @@
 		{
 			return $"{Index}{boardId}/lists/{listId}/cards/";
 		}
+
+        public static string BoardListPositions(string boardId)
+        {
+            return $"{Index}{boardId}/positions/";
+        }
     }
 }

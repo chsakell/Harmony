@@ -33,6 +33,14 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.BoardLists.FirstOrDefaultAsync(l => l.Id == boardListId);
         }
 
+        public async Task<List<BoardList>> GetBoardLists(Guid boardId)
+        {
+            return await _context.BoardLists
+                .Where(l => l.BoardId == boardId 
+                    && l.Status == Domain.Enums.BoardListStatus.Active)
+                .ToListAsync();
+        }
+
         public void UpdateEntry(BoardList list)
         {
             _context.BoardLists.Update(list);
@@ -41,6 +49,13 @@ namespace Harmony.Infrastructure.Repositories
         public async Task<int> Update(BoardList list)
         {
             _context.BoardLists.Update(list);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateRange(List<BoardList> lists)
+        {
+            _context.BoardLists.UpdateRange(lists);
 
             return await _context.SaveChangesAsync();
         }

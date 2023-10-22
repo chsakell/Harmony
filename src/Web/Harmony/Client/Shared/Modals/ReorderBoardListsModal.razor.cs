@@ -1,5 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Lists.Commands.CreateList;
+using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
+using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -19,8 +21,9 @@ namespace Harmony.Client.Shared.Modals
         public Guid CardId { get; set; }
 
         [Parameter]
-        public IEnumerable<BoardListDto> Lists { get; set; }
+        public IEnumerable<OrderedBoardListModel> Lists { get; set; }
 
+        public IEnumerable<short> AvailablePositions => Lists.Select(l => l.Position);
         private void Cancel()
         {
             MudDialog.Cancel();
@@ -28,17 +31,37 @@ namespace Harmony.Client.Shared.Modals
 
      
 
-        private async Task SubmitAsync()
+        private async Task UpdateListOrders()
         {
-            //_processing = true;
+            _processing = true;
 
-            //var result = await _boardListManager.CreateListAsync(CreateListCommandModel);
+            var listPositions = Lists
+                .ToDictionary(keySelector: x => x.Id, elementSelector: x => x.Position);
 
-            //MudDialog.Close(result.Data);
+            var result = await _boardManager.UpdateBoardListsPositions(
+                new UpdateListsPositionsCommand(boardId: BoardId, listPositions));
 
-            //DisplayMessage(result);
+            DisplayMessage(result);
 
-            //_processing = false;
+            _processing = false;
+
+            MudDialog.Close(result.Data);
+        }
+
+        private void SetPosition(Guid listId, short position)
+        {
+            var positionList = Lists.FirstOrDefault(l => l.Id == listId);
+            var positionListCurrentPosition = positionList.Position;
+
+            if(positionListCurrentPosition == position)
+            {
+                return;
+            }
+
+            var swapList = Lists.FirstOrDefault(l => l.Position == position);
+
+            positionList.Position = position;
+            swapList.Position = positionListCurrentPosition;
         }
 
         private void DisplayMessage(IResult result)
