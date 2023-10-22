@@ -26,5 +26,6 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         void UpdateCardDates(Guid cardId, DateTime? startDate, DateTime? dueDate);
 		void ChangeTotalCardAttachments(Guid cardId, bool increase);
 		void RemoveCardLabel(Guid labelId);
+		void ReorderLists(Dictionary<Guid, short> listPositions);
     }
 }

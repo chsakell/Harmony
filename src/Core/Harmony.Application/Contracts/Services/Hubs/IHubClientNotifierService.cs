@@ -16,6 +16,6 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task ToggleCardListItemChecked(Guid boardId, Guid cardId, Guid listItemId, bool isChecked);
         Task ArchiveBoardList(Guid boardId, Guid archivedList, List<BoardListOrder> positions);
         Task RemoveCardLabel(Guid boardId, Guid cardLabelId);
-
+        Task UpdateBoardListsPositions(Guid boardId, Dictionary<Guid, short> positions);
     }
 }

@@ -9,6 +9,7 @@ using AutoMapper;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Contracts.Services.Hubs;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListsPositions
 {
@@ -54,6 +55,9 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListsPositions
             if (dbResult > 0)
             {
                 var result = _mapper.Map<UpdateListsPositionsResponse>(request);
+
+                await _hubClientNotifierService
+                    .UpdateBoardListsPositions(request.BoardId, result.ListPositions);
 
                 return await Result<UpdateListsPositionsResponse>.SuccessAsync(result, _localizer["List re ordered"]);
             }

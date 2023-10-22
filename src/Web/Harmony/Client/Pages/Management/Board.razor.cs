@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.CreateList;
+using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
@@ -40,6 +41,7 @@ namespace Harmony.Client.Pages.Management
                 _hubSubscriptionManager.OnBoardListAdded += OnBoardListAdded;
                 _hubSubscriptionManager.OnBoardListTitleChanged += OnBoardListTitleChanged;
                 _hubSubscriptionManager.OnBoardListArchived += OnBoardListArchived;
+                _hubSubscriptionManager.OnBoardListsPositionsChanged += OnBoardListsPositionsChanged;
                 _hubSubscriptionManager.OnCardItemChecked += OnCardItemChecked;
                 _hubSubscriptionManager.OnCardItemAdded += OnCardItemAdded;
                 _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
@@ -51,6 +53,12 @@ namespace Harmony.Client.Pages.Management
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
             }
+        }
+
+        private void OnBoardListsPositionsChanged(object? sender, BoardListsPositionsChangedEvent e)
+        {
+            KanbanStore.ReorderLists(e.ListPositions);
+            StateHasChanged();
         }
 
         private void OnCardLabelRemoved(object? sender, CardLabelRemovedEvent e)
@@ -131,7 +139,7 @@ namespace Harmony.Client.Pages.Management
             var result = await _boardListManager
                 .UpdateBoardListTitleAsync(new UpdateListTitleCommand(Guid.Parse(Id), listId, title));
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 KanbanStore.UpdateBoardListTitle(listId, title);
             }
@@ -219,8 +227,15 @@ namespace Harmony.Client.Pages.Management
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<ReorderBoardListsModal>(_localizer["Reorder lists"], parameters, options);
-            var result = await dialog.Result;
+            var dialogResult = await dialog.Result;
 
+            if (!dialogResult.Canceled &&
+                dialogResult.Data is UpdateListsPositionsResponse positions)
+            {
+
+                KanbanStore.ReorderLists(positions.ListPositions);
+                _dropContainer.Refresh();
+            }
         }
 
         private async Task OpenShareBoardModal()

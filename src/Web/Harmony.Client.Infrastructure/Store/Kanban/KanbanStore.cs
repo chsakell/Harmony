@@ -235,5 +235,18 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 var totalRemoved = card.Labels.RemoveAll(l => l.Id == labelId);
             }
         }
+
+        public void ReorderLists(Dictionary<Guid, short> listPositions)
+        {
+            foreach(var keyPair in listPositions)
+            {
+                var list = _board.Lists.FirstOrDefault(l => l.Id == keyPair.Key);
+
+                if(list != null)
+                {
+                    list.Position = keyPair.Value;
+                }
+            }
+        }
     }
 }

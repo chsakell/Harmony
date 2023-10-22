@@ -95,5 +95,12 @@ namespace Harmony.Server.Services
                 .SendAsync(ApplicationConstants.SignalR.OnCardLabelRemoved,
                     new CardLabelRemovedEvent(cardLabelId));
         }
+
+        public async Task UpdateBoardListsPositions(Guid boardId, Dictionary<Guid, short> positions)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnBoardListsPositionsChanged,
+                    new BoardListsPositionsChangedEvent(boardId, positions));
+        }
     }
 }

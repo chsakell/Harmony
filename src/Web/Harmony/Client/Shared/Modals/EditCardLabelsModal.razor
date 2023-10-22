@@ -63,22 +63,6 @@ else
                     </MudStack>
                 </MudItem>
             </MudGrid>
-
         </DialogContent>
-        @* <DialogActions>
-            <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
-                       ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                @if (_processing)
-                {
-                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                    <MudText Class="ms-2">@_localizer["Processing"]</MudText>
-                }
-                else
-                {
-                    <MudText>@_localizer["Create"]</MudText>
-                }
-            </MudButton>
-        </DialogActions> *@
     </MudDialog>
 }
