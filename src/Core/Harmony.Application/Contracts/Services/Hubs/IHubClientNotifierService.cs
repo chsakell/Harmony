@@ -17,5 +17,6 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task ArchiveBoardList(Guid boardId, Guid archivedList, List<BoardListOrder> positions);
         Task RemoveCardLabel(Guid boardId, Guid cardLabelId);
         Task UpdateBoardListsPositions(Guid boardId, Dictionary<Guid, short> positions);
+        Task AddCardMember(Guid boardId, Guid cardId, CardMemberDto cardMember);
     }
 }

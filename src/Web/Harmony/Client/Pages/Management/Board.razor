@@ -61,9 +61,9 @@ else
                             </EditForm>
                         }
                         <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
-                        @if (item.TotalPages > 0)
+                        @if (item.TotalPages > 1)
                         {
-                            <div class="d-flex flex-column align-center">
+                            <div class="d-flex flex-column align-center my-4">
                                 <MudPagination Size="Size.Small" Variant="Variant.Outlined" 
                                     SelectedChanged="(page) => LoadListCards(item.Id, page)"
                                     BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />

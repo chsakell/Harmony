@@ -62,6 +62,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 var totalCards = totalCardsPerList[list.Id];
 
                 list.TotalCards = totalCardsPerList[list.Id];
+                var test = ((totalCards - 1) / request.MaxCardsPerList) + 1;
                 list.TotalPages = (int)Math.Ceiling((double)totalCards / request.MaxCardsPerList);
             }
 

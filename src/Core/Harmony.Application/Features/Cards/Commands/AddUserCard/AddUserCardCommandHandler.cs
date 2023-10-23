@@ -5,6 +5,9 @@ using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.DTO;
+using AutoMapper;
 
 namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
@@ -15,13 +18,16 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
         private readonly IUserCardRepository _userCardRepository;
         private readonly ICardRepository _cardRepository;
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IStringLocalizer<AddUserCardCommandHandler> _localizer;
 
         public AddUserCardCommandHandler(IUserBoardRepository userBoardRepository,
             ICurrentUserService currentUserService,
             IUserCardRepository userCardRepository,
             ICardRepository cardRepository,
-            IUserService userService,
+            IUserService userService, IMapper mapper,
+            IHubClientNotifierService hubClientNotifierService,
             IStringLocalizer<AddUserCardCommandHandler> localizer)
         {
             _userBoardRepository = userBoardRepository;
@@ -29,6 +35,8 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             _userCardRepository = userCardRepository;
             _cardRepository = cardRepository;
             _userService = userService;
+            _mapper = mapper;
+            _hubClientNotifierService = hubClientNotifierService;
             _localizer = localizer;
         }
         public async Task<Result<AddUserCardResponse>> Handle(AddUserCardCommand request, CancellationToken cancellationToken)
@@ -77,6 +85,10 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
                         FirstName = user.FirstName,
                         LastName = user.LastName
                     };
+
+                    var member = _mapper.Map<CardMemberDto>(user);
+
+                    await _hubClientNotifierService.AddCardMember(boardId, request.CardId, member);
 
                     return await Result<AddUserCardResponse>.SuccessAsync(result, _localizer["User added to card"]);
                 }

@@ -102,5 +102,12 @@ namespace Harmony.Server.Services
                 .SendAsync(ApplicationConstants.SignalR.OnBoardListsPositionsChanged,
                     new BoardListsPositionsChangedEvent(boardId, positions));
         }
+
+        public async Task AddCardMember(Guid boardId, Guid cardId, CardMemberDto cardMember)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardMemberAdded,
+                    new CardMemberAddedEvent(cardId, cardMember));
+        }
     }
 }

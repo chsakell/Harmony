@@ -23,7 +23,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 
         public void AddListToBoard(BoardListDto list)
         {
-            if(!_board.Lists.Any(l => l.Id == list.Id))
+            if (!_board.Lists.Any(l => l.Id == list.Id))
             {
                 _board.Lists.Add(list);
             }
@@ -220,7 +220,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         {
             var list = _board.Lists.FirstOrDefault(l => l.Id == listId);
 
-            if(list != null)
+            if (list != null)
             {
                 list.Title = title;
             }
@@ -248,14 +248,24 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 
         public void ReorderLists(Dictionary<Guid, short> listPositions)
         {
-            foreach(var keyPair in listPositions)
+            foreach (var keyPair in listPositions)
             {
                 var list = _board.Lists.FirstOrDefault(l => l.Id == keyPair.Key);
 
-                if(list != null)
+                if (list != null)
                 {
                     list.Position = keyPair.Value;
                 }
+            }
+        }
+
+        public void AddCardMember(Guid cardId, CardMemberDto cardMember)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.Members.Add(cardMember);
             }
         }
     }
