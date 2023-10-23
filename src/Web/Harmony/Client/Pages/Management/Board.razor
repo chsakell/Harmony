@@ -64,7 +64,9 @@ else
                         @if (item.TotalPages > 0)
                         {
                             <div class="d-flex flex-column align-center">
-                                <MudPagination Size="Size.Small" Variant="Variant.Outlined" BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
+                                <MudPagination Size="Size.Small" Variant="Variant.Outlined" 
+                                    SelectedChanged="(page) => LoadListCards(item.Id, page)"
+                                    BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
                             </div>
                         }
                     </MudPaper>

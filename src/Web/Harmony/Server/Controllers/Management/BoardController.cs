@@ -7,6 +7,7 @@ using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
+using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -65,6 +66,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> UpdateBoardListsPositions(Guid boardId, UpdateListsPositionsCommand command)
         {
             return Ok(await _mediator.Send(command));
+        }
+
+        [HttpGet("{id:guid}/lists/{listId:guid}")]
+        public async Task<IActionResult> LoadBoardListCards(Guid id, Guid listId, int page, int maxCards)
+        {
+            return Ok(await _mediator.Send(new LoadBoardListQuery(id, listId, page, maxCards)));
         }
     }
 }

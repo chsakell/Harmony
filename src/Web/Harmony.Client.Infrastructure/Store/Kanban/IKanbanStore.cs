@@ -18,6 +18,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 		void ArchiveList(BoardListDto list);
 		void ArchiveListAndReorder(Guid listId, List<BoardListOrder> listPositions);
         void ArchiveCard(Guid cardId);
+		void UpdateBoardListCards(Guid listId, List<CardDto> cards);
         void UpdateTodalCardItemsCompleted(Guid cardId, bool increase);
         void UpdateTodalCardItems(Guid cardId, bool increase);
         void UpdateCardDescription(Guid cardId, string description);

@@ -226,6 +226,16 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
+        public void UpdateBoardListCards(Guid listId, List<CardDto> cards)
+        {
+            var list = _board.Lists.FirstOrDefault(l => l.Id == listId);
+
+            if (list != null)
+            {
+                list.Cards = cards;
+            }
+        }
+
         public void RemoveCardLabel(Guid labelId)
         {
             var cards = _board.Lists.SelectMany(l => l.Cards);

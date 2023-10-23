@@ -7,6 +7,7 @@ using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
@@ -145,6 +146,18 @@ namespace Harmony.Client.Pages.Management
             }
 
             DisplayMessage(result);
+        }
+
+        private async Task LoadListCards(Guid listId, int page)
+        {
+            var result = await _boardManager
+                .GetBoardListCardsAsync(new LoadBoardListQuery(Guid.Parse(Id), listId, page, 5));
+
+            if(result.Succeeded)
+            {
+                KanbanStore.UpdateBoardListCards(listId, result.Data);
+                _dropContainer.Refresh();
+            }
         }
 
         private async Task CardMoved(MudItemDropInfo<CardDto> info)

@@ -8,7 +8,6 @@ namespace Harmony.Server.Controllers.Management
 {
     public class BoardListsController : BaseApiController<BoardListsController>
     {
-
         [HttpPut("{id:guid}/title")]
         public async Task<IActionResult> Put(Guid id, UpdateListTitleCommand command)
         {

@@ -10,6 +10,7 @@ using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
+using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -99,6 +100,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .BoardListPositions(request.BoardId.ToString()), request);
 
             return await response.ToResult<UpdateListsPositionsResponse>();
+        }
+
+        public async Task<IResult<List<CardDto>>> GetBoardListCardsAsync(LoadBoardListQuery request)
+        {
+            var response = await _httpClient
+                .GetAsync(Routes.BoardEndpoints.GetBoardList(request.BoardId.ToString(), 
+                    request.BoardListId, request.Page, request.PageSize));
+            return await response.ToResult<List<CardDto>>();
         }
     }
 }

@@ -38,5 +38,10 @@
         {
             return $"{Index}{boardId}/positions/";
         }
+
+        public static string GetBoardList(string boardId, Guid listId, int page, int maxCards)
+        {
+            return $"{Index}{boardId}/lists/{listId}/?page={page}&maxCards={maxCards}";
+        }
     }
 }

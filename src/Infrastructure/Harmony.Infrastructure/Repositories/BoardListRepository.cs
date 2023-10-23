@@ -55,11 +55,6 @@ namespace Harmony.Infrastructure.Repositories
                         TotalCards = group.FirstOrDefault().Cards.Count 
                     })
                 .ToListAsync();
-                //.ToDictionaryAsync(group => new
-                //{
-                //    Id = group.Id,
-                //    group.TotalCards
-                //});
 
             foreach (var group in totalCardsPerList)
             {
