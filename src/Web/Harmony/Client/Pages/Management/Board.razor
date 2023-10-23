@@ -51,8 +51,8 @@ else
                         {
                             <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
                                 <DataAnnotationsValidator />
-                                <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                                    <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter a title for the card.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                <MudPaper Elevation="25" Class="pa-2 rounded-lg mt-2">
+                                    <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter card's title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
                                     <div class="d-flex justify-space-around flex-grow-1 gap-4">
                                         <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Default">Cancel</MudButton>
                                         <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Default">Create</MudButton>

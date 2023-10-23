@@ -151,7 +151,7 @@ namespace Harmony.Client.Pages.Management
         private async Task LoadListCards(Guid listId, int page)
         {
             var result = await _boardManager
-                .GetBoardListCardsAsync(new LoadBoardListQuery(Guid.Parse(Id), listId, page, 5));
+                .GetBoardListCardsAsync(new LoadBoardListQuery(Guid.Parse(Id), listId, page, 15));
 
             if(result.Succeeded)
             {
