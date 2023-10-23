@@ -12,18 +12,21 @@ namespace Harmony.Application.Features.Boards.Queries.Get
     public class GetBoardsHandler : IRequestHandler<GetBoardQuery, IResult<GetBoardResponse>>
     {
         private readonly IBoardRepository _boardRepository;
+        private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetBoardsHandler> _localizer;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
         public GetBoardsHandler(IBoardRepository boardRepository,
+            IBoardListRepository boardListRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<GetBoardsHandler> localizer,
             IUserService userService,
             IMapper mapper)
         {
             _boardRepository = boardRepository;
+            _boardListRepository = boardListRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
             _userService = userService;
@@ -47,9 +50,20 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Board doesn't exist"]);
             }
 
-            var userBoard = await _boardRepository.LoadBoard(request.BoardId);
+            var userBoard = await _boardRepository.LoadBoard(request.BoardId, request.MaxCardsPerList);
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);
+
+            var totalCardsPerList = await _boardListRepository
+                        .GetTotalCardsForBoardLists(result.Lists.Select(l => l.Id).ToList());
+
+            foreach(var list in result.Lists)
+            {
+                var totalCards = totalCardsPerList[list.Id];
+
+                list.TotalCards = totalCardsPerList[list.Id];
+                list.TotalPages = (int)Math.Ceiling((double)totalCards / request.MaxCardsPerList);
+            }
 
             var cards = result.Lists.SelectMany(l => l.Cards);
 

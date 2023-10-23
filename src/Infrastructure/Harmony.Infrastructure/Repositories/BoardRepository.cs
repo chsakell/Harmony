@@ -33,18 +33,18 @@ namespace Harmony.Infrastructure.Repositories
                 .CountAsync() > 0;
         }
 
-        public async Task<Board> LoadBoard(Guid boardId)
+        public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList)
         {
             return await _context.Boards
                 .Include(b => b.Lists.Where(l => l.Status == Domain.Enums.BoardListStatus.Active))
-                    .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active))
+                    .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active).Take(maxCardsPerList))
                         .ThenInclude(c => c.CheckLists)
                             .ThenInclude(cl => cl.Items)
                 .Include(b => b.Lists.Where(l => l.Status == Domain.Enums.BoardListStatus.Active))
-                    .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active))
+                    .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active).Take(maxCardsPerList))
                     .ThenInclude(c => c.Attachments)
                 .Include(b => b.Lists.Where(l => l.Status == Domain.Enums.BoardListStatus.Active))
-                    .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active))
+                    .ThenInclude(l => l.Cards.Where(c => c.Status == Domain.Enums.CardStatus.Active).Take(maxCardsPerList))
                     .ThenInclude(c => c.Members)
                 .Include(b => b.Users)
                 .Include(b => b.Labels)

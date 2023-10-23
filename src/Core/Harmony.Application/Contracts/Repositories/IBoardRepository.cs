@@ -12,7 +12,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CreateAsync(Board Board);
         Task AddAsync(Board Board);
         Task<Board> GetBoardWithLists(Guid boardId);
-        Task<Board> LoadBoard(Guid boardId);
+        Task<Board> LoadBoard(Guid boardId, int maxCardsPerList);
         Task<bool> Exists(Guid boardId);
         Task<int> Update(Board board);
 

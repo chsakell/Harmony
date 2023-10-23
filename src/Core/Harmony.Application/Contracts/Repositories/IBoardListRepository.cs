@@ -12,5 +12,6 @@ namespace Harmony.Application.Contracts.Repositories
         void UpdateEntry(BoardList list);
         Task<int> UpdateRange(List<BoardList> lists);
         Task<List<BoardList>> GetListsInPositionGreaterThan(Guid boardId, short position);
+        Task<Dictionary<Guid, int>> GetTotalCardsForBoardLists(List<Guid> boardListIds);
     }
 }

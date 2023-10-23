@@ -13,5 +13,9 @@ namespace Harmony.Application.DTO
 
         public CreateCardDto CreateCard { get; set; } = new CreateCardDto();
         public BoardListStatus Status { get; set; }
+
+        // manual setup for pagination
+        public int TotalCards{ get; set; }
+        public int TotalPages { get; set; }
     }
 }

@@ -38,9 +38,9 @@ else
                                                OnSave="(text) => SaveBoardListTitle(item.Id, text)"
                                                Text="@item.Title" Label="@_localizer["Title"]" />
                             <MudSpacer />
-                            <MudIconButton Size="Size.Small"  Class="align-self-end" Icon="@Icons.Material.Filled.Add"
+                            <MudIconButton Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
                                            OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
-                            aria-label="add"></MudIconButton>
+                                           aria-label="add"></MudIconButton>
                             <MudMenu Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
                                      Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
                                 <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
@@ -61,6 +61,12 @@ else
                             </EditForm>
                         }
                         <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
+                        @if (item.TotalPages > 0)
+                        {
+                            <div class="d-flex flex-column align-center">
+                                <MudPagination Size="Size.Small" Variant="Variant.Outlined" BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
+                            </div>
+                        }
                     </MudPaper>
                 }
             </MudContainer>
