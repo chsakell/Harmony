@@ -1,10 +1,9 @@
 ﻿@using System.Linq.Expressions;
 @if (_editing)
 {
-    <MudForm @ref="_form" Style="width:100%" IsValidChanged="FormValidChanged">
+    <MudForm @ref="_form" Style="@Style" IsValidChanged="FormValidChanged">
         <MudStack Row="true">
             <MudTextField Immediate="true" @ref="_textReference" Class="editable-text"
-                          Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon"
                           For="For" @bind-Value="Text" DisableUnderLine="true"
                           Label="@Label" />
             <MudStack Justify="Justify.FlexEnd" Class="align-end" Style="padding-bottom:4px;gap:0;" Row="true">
@@ -28,7 +27,9 @@
 }
 else
 {
-    <MudTextField DisableUnderLine="true" Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="Edit" />
+    <div>
+        <MudTextField Style="@Style" DisableUnderLine="true" Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="Edit" />
+    </div>
 }
 
 @code {
@@ -38,6 +39,9 @@ else
 
     [Parameter]
     public string Text { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
 
     [Parameter]
     public string Label { get; set; }
