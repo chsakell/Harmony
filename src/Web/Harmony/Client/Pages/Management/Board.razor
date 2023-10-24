@@ -35,17 +35,20 @@ else
                               Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
                         <MudToolBar DisableGutters="true">
                             <EditableTextField For="@(() => item.Title)"
+                                               OnEdit="(editing) => item.TitleEditing = editing"
                                                OnSave="(text) => SaveBoardListTitle(item.Id, text)"
-                                               Text="@item.Title" Label="@_localizer["Title"]" />
+                                               Text="@item.Title" />
                             <MudSpacer />
-                            <MudIconButton Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
-                                           OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
-                                           aria-label="add"></MudIconButton>
-                            <MudMenu Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
-                                     Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-                                <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
-                            </MudMenu>
-
+                            @if (!item.TitleEditing)
+                            {
+                                <MudIconButton Style="margin-bottom:10px" Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
+                                               OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
+                                               aria-label="add"></MudIconButton>
+                                <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
+                                         Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
+                                    <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
+                                </MudMenu>
+                            }
                         </MudToolBar>
                         @if (item.CreateCard.NewTaskOpen)
                         {
@@ -64,9 +67,9 @@ else
                         @if (item.TotalPages > 1)
                         {
                             <div class="d-flex flex-column align-center my-4">
-                                <MudPagination Size="Size.Small" Variant="Variant.Outlined" 
-                                    SelectedChanged="(page) => LoadListCards(item.Id, page)"
-                                    BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
+                                <MudPagination Size="Size.Small" Variant="Variant.Outlined"
+                                               SelectedChanged="(page) => LoadListCards(item.Id, page)"
+                                               BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
                             </div>
                         }
                     </MudPaper>

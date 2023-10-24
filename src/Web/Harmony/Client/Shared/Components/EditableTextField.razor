@@ -2,26 +2,28 @@
 @if (_editing)
 {
     <MudForm @ref="_form" Style="width:100%" IsValidChanged="FormValidChanged">
-        <MudTextField Immediate="true" @ref="_textReference"
-                      Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon"
-                      For="For" @bind-Value="Text" DisableUnderLine="true"
-                      Label="@Label" />
-        <MudPaper Class="d-flex pa-2 flex-row-reverse">
-
-            <MudButton Variant="Variant.Filled" OnClick="SaveValue" Disabled="!IsSaveEnabled" StartIcon="@Icons.Material.Filled.Save" Size="Size.Small">
+        <MudStack Row="true">
+            <MudTextField Immediate="true" @ref="_textReference" Class="editable-text"
+                          Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon"
+                          For="For" @bind-Value="Text" DisableUnderLine="true"
+                          Label="@Label" />
+            <MudStack Justify="Justify.FlexEnd" Class="align-end" Style="padding-bottom:4px;gap:0;" Row="true">
+                @if (!_isSaving)
+                {
+                    <MudIconButton Size="Size.Small" OnClick="CancelEditing" Icon="@Icons.Material.Filled.Cancel" aria-label="delete"></MudIconButton>
+                }
                 @if (_isSaving)
                 {
-                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                    <MudText Class="ms-2">Processing</MudText>
+                    <MudButton Variant="Variant.Text" OnClick="SaveValue" Disabled="!IsSaveEnabled" Size="Size.Small">
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    </MudButton>
                 }
                 else
                 {
-                    <MudText>Save</MudText>
+                    <MudIconButton Size="Size.Small" OnClick="SaveValue" Disabled="!IsSaveEnabled" Icon="@Icons.Material.Filled.Save" aria-label="save"></MudIconButton>
                 }
-            </MudButton>
-
-            <MudButton Variant="Variant.Filled" Class="mr-2" OnClick="CancelEditing" StartIcon="@Icons.Material.Filled.Cancel" Size="Size.Small">Cancel</MudButton>
-        </MudPaper>
+            </MudStack>
+        </MudStack>
     </MudForm>
 }
 else
@@ -49,6 +51,9 @@ else
     [Parameter]
     public EventCallback<string> OnSave { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> OnEdit { get; set; }
+
     public bool IsSaveEnabled
     {
         get
@@ -69,13 +74,15 @@ else
 
     private async Task Edit()
     {
+        await OnEdit.InvokeAsync(true);
         _editing = true;
         await Task.Delay(50);
         await _textReference.FocusAsync();
     }
 
-    private void CancelEditing()
+    private async Task CancelEditing()
     {
+        await OnEdit.InvokeAsync(false);
         _editing = false;
         Text = _originalText;
     }
@@ -83,7 +90,6 @@ else
     public async Task SaveValue()
     {
         _isSaving = true;
-
         await OnSave.InvokeAsync(Text);
 
         _originalText = Text;

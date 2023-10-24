@@ -17,5 +17,6 @@ namespace Harmony.Application.DTO
         // manual setup for pagination
         public int TotalCards{ get; set; }
         public int TotalPages { get; set; }
+        public bool TitleEditing { get; set; }
     }
 }
