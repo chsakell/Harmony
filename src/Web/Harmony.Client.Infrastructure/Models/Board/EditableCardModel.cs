@@ -22,6 +22,8 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
         public List<CardActivityDto> Activities { get; set; } = new List<CardActivityDto>();
+        public List<CardMemberDto> Members { get; set; }
+        public List<LabelDto> Labels { get; set; }
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

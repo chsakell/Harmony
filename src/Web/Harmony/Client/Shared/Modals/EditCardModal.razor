@@ -19,6 +19,27 @@ else
                 {
                     <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(_card.StartDate, _card.DueDate)</MudChip>
                 }
+                @if (_card.Members.Any())
+                {
+                    <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
+                        @foreach (var member in _card.Members)
+                        {
+                            <MudAvatar Size="Size.Medium" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                        }
+                    </MudAvatarGroup>
+                }
+                @if (_card.Labels.Any())
+                {
+                    <MudPaper Class="d-flex flex-wrap" Elevation="0">
+                        @foreach (var label in _card.Labels)
+                        {
+                            <MudTooltip Text="@label.Title">
+                                <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
+                                          Height="10px" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
+                            </MudTooltip>
+                        }
+                    </MudPaper>
+                }
             </MudStack>
 
         </TitleContent>
