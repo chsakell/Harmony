@@ -96,7 +96,7 @@ else
                     }
                     @if (!string.IsNullOrEmpty(context.Description))
                     {
-                        <MudPaper Style="max-height:170px;overflow-y:auto">@((MarkupString)context.Description)</MudPaper>
+                        <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;">@((MarkupString)context.Description)</MudPaper>
                     }
                 </MudCardContent>
                 <MudCardActions Class=" pa-0 pt-2">
@@ -106,7 +106,7 @@ else
                         {
                             <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
                                       Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.Checklist">
-                                <MudChip Size="Size.Small" Label="true" Color="Color.Warning" Style="color:black;">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
+                                <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
                             </MudBadge>
                         }
                         @if (context.TotalAttachments > 0)
@@ -120,7 +120,7 @@ else
                         {
                             <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
                                       Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.DateRange">
-                                <MudChip Size="Size.Small" Label="true" Color="Color.Warning" Style="color:black;">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
+                                <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
                             </MudBadge>
                         }
                         @if (context.Members.Any())
@@ -128,7 +128,7 @@ else
                             <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
                                 @foreach (var member in context.Members)
                                 {
-                                    <MudAvatar Size="Size.Small" Color="Color.Secondary">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                    <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
                                 }
                             </MudAvatarGroup>
                         }
