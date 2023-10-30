@@ -21,120 +21,134 @@ else
             <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
         </MudToolBar>
     </MudPaper>
-    <MudDropContainer T="CardDto" @ref="_dropContainer"
-                      Items="KanbanStore.KanbanCards"
-                      CanDropClass="mud-border-success" NoDropClass="mud-border-error"
-                      ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)"
-                      ItemDropped="CardMoved" Class="d-flex flex-row">
-        <ChildContent>
-            <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="d-flex flex-nowrap gap-4 overflow-auto flex-row mud-height-full">
-                @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
-                {
-                    <MudPaper Elevation="0" Width="300px"
-                              Style="height:calc(100vh - 200px);overflow:auto"
-                              Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
-                        <MudToolBar DisableGutters="true">
-                            <EditableTextField For="@(() => item.Title)"
-                                               OnEdit="(editing) => item.TitleEditing = editing"
-                                               OnSave="(text) => SaveBoardListTitle(item.Id, text)"
-                                               Text="@item.Title" />
-                            <MudSpacer />
-                            @if (!item.TitleEditing)
-                            {
-                                <MudIconButton Style="margin-bottom:10px" Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
-                                               OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
-                                               aria-label="add"></MudIconButton>
-                                <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
-                                         Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-                                    <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
-                                </MudMenu>
-                            }
-                        </MudToolBar>
-                        @if (item.CreateCard.NewTaskOpen)
-                        {
-                            <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
-                                <DataAnnotationsValidator />
-                                <MudPaper Elevation="25" Class="pa-2 rounded-lg mt-2">
-                                    <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter card's title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-                                    <div class="d-flex justify-space-around flex-grow-1 gap-4">
-                                        <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Default">Cancel</MudButton>
-                                        <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Default">Create</MudButton>
-                                    </div>
-                                </MudPaper>
-                            </EditForm>
-                        }
-                        <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
-                        @if (item.TotalPages > 1)
-                        {
-                            <div class="d-flex flex-column align-center my-4">
-                                <MudPagination Size="Size.Small" Variant="Variant.Outlined"
-                                               SelectedChanged="(page) => LoadListCards(item.Id, page)"
-                                               BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
-                            </div>
-                        }
-                    </MudPaper>
-                }
-            </MudContainer>
-        </ChildContent>
-        <ItemRenderer>
-            <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
-                <MudCardHeader Class="pa-0">
-                    <MudText Typo="Typo.body1">@context.Title</MudText>
-                </MudCardHeader>
-                <MudCardContent Class="pa-0 mt-2">
-                    @if (context.Labels.Any())
+    @if (!KanbanStore.KanbanLists.Any())
+    {
+        <div class="d-flex justify-center flex-grow-1 gap-4 mt-8">
+            <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h4">Your board is empty :(</MudText>
+                <MudText Typo="Typo.h6">Start by adding new lists!</MudText>
+                <MudIcon Icon="@Icons.Material.Outlined.AddRoad" Style="height:500px;width:500px"></MudIcon>
+            </MudStack>
+            
+        </div>
+    }
+    else
+    {
+        <MudDropContainer T="CardDto" @ref="_dropContainer"
+                          Items="KanbanStore.KanbanCards"
+                          CanDropClass="mud-border-success" NoDropClass="mud-border-error"
+                          ItemsSelector="@((item,column) => item.BoardListId.ToString() == column)"
+                          ItemDropped="CardMoved" Class="d-flex flex-row">
+            <ChildContent>
+                <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="d-flex flex-nowrap gap-4 overflow-auto flex-row mud-height-full">
+                    @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
                     {
-                        <MudPaper Class="d-flex flex-wrap" Elevation="0">
-                            @foreach (var label in context.Labels)
+                        <MudPaper Elevation="0" Width="300px"
+                                  Style="height:calc(100vh - 200px);overflow:auto"
+                                  Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
+                            <MudToolBar DisableGutters="true">
+                                <EditableTextField For="@(() => item.Title)"
+                                                   OnEdit="(editing) => item.TitleEditing = editing"
+                                                   OnSave="(text) => SaveBoardListTitle(item.Id, text)"
+                                                   Text="@item.Title" />
+                                <MudSpacer />
+                                @if (!item.TitleEditing)
+                                {
+                                    <MudIconButton Style="margin-bottom:10px" Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
+                                                   OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
+                                                   aria-label="add"></MudIconButton>
+                                    <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
+                                             Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
+                                        <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
+                                    </MudMenu>
+                                }
+                            </MudToolBar>
+                            @if (item.CreateCard.NewTaskOpen)
                             {
-                                <MudTooltip Text="@label.Title">
-                                    <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
-                                              Height="10px" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
-                                </MudTooltip>
+                                <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
+                                    <DataAnnotationsValidator />
+                                    <MudPaper Elevation="25" Class="pa-2 rounded-lg mt-2">
+                                        <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter card's title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                        <div class="d-flex justify-space-around flex-grow-1 gap-4">
+                                            <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Default">Cancel</MudButton>
+                                            <MudButton ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Default">Create</MudButton>
+                                        </div>
+                                    </MudPaper>
+                                </EditForm>
+                            }
+                            <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
+                            @if (item.TotalPages > 1)
+                            {
+                                <div class="d-flex flex-column align-center my-4">
+                                    <MudPagination Size="Size.Small" Variant="Variant.Outlined"
+                                                   SelectedChanged="(page) => LoadListCards(item.Id, page)"
+                                                   BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
+                                </div>
                             }
                         </MudPaper>
                     }
-                    @if (!string.IsNullOrEmpty(context.Description))
-                    {
-                        <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;">@((MarkupString)context.Description)</MudPaper>
-                    }
-                </MudCardContent>
-                <MudCardActions Class=" pa-0 pt-2">
-                    <MudPaper Class="d-flex justify-start flex-grow-1 gap-2" Elevation="0">
-
-                        @if (context.TotalItems > 0)
+                </MudContainer>
+            </ChildContent>
+            <ItemRenderer>
+                <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
+                    <MudCardHeader Class="pa-0">
+                        <MudText Typo="Typo.body1">@context.Title</MudText>
+                    </MudCardHeader>
+                    <MudCardContent Class="pa-0 mt-2">
+                        @if (context.Labels.Any())
                         {
-                            <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
-                                      Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.Checklist">
-                                <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
-                            </MudBadge>
-                        }
-                        @if (context.TotalAttachments > 0)
-                        {
-                            <MudBadge Origin="Origin.TopRight" Content="context.TotalAttachments"
-                                      Overlap="true" Dot="false" Bordered="true" Color="Color.Primary">
-                                <MudIcon Icon="@Icons.Material.Filled.Attachment" Color="Color.Default" Size="Size.Medium" />
-                            </MudBadge>
-                        }
-                        @if (context.StartDate != null || context.DueDate != null)
-                        {
-                            <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
-                                      Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.DateRange">
-                                <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
-                            </MudBadge>
-                        }
-                        @if (context.Members.Any())
-                        {
-                            <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
-                                @foreach (var member in context.Members)
+                            <MudPaper Class="d-flex flex-wrap" Elevation="0">
+                                @foreach (var label in context.Labels)
                                 {
-                                    <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                    <MudTooltip Text="@label.Title">
+                                        <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
+                                                  Height="10px" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
+                                    </MudTooltip>
                                 }
-                            </MudAvatarGroup>
+                            </MudPaper>
                         }
-                    </MudPaper>
-                </MudCardActions>
-            </MudCard>
-        </ItemRenderer>
-    </MudDropContainer>
+                        @if (!string.IsNullOrEmpty(context.Description))
+                        {
+                            <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;">@((MarkupString)context.Description)</MudPaper>
+                        }
+                    </MudCardContent>
+                    <MudCardActions Class=" pa-0 pt-2">
+                        <MudPaper Class="d-flex justify-start flex-grow-1 gap-2" Elevation="0">
+
+                            @if (context.TotalItems > 0)
+                            {
+                                <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
+                                          Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.Checklist">
+                                    <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
+                                </MudBadge>
+                            }
+                            @if (context.TotalAttachments > 0)
+                            {
+                                <MudBadge Origin="Origin.TopRight" Content="context.TotalAttachments"
+                                          Overlap="true" Dot="false" Bordered="true" Color="Color.Primary">
+                                    <MudIcon Icon="@Icons.Material.Filled.Attachment" Color="Color.Default" Size="Size.Medium" />
+                                </MudBadge>
+                            }
+                            @if (context.StartDate != null || context.DueDate != null)
+                            {
+                                <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
+                                          Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.DateRange">
+                                    <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
+                                </MudBadge>
+                            }
+                            @if (context.Members.Any())
+                            {
+                                <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
+                                    @foreach (var member in context.Members)
+                                    {
+                                        <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                    }
+                                </MudAvatarGroup>
+                            }
+                        </MudPaper>
+                    </MudCardActions>
+                </MudCard>
+            </ItemRenderer>
+        </MudDropContainer>
+    }
 }
