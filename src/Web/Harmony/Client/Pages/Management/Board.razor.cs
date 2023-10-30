@@ -274,6 +274,8 @@ namespace Harmony.Client.Pages.Management
 
         private async Task AddCard(BoardListDto list)
         {
+            list.CreateCard.Creating = true;
+
             var result = await _cardManager
                 .CreateCardAsync(new CreateCardCommand(list.CreateCard.Title, Guid.Parse(Id), list.Id));
 
@@ -284,6 +286,8 @@ namespace Harmony.Client.Pages.Management
                 KanbanStore.AddCardToList(cardAdded, list);
                 _dropContainer.Refresh();
             }
+
+            list.CreateCard.Creating = false;
 
             DisplayMessage(result);
         }
