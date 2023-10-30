@@ -1,4 +1,5 @@
 ﻿@page "/workspaces/{id}/{name}"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Workspace> _localizer
 
 @if (_userBoardsLoading)
 {
@@ -6,10 +7,15 @@
 }
 else
 {
-    <MudGrid>
+    <div class="d-flex flex-wrap flex-grow-1 gap-4">
+        <MudPaper Outlined="true" Class="border-dashed cursor-pointer pa-4"
+        @onclick="OpenCreateBoardModal">
+            <MudText Typo="Typo.h4">Create board</MudText>
+        </MudPaper>
+        <MudDivider />
         @foreach (var board in _userBoards)
         {
-            <MudItem xs="3" md="6" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
+            <MudItem xs="12" md="4" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
                 <MudCard>
                     <MudCardContent>
                         <MudText>@board.Title</MudText>
@@ -18,5 +24,5 @@ else
                 </MudCard>
             </MudItem>
         }
-    </MudGrid>
+    </div>
 }

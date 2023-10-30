@@ -13,6 +13,9 @@ namespace Harmony.Client.Shared.Modals
         List<WorkspaceDto> _ownedWorkspaces = new List<WorkspaceDto>();
         WorkspaceDto? _selectedWorkspace;
 
+        [Parameter]
+        public Guid? FilterWorkspaceId { get; set; }
+
         private void Cancel()
         {
             MudDialog.Cancel();

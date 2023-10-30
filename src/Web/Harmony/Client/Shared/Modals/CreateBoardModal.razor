@@ -24,7 +24,9 @@
                                Variant="Variant.Outlined" Clearable>
                         @foreach (var workspace in _ownedWorkspaces)
                         {
-                            <MudSelectItem Value="workspace.Id.ToString()">@workspace.Name</MudSelectItem>
+                            <MudSelectItem Value="workspace.Id.ToString()"
+                                Disabled="FilterWorkspaceId.HasValue && workspace.Id != FilterWorkspaceId.Value"
+                                >@workspace.Name</MudSelectItem>
                         }
                     </MudSelect>
                     <MudSelect T="BoardVisibility" @bind-Value="@_createBoardModel.Visibility"

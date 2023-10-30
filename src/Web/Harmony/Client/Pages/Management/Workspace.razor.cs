@@ -1,7 +1,10 @@
 ﻿using Harmony.Application.Events;
+using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
+using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Harmony.Client.Pages.Management
 {
@@ -34,6 +37,24 @@ namespace Harmony.Client.Pages.Management
                 });
 
                 StateHasChanged();
+            }
+        }
+
+        private async Task OpenCreateBoardModal()
+        {
+            var parameters = new DialogParameters<CreateBoardModal>
+            {
+                {
+                    modal => modal.FilterWorkspaceId, Guid.Parse(Id)
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateBoardModal>(_localizer["Create Board"], parameters, options);
+            var result = await dialog.Result;
+            if (!result.Cancelled)
+            {
+                // TODO update workspace list or navigate to it
             }
         }
 
