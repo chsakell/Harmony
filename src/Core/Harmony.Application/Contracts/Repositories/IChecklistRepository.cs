@@ -4,7 +4,7 @@ namespace Harmony.Application.Contracts.Repositories
 {
     public interface ICheckListRepository
     {
-        Task<int> Add(CheckList card);
+        Task<int> CreateAsync(CheckList checkList);
         Task<CheckList?> Get(Guid checklistId);
         Task<List<CheckList>> GetCardCheckLists(Guid cardId);
         Task<int> Update(CheckList checklist);

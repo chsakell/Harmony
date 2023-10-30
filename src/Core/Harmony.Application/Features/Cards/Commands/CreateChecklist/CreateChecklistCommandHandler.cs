@@ -50,7 +50,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
                 UserId = userId,
             };
 
-            var dbResult = await _checklistRepository.Add(checkList);
+            var dbResult = await _checklistRepository.CreateAsync(checkList);
 
             if (dbResult > 0)
             {

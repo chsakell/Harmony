@@ -19,7 +19,7 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.CheckLists.FirstOrDefaultAsync(Checklist => Checklist.Id == ChecklistId);
 		}
 
-		public async Task<int> Add(CheckList checklist)
+		public async Task<int> CreateAsync(CheckList checklist)
 		{
 			_context.CheckLists.Add(checklist);
 

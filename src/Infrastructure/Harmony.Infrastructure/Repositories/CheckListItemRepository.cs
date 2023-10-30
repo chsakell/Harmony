@@ -14,7 +14,7 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<int> Add(CheckListItem item)
+        public async Task<int> CreateAsync(CheckListItem item)
         {
             _context.CheckListItems.Add(item);
 

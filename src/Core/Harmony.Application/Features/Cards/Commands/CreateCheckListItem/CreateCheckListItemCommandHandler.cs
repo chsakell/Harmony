@@ -61,7 +61,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
                 DueDate = request.DueDate,
             };
 
-            var dbResult = await _checkListItemRepository.Add(newItem);
+            var dbResult = await _checkListItemRepository.CreateAsync(newItem);
 
             if (dbResult > 0)
             {
