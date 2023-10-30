@@ -12,7 +12,7 @@
 }
 else
 {
-    <MudDialog>
+    <MudDialog Style="max-height:600px">
         <TitleContent>
             @{
                 <MudText Typo="Typo.h6">
@@ -64,14 +64,16 @@ else
             </MudPaper>
             @foreach (var member in _boardMembers)
             {
-                <MudStack>
-                    <MudPaper Class="pa-4">
-                        <MudStack Row="true">
+                <MudPaper Class="pa-4 mb-2">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                        <MudStack Row="true" Class="align-center">
                             <MudAvatar Color="Color.Secondary">@(member.FirstName[0])</MudAvatar>
                                 <MudStack Justify="Justify.Center" Spacing="0">
                                     <MudText Typo="Typo.body1">@member.FullName</MudText>
                                     <MudText Typo="Typo.body2">@@@member.UserName</MudText>
                                 </MudStack>
+                            </MudStack>
+                            <MudStack Row="true">
                                 <div class="d-flex justify-end flex-grow-1 gap-4">
                                     <MudSelect T="UserBoardAccess" @bind-Value:get="member.Access"
                                     @bind-Value:set="(value) => UpdateBoardMemberAccess(member,value)"
@@ -94,10 +96,11 @@ else
                                     }
                                 </MudButton>
                             </div>
-
                         </MudStack>
-                    </MudPaper>
-                </MudStack>
+
+
+                    </MudStack>
+                </MudPaper>
             }
         </DialogContent>
     </MudDialog>

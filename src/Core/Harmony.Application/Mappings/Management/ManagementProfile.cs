@@ -39,7 +39,9 @@ namespace Harmony.Application.Mappings.Management
 
             CreateMap<CheckList, CheckListDto>();
             CreateMap<CheckListItem, CheckListItemDto>();
-            CreateMap<Card, LoadCardResponse>();
+            CreateMap<Card, LoadCardResponse>()
+                .ForMember(dto => dto.Labels, opt => 
+                    opt.MapFrom(src => src.Labels.Select(cl => cl.Label)));
 
             CreateMap<Label, LabelDto>();
             CreateMap<CardLabel, LabelDto>()

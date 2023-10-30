@@ -30,6 +30,7 @@ namespace Harmony.Client.Pages.Management
         public IKanbanStore KanbanStore { get; set; }
 
         private MudDropContainer<CardDto> _dropContainer;
+        public bool CardDescriptionVisibility { get; set; }
 
         protected async override Task OnInitializedAsync()
         {
@@ -167,6 +168,12 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private void ToggleCardDescriptionVisibility(bool toggle)
+        {
+            CardDescriptionVisibility = toggle;
+            _dropContainer.Refresh();
+        }
+
         private async Task CardMoved(MudItemDropInfo<CardDto> info)
         {
             if (info?.Item == null)
@@ -192,6 +199,7 @@ namespace Harmony.Client.Pages.Management
                 cardDto.Labels = info.Item.Labels;
                 cardDto.TotalItems = info.Item.TotalItems;
                 cardDto.TotalItemsCompleted = info.Item.TotalItemsCompleted;
+                cardDto.TotalAttachments = info.Item.TotalAttachments;
 
                 KanbanStore.MoveCard(cardDto, currentListId, moveToListId, newPosition);
 
@@ -267,7 +275,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<BoardMembersModal>(_localizer["Share board"], parameters, options);
             var result = await dialog.Result;
         }

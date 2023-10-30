@@ -16,6 +16,12 @@ else
             {
                 <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">Reorder lists</MudButton>
             }
+            <MudTooltip Text="Toggle card's description visibility">
+                <MudToggleIconButton @bind-Toggled:get="@CardDescriptionVisibility"
+                                     @bind-Toggled:set="@ToggleCardDescriptionVisibility"
+                                     Icon="@Icons.Material.Filled.VisibilityOff" Color="@Color.Error" Title="Off"
+                                     ToggledIcon="@Icons.Material.Filled.Visibility" ToggledColor="@Color.Success" ToggledTitle="On" />
+            </MudTooltip>
             <MudSpacer />
             <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
             <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
@@ -29,7 +35,7 @@ else
                 <MudText Typo="Typo.h6">Start by adding new lists!</MudText>
                 <MudIcon Icon="@Icons.Material.Outlined.AddRoad" Style="height:500px;width:500px"></MudIcon>
             </MudStack>
-            
+
         </div>
     }
     else
@@ -107,7 +113,7 @@ else
                                 }
                             </MudPaper>
                         }
-                        @if (!string.IsNullOrEmpty(context.Description))
+                        @if (!string.IsNullOrEmpty(context.Description) && CardDescriptionVisibility)
                         {
                             <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;margin-bottom:10px;">@((MarkupString)context.Description)</MudPaper>
                         }
