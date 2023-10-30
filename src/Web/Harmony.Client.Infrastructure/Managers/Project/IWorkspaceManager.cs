@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
@@ -25,5 +26,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<bool>> RemoveWorkspaceMember(RemoveWorkspaceMemberCommand request);
         Task<IResult<List<SearchWorkspaceUserResponse>>> SearchWorkspaceMembers(SearchWorkspaceUsersQuery request);
         event EventHandler<WorkspaceDto> OnSelectedWorkspace;
+        event EventHandler<WorkspaceAddedEvent> OnWorkspaceAdded;
     }
 }

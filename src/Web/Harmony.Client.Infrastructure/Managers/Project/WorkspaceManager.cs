@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
@@ -35,6 +36,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         }
 
         public event EventHandler<WorkspaceDto> OnSelectedWorkspace;
+        public event EventHandler<WorkspaceAddedEvent> OnWorkspaceAdded;
 
         public WorkspaceManager(HttpClient client, ClientPreferenceManager clientPreferenceManager)
         {
@@ -50,12 +52,16 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
             if(result.Succeeded)
             {
-                UserWorkspaces.Add(new WorkspaceDto()
+                var workspace = new WorkspaceDto()
                 {
                     Id = result.Data,
                     Name = request.Name,
                     Description = request.Description
-                });
+                };
+
+                UserWorkspaces.Add(workspace);
+
+                OnWorkspaceAdded?.Invoke(this, new WorkspaceAddedEvent(workspace));
             }
             
             return await response.ToResult<Guid>();
