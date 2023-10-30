@@ -55,7 +55,7 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.Cards.Where(c => c.BoardListId == listId).CountAsync();
 		}
 
-		public async Task<int> Add(Card Card)
+		public async Task<int> CreateAsync(Card Card)
 		{
 			_context.Cards.Add(Card);
 

@@ -185,7 +185,8 @@ namespace Harmony.Server.Extensions
                 .AddDbContext<HarmonyContext>(options => options
                     .UseSqlServer(configuration.GetConnectionString("DefaultConnection")))
                 .AddScoped<IDatabaseSeeder, DatabaseRolesSeeder>()
-                .AddScoped<IDatabaseSeeder, DatabaseUsersSeeder>();
+                .AddScoped<IDatabaseSeeder, DatabaseUsersSeeder>()
+                .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>();
 
         internal static IServiceCollection AddIdentity(this IServiceCollection services)
         {

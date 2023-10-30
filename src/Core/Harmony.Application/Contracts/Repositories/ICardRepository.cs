@@ -12,7 +12,7 @@ namespace Harmony.Application.Contracts.Repositories
 		Task<List<Card>> GetCardsInPositionGreaterThan(Guid boardListId, short position);
 		Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, short position);
 		Task<int> CountCards(Guid listId);
-        Task<int> Add(Card card);
+        Task<int> CreateAsync(Card card);
 		Task<int> Update(Card card);
 		void UpdateEntry(Card Card);
 	}

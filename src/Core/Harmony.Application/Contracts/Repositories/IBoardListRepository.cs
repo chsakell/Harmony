@@ -7,7 +7,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<BoardList> Get(Guid boardListId);
         Task<List<BoardList>> GetBoardLists(Guid boardId);
         Task<int> CountActiveLists(Guid boardId);
-        Task<int> Add(BoardList boardList);
+        Task<int> CreateAsync(BoardList boardList);
         Task<int> Update(BoardList list);
         void UpdateEntry(BoardList list);
         Task<int> UpdateRange(List<BoardList> lists);

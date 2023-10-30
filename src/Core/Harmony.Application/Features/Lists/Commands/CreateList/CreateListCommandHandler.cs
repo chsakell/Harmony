@@ -50,7 +50,7 @@ namespace Harmony.Application.Features.Lists.Commands.CreateList
                 Position = (short)totalLists
             };
 
-            var dbResult = await _boardListRepository.Add(boardList);
+            var dbResult = await _boardListRepository.CreateAsync(boardList);
 
             if (dbResult > 0)
             {

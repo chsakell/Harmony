@@ -45,7 +45,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 Position = (byte)totalCards
             };
 
-            var dbResult = await _cardRepository.Add(card);
+            var dbResult = await _cardRepository.CreateAsync(card);
 
             if (dbResult > 0)
             {

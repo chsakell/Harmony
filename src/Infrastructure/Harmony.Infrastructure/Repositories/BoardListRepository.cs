@@ -21,7 +21,7 @@ namespace Harmony.Infrastructure.Repositories
                 && bl.Status == Domain.Enums.BoardListStatus.Active).CountAsync();
 		}
 
-		public async Task<int> Add(BoardList boardList)
+		public async Task<int> CreateAsync(BoardList boardList)
 		{
 			_context.BoardLists.Add(boardList);
 
