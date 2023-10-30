@@ -109,7 +109,7 @@ else
                         }
                         @if (!string.IsNullOrEmpty(context.Description))
                         {
-                            <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;">@((MarkupString)context.Description)</MudPaper>
+                            <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;margin-bottom:10px;">@((MarkupString)context.Description)</MudPaper>
                         }
                     </MudCardContent>
                     <MudCardActions Class=" pa-0 pt-2">
@@ -132,7 +132,7 @@ else
                             @if (context.StartDate != null || context.DueDate != null)
                             {
                                 <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
-                                          Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.DateRange">
+                                          Overlap="true" Dot="false" Bordered="false" Icon="@Icons.Material.Filled.DateRange">
                                     <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
                                 </MudBadge>
                             }
