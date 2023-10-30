@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -12,6 +13,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Client.Infrastructure.Models.Board;
+using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
@@ -81,6 +83,53 @@ namespace Harmony.Client.Shared.Modals
             }
 
             _loading = false;
+
+            _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
+            _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
+            _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
+        }
+
+        private void OnCardLabelToggled(object? sender, CardLabelToggledEvent e)
+        {
+            if(e.Label.IsChecked)
+            {
+                _card.Labels.Add(e.Label);
+            }
+            else
+            {
+                var label = _card.Labels.FirstOrDefault(l => l.Id == e.Label.Id);
+                if (label != null)
+                {
+                    _card.Labels.Remove(label);
+                }
+            }
+
+            StateHasChanged();
+        }
+
+        private void OnCardMemberAdded(object? sender, CardMemberAddedEvent e)
+        {
+            _card.Members.Add(e.Member);
+            StateHasChanged();
+        }
+
+        private void OnCardLabelRemoved(object? sender, CardLabelRemovedEvent e)
+        {
+            var label = _card.Labels.FirstOrDefault(l => l.Id == e.CardLabelId);
+
+            if (label != null)
+            {
+                _card.Labels.Remove(label);
+            }
+        }
+
+        private void OnCardDatesChanged(object? sender, CardDatesChangedEvent e)
+        {
+            _card.StartDate = e.StartDate;
+            _card.DueDate = e.DueDate;
+
+            StateHasChanged();
         }
 
         private async Task SaveDescription(string cardDescription)
