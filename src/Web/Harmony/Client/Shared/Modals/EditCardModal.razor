@@ -60,11 +60,20 @@ else
                                             <div class="spotlight-group">
                                                 @foreach (var attachment in _card.Attachments)
                                                 {
-                                                    <MudStack Row="true">
-                                                        <MudElement HtmlTag="a" href="@attachment.Url" Class="spotlight">
-                                                            <MudElement Class="mud-avatar mud-avatar-large mud-avatar-square mud-avatar-filled mud-avatar-filled-default mud-elevation-0"
-                                                                        HtmlTag="img" src="@attachment.Url"></MudElement>
-                                                        </MudElement>
+                                                    <MudStack Row="true" Spacing="4" Class="pb-4">
+                                                        @if (attachment.Type == AttachmentType.CardImage)
+                                                        {
+                                                            <MudElement HtmlTag="a" href="@attachment.Url" Class="spotlight">
+                                                                <MudElement Class="mud-avatar mud-avatar-large mud-avatar-square mud-avatar-filled mud-avatar-filled-default mud-elevation-0"
+                                                                            HtmlTag="img" src="@attachment.Url"></MudElement>
+                                                            </MudElement>
+                                                        }
+                                                        else
+                                                        {
+                                                            <MudElement HtmlTag="a" href="@attachment.Url" target="_blank">
+                                                                <MudIcon Icon="@Icons.Material.Filled.FileOpen" Style="font-size: 3rem;" />
+                                                            </MudElement>
+                                                        }
                                                         <MudStack Justify="Justify.Center" Spacing="0">
                                                             <MudText Typo="Typo.body1">@attachment.OriginalFileName</MudText>
                                                             <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
