@@ -182,8 +182,13 @@ namespace Harmony.Server.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
             => services
-                .AddDbContext<HarmonyContext>(options => options
-                    .UseSqlServer(configuration.GetConnectionString("DefaultConnection")))
+                .AddDbContext<HarmonyContext>(options =>
+                {
+                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                    options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
+                    options.EnableDetailedErrors(true);
+                    options.EnableSensitiveDataLogging(true);
+                })
                 .AddScoped<IDatabaseSeeder, DatabaseRolesSeeder>()
                 .AddScoped<IDatabaseSeeder, DatabaseUsersSeeder>()
                 .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>();

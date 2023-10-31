@@ -27,6 +27,7 @@ namespace Harmony.Infrastructure.Seed
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly IBoardRepository _boardRepository;
+        private readonly IBoardLabelRepository _boardLabelRepository;
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly ICheckListRepository _checkListRepository;
         private readonly ICheckListItemRepository _checkListItemRepository;
@@ -36,6 +37,7 @@ namespace Harmony.Infrastructure.Seed
 
         private HarmonyUser _admin;
         private List<string> _boardUsers = new List<string>();
+        private List<Label> _boardLabels = new List<Label>();
         public int Order => 3;
 
         public DatabaseWorkspaceSeeder(HarmonyContext context,
@@ -43,6 +45,7 @@ namespace Harmony.Infrastructure.Seed
             IWorkspaceRepository workspaceRepository,
             IUserWorkspaceRepository userWorkspaceRepository,
             IBoardRepository boardRepository,
+            IBoardLabelRepository boardLabelRepository,
             IUserBoardRepository userBoardRepository,
             ICheckListRepository checkListRepository,
             ICheckListItemRepository checkListItemRepository,
@@ -55,6 +58,7 @@ namespace Harmony.Infrastructure.Seed
             _workspaceRepository = workspaceRepository;
             _userWorkspaceRepository = userWorkspaceRepository;
             _boardRepository = boardRepository;
+            _boardLabelRepository = boardLabelRepository;
             _userBoardRepository = userBoardRepository;
             _checkListRepository = checkListRepository;
             _checkListItemRepository = checkListItemRepository;
@@ -179,11 +183,13 @@ namespace Harmony.Infrastructure.Seed
 
             await _boardListRepository.CreateAsync(todoList);
 
-            await GenerateCards(todoList.Id);
+            await GenerateCards(boardId, todoList.Id);
         }
 
-        private async Task GenerateCards(Guid boardListId)
+        private async Task GenerateCards(Guid boardId, Guid boardListId)
         {
+            var labels = await _boardLabelRepository.GetLabels(boardId);
+
             for (var i = 0; i< 10; i++ )
             {
                 var lorem = new Bogus.DataSets.Lorem(locale: "en");
@@ -200,17 +206,31 @@ namespace Harmony.Infrastructure.Seed
                     });
                 }
 
+                var randomLabels = faker.PickRandom(labels, 3);
+                var cardLabels = new List<CardLabel>();
+
+                foreach (var label in randomLabels)
+                {
+                    var cardLabel = new CardLabel()
+                    {
+                        LabelId = label.Id
+                    };
+
+                    cardLabels.Add(cardLabel);
+                }
+
                 var card = new Card()
                 {
                     BoardListId = boardListId,
                     UserId= faker.PickRandom(_boardUsers),
-                    Title = string.Join(" ", lorem.Words(15)),
+                    Title = string.Join(" ", lorem.Words(6)),
                     Description = lorem.Sentences(),
                     StartDate = faker.Date.Between(DateTime.Now.AddDays(-100), DateTime.Now),
                     DueDate = faker.Date.Between(DateTime.Now, DateTime.Now.AddDays(30)),
                     Position = (short)i,
                     Status = Domain.Enums.CardStatus.Active,
-                    Members = members
+                    Members = members,
+                    Labels = cardLabels
                 };
 
                 await _cardRepository.CreateAsync(card);

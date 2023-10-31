@@ -130,7 +130,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 {
                     var selectedWorkspacePreference = await _clientPreferenceManager.GetSelectedWorkspace();
 
-                    if (!string.IsNullOrEmpty(selectedWorkspacePreference))
+                    if (!string.IsNullOrEmpty(selectedWorkspacePreference) &&
+                        UserWorkspaces
+                            .Any(w => w.Id.ToString()
+                            .Equals(selectedWorkspacePreference)))
                     {
                         SelectedWorkspace = UserWorkspaces
                             .FirstOrDefault(w => w.Id.ToString()
