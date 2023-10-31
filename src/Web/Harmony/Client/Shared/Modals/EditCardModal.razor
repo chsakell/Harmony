@@ -81,22 +81,6 @@ else
                                                     </MudStack>
                                                 }
                                             </div>
-                                            @if (_card.UploadingAttachment)
-                                            {
-                                                <MudStack Row="true">
-                                                    <MudCard Style="width:100%;">
-                                                        <MudCardHeader>
-                                                            <CardHeaderAvatar>
-                                                                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Height="40px" Width="40px" />
-                                                            </CardHeaderAvatar>
-                                                            <CardHeaderContent>
-                                                                <MudSkeleton Animation="Animation.Wave" Width="40%" />
-                                                                <MudSkeleton Animation="Animation.Wave" Width="60%" />
-                                                            </CardHeaderContent>
-                                                        </MudCardHeader>
-                                                    </MudCard>
-                                                </MudStack>
-                                            }
                                         </MudStack>
                                     }
                                 </MudItem>
@@ -245,14 +229,24 @@ else
                                Color="Color.Primary" OnClick="EditDates">DATES</MudButton>
                     <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
                         <ButtonTemplate>
-                            <MudButton HtmlTag="label"
-                                       Variant="Variant.Outlined"
-                                       Color="Color.Primary"
-                                       FullWidth="true"
-                                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                                       for="@context">
-                                Upload Files
-                            </MudButton>
+                            @if (_card.UploadingAttachment)
+                            {
+                                <MudButton Disabled="true" FullWidth="true">
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Uploading</MudText>
+                                </MudButton>
+                            }
+                            else
+                            {
+                                <MudButton HtmlTag="label"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Primary"
+                                           FullWidth="true"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           for="@context">
+                                    Upload Files
+                                </MudButton>
+                            }
                         </ButtonTemplate>
                     </MudFileUpload>
                     <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"

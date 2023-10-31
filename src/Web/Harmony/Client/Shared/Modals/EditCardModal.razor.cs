@@ -27,6 +27,8 @@ namespace Harmony.Client.Shared.Modals
     {
         private EditableCardModel _card = new();
         private bool _loading = true;
+        public static readonly List<string> ImageExtensions = new List<string> { ".JPG", ".JPEG", ".JPE", ".BMP", ".GIF", ".PNG" };
+
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter] public Guid CardId { get; set; }
@@ -50,7 +52,7 @@ namespace Harmony.Client.Shared.Modals
                     FileName = fileName,
                     Extension = extension,
                     CardId = CardId,
-                    Type = AttachmentType.CardImage
+                    Type = GetAttachmentType(extension)
                 };
 
                 var result = await _fileManager.UploadFile(request);
@@ -64,6 +66,12 @@ namespace Harmony.Client.Shared.Modals
 
                 _card.UploadingAttachment = false;
             }
+        }
+
+        private AttachmentType GetAttachmentType(string extension)
+        {
+            return ImageExtensions.Contains(extension.ToUpperInvariant()) ?
+                AttachmentType.CardImage : AttachmentType.CardDocument;
         }
 
         private void Cancel()
