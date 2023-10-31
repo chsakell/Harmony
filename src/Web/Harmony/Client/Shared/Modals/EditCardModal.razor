@@ -172,7 +172,7 @@ else
                                                                     <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
                                                                 </CardHeaderContent>
                                                             </MudCardHeader>
-                                                            @if (activity.Type == CardActivityType.AttachmentAdded)
+                                                            @if (activity.Type == CardActivityType.ImageAttachmentAdded)
                                                         {
                                                             <MudCardMedia Image="@activity.Url" Height="250" Class="mt-4" />
                                                         }
@@ -193,8 +193,11 @@ else
                                                                     case CardActivityType.CheckListItemAdded:
                                                                         <MudIcon Icon="@Icons.Material.Filled.Checklist" Color="Color.Default" />
                                                                         break;
-                                                                    case CardActivityType.AttachmentAdded:
+                                                                    case CardActivityType.ImageAttachmentAdded:
                                                                         <MudIcon Icon="@Icons.Material.Filled.AttachFile" Color="Color.Default" />
+                                                                        break;
+                                                                    case CardActivityType.DocumentAttachmentAdded:
+                                                                        <MudIcon Icon="@Icons.Material.Filled.FileOpen" Color="Color.Default" />
                                                                         break;
                                                                     default:
                                                                         <MudIcon Icon="@Icons.Material.Filled.Update" Color="Color.Default" />

@@ -5,6 +5,7 @@ using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
+using Harmony.Application.Helpers;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
@@ -69,10 +70,14 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
             var dbResult = await _cardRepository.Update(card);
 
             if (dbResult > 0)
-            { 
+            {
+                var activityType = FileHelper.GetAttachmentType(command.Extension) == AttachmentType.CardImage ?
+                    CardActivityType.ImageAttachmentAdded : CardActivityType.DocumentAttachmentAdded;
+
                 await _cardActivityService.CreateActivity(card.Id, userId,
-                    CardActivityType.AttachmentAdded, card.DateUpdated.Value, 
-                    command.FileName, url: $"files/{attachment.Type.ToDescriptionString()}/{attachment.FileName}");
+                    activityType, card.DateUpdated.Value, 
+                    command.FileName, 
+                    url: $"files/{attachment.Type.ToDescriptionString()}/{attachment.FileName}");
             }
 
             var attachmentDto = _mapper.Map<AttachmentDto>(attachment);

@@ -68,7 +68,8 @@ namespace Harmony.Infrastructure.Services.Management
                 case CardActivityType.CheckListItemAdded:
                     activity.Activity = $"Added an item in <b>{extraInfo}</b>";
                     break;
-                case CardActivityType.AttachmentAdded:
+                case CardActivityType.ImageAttachmentAdded:
+                case CardActivityType.DocumentAttachmentAdded:
                     activity.Activity = $"Attached <b>{extraInfo}</b>";
                     break;
                 default:
