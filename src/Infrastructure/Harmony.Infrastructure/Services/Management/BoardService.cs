@@ -1,0 +1,112 @@
+﻿using Bogus.DataSets;
+using Dapper;
+using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Contracts.Services.Management;
+using Harmony.Domain.Entities;
+using Harmony.Persistence.DbContext;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Harmony.Infrastructure.Services.Management
+{
+    public class BoardService : IBoardService
+    {
+        private readonly IBoardRepository _boardRepository;
+        private readonly IBoardListRepository _boardListRepository;
+        private readonly ICardRepository _cardRepository;
+        private readonly string _connectionString;
+
+        public BoardService(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
+
+        public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList)
+        {
+            try
+            {
+                var query = "[dbo].[LoadBoard]";
+                var parameters = new DynamicParameters();
+                parameters.Add("@BoardId", boardId, DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@cardsPerList", maxCardsPerList, DbType.Int32, ParameterDirection.Input);
+
+                using (var connection = new SqlConnection(_connectionString))
+                using (var multi = await connection.QueryMultipleAsync(query, parameters, commandType: CommandType.StoredProcedure))
+                {
+                    var board = await multi.ReadSingleOrDefaultAsync<Board>();
+
+                    if(board != null)
+                    {
+                        var boardLists = (await multi.ReadAsync<BoardList>()).ToList();
+
+                        var cards = (await multi.ReadAsync<Card>()).ToList();
+
+                        var labels = (await multi.ReadAsync<Label>()).ToList();
+                        var cardLabels = (await multi.ReadAsync<CardLabel>()).ToList();
+                        var attachments = (await multi.ReadAsync<Attachment>()).ToList();
+                        var userCards = (await multi.ReadAsync<UserCard>()).ToList();
+
+                        foreach (var cardLabel in cardLabels)
+                        {
+                            cardLabel.Label = labels.FirstOrDefault(l => l.Id == cardLabel.LabelId);
+                        }
+
+                        foreach (var card in cards)
+                        {
+                            var cardsLabels = cardLabels.Where(cl => cl.CardId == card.Id).ToList();
+                            if(cardsLabels.Any())
+                            {
+                                card.Labels = new List<CardLabel>();
+
+                                foreach(var cardLabel in cardsLabels)
+                                {
+                                    card.Labels.Add(cardLabel);
+                                }
+                            }
+
+                            if(attachments.Any(a => a.CardId == card.Id))
+                            {
+                                card.Attachments = new List<Attachment>();
+                                card.Attachments.AddRange(attachments.Where(a => a.CardId == card.Id));
+                            }
+
+                            if(userCards.Any(uc => uc.CardId == card.Id))
+                            {
+                                card.Members = new List<UserCard>();
+                                card.Members.AddRange(userCards.Where(uc => uc.CardId == card.Id));
+                            }
+                        }
+
+                        board.Lists = new List<BoardList>();
+                        foreach(var boardList in boardLists)
+                        {
+                            boardList.Cards = new List<Card>();
+                            boardList.Cards.AddRange(cards.Where(card => card.BoardListId == boardList.Id));
+
+                            board.Lists.Add(boardList);
+                        }
+
+                        return board;
+                    }
+                    
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return new Board();
+        }
+    }
+}

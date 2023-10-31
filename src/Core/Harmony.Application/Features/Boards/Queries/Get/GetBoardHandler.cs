@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -15,6 +16,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetBoardsHandler> _localizer;
+        private readonly IBoardService _boardService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
@@ -22,6 +24,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
             IBoardListRepository boardListRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<GetBoardsHandler> localizer,
+            IBoardService boardService,
             IUserService userService,
             IMapper mapper)
         {
@@ -29,6 +32,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
             _boardListRepository = boardListRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
+            _boardService = boardService;
             _userService = userService;
             _mapper = mapper;
         }
@@ -50,7 +54,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Board doesn't exist"]);
             }
 
-            var userBoard = await _boardRepository.LoadBoard(request.BoardId, request.MaxCardsPerList);
+            var userBoard = await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList);
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);
 

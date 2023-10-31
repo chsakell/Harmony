@@ -200,6 +200,7 @@ namespace Harmony.Client.Pages.Management
                 cardDto.TotalItems = info.Item.TotalItems;
                 cardDto.TotalItemsCompleted = info.Item.TotalItemsCompleted;
                 cardDto.TotalAttachments = info.Item.TotalAttachments;
+                cardDto.Members = info.Item.Members;
 
                 KanbanStore.MoveCard(cardDto, currentListId, moveToListId, newPosition);
 
