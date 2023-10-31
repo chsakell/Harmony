@@ -190,7 +190,7 @@ namespace Harmony.Infrastructure.Seed
         {
             var labels = await _boardLabelRepository.GetLabels(boardId);
 
-            for (var i = 0; i< 10; i++ )
+            for (var i = 0; i< 5; i++ )
             {
                 var lorem = new Bogus.DataSets.Lorem(locale: "en");
                 var faker = new Faker(locale: "en");
@@ -206,7 +206,7 @@ namespace Harmony.Infrastructure.Seed
                     });
                 }
 
-                var randomLabels = faker.PickRandom(labels, 3);
+                var randomLabels = faker.PickRandom(labels, 2);
                 var cardLabels = new List<CardLabel>();
 
                 foreach (var label in randomLabels)
@@ -223,7 +223,7 @@ namespace Harmony.Infrastructure.Seed
                 {
                     BoardListId = boardListId,
                     UserId= faker.PickRandom(_boardUsers),
-                    Title = string.Join(" ", lorem.Words(6)),
+                    Title = string.Join(" ", lorem.Words(3)),
                     Description = lorem.Sentences(),
                     StartDate = faker.Date.Between(DateTime.Now.AddDays(-100), DateTime.Now),
                     DueDate = faker.Date.Between(DateTime.Now, DateTime.Now.AddDays(30)),
