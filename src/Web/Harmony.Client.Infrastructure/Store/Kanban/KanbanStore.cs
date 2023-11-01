@@ -268,5 +268,18 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 card.Members.Add(cardMember);
             }
         }
+
+        public void ReduceCardProgress(Guid cardId, int totalItems, int totalItemsCompleted)
+        {
+            var card = _board.Lists
+                .SelectMany(l => l.Cards)
+                .FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.TotalItems -= totalItems;
+                card.TotalItemsCompleted -= totalItemsCompleted;
+            }
+        }
     }
 }

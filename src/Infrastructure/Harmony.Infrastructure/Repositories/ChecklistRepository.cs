@@ -14,12 +14,36 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
-		public async Task<CheckList?> Get(Guid ChecklistId)
+		public async Task<CheckList?> Get(Guid checklistId)
 		{
-			return await _context.CheckLists.FirstOrDefaultAsync(Checklist => Checklist.Id == ChecklistId);
+			return await _context.CheckLists
+                .FirstOrDefaultAsync(Checklist => Checklist.Id == checklistId);
 		}
 
-		public async Task<int> CreateAsync(CheckList checklist)
+        public async Task<CheckList?> GetWithItems(Guid checklistId)
+        {
+            return await _context.CheckLists
+                .Include(Checklist => Checklist.Items)
+                .FirstOrDefaultAsync(Checklist => Checklist.Id == checklistId);
+        }
+
+        public async Task<Guid> GetBoardId(Guid checklistId)
+        {
+            return await _context.CheckLists
+                .Include(c => c.Card)
+                    .ThenInclude(c => c.BoardList)
+                    .Where(c => c.Id == checklistId)
+                    .Select(checkList => checkList.Card.BoardList.BoardId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<CheckList?> GetWithCard(Guid ChecklistId)
+        {
+            return await _context.CheckLists.Include(c => c.Card)
+                .FirstOrDefaultAsync(Checklist => Checklist.Id == ChecklistId);
+        }
+
+        public async Task<int> CreateAsync(CheckList checklist)
 		{
 			_context.CheckLists.Add(checklist);
 

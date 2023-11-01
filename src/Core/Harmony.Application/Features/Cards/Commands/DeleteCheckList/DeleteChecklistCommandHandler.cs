@@ -8,6 +8,7 @@ using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
+using Harmony.Application.Contracts.Services.Hubs;
 
 namespace Harmony.Application.Features.Cards.Commands.DeleteChecklist
 {
@@ -16,18 +17,21 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteChecklist
         private readonly ICheckListRepository _checklistRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardActivityService _cardActivityService;
+        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IStringLocalizer<DeleteChecklistCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public DeleteChecklistCommandHandler(ICheckListRepository checklistRepository,
             ICurrentUserService currentUserService,
             ICardActivityService cardActivityService,
+            IHubClientNotifierService hubClientNotifierService,
             IStringLocalizer<DeleteChecklistCommandHandler> localizer,
             IMapper mapper)
         {
             _checklistRepository = checklistRepository;
             _currentUserService = currentUserService;
             _cardActivityService = cardActivityService;
+            _hubClientNotifierService = hubClientNotifierService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -40,17 +44,24 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteChecklist
                 return await Result<bool>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var checkList = await _checklistRepository.Get(request.CheckListId);
+            var checkList = await _checklistRepository.GetWithItems(request.CheckListId);
 
             if (checkList == null)
             {
                 return await Result<bool>.FailAsync(_localizer["Check List doesn't exist"]);
             }
 
+            var totalItems = checkList.Items.Count;
+            var totalItemsCompleted = checkList.Items.Where(i => i.IsChecked).Count();
+
+            var boardId = await _checklistRepository.GetBoardId(checkList.Id);
+
             var dbResult = await _checklistRepository.Delete(checkList);
 
             if (dbResult > 0)
             {
+                await _hubClientNotifierService.RemoveCheckList(boardId, checkList.Id, checkList.CardId, totalItems, totalItemsCompleted);
+
                 return await Result<bool>.SuccessAsync(true, _localizer["Check List deleted successfully"]);
             }
 

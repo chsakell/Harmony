@@ -29,5 +29,6 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 		void RemoveCardLabel(Guid labelId);
 		void ReorderLists(Dictionary<Guid, short> listPositions);
 		void AddCardMember(Guid cardId, CardMemberDto cardMember);
+		void ReduceCardProgress(Guid cardId, int totalItems, int totalItemsCompleted);
     }
 }

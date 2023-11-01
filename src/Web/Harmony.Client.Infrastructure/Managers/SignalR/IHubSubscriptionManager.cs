@@ -27,6 +27,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         event EventHandler<CardItemCheckedEvent> OnCardItemChecked;
         event EventHandler<CardLabelRemovedEvent> OnCardLabelRemoved;
         event EventHandler<CardMemberAddedEvent> OnCardMemberAdded;
+        event EventHandler<CheckListRemovedEvent> OnCheckListRemoved;
 
         #endregion
     }

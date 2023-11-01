@@ -53,9 +53,16 @@ namespace Harmony.Client.Pages.Management
                 _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
                 _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
                 _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
+                _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
             }
+        }
+
+        private void OnCheckListRemoved(object? sender, CheckListRemovedEvent e)
+        {
+            KanbanStore.ReduceCardProgress(e.CardId, e.TotalItems, e.TotalItemsCompleted);
+            _dropContainer.Refresh();
         }
 
         private void OnCardMemberAdded(object? sender, CardMemberAddedEvent e)

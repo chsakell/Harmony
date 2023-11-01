@@ -7,6 +7,7 @@ using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.SignalR;
 using static Harmony.Application.Events.BoardListArchivedEvent;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Server.Services
 {
@@ -108,6 +109,13 @@ namespace Harmony.Server.Services
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardMemberAdded,
                     new CardMemberAddedEvent(cardId, cardMember));
+        }
+
+        public async Task RemoveCheckList(Guid boardId, Guid checkListId, Guid cardId, int totalItems, int totalItemsCompleted)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCheckListRemoved,
+                    new CheckListRemovedEvent(checkListId, cardId, totalItems, totalItemsCompleted));
         }
     }
 }
