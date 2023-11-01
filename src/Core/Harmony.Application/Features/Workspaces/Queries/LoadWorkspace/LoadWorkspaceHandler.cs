@@ -2,13 +2,14 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.DTO;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
 {
-    public class LoadWorkspaceHandler : IRequestHandler<LoadWorkspaceQuery, IResult<List<LoadWorkspaceResponse>>>
+    public class LoadWorkspaceHandler : IRequestHandler<LoadWorkspaceQuery, IResult<LoadWorkspaceResponse>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
@@ -32,20 +33,25 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
             _mapper = mapper;
         }
 
-        public async Task<IResult<List<LoadWorkspaceResponse>>> Handle(LoadWorkspaceQuery request, CancellationToken cancellationToken)
+        public async Task<IResult<LoadWorkspaceResponse>> Handle(LoadWorkspaceQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<List<LoadWorkspaceResponse>>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<LoadWorkspaceResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var userBoards = await _boardService.GetUserBoards(request.WorkspaceId, userId);
 
-            var result = _mapper.Map<List<LoadWorkspaceResponse>>(userBoards);
+            var boards = _mapper.Map<List<BoardDto>>(userBoards);
 
-            return await Result<List<LoadWorkspaceResponse>>.SuccessAsync(result);
+            var result = new LoadWorkspaceResponse()
+            {
+                Boards = boards
+            };
+
+            return await Result<LoadWorkspaceResponse>.SuccessAsync(result);
         }
     }
 }

@@ -7,22 +7,30 @@
 }
 else
 {
-    <div class="d-flex flex-wrap flex-grow-1 gap-4">
-        <MudPaper Outlined="true" Class="border-dashed cursor-pointer pa-4"
-        @onclick="OpenCreateBoardModal">
-            <MudText Typo="Typo.h4">Create board</MudText>
-        </MudPaper>
-        <MudDivider />
+    <MudGrid>
         @foreach (var board in _userBoards)
         {
-            <MudItem xs="12" md="4" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
+            <MudItem xs="12" sm="6" md="4" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
                 <MudCard>
+                    <MudCardHeader Class="pb-0">
+                        <CardHeaderContent>
+                            <MudStack>
+                                <MudText Typo="Typo.h5">@board.Title</MudText>
+                            </MudStack>
+                            
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudTooltip Text="Visibility">
+                                <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
+                            </MudTooltip>
+                        </CardHeaderActions>
+                    </MudCardHeader>
                     <MudCardContent>
-                        <MudText>@board.Title</MudText>
-                        <MudText Typo="Typo.body2">@board.Description</MudText>
+                        <MudText Typo="Typo.h6">@board.Description</MudText>
+                        <MudDivider />
                     </MudCardContent>
                 </MudCard>
             </MudItem>
         }
-    </div>
+    </MudGrid>
 }

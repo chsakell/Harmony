@@ -19,7 +19,7 @@ namespace Harmony.Application.Mappings.Management
             CreateMap<Workspace, WorkspaceDto>().ReverseMap();
             CreateMap<UserResponse, UserWorkspaceResponse>();
 
-            CreateMap<Board, LoadWorkspaceResponse>().ReverseMap();
+            CreateMap<Board, BoardDto>().ReverseMap();
 			CreateMap<Board, GetBoardResponse>();
             CreateMap<Board, GetWorkspaceBoardResponse>()
                 .ForMember(dto => dto.TotalUsers, opt =>

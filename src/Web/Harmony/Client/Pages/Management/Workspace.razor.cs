@@ -1,7 +1,9 @@
-﻿using Harmony.Application.Events;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Events;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -16,7 +18,7 @@ namespace Harmony.Client.Pages.Management
         [Parameter]
         public string Name { get; set; }
 
-        private List<LoadWorkspaceResponse> _userBoards = new List<LoadWorkspaceResponse>();
+        private List<BoardDto> _userBoards = new List<BoardDto>();
         private bool _userBoardsLoading;
 
         protected override void OnInitialized()
@@ -28,7 +30,7 @@ namespace Harmony.Client.Pages.Management
         {
             if (e.WorkspaceId.Equals(Id))
             {
-                _userBoards.Add(new LoadWorkspaceResponse()
+                _userBoards.Add(new BoardDto()
                 {
                     Description = e.Description,
                     Title = e.Title,
@@ -58,7 +60,18 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private void NavigateToBoard(LoadWorkspaceResponse board)
+        private Color GetVisibilityColor(BoardVisibility visibility)
+        {
+            return visibility switch
+            {
+                BoardVisibility.Private => Color.Error,
+                BoardVisibility.Public => Color.Success,
+                BoardVisibility.Workspace => Color.Info,
+                _ => Color.Info,
+            };
+        }
+
+        private void NavigateToBoard(BoardDto board)
         {
             var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
@@ -74,7 +87,7 @@ namespace Harmony.Client.Pages.Management
             if (result.Succeeded)
             {
                 await _workspaceManager.SelectWorkspace(Guid.Parse(Id));
-                _userBoards = result.Data;
+                _userBoards = result.Data.Boards;
             }
 
             _userBoardsLoading = false;

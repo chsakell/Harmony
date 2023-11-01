@@ -73,10 +73,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<List<WorkspaceDto>>();
         }
 
-        public async Task<IResult<List<LoadWorkspaceResponse>>> LoadWorkspaceAsync(string workspaceId)
+        public async Task<IResult<LoadWorkspaceResponse>> LoadWorkspaceAsync(string workspaceId)
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Get(workspaceId));
-            return await response.ToResult<List<LoadWorkspaceResponse>>();
+            return await response.ToResult<LoadWorkspaceResponse>();
         }
 
         public async Task<IResult<List<GetWorkspaceBoardResponse>>> GetWorkspaceBoards(string workspaceId)
