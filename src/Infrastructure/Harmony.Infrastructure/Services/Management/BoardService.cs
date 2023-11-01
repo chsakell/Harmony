@@ -54,10 +54,17 @@ namespace Harmony.Infrastructure.Services.Management
                         var cardLabels = (await multi.ReadAsync<CardLabel>()).ToList();
                         var attachments = (await multi.ReadAsync<Attachment>()).ToList();
                         var userCards = (await multi.ReadAsync<UserCard>()).ToList();
+                        var checkLists = (await multi.ReadAsync<CheckList>()).ToList();
+                        var checkListItems = (await multi.ReadAsync<CheckListItem>()).ToList();
 
                         foreach (var cardLabel in cardLabels)
                         {
                             cardLabel.Label = labels.FirstOrDefault(l => l.Id == cardLabel.LabelId);
+                        }
+
+                        foreach(var checkList  in checkLists)
+                        {
+                            checkList.Items = checkListItems.Where(i => i.CheckListId == checkList.Id).ToList();
                         }
 
                         foreach (var card in cards)
@@ -66,7 +73,6 @@ namespace Harmony.Infrastructure.Services.Management
                             if(cardsLabels.Any())
                             {
                                 card.Labels = new List<CardLabel>();
-
                                 foreach(var cardLabel in cardsLabels)
                                 {
                                     card.Labels.Add(cardLabel);
@@ -84,6 +90,8 @@ namespace Harmony.Infrastructure.Services.Management
                                 card.Members = new List<UserCard>();
                                 card.Members.AddRange(userCards.Where(uc => uc.CardId == card.Id));
                             }
+
+                            card.CheckLists = checkLists.Where(l => l.CardId == card.Id).ToList();
                         }
 
                         board.Lists = new List<BoardList>();

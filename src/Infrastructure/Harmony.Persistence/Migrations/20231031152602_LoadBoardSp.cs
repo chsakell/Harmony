@@ -76,6 +76,12 @@ BEGIN
 	select * from Attachments where CardId in (Select id from @cards) order by DateCreated
 
 	select * from UserCards where CardId in (Select id from @cards) 
+
+	select * from CheckLists where CardId in (select id from @cards) order by CardId, position
+
+	select * from CheckListItems 
+	where CheckListId in (select Id from CheckLists where CardId in (select id from @cards))
+	order by CheckListId, Position
 END
 GO");
         }
