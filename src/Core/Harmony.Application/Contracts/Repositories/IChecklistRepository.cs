@@ -9,5 +9,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<List<CheckList>> GetCardCheckLists(Guid cardId);
         Task<int> Update(CheckList checklist);
         Task<int> CountCardCheckLists(Guid cardId);
+        Task<int> Delete(CheckList checklist);
     }
 }

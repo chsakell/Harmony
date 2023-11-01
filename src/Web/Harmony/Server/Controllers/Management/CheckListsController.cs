@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
+using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> UpdateTitle(Guid id, UpdateCheckListTitleCommand command)
         {
             return Ok(await _mediator.Send(command));
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            return Ok(await _mediator.Send(new DeleteCheckListCommand(id)));
         }
     }
 }

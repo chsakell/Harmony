@@ -90,11 +90,16 @@ else
                                         <MudCard>
                                             <MudCardHeader>
                                                 <CardHeaderContent>
-                                                    <EditableTextField For="@(() => checkList.Title)"
-                                                                       AdornmentIcon="@Icons.Material.Filled.Checklist"
-                                                                       OnSave="(text) => SaveCheckListTitle(checkList.Id, text)"
-                                                                       Text="@checkList.Title" Label="@_localizer["Title"]" />
+                                                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                                        <EditableTextField Style="width:100%" For="@(() => checkList.Title)"
+                                                                           AdornmentIcon="@Icons.Material.Filled.Checklist"
+                                                                           OnSave="(text) => SaveCheckListTitle(checkList.Id, text)"
+                                                                           Text="@checkList.Title" Label="@_localizer["Title"]" />
+                                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"
+                                                            OnClick="() => DeleteCheckList(checkList.Id)" Size="Size.Small" Class="align-end" Style="padding-bottom:8px;"></MudIconButton>
+                                                    </MudStack>
                                                     <MudProgressLinear Size="Size.Large" Color="checkList.ProgressColor" Value="checkList.TotalProgress" />
+
                                                 </CardHeaderContent>
                                             </MudCardHeader>
                                             <MudCardContent Class="pb-0">

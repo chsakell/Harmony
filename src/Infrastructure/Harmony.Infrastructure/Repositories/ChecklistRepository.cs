@@ -33,6 +33,13 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.SaveChangesAsync();
 		}
 
+        public async Task<int> Delete(CheckList checklist)
+        {
+            _context.CheckLists.Remove(checklist);
+
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task<List<CheckList>> GetCardCheckLists(Guid cardId)
         {
             return await _context.CheckLists

@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
+using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
@@ -68,7 +69,37 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
-        
+        private async Task DeleteCheckList(Guid checkListId)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to delete this checklist? " +
+                $"You won't be able to restore its items" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var command = new DeleteCheckListCommand(checkListId);
+                var result = await _checkListManager.DeleteCheckListAsync(command);
+
+                if (result.Succeeded && result.Data)
+                {
+                    var checkList = _card.CheckLists.FirstOrDefault(x => x.Id == checkListId);
+
+                    if (checkList != null)
+                    {
+                        _card.CheckLists.Remove(checkList);
+                    }
+                }
+
+                DisplayMessage(result);
+            }
+        }
 
         private void Cancel()
         {
