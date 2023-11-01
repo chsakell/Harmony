@@ -119,32 +119,32 @@ else
                         }
                     </MudCardContent>
                     <MudCardActions Class=" pa-0 pt-2">
-                        <MudPaper Class="d-flex justify-start flex-grow-1 gap-2" Elevation="0">
+                        <MudPaper Class="d-flex flex-wrap justify-start align-center flex-grow-1 gap-x-4 gap-y-4" Elevation="0">
 
                             @if (context.TotalItems > 0)
                             {
                                 <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
-                                          Overlap="true" Dot="false" Bordered="true" Icon="@Icons.Material.Filled.Checklist">
-                                    <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
+                                          Overlap="false" Dot="false" BadgeClass="small-badge" Bordered="false" Icon="@Icons.Material.Filled.Checklist">
+                                    <MudText Style="font-size:12px" Color="Color.Default">@context.TotalItemsCompleted / @context.TotalItems</MudText>
                                 </MudBadge>
                             }
                             @if (context.TotalAttachments > 0)
                             {
                                 <MudBadge Origin="Origin.TopRight" Content="context.TotalAttachments"
                                           Overlap="true" Dot="false" Bordered="true" Color="Color.Primary">
-                                    <MudIcon Icon="@Icons.Material.Filled.Attachment" Color="Color.Default" Size="Size.Medium" />
+                                    <MudIcon Icon="@Icons.Material.Filled.Attachment" Color="Color.Default" Size="Size.Small" />
                                 </MudBadge>
                             }
                             @if (context.StartDate != null || context.DueDate != null)
                             {
                                 <MudBadge Origin="Origin.TopRight" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Info)"
-                                          Overlap="true" Dot="false" Bordered="false" Icon="@Icons.Material.Filled.DateRange">
-                                    <MudChip Size="Size.Small" Label="true" Color="Color.Default" Style="color:black;">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
+                                          Overlap="false" Dot="false" Bordered="false" Icon="@Icons.Material.Filled.DateRange">
+                                    <MudText Style="font-size:12px" Color="Color.Default">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudText>
                                 </MudBadge>
                             }
                             @if (context.Members.Any())
                             {
-                                <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
+                                <MudAvatarGroup Max="2" Spacing="2" MaxColor="Color.Primary" MaxSize="Size.Small">
                                     @foreach (var member in context.Members)
                                     {
                                         <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
