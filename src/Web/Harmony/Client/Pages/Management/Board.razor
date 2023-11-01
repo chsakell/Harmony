@@ -53,8 +53,7 @@ else
                                   Style="height:calc(100vh - 200px);overflow:auto"
                                   Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
                             <MudToolBar DisableGutters="true">
-                                <EditableTextField For="@(() => item.Title)"
-                                                   OnEdit="(editing) => item.TitleEditing = editing"
+                                <EditableTextField For="@(() => item.Title)" OnEdit="(editing) => item.TitleEditing = editing"
                                                    OnSave="(text) => SaveBoardListTitle(item.Id, text)"
                                                    Text="@item.Title" />
                                 <MudSpacer />
