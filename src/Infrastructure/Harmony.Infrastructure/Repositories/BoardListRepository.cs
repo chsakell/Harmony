@@ -14,7 +14,9 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
-		public async Task<int> CountActiveLists(Guid boardId)
+        public IQueryable<BoardList> Entities => _context.Set<BoardList>();
+
+        public async Task<int> CountActiveLists(Guid boardId)
 		{
 			return await _context.BoardLists
                 .Where(bl => bl.BoardId == boardId 

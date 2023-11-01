@@ -8,5 +8,6 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<List<CardActivityDto>> GetAsync(Guid cardId);
         Task CreateActivity(Guid cardId, string userId, CardActivityType type, 
             DateTime date, string extraInfo = null, string url = null);
+        Task<List<BoardActivityDto>> GetBoardsActivities(List<Guid> boardIds);
     }
 }

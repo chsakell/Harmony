@@ -112,7 +112,7 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public IQueryable<Board> GetUserBoards(Guid workspaceId, string userId)
+        public IQueryable<Board> GetUserBoardsQuery(Guid workspaceId, string userId)
         {
             var query = from UserBoard userBoard in _context.UserBoards
                         join board in _context.Boards on userBoard.BoardId equals board.Id

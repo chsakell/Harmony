@@ -4,6 +4,7 @@ namespace Harmony.Application.Contracts.Repositories
 {
     public interface IBoardListRepository
     {
+        IQueryable<BoardList> Entities { get; }
         Task<BoardList> Get(Guid boardListId);
         Task<List<BoardList>> GetBoardLists(Guid boardId);
         Task<int> CountActiveLists(Guid boardId);

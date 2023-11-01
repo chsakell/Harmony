@@ -15,6 +15,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IBoardService _boardService;
+        private readonly ICardActivityService _cardActivityService;
         private readonly IStringLocalizer<LoadWorkspaceHandler> _localizer;
         private readonly IMapper _mapper;
 
@@ -22,6 +23,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
             IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
             IBoardService boardService,
+            ICardActivityService cardActivityService,
             IStringLocalizer<LoadWorkspaceHandler> localizer,
             IMapper mapper)
         {
@@ -29,6 +31,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
             _boardService = boardService;
+            _cardActivityService = cardActivityService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -50,6 +53,12 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
             {
                 Boards = boards
             };
+
+            if(boards.Any())
+            {
+                result.Activities = await _cardActivityService
+                    .GetBoardsActivities(boards.Select(x => x.Id).ToList());
+            }
 
             return await Result<LoadWorkspaceResponse>.SuccessAsync(result);
         }

@@ -139,7 +139,7 @@ namespace Harmony.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public IQueryable<Board> GetUserWorkspaceBoards(Guid workspaceId, string userId)
+        public IQueryable<Board> GetUserWorkspaceBoardsQuery(Guid workspaceId, string userId)
         {
             var query = from UserWorkspace userWorkspace in _context.UserWorkspaces
                         join workspace in _context.Workspaces

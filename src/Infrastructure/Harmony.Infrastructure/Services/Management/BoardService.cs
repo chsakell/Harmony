@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
@@ -60,9 +61,9 @@ namespace Harmony.Infrastructure.Services.Management
         public async Task<List<Board>> GetUserBoards(Guid workspaceId, string userId)
         {
             var userWorkspaceBoardsQuery = _userWorkspaceRepository
-                    .GetUserWorkspaceBoards(workspaceId, userId);
+                    .GetUserWorkspaceBoardsQuery(workspaceId, userId);
 
-            var userBoardsQuery = _userBoardRepository.GetUserBoards(workspaceId, userId);
+            var userBoardsQuery = _userBoardRepository.GetUserBoardsQuery(workspaceId, userId);
 
             var result = await userWorkspaceBoardsQuery.Union(userBoardsQuery).Distinct().ToListAsync();
 

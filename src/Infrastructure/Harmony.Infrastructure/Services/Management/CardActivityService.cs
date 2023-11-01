@@ -12,12 +12,18 @@ namespace Harmony.Infrastructure.Services.Management
     public class CardActivityService : ICardActivityService
     {
         private readonly UserManager<HarmonyUser> _userManager;
+        private readonly ICardRepository _cardRepository;
+        private readonly IBoardListRepository _boardListRepository;
         private readonly ICardActivityRepository _cardActivityRepository;
 
         public CardActivityService(UserManager<HarmonyUser> userManager,
+            ICardRepository cardRepository,
+            IBoardListRepository boardListRepository,
             ICardActivityRepository cardActivityRepository)
         {
             _userManager = userManager;
+            _cardRepository = cardRepository;
+            _boardListRepository = boardListRepository;
             _cardActivityRepository = cardActivityRepository;
         }
 
@@ -83,6 +89,29 @@ namespace Harmony.Infrastructure.Services.Management
             }
 
             await _cardActivityRepository.CreateAsync(activity);
+        }
+
+        public async Task<List<BoardActivityDto>> GetBoardsActivities(List<Guid> boardIds)
+        {
+            var query = from cardActivity in _cardActivityRepository.Entities
+                        join card in _cardRepository.Entities on cardActivity.CardId equals card.Id
+                        join boardList in _boardListRepository.Entities on card.BoardListId equals boardList.Id
+                        join user in _userManager.Users on cardActivity.UserId equals user.Id
+                        where boardIds.Contains(boardList.BoardId)
+                        orderby boardList.BoardId, cardActivity.DateCreated
+                        select new BoardActivityDto
+                        {
+                            Id = cardActivity.Id,
+                            BoardId = boardList.BoardId,
+                            CardId = cardActivity.CardId,
+                            Activity = cardActivity.Activity,
+                            Actor = $"{user.FirstName} {user.LastName}",
+                            DateCreated = cardActivity.DateCreated,
+                            Type = cardActivity.Type,
+                            Url = cardActivity.Url,
+                        };
+
+            return await query.ToListAsync();
         }
     }
 }
