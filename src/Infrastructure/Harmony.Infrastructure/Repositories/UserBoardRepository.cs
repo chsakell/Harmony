@@ -111,5 +111,17 @@ namespace Harmony.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync();
         }
+
+        public IQueryable<Board> GetUserBoards(Guid workspaceId, string userId)
+        {
+            var query = from UserBoard userBoard in _context.UserBoards
+                        join board in _context.Boards on userBoard.BoardId equals board.Id
+                        join workspace in _context.Workspaces on board.WorkspaceId equals workspace.Id
+                        where userBoard.UserId == userId && workspace.Id == workspaceId 
+                            && (board.Visibility == Domain.Enums.BoardVisibility.Private || board.Visibility == Domain.Enums.BoardVisibility.Public)
+                        select board;
+
+            return query;
+        }
     }
 }

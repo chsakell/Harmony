@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
@@ -12,18 +13,21 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IBoardService _boardService;
         private readonly IStringLocalizer<LoadWorkspaceHandler> _localizer;
         private readonly IMapper _mapper;
 
         public LoadWorkspaceHandler(IWorkspaceRepository workspaceRepository,
             IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
+            IBoardService boardService,
             IStringLocalizer<LoadWorkspaceHandler> localizer,
             IMapper mapper)
         {
             _workspaceRepository = workspaceRepository;
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
+            _boardService = boardService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -37,7 +41,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
                 return await Result<List<LoadWorkspaceResponse>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var userBoards = await _userWorkspaceRepository.GetUserBoards(request.WorkspaceId, userId);
+            var userBoards = await _boardService.GetUserBoards(request.WorkspaceId, userId);
 
             var result = _mapper.Map<List<LoadWorkspaceResponse>>(userBoards);
 

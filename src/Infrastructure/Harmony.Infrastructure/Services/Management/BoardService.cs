@@ -57,6 +57,18 @@ namespace Harmony.Infrastructure.Services.Management
             return hasAccess;
         }
 
+        public async Task<List<Board>> GetUserBoards(Guid workspaceId, string userId)
+        {
+            var userWorkspaceBoardsQuery = _userWorkspaceRepository
+                    .GetUserWorkspaceBoards(workspaceId, userId);
+
+            var userBoardsQuery = _userBoardRepository.GetUserBoards(workspaceId, userId);
+
+            var result = await userWorkspaceBoardsQuery.Union(userBoardsQuery).Distinct().ToListAsync();
+
+            return result;
+        }
+
         public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList)
         {
             try
