@@ -54,6 +54,13 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Board doesn't exist"]);
             }
 
+            var userHasAccess = await _boardService.HasUserAccessToBoard(userId, request.BoardId);
+
+            if (!userHasAccess)
+            {
+                return await Result<GetBoardResponse>.FailAsync(_localizer["You are not authorized to view this board's content."], ResultCode.UnauthorisedAccess);
+            }
+
             var userBoard = await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList);
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);

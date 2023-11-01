@@ -21,13 +21,40 @@ namespace Harmony.Infrastructure.Services.Management
     public class BoardService : IBoardService
     {
         private readonly IBoardRepository _boardRepository;
-        private readonly IBoardListRepository _boardListRepository;
-        private readonly ICardRepository _cardRepository;
+        private readonly IUserBoardRepository _userBoardRepository;
+        private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly string _connectionString;
 
-        public BoardService(IConfiguration configuration)
+        public BoardService(IConfiguration configuration, IBoardRepository boardRepository,
+            IUserBoardRepository userBoardRepository, IUserWorkspaceRepository userWorkspaceRepository)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _boardRepository = boardRepository;
+            _userBoardRepository = userBoardRepository;
+            _userWorkspaceRepository = userWorkspaceRepository;
+        }
+
+        public async Task<bool> HasUserAccessToBoard(string userId, Guid boardId)
+        {
+            var board = await _boardRepository.GetAsync(boardId);
+            var hasAccess = false;
+
+            switch (board.Visibility)
+            {
+                case Domain.Enums.BoardVisibility.Private:
+                    var userBoard = await _userBoardRepository.GetBoardAccessMember(boardId, userId);
+                    hasAccess = userBoard != null;
+                    break;
+                case Domain.Enums.BoardVisibility.Workspace:
+                    var userWorkspace = await _userWorkspaceRepository.GetUserWorkspace(board.WorkspaceId, userId);
+                    hasAccess = userWorkspace != null;
+                    break;
+                case Domain.Enums.BoardVisibility.Public:
+                    hasAccess = true;
+                    break;
+            }
+
+            return hasAccess;
         }
 
         public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList)
@@ -44,7 +71,7 @@ namespace Harmony.Infrastructure.Services.Management
                 {
                     var board = await multi.ReadSingleOrDefaultAsync<Board>();
 
-                    if(board != null)
+                    if (board != null)
                     {
                         var boardLists = (await multi.ReadAsync<BoardList>()).ToList();
 
@@ -62,7 +89,7 @@ namespace Harmony.Infrastructure.Services.Management
                             cardLabel.Label = labels.FirstOrDefault(l => l.Id == cardLabel.LabelId);
                         }
 
-                        foreach(var checkList  in checkLists)
+                        foreach (var checkList in checkLists)
                         {
                             checkList.Items = checkListItems.Where(i => i.CheckListId == checkList.Id).ToList();
                         }
@@ -70,22 +97,22 @@ namespace Harmony.Infrastructure.Services.Management
                         foreach (var card in cards)
                         {
                             var cardsLabels = cardLabels.Where(cl => cl.CardId == card.Id).ToList();
-                            if(cardsLabels.Any())
+                            if (cardsLabels.Any())
                             {
                                 card.Labels = new List<CardLabel>();
-                                foreach(var cardLabel in cardsLabels)
+                                foreach (var cardLabel in cardsLabels)
                                 {
                                     card.Labels.Add(cardLabel);
                                 }
                             }
 
-                            if(attachments.Any(a => a.CardId == card.Id))
+                            if (attachments.Any(a => a.CardId == card.Id))
                             {
                                 card.Attachments = new List<Attachment>();
                                 card.Attachments.AddRange(attachments.Where(a => a.CardId == card.Id));
                             }
 
-                            if(userCards.Any(uc => uc.CardId == card.Id))
+                            if (userCards.Any(uc => uc.CardId == card.Id))
                             {
                                 card.Members = new List<UserCard>();
                                 card.Members.AddRange(userCards.Where(uc => uc.CardId == card.Id));
@@ -95,7 +122,7 @@ namespace Harmony.Infrastructure.Services.Management
                         }
 
                         board.Lists = new List<BoardList>();
-                        foreach(var boardList in boardLists)
+                        foreach (var boardList in boardLists)
                         {
                             boardList.Cards = new List<Card>();
                             boardList.Cards.AddRange(cards.Where(card => card.BoardListId == boardList.Id));
@@ -105,7 +132,7 @@ namespace Harmony.Infrastructure.Services.Management
 
                         return board;
                     }
-                    
+
                 }
             }
             catch (Exception)

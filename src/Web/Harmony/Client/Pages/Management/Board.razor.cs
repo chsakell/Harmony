@@ -31,6 +31,7 @@ namespace Harmony.Client.Pages.Management
 
         private MudDropContainer<CardDto> _dropContainer;
         public bool CardDescriptionVisibility { get; set; }
+        private bool _unauthorisedAccess = false;
 
         protected async override Task OnInitializedAsync()
         {
@@ -56,6 +57,13 @@ namespace Harmony.Client.Pages.Management
                 _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
 
                 await _hubSubscriptionManager.ListenForBoardEvents(Id);
+            }
+            else
+            {
+                KanbanStore.SetLoading(false);
+                _unauthorisedAccess = result.Code == ResultCode.UnauthorisedAccess;
+
+                DisplayMessage(result);
             }
         }
 
@@ -168,7 +176,7 @@ namespace Harmony.Client.Pages.Management
             var result = await _boardManager
                 .GetBoardListCardsAsync(new LoadBoardListQuery(Guid.Parse(Id), listId, page, 15));
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 KanbanStore.UpdateBoardListCards(listId, result.Data);
                 _dropContainer.Refresh();

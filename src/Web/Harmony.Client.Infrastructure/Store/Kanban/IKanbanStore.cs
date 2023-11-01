@@ -8,7 +8,9 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 	{
 		GetBoardResponse Board { get; }
 		bool BoardLoading { get; }
-		public IEnumerable<BoardListDto> KanbanLists { get; }
+		void SetLoading(bool loading);
+
+        public IEnumerable<BoardListDto> KanbanLists { get; }
 		public IEnumerable<CardDto> KanbanCards { get; }
 		void LoadBoard(GetBoardResponse board);
 		void AddListToBoard(BoardListDto list);

@@ -53,7 +53,7 @@ namespace Harmony.Server.Extensions
 			services.AddScoped<ICardService, CardService>();
             services.AddScoped<IListService, ListService>();
             services.AddScoped<ICardActivityService, CardActivityService>();
-            services.AddSingleton<IBoardService, BoardService>();
+            services.AddScoped<IBoardService, BoardService>();
 			return services;
         }
 

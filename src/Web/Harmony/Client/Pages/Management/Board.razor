@@ -7,6 +7,10 @@
 {
     <Loader />
 }
+else if(_unauthorisedAccess)
+{
+    <UnauthorisedView Text="You are unauthorised to view this board's content." />
+}
 else
 {
     <MudPaper Elevation="25">

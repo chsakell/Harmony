@@ -1,0 +1,13 @@
+﻿<MudContainer Fixed="true" Class="flex align-center justify-center" Style="height: calc(100vh - 90px);">
+    <MudPaper Class="d-flex align-center justify-center" Style="height:100%;">
+        <MudStack Class="d-flex align-center justify-center">
+            <MudIcon Icon="@Icons.Material.Filled.Lock" Style="font-size: 15rem;" />
+            <MudAlert Severity="Severity.Error">@Text</MudAlert>
+        </MudStack>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+}

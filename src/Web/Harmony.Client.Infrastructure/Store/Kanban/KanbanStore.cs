@@ -21,6 +21,11 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             _boardLoading = false;
         }
 
+        public void SetLoading(bool loading)
+        {
+            _boardLoading = loading;
+        }
+
         public void AddListToBoard(BoardListDto list)
         {
             if (!_board.Lists.Any(l => l.Id == list.Id))

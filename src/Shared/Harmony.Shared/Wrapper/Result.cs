@@ -9,6 +9,7 @@
         public List<string> Messages { get; set; } = new List<string>();
 
         public bool Succeeded { get; set; }
+        public ResultCode Code { get; set; }
 
         public static IResult Fail()
         {
@@ -74,6 +75,11 @@
             return new Result<T> { Succeeded = false };
         }
 
+        public new static Result<T> Fail(string message, ResultCode code)
+        {
+            return new Result<T> { Succeeded = false, Messages = new List<string> { message }, Code = code };
+        }
+
         public new static Result<T> Fail(string message)
         {
             return new Result<T> { Succeeded = false, Messages = new List<string> { message } };
@@ -92,6 +98,11 @@
         public new static Task<Result<T>> FailAsync(string message)
         {
             return Task.FromResult(Fail(message));
+        }
+
+        public static Task<Result<T>> FailAsync(string message, ResultCode code)
+        {
+            return Task.FromResult(Fail(message, code));
         }
 
         public new static Task<Result<T>> FailAsync(List<string> messages)
