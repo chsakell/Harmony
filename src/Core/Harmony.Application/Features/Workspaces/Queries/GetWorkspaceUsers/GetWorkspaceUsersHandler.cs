@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -14,67 +15,39 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUserService _userService;
+        private readonly IMemberSearchService _memberSearchService;
         private readonly IStringLocalizer<GetWorkspaceUsersHandler> _localizer;
         private readonly IMapper _mapper;
 
         public GetWorkspaceUsersHandler(IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
             IUserService userService,
+            IMemberSearchService memberSearchService,
             IStringLocalizer<GetWorkspaceUsersHandler> localizer,
             IMapper mapper)
         {
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
             _userService = userService;
+            _memberSearchService = memberSearchService;
             _localizer = localizer;
             _mapper = mapper;
         }
 
         public async Task<PaginatedResult<UserWorkspaceResponse>> Handle(GetWorkspaceUsersQuery request, CancellationToken cancellationToken)
         {
-            var userId = _currentUserService.UserId;
-            Result<List<UserResponse>> users = null;
             request.PageNumber = request.PageNumber == 0 ? 1 : request.PageNumber;
             request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
-            var totalWorkspaceUsers = await _userWorkspaceRepository.CountWorkspaceUsers(request.WorkspaceId);
-            List<string> userIds = null;
+            
+            var totalWorkspaceUsers = request.MembersOnly ? 
+                await _userWorkspaceRepository.CountWorkspaceUsers(request.WorkspaceId) :
+                await _userService.GetCountAsync();
 
-            if (request.MembersOnly)
-            {
-                var totalUsersFound = await _userWorkspaceRepository
-                    .CountWorkspaceUsers(request.WorkspaceId, request.SearchTerm,
-                    request.PageNumber, request.PageSize);
+            var result = await _memberSearchService.SearchWorkspaceUsers(request.WorkspaceId,
+                request.MembersOnly, request.SearchTerm, request.PageNumber, request.PageSize);
 
-                var usersFound = await _userWorkspaceRepository
-                    .SearchWorkspaceUsers(request.WorkspaceId, request.SearchTerm, 
-                    request.PageNumber, request.PageSize);
-
-                return PaginatedResult<UserWorkspaceResponse>
-                .Success(usersFound, totalUsersFound, request.PageNumber, request.PageSize);
-            }
-            else
-            {
-                users = await _userService.Search(request.SearchTerm, 
-                            request.PageNumber, request.PageSize);
-
-                userIds = await _userWorkspaceRepository
-                    .FindWorkspaceUsers(request.WorkspaceId, users.Data.Select(u => u.Id).ToList());
-            }
-
-            var workspaceUsers = _mapper.Map<List<UserWorkspaceResponse>>(users.Data);
-
-            var result = PaginatedResult<UserWorkspaceResponse>
-                .Success(workspaceUsers, totalWorkspaceUsers, request.PageNumber, request.PageSize);
-
-            foreach (var user in workspaceUsers )
-            {
-                if(userIds.Contains(user.Id))
-                {
-                    user.IsMember = true;
-                }
-            }
-
-            return result;
+            return PaginatedResult<UserWorkspaceResponse>
+                .Success(result, totalWorkspaceUsers, request.PageNumber, request.PageSize);
         }
     }
 }

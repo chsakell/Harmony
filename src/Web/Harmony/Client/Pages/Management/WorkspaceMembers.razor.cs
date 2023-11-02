@@ -40,6 +40,13 @@ namespace Harmony.Client.Pages.Management
             };
         }
 
+        private async Task ToggleFilterMembers(bool isChecked)
+        {
+            _filterMembersOnly = isChecked;
+
+            await _table.ReloadServerData();
+        }
+
         private void OnSearch(string text)
         {
             _searchString = string.IsNullOrEmpty(text) ? null : text;

@@ -15,6 +15,8 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public IQueryable<UserWorkspace> Entities => _context.Set<UserWorkspace>();
+
         public async Task<List<string>> GetWorkspaceUsers(Guid workspaceId, int pageNumber, int pageSize)
         {
             return await _context.UserWorkspaces

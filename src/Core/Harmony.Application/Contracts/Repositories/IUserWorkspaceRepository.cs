@@ -5,6 +5,7 @@ namespace Harmony.Application.Contracts.Repositories
 {
     public interface IUserWorkspaceRepository
     {
+        IQueryable<UserWorkspace> Entities { get; }
         Task AddAsync(UserWorkspace userWorkspace);
         Task<int> CreateAsync(UserWorkspace userWorkspace);
         Task<int> CountWorkspaceUsers(Guid workspaceId);

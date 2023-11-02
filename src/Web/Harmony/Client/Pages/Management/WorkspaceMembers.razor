@@ -7,7 +7,7 @@
           ServerData="@(new Func<TableState, Task<TableData<UserWorkspaceResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
-            <MudCheckBox @bind-Checked="@_filterMembersOnly" Label="Members only"></MudCheckBox>
+            <MudCheckBox @bind-Checked:get="@_filterMembersOnly" @bind-Checked:set="ToggleFilterMembers" Label="Members only"></MudCheckBox>
         </div>
         <MudSpacer />
         <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search user.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>

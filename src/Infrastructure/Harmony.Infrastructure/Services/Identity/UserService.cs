@@ -112,22 +112,6 @@ namespace Harmony.Infrastructure.Services.Identity
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, RoleConstants.BasicRole);
-
-                    // TODO: Email
-                    //if (!request.AutoConfirmEmail)
-                    //{
-                    //    var verificationUri = await SendVerificationEmail(user, origin);
-                    //    var mailRequest = new MailRequest
-                    //    {
-                    //        From = "mail@codewithmukesh.com",
-                    //        To = user.Email,
-                    //        Body = string.Format("Please confirm your account by <a href='{0}'>clicking here</a>.", verificationUri),
-                    //        Subject = "Confirm Registration"
-                    //    };
-
-                    //    BackgroundJob.Enqueue(() => _mailService.SendAsync(mailRequest));
-                    //    return await Result<string>.SuccessAsync(user.Id, string.Format("User {0} Registered. Please check your Mailbox to verify!", user.UserName));
-                    //}
                     return await Result<string>.SuccessAsync(user.Id, string.Format("User {0} Registered.", user.UserName));
                 }
                 else
