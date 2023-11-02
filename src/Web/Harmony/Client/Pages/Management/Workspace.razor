@@ -74,9 +74,9 @@ else
                             TimelinePosition="TimelinePosition.Start" Reverse="false">
                                 @foreach(var activity in _boardActivities)
                                 {
-                                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
+                                    <MudTimelineItem Color="Color.Success" Variant="Variant.Outlined">
                                         <ItemContent>
-                                            <MudAlert Severity="Severity.Info"><b>@activity.Actor</b> @((MarkupString)activity.Activity)</MudAlert>
+                                            <MudAlert Severity="Severity.Normal"><b>@activity.Actor</b> @((MarkupString)activity.Activity)</MudAlert>
                                         </ItemContent>
                                         <ItemOpposite>
                                             <MudText Color="Color.Default">@activity.DateCreated.ToShortDateString()</MudText>

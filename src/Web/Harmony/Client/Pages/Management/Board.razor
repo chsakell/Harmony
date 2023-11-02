@@ -24,7 +24,7 @@ else
                 <MudToggleIconButton @bind-Toggled:get="@CardDescriptionVisibility"
                 @bind-Toggled:set="@ToggleCardDescriptionVisibility"
                                      Icon="@Icons.Material.Filled.VisibilityOff" Color="@Color.Error" Title="Off"
-                                     ToggledIcon="@Icons.Material.Filled.Visibility" ToggledColor="@Color.Success" ToggledTitle="On" />
+                                     ToggledIcon="@Icons.Material.Filled.Visibility" ToggledColor="@Color.Tertiary" ToggledTitle="On" />
             </MudTooltip>
             <MudSpacer />
             <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
@@ -159,7 +159,7 @@ else
                                     @if (context.TotalItems > 0)
                                     {
                                         <MudChip Icon="@Icons.Material.Filled.Checklist" Label="true"
-                                                 Size="Size.Small" Variant="Variant.Text" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Success : Color.Default)">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
+                                                 Size="Size.Small" Variant="Variant.Text" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Tertiary : Color.Default)">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
                                     }
                                     @if (context.TotalAttachments > 0)
                                     {
