@@ -19,6 +19,7 @@ namespace Harmony.Client.Pages.Management
         public string Name { get; set; }
 
         private List<BoardDto> _userBoards = new List<BoardDto>();
+        private List<BoardActivityDto> _boardActivities = new List<BoardActivityDto>();
         private bool _userBoardsLoading;
 
         protected override void OnInitialized()
@@ -88,6 +89,7 @@ namespace Harmony.Client.Pages.Management
             {
                 await _workspaceManager.SelectWorkspace(Guid.Parse(Id));
                 _userBoards = result.Data.Boards;
+                _boardActivities = result.Data.Activities;
             }
 
             _userBoardsLoading = false;

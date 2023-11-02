@@ -17,7 +17,6 @@ else
                             <MudStack>
                                 <MudText Typo="Typo.h5">@board.Title</MudText>
                             </MudStack>
-                            
                         </CardHeaderContent>
                         <CardHeaderActions>
                             <MudTooltip Text="Visibility">
@@ -28,6 +27,23 @@ else
                     <MudCardContent>
                         <MudText Typo="Typo.h6">@board.Description</MudText>
                         <MudDivider />
+                        @if (_boardActivities.Any())
+                        {
+                            <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" 
+                            TimelinePosition="TimelinePosition.Start" Reverse="false">
+                                @foreach(var activity in _boardActivities)
+                                {
+                                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
+                                        <ItemContent>
+                                            <MudAlert Severity="Severity.Info"><b>@activity.Actor</b> @((MarkupString)activity.Activity)</MudAlert>
+                                        </ItemContent>
+                                        <ItemOpposite>
+                                            <MudText Color="Color.Default">@activity.DateCreated.ToShortDateString()</MudText>
+                                        </ItemOpposite>
+                                    </MudTimelineItem>
+                                }
+                            </MudTimeline>
+                        }
                     </MudCardContent>
                 </MudCard>
             </MudItem>
