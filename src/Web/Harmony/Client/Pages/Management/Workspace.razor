@@ -5,6 +5,47 @@
 {
     <Loader />
 }
+else if(!_userBoards.Any())
+{
+    <MudContainer Class="mt-16">
+        <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Empty workspace :(</MudText>
+        <MudText Align="Align.Center">Looks like this workspace is currently empty. Here's a few suggestions to help you start with:.</MudText>
+        <MudGrid Class="mt-8 d-flex justify-center">
+            <MudItem xs="12" sm="6">
+                <MudCard Elevation="25" Class="rounded-lg pb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Align="Align.Center">@Name</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center">
+                            <MudText Typo="Typo.h5" Color="Color.Secondary">Add a board</MudText>
+                        </div>
+                        <MudList Class="mx-auto mt-4">
+                            <MudListItem Icon="@Icons.Material.Filled.Dashboard">
+                                Select <b>Create</b> -> <b>Create Board</b> and add a board to your workspace
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.List">
+                                Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Share">
+                                Share your board with your team members 
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Task">
+                                Add tasks to your lists and start monitor your project!
+                            </MudListItem>
+                        </MudList>
+                    </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;"
+                                   OnClick="OpenCreateBoardModal">Start Now</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+}
 else
 {
     <MudGrid>

@@ -2,13 +2,96 @@
 @using Harmony.Shared.Utilities;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Index> _localizer
 
-<PageTitle>@_localizer["Title"]</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<MudContainer Class="mt-16">
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Harmony</MudText>
+    <MudText Align="Align.Center">Welcome to the most promising <b>Project Management Tool</b> ever existed. Build as many workspaces, boards and soon Scrum projects as you wish!</MudText>
+    <MudGrid Class="mt-8">
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard Elevation="25" Class="rounded-lg pb-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">Workspaces</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center">
+                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Availble</MudText>
+                    </div>
+                    <MudList Class="mx-auto mt-4" Style="width:300px;">
+                        <MudListItem Icon="@Icons.Material.Filled.Workspaces">
+                            Create as many workspaces as you want
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Share">
+                            Share the workspace with registered users
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.AddTask">
+                            Start adding boards or scrum projects to your workspaces
+                        </MudListItem>
+                    </MudList>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard Elevation="25" Class="rounded-lg pb-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">Kanban boards</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center">
+                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Available</MudText>
+                    </div>
+                    <MudList Class="mx-auto mt-4" Style="width:300px;">
+                        <MudListItem Icon="@Icons.Material.Filled.ViewKanban">
+                            Build as many <b>Kanban</b> boards as you wish
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Share">
+                            Share your boards with your team members
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.List">
+                            Create, edit & assign lists and tasks
+                        </MudListItem>
+                    </MudList>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="4">
+            <MudCard Elevation="25" Class="rounded-lg pb-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">Scrum Projects</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center">
+                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Comming next</MudText>
+                    </div>
+                    <MudList Class="mx-auto mt-4" Style="width:300px;">
+                        <MudListItem Icon="@Icons.Material.Filled.Update">
+                            Be <b>agile</b> and create as many scrum projects as you wish
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Assignment">
+                            Create teams and assign projects to them
+                        </MudListItem>
+                        <MudListItem Icon="@Icons.Material.Filled.Monitor">
+                            Create iterations and monitor your team's progress
+                        </MudListItem>
+                    </MudList>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
 
 @code {
     protected override async Task OnInitializedAsync()
