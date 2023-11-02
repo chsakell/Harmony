@@ -33,14 +33,41 @@ else
     </MudPaper>
     @if (!KanbanStore.KanbanLists.Any())
     {
-        <div class="d-flex justify-center flex-grow-1 gap-4 mt-8">
-            <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
-                <MudText Typo="Typo.h4">Your board is empty :(</MudText>
-                <MudText Typo="Typo.h6">Start by adding new lists!</MudText>
-                <MudIcon Icon="@Icons.Material.Outlined.AddRoad" Style="height:500px;width:500px"></MudIcon>
-            </MudStack>
-
-        </div>
+        <MudContainer Class="mt-16">
+            <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Empty board :(</MudText>
+            <MudText Align="Align.Center">Looks like this board is currently empty. Here's a few suggestions to help you start with.</MudText>
+            <MudGrid Class="mt-8 d-flex justify-center">
+                <MudItem xs="12" sm="6">
+                    <MudCard Elevation="25" Class="rounded-lg pb-4">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h5" Align="Align.Center">@KanbanStore.Board.Title</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <div class="d-flex justify-center">
+                                <MudText Typo="Typo.h5" Color="Color.Secondary">Add lists</MudText>
+                            </div>
+                            <MudList Class="mx-auto mt-4">
+                                <MudListItem Icon="@Icons.Material.Filled.List">
+                                    Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
+                                </MudListItem>
+                                <MudListItem Icon="@Icons.Material.Filled.Share">
+                                    Click <b>Share board</b> find your team members and share your board with your team members
+                                </MudListItem>
+                                <MudListItem Icon="@Icons.Material.Filled.Task">
+                                    Add tasks to your lists and start monitor your project!
+                                </MudListItem>
+                            </MudList>
+                        </MudCardContent>
+                        <MudCardActions Class="d-flex justify-center">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" 
+                            Style="width:50%;" OnClick="OpenCreateBoardListModal">Start Now</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
     }
     else
     {
@@ -77,7 +104,7 @@ else
                                 <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
                                     <DataAnnotationsValidator />
                                     <MudPaper Elevation="25" Class="pa-2 rounded-lg mt-2">
-                                        <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Enter card's title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                        <MudTextField Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Card's title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
                                         <div class="d-flex justify-space-around flex-grow-1 gap-4">
                                             <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Default">Cancel</MudButton>
                                             <MudButton Disabled="item.CreateCard.Creating" ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Rounded.Save" Color="Color.Default">Create</MudButton>

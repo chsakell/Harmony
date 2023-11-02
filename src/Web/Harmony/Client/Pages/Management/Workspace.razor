@@ -9,7 +9,7 @@ else if(!_userBoards.Any())
 {
     <MudContainer Class="mt-16">
         <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Empty workspace :(</MudText>
-        <MudText Align="Align.Center">Looks like this workspace is currently empty. Here's a few suggestions to help you start with:.</MudText>
+        <MudText Align="Align.Center">Looks like this workspace is currently empty. Here's a few suggestions to help you start with.</MudText>
         <MudGrid Class="mt-8 d-flex justify-center">
             <MudItem xs="12" sm="6">
                 <MudCard Elevation="25" Class="rounded-lg pb-4">
@@ -68,7 +68,7 @@ else
                     <MudCardContent>
                         <MudText Typo="Typo.h6">@board.Description</MudText>
                         <MudDivider />
-                        @if (_boardActivities.Any())
+                        @if (_boardActivities != null && _boardActivities.Any())
                         {
                             <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" 
                             TimelinePosition="TimelinePosition.Start" Reverse="false">
