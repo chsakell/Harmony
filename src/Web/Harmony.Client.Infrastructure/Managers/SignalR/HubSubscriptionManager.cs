@@ -16,11 +16,18 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public async Task<HubConnection> StartAsync(NavigationManager navigationManager, ILocalStorageService localStorageService)
         {
             _hubConnection = _hubConnection.TryInitialize(navigationManager, localStorageService);
-            await _hubConnection.StartAsync();
+
+            if (_hubConnection.State == HubConnectionState.Disconnected)
+                await _hubConnection.StartAsync();
 
             HandleEvents();
 
             return _hubConnection;
+        }
+
+        public async Task StopAsync()
+        {
+            await _hubConnection.StopAsync();
         }
 
         #region Events

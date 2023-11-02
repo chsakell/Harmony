@@ -11,23 +11,27 @@ using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Shared.Storage;
+using Harmony.Client.Infrastructure.Managers.SignalR;
 
 namespace Harmony.Client.Infrastructure.Managers.Identity.Authentication
 {
     public class AuthenticationManager : IAuthenticationManager
     {
         private readonly HttpClient _httpClient;
+        private readonly IHubSubscriptionManager _subscriptionManager;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly IStringLocalizer<AuthenticationManager> _localizer;
 
         public AuthenticationManager(
             HttpClient httpClient,
+            IHubSubscriptionManager subscriptionManager,
             ILocalStorageService localStorage,
             AuthenticationStateProvider authenticationStateProvider,
             IStringLocalizer<AuthenticationManager> localizer)
         {
             _httpClient = httpClient;
+            _subscriptionManager = subscriptionManager;
             _localStorage = localStorage;
             _authenticationStateProvider = authenticationStateProvider;
             _localizer = localizer;
@@ -69,6 +73,7 @@ namespace Harmony.Client.Infrastructure.Managers.Identity.Authentication
 
         public async Task<IResult> Logout()
         {
+            await _subscriptionManager.StopAsync();
             await _localStorage.RemoveItemAsync(StorageConstants.Local.AuthToken);
             await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
             await _localStorage.RemoveItemAsync(StorageConstants.Local.UserImageURL);
