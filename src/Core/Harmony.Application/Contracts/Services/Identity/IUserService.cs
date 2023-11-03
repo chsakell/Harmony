@@ -7,6 +7,7 @@ namespace Harmony.Application.Contracts.Services.Identity
 {
     public interface IUserService
     {
+        Task<IResult<bool>> UpdateUserProfilePicture(string userId, string profilePicture);
         Task<Result<List<UserResponse>>> GetAllAsync();
         Task<Result<List<UserResponse>>> Search(string term);
         Task<Result<List<UserResponse>>> Search(string term, int pageNumber, int pageSize);

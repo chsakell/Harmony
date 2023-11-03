@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Cards.Commands.UploadFile;
+﻿using Harmony.Application.Features.Cards.Commands.UploadCardFile;
+using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -15,11 +16,18 @@ namespace Harmony.Client.Infrastructure.Managers.Content
             _client = client;
         }
 
-        public async Task<IResult<UploadFileResponse>> UploadFile(UploadFileCommand command)
+        public async Task<IResult<UploadCardFileResponse>> UploadFile(UploadCardFileCommand command)
         {
             var response = await _client.PostAsJsonAsync(Routes.FileEndpoints.Index, command);
 
-            return await response.ToResult<UploadFileResponse>();
+            return await response.ToResult<UploadCardFileResponse>();
+        }
+
+        public async Task<IResult<UploadProfilePictureResponse>> UploadProfilePicture(UploadProfilePictureCommand command)
+        {
+            var response = await _client.PostAsJsonAsync(Routes.FileEndpoints.ProfilePicture, command);
+
+            return await response.ToResult<UploadProfilePictureResponse>();
         }
     }
 }

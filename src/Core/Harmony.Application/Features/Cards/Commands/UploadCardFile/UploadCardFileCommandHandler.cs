@@ -13,9 +13,9 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Harmony.Application.Features.Cards.Commands.UploadFile
+namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 {
-    public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Result<UploadFileResponse>>
+    public class UploadCardFileCommandHandler : IRequestHandler<UploadCardFileCommand, Result<UploadCardFileResponse>>
     {
         private readonly IUploadService _uploadService;
         private readonly ICardActivityService _cardActivityService;
@@ -24,7 +24,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
         private readonly IMapper _mapper;
         private readonly ICardRepository _cardRepository;
 
-        public UploadFileCommandHandler(IUploadService uploadService,
+        public UploadCardFileCommandHandler(IUploadService uploadService,
             ICardActivityService cardActivityService,
             IHubClientNotifierService hubClientNotifierService,
             ICurrentUserService currentUserService,
@@ -39,7 +39,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
             _cardRepository = cardRepository;
         }
 
-        public async Task<Result<UploadFileResponse>> Handle(UploadFileCommand command, CancellationToken cancellationToken)
+        public async Task<Result<UploadCardFileResponse>> Handle(UploadCardFileCommand command, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
@@ -53,7 +53,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
 
             if (card == null)
             {
-                return Result<UploadFileResponse>.Fail("Card not found");
+                return Result<UploadCardFileResponse>.Fail("Card not found");
             }
 
             var newFileName = _uploadService.UploadAsync(command).Replace(@"\", "/");
@@ -75,8 +75,8 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
                     CardActivityType.ImageAttachmentAdded : CardActivityType.DocumentAttachmentAdded;
 
                 await _cardActivityService.CreateActivity(card.Id, userId,
-                    activityType, card.DateUpdated.Value, 
-                    command.FileName, 
+                    activityType, card.DateUpdated.Value,
+                    command.FileName,
                     url: $"files/{attachment.Type.ToDescriptionString()}/{attachment.FileName}");
             }
 
@@ -86,9 +86,9 @@ namespace Harmony.Application.Features.Cards.Commands.UploadFile
 
             await _hubClientNotifierService.AddCardAttachment(boardId, card.Id, attachmentDto);
 
-            var result = new UploadFileResponse(command.CardId, attachmentDto);
+            var result = new UploadCardFileResponse(command.CardId, attachmentDto);
 
-            return await Result<UploadFileResponse>.SuccessAsync(result, "File uploaded successfully.");
+            return await Result<UploadCardFileResponse>.SuccessAsync(result, "File uploaded successfully.");
         }
     }
 }

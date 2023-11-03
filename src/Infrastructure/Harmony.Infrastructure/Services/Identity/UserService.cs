@@ -37,6 +37,21 @@ namespace Harmony.Infrastructure.Services.Identity
             _roleManager = roleManager;
         }
 
+        public async Task<IResult<bool>> UpdateUserProfilePicture(string userId, string profilePicture) 
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return await Result<bool>.FailAsync("User Not Found");
+            }
+
+            user.ProfilePictureDataUrl = profilePicture;
+            var identityResult = await _userManager.UpdateAsync(user);
+            var errors = identityResult.Errors.Select(e => e.Description.ToString()).ToList();
+            return identityResult.Succeeded ? await Result<bool>.SuccessAsync(true) : await Result<bool>.FailAsync(errors);
+        }
+
         public async Task<Result<List<UserResponse>>> GetAllAsync()
         {
             var users = await _userManager.Users.ToListAsync();

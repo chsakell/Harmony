@@ -5,7 +5,7 @@ using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
-using Harmony.Application.Features.Cards.Commands.UploadFile;
+using Harmony.Application.Features.Cards.Commands.UploadCardFile;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
@@ -47,7 +47,7 @@ namespace Harmony.Client.Shared.Modals
                 var fileName = file.Name;
                 var buffer = new byte[file.Size];
                 await file.OpenReadStream(maxAllowedImageSize).ReadAsync(buffer);
-                var request = new UploadFileCommand
+                var request = new UploadCardFileCommand
                 {
                     Data = buffer,
                     FileName = fileName,

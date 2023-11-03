@@ -8,6 +8,9 @@ namespace Harmony.Domain.Enums
         CardImage,
 
         [Description(@"Cards/Documents")]
-        CardDocument
+        CardDocument,
+
+        [Description(@"Users/ProfilePictures")]
+        ProfilePicture
     }
 }
