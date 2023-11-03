@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using Harmony.Application.DTO;
+@using Harmony.Client.Shared.Modals;
 @using Harmony.Shared.Utilities;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Index> _localizer
 
@@ -15,7 +17,7 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <div class="d-flex justify-center">
-                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Availble</MudText>
+                        <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Available</MudText>
                     </div>
                     <MudList Class="mx-auto mt-4" Style="width:300px;">
                         <MudListItem Icon="@Icons.Material.Filled.Workspaces">
@@ -30,7 +32,9 @@
                     </MudList>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               OnClick="OpenCreateWorkspaceModal"
+                               Size="Size.Large" Style="width:50%;">Start Now</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -58,7 +62,8 @@
                     </MudList>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               OnClick="OpenCreateWorkspaceModal" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -86,7 +91,7 @@
                     </MudList>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
+                    <MudButton Disabled="true" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Start Now</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -103,5 +108,33 @@
             var slug = StringUtilities.SlugifyString(workspace.Name);
             _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
         }
+    }
+
+    private async Task OpenCreateWorkspaceModal()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+        var dialog = _dialogService.Show<CreateWorkspaceModal>(_localizer["Create Workspace"], parameters, options);
+
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var workspace = result.Data as WorkspaceDto;
+            if (workspace != null)
+            {
+                Navigate(workspace);
+            }
+        }
+    }
+
+    private void Navigate(WorkspaceDto workspace)
+    {
+        if (string.IsNullOrEmpty(workspace?.Name))
+        {
+            return;
+        }
+
+        var slug = StringUtilities.SlugifyString(workspace.Name);
+        _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
     }
 }

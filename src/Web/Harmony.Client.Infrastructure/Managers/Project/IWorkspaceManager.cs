@@ -16,7 +16,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task InitAsync();
         List<WorkspaceDto> UserWorkspaces { get; }
         WorkspaceDto SelectedWorkspace { get; }
-        Task<IResult<Guid>> CreateAsync(CreateWorkspaceCommand request);
+        Task<IResult<WorkspaceDto>> CreateAsync(CreateWorkspaceCommand request);
         Task SelectWorkspace(Guid id);
         Task<IResult<List<WorkspaceDto>>> GetAllAsync();
         Task<IResult<LoadWorkspaceResponse>> LoadWorkspaceAsync(string workspaceId);

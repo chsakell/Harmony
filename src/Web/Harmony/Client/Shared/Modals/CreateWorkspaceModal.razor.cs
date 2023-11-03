@@ -18,16 +18,17 @@ namespace Harmony.Client.Shared.Modals
         private async Task SubmitAsync()
         {
             _processing = true;
-            var response = await _workspaceManager.CreateAsync(_createWorkspaceModel);
+            var result = await _workspaceManager.CreateAsync(_createWorkspaceModel);
 
-            if (response.Succeeded)
+            if (result.Succeeded)
             {
-                _snackBar.Add(response.Messages[0], Severity.Success);
-                MudDialog.Close();
+                _snackBar.Add(result.Messages[0], Severity.Success);
+
+                MudDialog.Close(result.Data);
             }
             else
             {
-                foreach (var message in response.Messages)
+                foreach (var message in result.Messages)
                 {
                     _snackBar.Add(message, Severity.Error);
                 }

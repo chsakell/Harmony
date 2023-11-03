@@ -1,10 +1,11 @@
-﻿using Harmony.Shared.Wrapper;
+﻿using Harmony.Application.DTO;
+using Harmony.Shared.Wrapper;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Workspaces.Commands.Create
 {
-    public class CreateWorkspaceCommand : IRequest<Result<Guid>>
+    public class CreateWorkspaceCommand : IRequest<Result<WorkspaceDto>>
     {
         [Required]
         [MaxLength(50)]

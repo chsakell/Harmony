@@ -44,27 +44,21 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             _clientPreferenceManager = clientPreferenceManager;
         }
 
-        public async Task<IResult<Guid>> CreateAsync(CreateWorkspaceCommand request)
+        public async Task<IResult<WorkspaceDto>> CreateAsync(CreateWorkspaceCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.WorkspaceEndpoints.Index, request);
 
-            var result = await response.ToResult<Guid>();
+            var result = await response.ToResult<WorkspaceDto>();
 
             if(result.Succeeded)
             {
-                var workspace = new WorkspaceDto()
-                {
-                    Id = result.Data,
-                    Name = request.Name,
-                    Description = request.Description
-                };
 
-                UserWorkspaces.Add(workspace);
+                UserWorkspaces.Add(result.Data);
 
-                OnWorkspaceAdded?.Invoke(this, new WorkspaceAddedEvent(workspace));
+                OnWorkspaceAdded?.Invoke(this, new WorkspaceAddedEvent(result.Data));
             }
             
-            return await response.ToResult<Guid>();
+            return result;
         }
 
         public async Task<IResult<List<WorkspaceDto>>> GetAllAsync()

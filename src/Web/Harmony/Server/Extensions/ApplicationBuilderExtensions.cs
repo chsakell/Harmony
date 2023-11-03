@@ -1,6 +1,8 @@
 ﻿using Harmony.Application.Contracts.Persistence;
+using Harmony.Persistence.DbContext;
 using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
+using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Server.Extensions
 {
@@ -20,6 +22,11 @@ namespace Harmony.Server.Extensions
         internal static async Task<IApplicationBuilder> InitializeDatabase(this IApplicationBuilder app, Microsoft.Extensions.Configuration.IConfiguration _configuration)
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
+
+            var harmonyContext = serviceScope.ServiceProvider.GetRequiredService<HarmonyContext>();
+
+            harmonyContext.Database.Migrate();
+            await harmonyContext.Database.EnsureCreatedAsync();
 
             var initializers = serviceScope.ServiceProvider.GetServices<IDatabaseSeeder>();
 

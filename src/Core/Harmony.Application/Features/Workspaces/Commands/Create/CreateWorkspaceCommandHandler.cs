@@ -4,33 +4,38 @@ using MediatR;
 using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.DTO;
+using AutoMapper;
 
 namespace Harmony.Application.Features.Workspaces.Commands.Create
 {
-    public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceCommand, Result<Guid>>
+    public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceCommand, Result<WorkspaceDto>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
+        private readonly IMapper _mapper;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<CreateWorkspaceCommandHandler> _localizer;
 
         public CreateWorkspaceCommandHandler(IWorkspaceRepository workspaceRepository,
+            IMapper mapper,
             IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<CreateWorkspaceCommandHandler> localizer)
         {
             _workspaceRepository = workspaceRepository;
+            _mapper = mapper;
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
         }
-        public async Task<Result<Guid>> Handle(CreateWorkspaceCommand request, CancellationToken cancellationToken)
+        public async Task<Result<WorkspaceDto>> Handle(CreateWorkspaceCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if(string.IsNullOrEmpty(userId))
             {
-                return await Result<Guid>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<WorkspaceDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var workspace = new Workspace()
@@ -53,10 +58,12 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
 
             if (dbResult > 0)
             {
-                return await Result<Guid>.SuccessAsync(workspace.Id, _localizer["Workspace Created"]);
+                var result = _mapper.Map<WorkspaceDto>(workspace);
+
+                return await Result<WorkspaceDto>.SuccessAsync(result, _localizer["Workspace created"]);
             }
 
-            return await Result<Guid>.FailAsync(_localizer["Operation failed"]);
+            return await Result<WorkspaceDto>.FailAsync(_localizer["Operation failed"]);
         }
     }
 }
