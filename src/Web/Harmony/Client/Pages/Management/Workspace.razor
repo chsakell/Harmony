@@ -48,10 +48,10 @@ else if(!_userBoards.Any())
 }
 else
 {
-    <MudGrid>
+    <MudGrid Style="height: calc(100vh - 90px);overflow: auto;">
         @foreach (var board in _userBoards)
         {
-            <MudItem xs="12" sm="6" md="4" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
+            <MudItem xs="12" sm="6" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
                 <MudCard>
                     <MudCardHeader Class="pb-0">
                         <CardHeaderContent>
