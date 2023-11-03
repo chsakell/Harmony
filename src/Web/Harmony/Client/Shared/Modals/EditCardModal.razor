@@ -10,36 +10,41 @@ else
 {
     <MudDialog>
         <TitleContent>
-            <MudStack Row="true" Class="align-end">
-                <EditableTextField For="@(() => _card.Title)" Style="width:300px"
+            <MudStack>
+                <EditableTextField For="@(() => _card.Title)"
                                    AdornmentIcon="@Icons.Material.Filled.Edit"
                                    OnSave="(newTitle) => SaveTitle(newTitle)"
                                    Text="@_card.Title" Label="@_localizer["Title"]" />
-                @if (_card.StartDate != null || _card.DueDate != null)
-                {
-                    <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(_card.StartDate, _card.DueDate)</MudChip>
-                }
-                @if (_card.Members.Any())
-                {
-                    <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
-                        @foreach (var member in _card.Members)
-                        {
-                            <MudAvatar Size="Size.Medium" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
-                        }
-                    </MudAvatarGroup>
-                }
-                @if (_card.Labels.Any())
-                {
-                    <MudPaper Class="d-flex flex-wrap" MaxWidth="200px" Elevation="0">
-                        @foreach (var label in _card.Labels)
-                        {
-                            <MudTooltip Text="@label.Title">
-                                <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
-                                          Height="10px" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
-                            </MudTooltip>
-                        }
-                    </MudPaper>
-                }
+                <MudStack Row="true">
+                    @if (_card.StartDate != null || _card.DueDate != null)
+                    {
+                        <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(_card.StartDate, _card.DueDate)</MudChip>
+                    }
+                    @if (_card.Members.Any())
+                    {
+                        <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
+                            @foreach (var member in _card.Members)
+                            {
+                                <MudTooltip Text="@member.FullName">
+                                    <MudAvatar Size="Size.Medium" Color="Color.Info">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                </MudTooltip>
+                            }
+                        </MudAvatarGroup>
+                    }
+                    @if (_card.Labels.Any())
+                    {
+                        <MudPaper Class="d-flex flex-wrap" MaxWidth="200px" Elevation="0">
+                            @foreach (var label in _card.Labels)
+                            {
+                                <MudTooltip Text="@label.Title">
+                                    <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
+                                              Height="10px" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
+                                </MudTooltip>
+                            }
+                        </MudPaper>
+                    }
+                </MudStack>
+
             </MudStack>
 
         </TitleContent>
@@ -96,7 +101,7 @@ else
                                                                            OnSave="(text) => SaveCheckListTitle(checkList.Id, text)"
                                                                            Text="@checkList.Title" Label="@_localizer["Title"]" />
                                                         <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"
-                                                            OnClick="() => DeleteCheckList(checkList.Id)" Size="Size.Small" Class="align-end" Style="padding-bottom:8px;"></MudIconButton>
+                                                                       OnClick="() => DeleteCheckList(checkList.Id)" Size="Size.Small" Class="align-end" Style="padding-bottom:8px;"></MudIconButton>
                                                     </MudStack>
                                                     <MudProgressLinear Size="Size.Large" Color="checkList.ProgressColor" Value="checkList.TotalProgress" />
 

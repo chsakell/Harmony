@@ -177,8 +177,6 @@ namespace Harmony.Client.Shared.Modals
             var response = await _cardManager
                 .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription));
 
-            _card.Description = cardDescription;
-
             DisplayMessage(response);
         }
 

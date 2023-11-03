@@ -32,8 +32,16 @@
 
     public async Task SaveValue()
     {
-        var html = await _textEditor.GetHTML();
-        await OnSave.InvokeAsync(html);
+        try
+        {
+            var html = await _textEditor.GetHTML();
+            await OnSave.InvokeAsync(html);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        
     }
 
     [Parameter]
