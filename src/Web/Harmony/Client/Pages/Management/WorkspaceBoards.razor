@@ -1,4 +1,5 @@
 ﻿@page "/workspaces/{id}/{name}/boards/"
+@using Harmony.Client.Infrastructure.Helper;
 
 @if(_loading)
 {
@@ -10,44 +11,26 @@ else
 
         @foreach (var board in _boards)
         {
-            <MudCard Style="height:300px;width:300px">
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h6">@board.Title</MudText>
-                    </CardHeaderContent>
-                    <CardHeaderActions>
-                        <MudTooltip>
-                            <ChildContent>
-                                <MudIconButton Icon="@Icons.Material.Filled.Info" />
-                            </ChildContent>
-                            <TooltipContent>
-                                <MudText Typo="Typo.h6">@board.Description</MudText>
-                            </TooltipContent>
-                        </MudTooltip>
-                    </CardHeaderActions>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudStack Row="false">
-                        <MudPaper Class="pa-3">
-                            <MudAvatarGroup Max="4" Spacing="2" MaxColor="Color.Primary">
-                                @for (var i = 0; i < @board.TotalUsers; i++)
-                                {
-                                    <MudAvatar Color="Color.Primary">M</MudAvatar>
-                                }
-                            </MudAvatarGroup>
-                        </MudPaper>
-                        <MudPaper Class="pa-3">
-                            <MudStack Row="true">
-                                @board.TotalItemsCompleted / @board.TotalItems
-                            </MudStack>
-                        </MudPaper>
-                        <MudPaper Class="pa-3">Item 3</MudPaper>
-                    </MudStack>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
-                </MudCardActions>
-            </MudCard>
+            <MudList Clickable="true" @onclick="() => NavigateToBoard(board)">
+                <MudListSubheader Class="cursor-pointer">
+                    <MudText Typo="Typo.h5">@board.Title</MudText>
+                    <MudText Typo="Typo.body1">@board.Description</MudText>
+                </MudListSubheader>
+                <MudListItem Icon="@Icons.Material.Filled.GroupWork">
+                    @board.TotalItems members
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.Visibility">
+                    <MudTooltip Text="Visibility">
+                        <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
+                    </MudTooltip>
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.List">
+                    @board.Lists.Count lists
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.Task">
+                    @board.TotalItemsCompleted / @board.TotalItems items completed
+                </MudListItem>
+            </MudList>
         }
     </MudPaper>
 }

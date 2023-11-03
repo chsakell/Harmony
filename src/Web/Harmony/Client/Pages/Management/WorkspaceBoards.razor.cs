@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
+using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 
 namespace Harmony.Client.Pages.Management
@@ -47,6 +48,13 @@ namespace Harmony.Client.Pages.Management
 
                 StateHasChanged();
             }
+        }
+
+        private void NavigateToBoard(GetWorkspaceBoardResponse board)
+        {
+            var slug = StringUtilities.SlugifyString(board.Title.ToString());
+
+            _navigationManager.NavigateTo($"boards/{board.Id}/{slug}");
         }
     }
 }

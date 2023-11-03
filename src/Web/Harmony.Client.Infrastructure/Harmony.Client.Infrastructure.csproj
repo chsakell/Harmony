@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\Shared\Harmony.Shared\Harmony.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

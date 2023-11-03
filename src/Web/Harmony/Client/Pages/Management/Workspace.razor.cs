@@ -61,17 +61,6 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private Color GetVisibilityColor(BoardVisibility visibility)
-        {
-            return visibility switch
-            {
-                BoardVisibility.Private => Color.Error,
-                BoardVisibility.Public => Color.Success,
-                BoardVisibility.Workspace => Color.Info,
-                _ => Color.Info,
-            };
-        }
-
         private void NavigateToBoard(BoardDto board)
         {
             var slug = StringUtilities.SlugifyString(board.Title.ToString());

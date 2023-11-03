@@ -1,4 +1,5 @@
 ﻿@page "/workspaces/{id}/{name}"
+@using Harmony.Client.Infrastructure.Helper;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Workspace> _localizer
 
 @if (_userBoardsLoading)
@@ -61,7 +62,7 @@ else
                         </CardHeaderContent>
                         <CardHeaderActions>
                             <MudTooltip Text="Visibility">
-                                <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
+                                <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
                             </MudTooltip>
                         </CardHeaderActions>
                     </MudCardHeader>
@@ -74,7 +75,7 @@ else
                             TimelinePosition="TimelinePosition.Start" Reverse="false">
                                 @foreach(var activity in _boardActivities)
                                 {
-                                    <MudTimelineItem Color="Color.Success" Variant="Variant.Outlined">
+                                    <MudTimelineItem Class="pb-0" Color="Color.Success" Size="Size.Small" Variant="Variant.Outlined">
                                         <ItemContent>
                                             <MudAlert Severity="Severity.Normal"><b>@activity.Actor</b> @((MarkupString)activity.Activity)</MudAlert>
                                         </ItemContent>
