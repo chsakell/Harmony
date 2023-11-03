@@ -1,0 +1,69 @@
+﻿@page "/account/"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Account> localizer
+
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Small">
+    <MudStack>
+        <MudCard>
+            <MudCardContent>
+                <EditForm Model="@_user" OnValidSubmit="Update">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_user.FirstName"
+                                          For="@(() => _user.FirstName)"
+                                          Immediate="true"
+                                          Label="First Name" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_user.LastName"
+                                          For="@(() => _user.LastName)"
+                                          Immediate="true"
+                                          Label="Last Name" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_user.UserName"
+                                          For="@(() => _user.UserName)"
+                                          Immediate="true"
+                                          Label="Username" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_user.Email"
+                                          For="@(() => _user.Email)"
+                                          Immediate="true"
+                                          Label="Email" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                                       Disabled="@(!context.IsModified() || !context.Validate() || _updating)" 
+                                       FullWidth="true" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </MudCardContent>
+        </MudCard>
+        <MudDivider Class="my-4" />
+        <MudCard>
+            <MudCardContent>
+                <EditForm OnValidSubmit="ChangePassword" Model="_changePassword">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField For="@(() => _changePassword.NewPassword)" InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
+                                          OnAdornmentClick="TogglePasswordVisibility" @bind-Value="_changePassword.NewPassword" Label="New Password" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField For="@(() => _changePassword.ConfirmPassword)" InputType="InputType.Password" @bind-Value="_changePassword.ConfirmPassword" Label="Confirm new password" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField For="@(() => _changePassword.CurrentPassword)" InputType="InputType.Password" @bind-Value="_changePassword.CurrentPassword" Label="Current password" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                             Disabled="@(!context.IsModified() || !context.Validate() || _updatingPassword)" FullWidth="true" Color="Color.Primary" Class="ml-auto">Change Password</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </MudCardContent>
+        </MudCard>
+    </MudStack>
+</MudContainer>
