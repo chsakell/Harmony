@@ -6,11 +6,12 @@ namespace Harmony.Application.Features.Boards.Queries.Get
     public class GetBoardQuery : IRequest<IResult<GetBoardResponse>>
     {
         public Guid BoardId { get; set; }
-        public int MaxCardsPerList { get; set; } = 3;
+        public int MaxCardsPerList { get; set; }
 
-        public GetBoardQuery(Guid boardId)
+        public GetBoardQuery(Guid boardId, int maxCardsPerList)
         {
             BoardId = boardId;
+            MaxCardsPerList = maxCardsPerList;
         }
     }
 }

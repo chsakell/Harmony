@@ -16,7 +16,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public interface IBoardManager : IManager
     {
         Task<IResult<Guid>> CreateAsync(CreateBoardCommand request);
-        Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId);
+        Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId, int size);
         event EventHandler<BoardCreatedEvent> OnBoardCreated;
         Task<IResult<List<UserBoardResponse>>> GetBoardMembersAsync(string boardId);
         Task<IResult<List<SearchBoardUserResponse>>> SearchBoardMembersAsync(string boardId, string term);

@@ -27,9 +27,9 @@ namespace Harmony.Server.Controllers.Management
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> LoadBoard(Guid id)
+        public async Task<IActionResult> LoadBoard(Guid id, int size)
         {
-            return Ok(await _mediator.Send(new GetBoardQuery(id)));
+            return Ok(await _mediator.Send(new GetBoardQuery(id, size)));
         }
 
         [HttpGet("{id:guid}/members")]

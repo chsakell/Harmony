@@ -4,9 +4,9 @@
     {
         public static string Index = "api/board/";
 
-        public static string Get(string boardId)
+        public static string Get(string boardId, int size)
         {
-            return $"{Index}{boardId}";
+            return $"{Index}{boardId}/?size={size}";
         }
 
         public static string GetMembers(string boardId)

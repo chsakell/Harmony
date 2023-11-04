@@ -32,10 +32,11 @@ namespace Harmony.Client.Pages.Management
         private MudDropContainer<CardDto> _dropContainer;
         public bool CardDescriptionVisibility { get; set; }
         private bool _unauthorisedAccess = false;
+        private int _listCardsSize = 10;
 
         protected async override Task OnInitializedAsync()
         {
-            var result = await _boardManager.GetBoardAsync(Id);
+            var result = await _boardManager.GetBoardAsync(Id, _listCardsSize);
 
             if (result.Succeeded)
             {
@@ -174,7 +175,7 @@ namespace Harmony.Client.Pages.Management
         private async Task LoadListCards(Guid listId, int page)
         {
             var result = await _boardManager
-                .GetBoardListCardsAsync(new LoadBoardListQuery(Guid.Parse(Id), listId, page, 3));
+                .GetBoardListCardsAsync(new LoadBoardListQuery(Guid.Parse(Id), listId, page, _listCardsSize));
 
             if (result.Succeeded)
             {

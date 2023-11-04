@@ -11,7 +11,8 @@ else
     <MudDialog>
         <TitleContent>
             <MudStack>
-                <EditableTextField For="@(() => _card.Title)"
+                <EditableTextField Style="width:50%"
+                                    For="@(() => _card.Title)"
                                    AdornmentIcon="@Icons.Material.Filled.Edit"
                                    OnSave="(newTitle) => SaveTitle(newTitle)"
                                    Text="@_card.Title" Label="@_localizer["Title"]" />
