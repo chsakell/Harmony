@@ -20,6 +20,7 @@ namespace Harmony.Client.Shared
         public EventCallback<bool> OnRightToLeftToggle { get; set; }
 
         private bool _drawerOpen = true;
+        MudMenu _menu;
         [Inject] private IRoleManager RoleManager { get; set; }
 
         private string CurrentUserId { get; set; }
@@ -50,6 +51,12 @@ namespace Harmony.Client.Shared
             }
         }
 
+        private void ViewAccount()
+        {
+            _menu.CloseMenu();
+            _navigationManager.NavigateTo("/account/");
+        }
+
         private async Task LoadDataAsync()
         {
             var state = await _stateProvider.GetAuthenticationStateAsync();
@@ -69,9 +76,11 @@ namespace Harmony.Client.Shared
                     SecondName = user.GetLastName();
                     Email = user.GetEmail();
                     var imageResponse = await _accountManager.GetProfilePictureAsync(CurrentUserId);
+                    
                     if (imageResponse.Succeeded)
                     {
                         ImageDataUrl = imageResponse.Data;
+                        StateHasChanged();
                     }
 
                     var currentUserResult = await _userManager.GetAsync(CurrentUserId);

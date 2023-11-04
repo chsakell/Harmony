@@ -6,7 +6,8 @@
 @using Harmony.Shared.Constants.Permission;
 @using Harmony.Shared.Utilities;
 
-<UserCard />
+<UserCard ImageDataUrl="@ImageDataUrl" />
+<MudDivider DividerType="DividerType.Inset" Class="ml-0 mb-2" />
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">Home</MudNavLink>
     <MudNavLink Href="/swagger/index.html" Target="_blank" Icon="@Icons.Material.Outlined.LiveHelp">
@@ -36,6 +37,9 @@
     private bool _canViewRoles;
     private bool _canViewUsers;
     private WorkspaceDto _selectedWorkspace;
+
+    [Parameter]
+    public string ImageDataUrl { get; set; }
 
     protected override void OnInitialized()
     {

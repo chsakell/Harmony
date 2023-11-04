@@ -18,7 +18,9 @@ namespace Harmony.Infrastructure.Services
                 bool exists = Directory.Exists(pathToSave);
 
                 if (!exists)
+                {
                     Directory.CreateDirectory(pathToSave);
+                }
 
                 var extension = Path.GetExtension(request.FileName);
                 var fileName = $"{Guid.NewGuid()}{extension}";
