@@ -11,16 +11,16 @@
         <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Dark" Link="https://www.buymeacoffee.com/chsakell" Target="_blank" StartIcon="@Icons.Material.Filled.LocalDrink">Buy Me A Coffee</MudButton>
         <MudDivider Vertical="true" FlexItem="true" DividerType="DividerType.Middle" Class="mx-4 my-5" />
         <CreateWorkspaceBoard />
-        <LanguageSelector />
+        @* <LanguageSelector /> *@
         <MudTooltip Text="Toggle Dark Mode">
             <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
         </MudTooltip>
-        <MudTooltip Text="Fork Repository">
+      @*   <MudTooltip Text="Fork Repository">
             <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/chsakell/harmony" Target="_blank" />
-        </MudTooltip>
+        </MudTooltip> *@
     </MudHidden>
     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
-        <LanguageSelector />
+        @* <LanguageSelector /> *@
         <MudMenu Icon="@Icons.Filled.Settings" Color="Color.Inherit" Dense="true">
             <div class="px-2">
                     <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
@@ -37,7 +37,7 @@
         <ActivatorContent>
             @if (string.IsNullOrEmpty(ImageDataUrl))
             {
-                <MudAvatar Color="Color.Secondary">@FirstLetterOfName</MudAvatar>
+                <MudAvatar Color="Color.Secondary">@EmptyAvatarText</MudAvatar>
             }
             else
             {

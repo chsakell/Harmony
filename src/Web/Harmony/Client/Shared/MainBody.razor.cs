@@ -26,9 +26,9 @@ namespace Harmony.Client.Shared
         private string CurrentUserId { get; set; }
         private string ImageDataUrl { get; set; }
         private string FirstName { get; set; }
-        private string SecondName { get; set; }
+        private string LastName { get; set; }
         private string Email { get; set; }
-        private char FirstLetterOfName { get; set; }
+        private string EmptyAvatarText { get; set; }
 
         public async Task ToggleDarkMode()
         {
@@ -68,12 +68,12 @@ namespace Harmony.Client.Shared
                 {
                     CurrentUserId = user.GetUserId();
                     FirstName = user.GetFirstName();
-                    if (FirstName.Length > 0)
+                    LastName = user.GetLastName();
+                    if (FirstName.Length > 0 && LastName.Length > 0)
                     {
-                        FirstLetterOfName = FirstName[0];
+                        EmptyAvatarText = $"{FirstName[0]}{LastName[0]}";
                     }
 
-                    SecondName = user.GetLastName();
                     Email = user.GetEmail();
                     var imageResponse = await _accountManager.GetProfilePictureAsync(CurrentUserId);
                     
@@ -92,9 +92,9 @@ namespace Harmony.Client.Shared
                         CurrentUserId = string.Empty;
                         ImageDataUrl = string.Empty;
                         FirstName = string.Empty;
-                        SecondName = string.Empty;
+                        LastName = string.Empty;
                         Email = string.Empty;
-                        FirstLetterOfName = char.MinValue;
+                        EmptyAvatarText = string.Empty;
                         await _authenticationManager.Logout();
                     }
                 }
