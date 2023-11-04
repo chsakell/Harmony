@@ -33,6 +33,7 @@ var stateProvider = host.Services.GetService<HarmonyStateProvider>();
 var workspaceManager = host.Services.GetService<IWorkspaceManager>();
 var state = await stateProvider.GetAuthenticationStateAsync();
 var isAuthenticated = state?.User?.Identity?.IsAuthenticated == true;
+
 if(isAuthenticated)
 {
     try

@@ -114,7 +114,7 @@ namespace Harmony.Client.Infrastructure.Settings
             Palette = new Palette()
             {
                 Primary = "#1E88E5",
-                AppbarBackground = "#1E88E5",
+                AppbarBackground = "rgba(255, 0, 0, 0)",
                 Background = Colors.Grey.Lighten5,
                 DrawerBackground = "#FFF",
                 DrawerText = "rgba(0,0,0, 0.7)",
