@@ -7,10 +7,11 @@ namespace Harmony.Client.Shared.Components
     public partial class UserCard
     {
         [Parameter] public string Class { get; set; }
-        private string FirstName { get; set; }
-        private string SecondName { get; set; }
+
         private string Email { get; set; }
-        private char FirstLetterOfName { get; set; }
+        private string FirstName { get; set; }
+        private string LastName { get; set; }
+        private string EmptyAvatarText { get; set; }
 
         [Parameter]
         public string ImageDataUrl { get; set; }
@@ -30,11 +31,13 @@ namespace Harmony.Client.Shared.Components
 
             Email = user.GetEmail().Replace(".com", string.Empty);
             FirstName = user.GetFirstName();
-            SecondName = user.GetLastName();
-            if (FirstName.Length > 0)
+            LastName = user.GetLastName();
+
+            if (FirstName.Length > 0 && LastName.Length > 0)
             {
-                FirstLetterOfName = FirstName[0];
+                EmptyAvatarText = $"{FirstName[0]}{LastName[0]}";
             }
+
             var UserId = user.GetUserId();
             var imageResponse = await _localStorage.GetItemAsync<string>(StorageConstants.Local.UserImageURL);
             if (!string.IsNullOrEmpty(imageResponse))

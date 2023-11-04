@@ -14,7 +14,7 @@
                         }
                         else if (!string.IsNullOrEmpty(_user.FirstName))
                         {
-                            <MudAvatar Color="Color.Secondary" Style="height:250px; width:250px;">@_user.FirstName[0]</MudAvatar>
+                            <MudAvatar Color="Color.Dark" Style="height:250px; width:250px;">@_user.FirstName[0] @_user.LastName[0]</MudAvatar>
                         }
                     </div>
                     <MudText Typo="Typo.h6" Align="Align.Center">@_user.FirstName @_user.LastName</MudText>

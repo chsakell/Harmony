@@ -42,10 +42,14 @@ namespace Harmony.Application.Features.Users.Commands.UploadProfilePicture
         public async Task<Result<UploadProfilePictureResponse>> Handle(UploadProfilePictureCommand command, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
+            string profilePictureUrl = null;
 
-            var imageName = _uploadService.UploadAsync(command).Replace(@"\", "/");
+            if (command.Data.Length > 0)
+            {
+                var imageName = _uploadService.UploadAsync(command).Replace(@"\", "/");
+                profilePictureUrl = $"files/{command.Type.ToDescriptionString()}/{imageName}";
+            }
 
-            var profilePictureUrl = $"files/{command.Type.ToDescriptionString()}/{imageName}";
             var result = await _userService.UpdateUserProfilePicture(userId, profilePictureUrl);
 
             if (result.Succeeded)

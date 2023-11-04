@@ -1,15 +1,19 @@
-﻿using Harmony.Application.Features.Users.Commands.UpdatePassword;
+﻿using Harmony.Application.Features.Lists.Commands.ArchiveList;
+using Harmony.Application.Features.Users.Commands.UpdatePassword;
 using Harmony.Application.Features.Users.Commands.UpdateProfile;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Application.Helpers;
 using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Models.Account;
+using Harmony.Client.Infrastructure.Store.Kanban;
+using Harmony.Client.Shared.Dialogs;
 using Harmony.Shared.Storage;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using System;
 using System.Security.Claims;
 using static Harmony.Shared.Constants.Permission.Permissions;
 
@@ -107,32 +111,33 @@ namespace Harmony.Client.Pages.Identity
 
         private async Task DeleteAsync()
         {
-            //var parameters = new DialogParameters
-            //{
-            //    {nameof(Shared.Dialogs.DeleteConfirmation.ContentText), $"{string.Format(_localizer["Do you want to delete the profile picture of {0}"], _profileModel.Email)}?"}
-            //};
-            //var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
-            //var dialog = _dialogService.Show<Shared.Dialogs.DeleteConfirmation>("Delete", parameters, options);
-            //var result = await dialog.Result;
-            //if (!result.Cancelled)
-            //{
-            //    var request = new UpdateProfilePictureRequest { Data = null, FileName = string.Empty, UploadType = Application.Enums.UploadType.ProfilePicture };
-            //    var data = await _accountManager.UpdateProfilePictureAsync(request, UserId);
-            //    if (data.Succeeded)
-            //    {
-            //        await _localStorage.RemoveItemAsync(StorageConstants.Local.UserImageURL);
-            //        ImageDataUrl = string.Empty;
-            //        _snackBar.Add("Profile picture deleted.", Severity.Success);
-            //        _navigationManager.NavigateTo("/account", true);
-            //    }
-            //    else
-            //    {
-            //        foreach (var error in data.Messages)
-            //        {
-            //            _snackBar.Add(error, Severity.Error);
-            //        }
-            //    }
-            //}
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to remove your profile picture?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var request = new UploadProfilePictureCommand
+                {
+                    Data = new byte[0],
+                    Type = Domain.Enums.AttachmentType.ProfilePicture
+                };
+
+                var result = await _fileManager.UploadProfilePicture(request);
+
+                if (result.Succeeded)
+                {
+                    _user.ProfilePictureDataUrl = result.Data.ProfilePicture;
+                }
+
+                DisplayMessage(result);
+            }
         }
 
         private void TogglePasswordVisibility()

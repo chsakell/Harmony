@@ -3,7 +3,7 @@
         <CardHeaderAvatar>
             @if (string.IsNullOrEmpty(ImageDataUrl))
             {
-                <MudAvatar Color="Color.Secondary">@FirstLetterOfName</MudAvatar>
+                <MudAvatar Color="Color.Secondary">@EmptyAvatarText</MudAvatar>
             }
             else
             {
@@ -11,7 +11,7 @@
             }
         </CardHeaderAvatar>
         <CardHeaderContent>
-            <MudText Typo="Typo.body2">@FirstName @SecondName</MudText>
+            <MudText Typo="Typo.body2">@FirstName @LastName</MudText>
             <MudText Typo="Typo.caption">@Email</MudText>
         </CardHeaderContent>
     </MudCardHeader>
