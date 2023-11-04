@@ -10,32 +10,59 @@ namespace Harmony.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"USE [Harmony]
+            migrationBuilder.Sql(@" USE [Harmony]
 GO
 
-/****** Object:  StoredProcedure [dbo].[LoadBoardListCards]    Script Date: 11/4/2023 9:12:31 PM ******/
+/****** Object:  StoredProcedure [dbo].[LoadBoard]    Script Date: 10/31/2023 5:27:52 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-CREATE PROCEDURE [dbo].[LoadBoardListCards] @BoardId uniqueidentifier, 
-@BoardListId uniqueidentifier, @page int, @cardsPerList int
+CREATE PROCEDURE [dbo].[LoadBoard] @BoardId uniqueidentifier, @cardsPerList int
 AS
 BEGIN
+	SELECT * FROM Boards WHERE Id = @BoardId
+
+	SELECT * FROM BoardLists where BoardId = @BoardId AND Status = 0
+
+	declare @boardListIds TABLE(Id uniqueidentifier)
+	INSERT into @boardListIds (Id)
+	select Id from BoardLists  where BoardId = @BoardId AND Status = 0
 
 	DECLARE @cards Table(Id uniqueidentifier, Title nvarchar(300), Description nvarchar(max), UserId nvarchar(450),
 	BoardListId uniqueidentifier, Position smallint, Status int, StartDate datetime2, DueDate datetime2, ReminderDate datetime2,
 	DateCreated datetime2, DateUpdated datetime2);
 
-	INSERT INTO @cards 
-	Select * from Cards
-	where BoardListId = @boardListId AND Status = 0 
-	order by Position
-	OFFSET (@page - 1) * @cardsPerList ROWS 
-	FETCH FIRST @cardsPerList ROWS ONLY;
+	DECLARE @boardListId uniqueidentifier
+
+	DECLARE cursor_boardLists CURSOR
+	FOR SELECT 
+			Id
+		FROM 
+			BoardLists where BoardId = @BoardId AND Status = 0;
+
+
+	OPEN cursor_boardLists;
+
+	FETCH NEXT FROM cursor_boardLists INTO @boardListId;
+
+	WHILE @@FETCH_STATUS = 0
+		BEGIN
+			INSERT INTO @cards 
+			Select * from Cards
+			where BoardListId = @boardListId AND Status = 0 
+			order by Position
+			OFFSET 0 ROWS 
+			FETCH FIRST @cardsPerList ROWS ONLY;
+			FETCH NEXT FROM cursor_boardLists INTO 
+				@boardListId;
+		END;
+
+	CLOSE cursor_boardLists;
+
+	DEALLOCATE cursor_boardLists;
 
 	select * from @cards Order by BoardListId, Position
 
@@ -44,7 +71,7 @@ BEGIN
 	select cl.* 
 	from CardLabels cl
 	join Labels l on l.Id = cl.LabelId
-	where l.BoardId = @BoardId AND cl.CardId in (select Id from @cards)
+	where l.BoardId = @BoardId
 
 	select * from Attachments where CardId in (Select id from @cards) order by DateCreated
 
@@ -56,14 +83,13 @@ BEGIN
 	where CheckListId in (select Id from CheckLists where CardId in (select id from @cards))
 	order by CheckListId, Position
 END
-GO
-");
+GO");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP PROCEDURE [dbo].[LoadBoardListCards]");
+            migrationBuilder.Sql("DROP PROCEDURE [dbo].[LoadBoard]");
         }
     }
 }
