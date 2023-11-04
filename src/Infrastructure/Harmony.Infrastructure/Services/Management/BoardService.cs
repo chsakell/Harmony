@@ -156,5 +156,74 @@ namespace Harmony.Infrastructure.Services.Management
 
             return new Board();
         }
+
+        public async Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList)
+        {
+            try
+            {
+                var query = "[dbo].[LoadBoardListCards]";
+                var parameters = new DynamicParameters();
+                parameters.Add("@BoardId", boardId, DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@BoardListId", boardListId, DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@page", page, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@cardsPerList", maxCardsPerList, DbType.Int32, ParameterDirection.Input);
+
+                using (var connection = new SqlConnection(_connectionString))
+                using (var multi = await connection.QueryMultipleAsync(query, parameters, commandType: CommandType.StoredProcedure))
+                {
+                        var cards = (await multi.ReadAsync<Card>()).ToList();
+
+                        var labels = (await multi.ReadAsync<Label>()).ToList();
+                        var cardLabels = (await multi.ReadAsync<CardLabel>()).ToList();
+                        var attachments = (await multi.ReadAsync<Attachment>()).ToList();
+                        var userCards = (await multi.ReadAsync<UserCard>()).ToList();
+                        var checkLists = (await multi.ReadAsync<CheckList>()).ToList();
+                        var checkListItems = (await multi.ReadAsync<CheckListItem>()).ToList();
+
+                        foreach (var cardLabel in cardLabels)
+                        {
+                            cardLabel.Label = labels.FirstOrDefault(l => l.Id == cardLabel.LabelId);
+                        }
+
+                        foreach (var checkList in checkLists)
+                        {
+                            checkList.Items = checkListItems.Where(i => i.CheckListId == checkList.Id).ToList();
+                        }
+
+                        foreach (var card in cards)
+                        {
+                            var cardsLabels = cardLabels.Where(cl => cl.CardId == card.Id).ToList();
+                            if (cardsLabels.Any())
+                            {
+                                card.Labels = new List<CardLabel>();
+                                foreach (var cardLabel in cardsLabels)
+                                {
+                                    card.Labels.Add(cardLabel);
+                                }
+                            }
+
+                            if (attachments.Any(a => a.CardId == card.Id))
+                            {
+                                card.Attachments = new List<Attachment>();
+                                card.Attachments.AddRange(attachments.Where(a => a.CardId == card.Id));
+                            }
+
+                            if (userCards.Any(uc => uc.CardId == card.Id))
+                            {
+                                card.Members = new List<UserCard>();
+                                card.Members.AddRange(userCards.Where(uc => uc.CardId == card.Id));
+                            }
+
+                            card.CheckLists = checkLists.Where(l => l.CardId == card.Id).ToList();
+                        }
+
+                    return cards;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

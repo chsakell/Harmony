@@ -69,7 +69,6 @@ namespace Harmony.Infrastructure.Seed
 
         public async Task Initialize()
         {
-            return;
             _admin = await _userManager.FindByEmailAsync("admin@harmony.com");
 
             await CreateWorkspace();

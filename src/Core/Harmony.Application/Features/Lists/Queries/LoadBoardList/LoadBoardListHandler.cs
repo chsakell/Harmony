@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Shared.Wrapper;
@@ -15,6 +16,7 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
     {
         private readonly IBoardRepository _boardRepository;
         private readonly IBoardListRepository _boardListRepository;
+        private readonly IBoardService _boardService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetBoardsHandler> _localizer;
         private readonly IUserService _userService;
@@ -22,6 +24,7 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
 
         public GetBoardsHandler(IBoardRepository boardRepository,
             IBoardListRepository boardListRepository,
+            IBoardService boardService,
             ICurrentUserService currentUserService,
             IStringLocalizer<GetBoardsHandler> localizer,
             IUserService userService,
@@ -29,6 +32,7 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
         {
             _boardRepository = boardRepository;
             _boardListRepository = boardListRepository;
+            _boardService = boardService;
             _currentUserService = currentUserService;
             _localizer = localizer;
             _userService = userService;
@@ -52,24 +56,23 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
                 return await Result<List<CardDto>>.FailAsync(_localizer["Board doesn't exist"]);
             }
 
-            var userBoard = await _boardRepository
-                    .LoadBoardList(request.BoardId, request.BoardListId, request.Page, request.PageSize);
+            var cards = await _boardService
+                    .LoadBoardListCards(request.BoardId, request.BoardListId, request.Page, request.PageSize);
 
-            var boardList = userBoard.Lists;
-            var cards = _mapper.Map<List<CardDto>>(boardList.SelectMany(b => b.Cards));
+            var result = _mapper.Map<List<CardDto>>(cards);
 
-            var cardUserIds = cards.SelectMany(c => c.Members)
+            var cardUserIds = result.SelectMany(c => c.Members)
                     .Select(m => m.Id).Distinct();
 
             var cardUsers = (await _userService.GetAllAsync(cardUserIds)).Data;
 
-            foreach (var card in cards.Where(c => c.Members.Any()))
+            foreach (var card in result.Where(c => c.Members.Any()))
             {
                 var users = cardUsers.Where(u => card.Members.Select(m => m.Id).Contains(u.Id)).Distinct();
                 card.Members = _mapper.Map<List<CardMemberDto>>(users);
             }
 
-            return await Result<List<CardDto>>.SuccessAsync(cards);
+            return await Result<List<CardDto>>.SuccessAsync(result);
         }
     }
 }
