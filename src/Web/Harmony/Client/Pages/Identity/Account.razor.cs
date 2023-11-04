@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
+﻿using Harmony.Application.Features.Users.Commands.UpdatePassword;
+using Harmony.Application.Features.Users.Commands.UpdateProfile;
+using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Application.Helpers;
 using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
@@ -43,12 +45,34 @@ namespace Harmony.Client.Pages.Identity
 
         private async Task Update()
         {
+            _updating = true;
 
+            var result = await _accountManager.UpdateProfileAsync(new UpdateProfileCommand()
+            {
+                Email = _user.Email,
+                FirstName = _user.FirstName,
+                LastName = _user.LastName
+            });
+
+            _updating = false;
+
+            DisplayMessage(result);
         }
 
         private async Task ChangePassword()
         {
+            _updatingPassword = true;
 
+            var result = await _accountManager.ChangePasswordAsync(new UpdatePasswordCommand()
+            {
+                Password = _changePassword.CurrentPassword,
+                NewPassword = _changePassword.NewPassword,
+                ConfirmNewPassword = _changePassword.NewPassword
+            });
+
+            _updatingPassword = false;
+
+            DisplayMessage(result);
         }
 
         private async Task UploadFiles(InputFileChangeEventArgs e)

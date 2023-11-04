@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Requests.Identity;
+﻿using Harmony.Application.Features.Users.Commands.UpdatePassword;
+using Harmony.Application.Features.Users.Commands.UpdateProfile;
+using Harmony.Application.Requests.Identity;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Routes;
 using Harmony.Shared.Wrapper;
@@ -15,15 +17,15 @@ namespace Harmony.Client.Infrastructure.Managers.Identity.Account
             _httpClient = httpClient;
         }
 
-        public async Task<IResult> ChangePasswordAsync(ChangePasswordRequest model)
+        public async Task<IResult<UpdatePasswordResponse>> ChangePasswordAsync(UpdatePasswordCommand command)
         {
-            var response = await _httpClient.PutAsJsonAsync(AccountEndpoints.ChangePassword, model);
-            return await response.ToResult();
+            var response = await _httpClient.PutAsJsonAsync(AccountEndpoints.ChangePassword, command);
+            return await response.ToResult<UpdatePasswordResponse>();
         }
 
-        public async Task<IResult> UpdateProfileAsync(UpdateProfileRequest model)
+        public async Task<IResult> UpdateProfileAsync(UpdateProfileCommand command)
         {
-            var response = await _httpClient.PutAsJsonAsync(AccountEndpoints.UpdateProfile, model);
+            var response = await _httpClient.PutAsJsonAsync(AccountEndpoints.UpdateProfile, command);
             return await response.ToResult();
         }
 

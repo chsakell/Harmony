@@ -1,8 +1,12 @@
 ﻿using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Account;
+using Harmony.Application.Features.Users.Commands.UpdatePassword;
+using Harmony.Application.Features.Users.Commands.UpdateProfile;
 using Harmony.Application.Requests.Identity;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Server.Controllers.Identity
 {
@@ -13,11 +17,14 @@ namespace Harmony.Server.Controllers.Identity
     {
         private readonly IAccountService _accountService;
         private readonly ICurrentUserService _currentUser;
+        private readonly ISender _sender;
 
-        public AccountController(IAccountService accountService, ICurrentUserService currentUser)
+        public AccountController(IAccountService accountService, ICurrentUserService currentUser,
+            ISender sender)
         {
             _accountService = accountService;
             _currentUser = currentUser;
+            _sender = sender;
         }
 
         /// <summary>
@@ -26,10 +33,9 @@ namespace Harmony.Server.Controllers.Identity
         /// <param name="model"></param>
         /// <returns>Status 200 OK</returns>
         [HttpPut(nameof(UpdateProfile))]
-        public async Task<ActionResult> UpdateProfile(UpdateProfileRequest model)
+        public async Task<ActionResult> UpdateProfile(UpdateProfileCommand command)
         {
-            var response = await _accountService.UpdateProfileAsync(model, _currentUser.UserId);
-            return Ok(response);
+            return Ok(await _sender.Send(command));
         }
 
         /// <summary>
@@ -38,10 +44,9 @@ namespace Harmony.Server.Controllers.Identity
         /// <param name="model"></param>
         /// <returns>Status 200 OK</returns>
         [HttpPut(nameof(ChangePassword))]
-        public async Task<ActionResult> ChangePassword(ChangePasswordRequest model)
+        public async Task<ActionResult> ChangePassword(UpdatePasswordCommand command)
         {
-            var response = await _accountService.ChangePasswordAsync(model, _currentUser.UserId);
-            return Ok(response);
+            return Ok(await _sender.Send(command));
         }
 
         /// <summary>
