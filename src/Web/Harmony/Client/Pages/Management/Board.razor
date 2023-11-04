@@ -81,7 +81,7 @@ else
                     @foreach (var item in KanbanStore.KanbanLists.OrderBy(l => l.Position))
                     {
                         <MudPaper Elevation="0" Width="300px"
-                                  Style="height:calc(100vh - 200px);overflow:auto"
+                                  Style="height:calc(100vh - 180px);overflow:auto"
                                   Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
                             <MudToolBar DisableGutters="true">
                                 <EditableTextField For="@(() => item.Title)" OnEdit="(editing) => item.TitleEditing = editing"
