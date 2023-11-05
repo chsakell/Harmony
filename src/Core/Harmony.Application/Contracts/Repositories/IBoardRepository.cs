@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access Boards
+    /// </summary>
     public interface IBoardRepository
     {
         Task<Board> GetAsync(Guid boardId);

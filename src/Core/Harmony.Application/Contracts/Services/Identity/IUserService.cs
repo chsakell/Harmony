@@ -5,6 +5,9 @@ using Harmony.Shared.Wrapper;
 
 namespace Harmony.Application.Contracts.Services.Identity
 {
+    /// <summary>
+    /// Service to access Users
+    /// </summary>
     public interface IUserService
     {
         Task<IResult<bool>> UpdateUserProfilePicture(string userId, string profilePicture);

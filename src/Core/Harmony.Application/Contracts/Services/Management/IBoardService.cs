@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Contracts.Services.Management
 {
+    /// <summary>
+    /// Service board related operations
+    /// </summary>
     public interface IBoardService
 	{
         Task<bool> HasUserAccessToBoard(string userId, Guid boardId);

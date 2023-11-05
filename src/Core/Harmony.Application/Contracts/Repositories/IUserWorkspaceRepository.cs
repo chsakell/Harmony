@@ -3,6 +3,9 @@ using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access User Workspaces
+    /// </summary>
     public interface IUserWorkspaceRepository
     {
         IQueryable<UserWorkspace> Entities { get; }

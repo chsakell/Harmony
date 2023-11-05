@@ -3,6 +3,9 @@ using static Harmony.Application.Events.BoardListArchivedEvent;
 
 namespace Harmony.Application.Contracts.Services.Hubs
 {
+    /// <summary>
+    /// Service for Hub client notifications
+    /// </summary>
     public interface IHubClientNotifierService
     {
         Task AddBoardList(Guid boardId, BoardListDto boardList);

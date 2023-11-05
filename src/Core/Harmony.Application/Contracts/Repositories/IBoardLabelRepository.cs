@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access Labels
+    /// </summary>
     public interface IBoardLabelRepository
     {
         Task<Label?> GetLabel(Guid labelId);

@@ -1,5 +1,8 @@
 ﻿namespace Harmony.Application.Contracts.Services
 {
+    /// <summary>
+    /// Service to access logged in user
+    /// </summary>
     public interface ICurrentUserService
     {
         string UserId { get; }

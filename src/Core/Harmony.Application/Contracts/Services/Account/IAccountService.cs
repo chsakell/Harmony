@@ -3,6 +3,9 @@ using Harmony.Shared.Wrapper;
 
 namespace Harmony.Application.Contracts.Services.Account
 {
+    /// <summary>
+    /// Service for updating profile details
+    /// </summary>
     public interface IAccountService
     {
         Task<IResult> UpdateProfileAsync(UpdateProfileRequest model, string userId);

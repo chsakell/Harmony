@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access Checklists
+    /// </summary>
     public interface ICheckListRepository
     {
         Task<int> CreateAsync(CheckList checkList);

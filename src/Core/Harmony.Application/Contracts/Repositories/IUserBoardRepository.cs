@@ -3,6 +3,9 @@ using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access User Boards
+    /// </summary>
     public interface IUserBoardRepository
     {
         Task AddAsync(UserBoard Board);

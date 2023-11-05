@@ -4,6 +4,9 @@ using Harmony.Shared.Wrapper;
 
 namespace Harmony.Application.Contracts.Services.Identity
 {
+    /// <summary>
+    /// Service to access Role Claims
+    /// </summary>
     public interface IRoleClaimService
     {
         Task<Result<List<RoleClaimResponse>>> GetAllAsync();

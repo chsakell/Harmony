@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access Cards
+    /// </summary>
     public interface ICardRepository
     {
         IQueryable<Card> Entities { get; }

@@ -3,6 +3,9 @@ using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Contracts.Services.Management
 {
+    /// <summary>
+    /// Service to access Card Activities
+    /// </summary>
     public interface ICardActivityService
     {
         Task<List<CardActivityDto>> GetAsync(Guid cardId);

@@ -1,5 +1,8 @@
 ﻿namespace Harmony.Application.Configurations
 {
+    /// <summary>
+    /// Authentication configuration
+    /// </summary>
     public class AppConfiguration
     {
         public string Secret { get; set; }

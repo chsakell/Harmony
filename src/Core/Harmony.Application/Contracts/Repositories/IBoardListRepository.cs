@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access Lists
+    /// </summary>
     public interface IBoardListRepository
     {
         IQueryable<BoardList> Entities { get; }

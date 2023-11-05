@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Contracts.Repositories
 {
+    /// <summary>
+    /// Repository to access Card Labels
+    /// </summary>
     public interface ICardLabelRepository
     {
         Task<CardLabel> GetLabel(Guid cardId, Guid labelId);
