@@ -142,8 +142,9 @@ namespace Harmony.Infrastructure.Seed
 
             await CreateList(harmonyBoard.Id, "TODO", 0);
             await CreateList(harmonyBoard.Id, "IN PROGRESS", 1);
-            await CreateList(harmonyBoard.Id, "DOING", 2);
-            await CreateList(harmonyBoard.Id, "DONE", 3);
+            await CreateList(harmonyBoard.Id, "REVIEW", 2);
+            await CreateList(harmonyBoard.Id, "TESTING", 3);
+            await CreateList(harmonyBoard.Id, "COMPLETE", 4);
         }
 
         private async Task AddBoardMembers(Guid workspaceId, Guid boardId)

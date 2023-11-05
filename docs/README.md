@@ -32,3 +32,18 @@
 * Search and add members to workspaces & boards
 * Workspace visibility options: Public & Private
 * Board visibility options: Private, Workspace, Public
+
+## Setup
+
+1. Setup the __SQL Server__ connection string inside __appsettings.json__ to point to your SQL Server instance.
+
+```javascript
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=Harmony;Integrated Security=True;TrustServerCertificate=True"
+  },
+```
+
+2. Set the `Harmony.Server` project as the startup project and run the application. This will create the database and run all __migrations__. Alternative you can open the `Package Manager Console`, select  the `src\Infrastructure\Harmony.Persistence` project as the Default project and run the following command:
+```
+Update-Database -Context HarmonyContext -StartUpProject Harmony.Server -v
+```

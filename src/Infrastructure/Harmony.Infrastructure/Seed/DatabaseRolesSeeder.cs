@@ -77,7 +77,7 @@ namespace Harmony.Infrastructure.Seed
 
             if (superUserInDb == null)
             {
-                await _userManager.CreateAsync(superUser, UserConstants.DefaultPassword);
+                var userCreateResult = await _userManager.CreateAsync(superUser, UserConstants.DefaultPassword);
                 var result = await _userManager.AddToRoleAsync(superUser, RoleConstants.AdministratorRole);
                 if (result.Succeeded)
                 {
