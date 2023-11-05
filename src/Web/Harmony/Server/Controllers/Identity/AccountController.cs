@@ -10,6 +10,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Server.Controllers.Identity
 {
+    /// <summary>
+    /// Controller for Account operations
+    /// </summary>
     [Authorize]
     [Route("api/identity/account")]
     [ApiController]

@@ -8,6 +8,9 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Cards.Queries.GetLabels
 {
+    /// <summary>
+    /// Handler for returning card labels
+    /// </summary>
     public class GetCardLabelsHandler : IRequestHandler<GetCardLabelsQuery, IResult<List<LabelDto>>>
     {
         private readonly ICardRepository _cardRepository;

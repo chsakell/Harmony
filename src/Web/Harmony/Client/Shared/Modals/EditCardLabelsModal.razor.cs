@@ -91,6 +91,7 @@ namespace Harmony.Client.Shared.Modals
             {
                 _cardLabels.Add(new LabelDto()
                 {
+                    Id = result.Data.LabelId,
                     Colour = result.Data.Color,
                     IsChecked = result.Data.CardId.HasValue,
                     Title = result.Data.Title

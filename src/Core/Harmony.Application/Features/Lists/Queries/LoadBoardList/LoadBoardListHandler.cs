@@ -12,21 +12,24 @@ using System.Collections.Generic;
 
 namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
 {
-    public class GetBoardsHandler : IRequestHandler<LoadBoardListQuery, IResult<List<CardDto>>>
+    /// <summary>
+    /// Handler for returning board list cards
+    /// </summary>
+    public class GetBoardListHandler : IRequestHandler<LoadBoardListQuery, IResult<List<CardDto>>>
     {
         private readonly IBoardRepository _boardRepository;
         private readonly IBoardListRepository _boardListRepository;
         private readonly IBoardService _boardService;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IStringLocalizer<GetBoardsHandler> _localizer;
+        private readonly IStringLocalizer<GetBoardListHandler> _localizer;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public GetBoardsHandler(IBoardRepository boardRepository,
+        public GetBoardListHandler(IBoardRepository boardRepository,
             IBoardListRepository boardListRepository,
             IBoardService boardService,
             ICurrentUserService currentUserService,
-            IStringLocalizer<GetBoardsHandler> localizer,
+            IStringLocalizer<GetBoardListHandler> localizer,
             IUserService userService,
             IMapper mapper)
         {

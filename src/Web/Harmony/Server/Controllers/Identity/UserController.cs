@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Identity
 {
-    //[Authorize]
+    /// <summary>
+    /// Controller for User operations
+    /// </summary>
     [Route("api/identity/user")]
     [ApiController]
     public class UserController : ControllerBase
@@ -17,11 +19,6 @@ namespace Harmony.Server.Controllers.Identity
             _userService = userService;
         }
 
-        /// <summary>
-        /// Get Users Details
-        /// </summary>
-        /// <returns>Status 200 OK</returns>
-        //[Authorize(Policy = Permissions.Users.View)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -29,12 +26,6 @@ namespace Harmony.Server.Controllers.Identity
             return Ok(users);
         }
 
-        /// <summary>
-        /// Get User By Id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Status 200 OK</returns>
-        //[Authorize(Policy = Permissions.Users.View)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -42,12 +33,6 @@ namespace Harmony.Server.Controllers.Identity
             return Ok(user);
         }
 
-        /// <summary>
-        /// Get User Roles By Id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Status 200 OK</returns>
-        //[Authorize(Policy = Permissions.Users.View)]
         [HttpGet("roles/{id}")]
         public async Task<IActionResult> GetRolesAsync(string id)
         {
@@ -55,23 +40,12 @@ namespace Harmony.Server.Controllers.Identity
             return Ok(userRoles);
         }
 
-        /// <summary>
-        /// Update Roles for User
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>Status 200 OK</returns>
-        //[Authorize(Policy = Permissions.Users.Edit)]
         [HttpPut("roles/{id}")]
         public async Task<IActionResult> UpdateRolesAsync(UpdateUserRolesRequest request)
         {
             return Ok(await _userService.UpdateRolesAsync(request));
         }
 
-        /// <summary>
-        /// Register a User
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>Status 200 OK</returns>
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterRequest request)
@@ -80,12 +54,6 @@ namespace Harmony.Server.Controllers.Identity
             return Ok(await _userService.RegisterAsync(request, origin));
         }
 
-        /// <summary>
-        /// Confirm Email
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="code"></param>
-        /// <returns>Status 200 OK</returns>
         [HttpGet("confirm-email")]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)

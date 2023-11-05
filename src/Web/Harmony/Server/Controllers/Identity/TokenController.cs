@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Identity
 {
+    /// <summary>
+    /// Controller for token operations
+    /// </summary>
     [Route("api/identity/token")]
     [ApiController]
     public class TokenController : ControllerBase

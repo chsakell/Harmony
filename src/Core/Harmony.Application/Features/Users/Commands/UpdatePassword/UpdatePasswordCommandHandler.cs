@@ -19,6 +19,9 @@ using System.Net.Mail;
 
 namespace Harmony.Application.Features.Users.Commands.UpdatePassword
 {
+    /// <summary>
+    /// Handler for updating password
+    /// </summary>
     public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordCommand, Result<UpdatePasswordResponse>>
     {
         private readonly IAccountService _accountService;

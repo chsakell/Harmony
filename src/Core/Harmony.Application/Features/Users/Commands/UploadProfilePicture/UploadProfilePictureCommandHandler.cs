@@ -17,6 +17,9 @@ using System.Net.Mail;
 
 namespace Harmony.Application.Features.Users.Commands.UploadProfilePicture
 {
+    /// <summary>
+    /// Hanlder for uploading profile picture
+    /// </summary>
     public class UploadProfilePictureCommandHandler : IRequestHandler<UploadProfilePictureCommand, Result<UploadProfilePictureResponse>>
     {
         private readonly IUploadService _uploadService;

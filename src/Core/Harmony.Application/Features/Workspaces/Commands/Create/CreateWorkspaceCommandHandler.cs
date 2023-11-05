@@ -9,6 +9,9 @@ using AutoMapper;
 
 namespace Harmony.Application.Features.Workspaces.Commands.Create
 {
+    /// <summary>
+    /// Handler for creating workspace
+    /// </summary>
     public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceCommand, Result<WorkspaceDto>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;

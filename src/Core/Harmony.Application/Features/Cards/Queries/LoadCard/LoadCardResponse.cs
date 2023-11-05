@@ -3,6 +3,9 @@ using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Queries.LoadCard
 {
+    /// <summary>
+    /// Response for loading card
+    /// </summary>
     public class LoadCardResponse
     {
         public string Title { get; set; }

@@ -19,6 +19,9 @@ using System.Net.Mail;
 
 namespace Harmony.Application.Features.Users.Commands.UpdateProfile
 {
+    /// <summary>
+    /// Handler for updating profile
+    /// </summary>
     public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, Result<UpdateProfileResponse>>
     {
         private readonly IAccountService _accountService;

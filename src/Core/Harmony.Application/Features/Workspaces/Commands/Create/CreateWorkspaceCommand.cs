@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Workspaces.Commands.Create
 {
+    /// <summary>
+    /// Command for creating workspace
+    /// </summary>
     public class CreateWorkspaceCommand : IRequest<Result<WorkspaceDto>>
     {
         [Required]

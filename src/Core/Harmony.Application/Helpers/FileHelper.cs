@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.Helpers
 {
+    /// <summary>
+    /// Helper functions for files
+    /// </summary>
     public class FileHelper
     {
         public static readonly List<string> ImageExtensions = new List<string> { ".JPG", ".JPEG", ".JPE", ".BMP", ".GIF", ".PNG" };

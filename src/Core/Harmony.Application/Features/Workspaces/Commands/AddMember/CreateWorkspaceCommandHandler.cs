@@ -7,6 +7,9 @@ using Harmony.Application.Contracts.Services;
 
 namespace Harmony.Application.Features.Workspaces.Commands.AddMember
 {
+    /// <summary>
+    /// Handler for adding workspace member
+    /// </summary>
     public class AddWorkspaceMemberCommandHandler : IRequestHandler<AddWorkspaceMemberCommand, Result<bool>>
     {
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;

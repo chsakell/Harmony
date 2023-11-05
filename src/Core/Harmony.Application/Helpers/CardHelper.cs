@@ -1,5 +1,8 @@
 ﻿namespace Harmony.Application.Helpers
 {
+    /// <summary>
+    /// Helper functions for cards
+    /// </summary>
     public class CardHelper
     {
         public static string DisplayDates(DateTime? startDate, DateTime? dueDate)

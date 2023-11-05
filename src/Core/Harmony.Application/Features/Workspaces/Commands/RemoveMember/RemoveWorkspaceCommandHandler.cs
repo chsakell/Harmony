@@ -6,6 +6,9 @@ using Harmony.Application.Contracts.Services;
 
 namespace Harmony.Application.Features.Workspaces.Commands.RemoveMember
 {
+    /// <summary>
+    /// Handler for removing a workspace member
+    /// </summary>
     public class RemoveWorkspaceMemberCommandHandler : IRequestHandler<RemoveWorkspaceMemberCommand, Result<bool>>
     {
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;

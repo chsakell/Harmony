@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Users.Commands.UpdatePassword;
 
+/// <summary>
+/// Command for updating password
+/// </summary>
 public class UpdatePasswordCommand : IRequest<Result<UpdatePasswordResponse>>
 {
     [Required]

@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Users.Commands.UpdateProfile;
 
+/// <summary>
+/// Command for updating profile
+/// </summary>
 public class UpdateProfileCommand : IRequest<Result<UpdateProfileResponse>>
 {
     public string FirstName { get; set; }

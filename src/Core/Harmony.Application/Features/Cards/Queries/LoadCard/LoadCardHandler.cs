@@ -10,6 +10,9 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Cards.Queries.LoadCard
 {
+    /// <summary>
+    /// Handler for loading card
+    /// </summary>
     public class LoadCardHandler : IRequestHandler<LoadCardQuery, IResult<LoadCardResponse>>
     {
         private readonly ICardRepository _cardRepository;
