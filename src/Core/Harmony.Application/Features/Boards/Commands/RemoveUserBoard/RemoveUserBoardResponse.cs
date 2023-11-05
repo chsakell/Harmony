@@ -1,5 +1,8 @@
 ﻿namespace Harmony.Application.Features.Boards.Commands.RemoveUserBoard
 {
+    /// <summary>
+    /// Response for board member removal
+    /// </summary>
     public class RemoveUserBoardResponse 
     {
         public RemoveUserBoardResponse(Guid boardId, string userId)

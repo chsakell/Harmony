@@ -8,6 +8,9 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Boards.Queries.GetBoardUsers
 {
+    /// <summary>
+    /// Handler for getting a board's users
+    /// </summary>
     public class GetBoardUsersHandler : IRequestHandler<GetBoardUsersQuery, Result<List<UserBoardResponse>>>
     {
         private readonly IUserBoardRepository _userBoardRepository;

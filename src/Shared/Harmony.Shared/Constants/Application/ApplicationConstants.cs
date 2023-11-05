@@ -1,5 +1,8 @@
 ﻿namespace Harmony.Shared.Constants.Application
 {
+    /// <summary>
+    /// Application constants
+    /// </summary>
     public static class ApplicationConstants
     {
         public static class SignalR
@@ -8,6 +11,7 @@
 
             public const string ListenForBoardEvents = "ListenForBoardEvents";
 
+            // Board events
             public const string OnBoardListAdded = "OnBoardListAdded";
             public const string OnBoardListTitleChanged = "OnBoardListTitleChanged";
             public const string OnBoardListsPositionsChanged = "OnBoardListsPositionsChanged";

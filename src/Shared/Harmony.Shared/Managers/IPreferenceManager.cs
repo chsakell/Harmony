@@ -3,6 +3,9 @@ using Harmony.Shared.Wrapper;
 
 namespace Harmony.Shared.Managers
 {
+    /// <summary>
+    /// Preference manager for client settings
+    /// </summary>
     public interface IPreferenceManager
     {
         Task SetPreference(IPreference preference);

@@ -9,6 +9,9 @@ using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
+    /// <summary>
+    /// Handler for creating boards
+    /// </summary>
     public class CreateBoardCommandHandler : IRequestHandler<CreateBoardCommand, Result<Guid>>
     {
         private readonly IBoardRepository _boardRepository;

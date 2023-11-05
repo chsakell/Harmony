@@ -3,6 +3,9 @@ using MediatR;
 
 namespace Harmony.Application.Features.Boards.Queries.Get
 {
+    /// <summary>
+    /// Query for getting a board
+    /// </summary>
     public class GetBoardQuery : IRequest<IResult<GetBoardResponse>>
     {
         public Guid BoardId { get; set; }

@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Harmony.Persistence.Converters
 {
+    /// <summary>
+    /// Custom converter for activity types
+    /// </summary>
     public class CardActivityTypeConverter : ValueConverter<CardActivityType, string>
     {
         public CardActivityTypeConverter() : base(value => MapActivityTypeToString(value),

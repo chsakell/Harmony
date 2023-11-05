@@ -6,6 +6,9 @@ using Harmony.Application.Contracts.Services;
 
 namespace Harmony.Application.Features.Boards.Commands.RemoveUserBoard
 {
+    /// <summary>
+    /// Handler for removing a member for a board
+    /// </summary>
     public class RemoveUserBoardCommandHandler : IRequestHandler<RemoveUserBoardCommand, Result<RemoveUserBoardResponse>>
     {
         private readonly IUserBoardRepository _userBoardRepository;

@@ -1,5 +1,8 @@
 ﻿namespace Harmony.Shared.Wrapper
 {
+    /// <summary>
+    /// Class to represent an operation result
+    /// </summary>
     public class Result : IResult
     {
         public Result()

@@ -2,6 +2,9 @@
 
 namespace Harmony.Application.Features.Boards.Queries.Get
 {
+    /// <summary>
+    /// Response for getting a board
+    /// </summary>
     public class GetBoardResponse
     {
         public string Title { get; set; }

@@ -1,5 +1,9 @@
 ﻿namespace Harmony.Shared.Wrapper
 {
+    /// <summary>
+    /// Result format for pagination results
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PaginatedResult<T> : Result
     {
         public PaginatedResult(List<T> data)

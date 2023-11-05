@@ -8,6 +8,9 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Boards.Queries.SearchBoardUsers
 {
+    /// <summary>
+    /// Handler for searching a board's users
+    /// </summary>
     public class SearchBoardUsersUsersHandler : IRequestHandler<SearchBoardUsersQuery, Result<List<SearchBoardUserResponse>>>
     {
         private readonly IUserBoardRepository _userBoardRepository;

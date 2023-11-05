@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Harmony.Persistence.Identity
 {
+    /// <summary>
+    /// Customer identity role
+    /// </summary>
     public class HarmonyRole : IdentityRole, IAuditableEntity<string>
     {
         public string Description { get; set; }

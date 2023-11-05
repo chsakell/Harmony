@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Persistence.DbContext
 {
+    /// <summary>
+    /// The DbContext for Harmony
+    /// </summary>
     public class HarmonyContext : AppIdentityContext
     {
         public DbSet<Workspace> Workspaces { get; set; }

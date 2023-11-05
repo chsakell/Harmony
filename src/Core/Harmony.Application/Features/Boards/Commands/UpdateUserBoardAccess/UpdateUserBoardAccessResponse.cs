@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess
 {
+    /// <summary>
+    /// Response for assigning access level to a board member
+    /// </summary>
     public class UpdateUserBoardAccessResponse
     {
         public Guid BoardId { get; set; }

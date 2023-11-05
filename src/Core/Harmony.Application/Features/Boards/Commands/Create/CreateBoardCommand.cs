@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
+    /// <summary>
+    /// Command to create board
+    /// </summary>
     public class CreateBoardCommand : IRequest<Result<Guid>>
     {
         [Required]

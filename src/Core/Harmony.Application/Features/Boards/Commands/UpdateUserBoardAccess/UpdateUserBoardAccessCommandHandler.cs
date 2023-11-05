@@ -10,6 +10,9 @@ using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 
 namespace Harmony.Application.Features.Boards.Commands.SetUserBoardAccess
 {
+    /// <summary>
+    /// Handler to assign access level to a board member
+    /// </summary>
     public class UpdateUserBoardAccessCommandHandler : IRequestHandler<UpdateUserBoardAccessCommand, Result<UpdateUserBoardAccessResponse>>
     {
         private readonly IUserBoardRepository _userBoardRepository;

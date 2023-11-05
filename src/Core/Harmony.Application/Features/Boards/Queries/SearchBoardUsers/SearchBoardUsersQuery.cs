@@ -3,6 +3,9 @@ using MediatR;
 
 namespace Harmony.Application.Features.Boards.Queries.SearchBoardUsers
 {
+    /// <summary>
+    /// Query for searching a board's users
+    /// </summary>
     public class SearchBoardUsersQuery : IRequest<Result<List<SearchBoardUserResponse>>>
     {
         public Guid BoardId { get; set; }

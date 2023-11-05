@@ -10,6 +10,9 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Boards.Queries.Get
 {
+    /// <summary>
+    /// Handler for getting a board
+    /// </summary>
     public class GetBoardsHandler : IRequestHandler<GetBoardQuery, IResult<GetBoardResponse>>
     {
         private readonly IBoardRepository _boardRepository;

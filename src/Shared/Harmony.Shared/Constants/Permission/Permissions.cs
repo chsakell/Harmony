@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace Harmony.Shared.Constants.Permission
 {
+    /// <summary>
+    /// Permissions
+    /// </summary>
     public static class Permissions
     {
         [DisplayName("Users")]

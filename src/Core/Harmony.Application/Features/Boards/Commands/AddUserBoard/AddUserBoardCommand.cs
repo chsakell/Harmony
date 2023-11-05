@@ -5,6 +5,9 @@ using MediatR;
 
 namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
 {
+    /// <summary>
+    /// Command to add a user to a board
+    /// </summary>
     public class AddUserBoardCommand : IRequest<Result<UserBoardResponse>>
     {
         public AddUserBoardCommand(Guid boardId, string userId, UserBoardAccess access)

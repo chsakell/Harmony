@@ -9,29 +9,26 @@ using Harmony.Application.Features.Workspaces.Commands.AddMember;
 
 namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
 {
+    /// <summary>
+    /// Handler for adding a user to a board
+    /// </summary>
     public class AddUserBoardCommandHandler : IRequestHandler<AddUserBoardCommand, Result<UserBoardResponse>>
     {
-        private readonly IBoardRepository _boardRepository;
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IBoardLabelRepository _boardLabelRepository;
         private readonly ISender _sender;
         private readonly IStringLocalizer<AddUserBoardCommandHandler> _localizer;
 
-        public AddUserBoardCommandHandler(IBoardRepository boardRepository,
-            IUserBoardRepository userBoardRepository,
+        public AddUserBoardCommandHandler(IUserBoardRepository userBoardRepository,
             IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
-            IBoardLabelRepository boardLabelRepository,
             ISender sender,
             IStringLocalizer<AddUserBoardCommandHandler> localizer)
         {
-            _boardRepository = boardRepository;
             _userBoardRepository = userBoardRepository;
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
-            _boardLabelRepository = boardLabelRepository;
             _sender = sender;
             _localizer = localizer;
         }

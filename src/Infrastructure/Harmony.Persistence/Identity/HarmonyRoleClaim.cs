@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Harmony.Persistence.Identity
 {
+    /// <summary>
+    /// Custom role claim
+    /// </summary>
     public class HarmonyRoleClaim : IdentityRoleClaim<string>, IAuditableEntity<int>
     {
         public string Description { get; set; }

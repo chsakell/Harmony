@@ -1,5 +1,8 @@
 ﻿namespace Harmony.Shared.Constants.Application
 {
+    /// <summary>
+    /// Default labels for boards
+    /// </summary>
     public static class LabelColorsConstants
     {
         public const string GREEN = "#216e4e";
