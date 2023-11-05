@@ -32,7 +32,16 @@ else
                         <ItemTemplate>
                             <MudPaper Class="pa-4">
                                 <MudStack Row="true">
-                                    <MudAvatar Color="Color.Secondary">@(context.FirstName[0])</MudAvatar>
+                                    <MudAvatar Color="Color.Secondary">
+                                        @if (string.IsNullOrEmpty(context.ProfilePictureDataUrl))
+                                        {
+                                            @context.FirstName[0]@context.LastName[0]
+                                        }
+                                        else
+                                        {
+                                            <MudImage Src="@context.ProfilePictureDataUrl" />
+                                        }
+                                    </MudAvatar>
                                         <MudStack Justify="Justify.Center" Spacing="0">
                                             <MudText Typo="Typo.body1">@context.FullName</MudText>
                                             <MudText Typo="Typo.body2">@@@context.UserName</MudText>
@@ -67,7 +76,16 @@ else
                 <MudPaper Class="pa-4 mb-2">
                     <MudStack Row="true" Justify="Justify.SpaceBetween">
                         <MudStack Row="true" Class="align-center">
-                            <MudAvatar Color="Color.Secondary">@(member.FirstName[0])</MudAvatar>
+                            <MudAvatar Color="Color.Secondary">
+                                @if (string.IsNullOrEmpty(member.ProfilePictureDataUrl))
+                                {
+                                    @member.FirstName[0]@member.LastName[0]
+                                }
+                                else
+                                {
+                                    <MudImage Src="@member.ProfilePictureDataUrl" />
+                                }
+                            </MudAvatar>
                                 <MudStack Justify="Justify.Center" Spacing="0">
                                     <MudText Typo="Typo.body1">@member.FullName</MudText>
                                     <MudText Typo="Typo.body2">@@@member.UserName</MudText>

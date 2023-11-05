@@ -173,7 +173,16 @@ else
                                         <MudAvatarGroup Max="2" Spacing="2" MaxColor="Color.Primary" MaxSize="Size.Small">
                                             @foreach (var member in context.Members)
                                             {
-                                                <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                                if (string.IsNullOrEmpty(member.ProfilePictureDataUrl))
+                                                {
+                                                    <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                                }
+                                                else
+                                                {
+                                                    <MudAvatar Size="Size.Small" Color="Color.Default">
+                                                        <MudImage Src="@member.ProfilePictureDataUrl" title="@member.FullName" />
+                                                    </MudAvatar>
+                                                }
                                             }
                                         </MudAvatarGroup>
                                     }

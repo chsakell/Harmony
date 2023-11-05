@@ -27,7 +27,16 @@ else
                             @foreach (var member in _card.Members)
                             {
                                 <MudTooltip Text="@member.FullName">
-                                    <MudAvatar Size="Size.Medium" Color="Color.Info">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                    <MudAvatar Size="Size.Medium" Color="Color.Info">
+                                        @if(string.IsNullOrEmpty(member.ProfilePictureDataUrl))
+                                        {
+                                            @member.FirstName[0]@member.LastName[0]
+                                        }
+                                        else
+                                        {
+                                            <MudImage Src="@member.ProfilePictureDataUrl" title="@member.FullName" />
+                                        }
+                                    </MudAvatar>
                                 </MudTooltip>
                             }
                         </MudAvatarGroup>
