@@ -8,6 +8,10 @@ using System.Text.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {
+    /// <summary>
+    /// Manager for connecting via SignalR
+    /// Subscribes to board events and invoke event handlers to subscribers
+    /// </summary>
     public class HubSubscriptionManager : IHubSubscriptionManager
     {
         private HubConnection _hubConnection;

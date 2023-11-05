@@ -8,6 +8,9 @@ using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
+    /// <summary>
+    /// Client manager for labels
+    /// </summary>
     public class LabelManager : ILabelManager
     {
         private readonly HttpClient _httpClient;

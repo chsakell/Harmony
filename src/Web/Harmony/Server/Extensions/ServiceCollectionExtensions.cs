@@ -101,8 +101,6 @@ namespace Harmony.Server.Extensions
                         ClockSkew = TimeSpan.Zero
                     };
 
-                    //var localizer = await GetRegisteredServerLocalizerAsync<ServerCommonResources>(services);
-
                     bearer.Events = new JwtBearerEvents
                     {
                         OnMessageReceived = context =>
@@ -232,11 +230,6 @@ namespace Harmony.Server.Extensions
         {
             services.AddSwaggerGen(async c =>
             {
-                //TODO - Lowercase Swagger Documents
-                //c.DocumentFilter<LowercaseDocumentFilter>();
-                //Refer - https://gist.github.com/rafalkasa/01d5e3b265e5aa075678e0adfd54e23f
-
-                // include all project's xml comments
                 var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
@@ -256,8 +249,6 @@ namespace Harmony.Server.Extensions
                     Version = "v1",
                     Title = "Harmony"
                 });
-
-                //var localizer = await GetRegisteredServerLocalizerAsync<ServerCommonResources>(services);
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -285,13 +276,6 @@ namespace Harmony.Server.Extensions
                     },
                 });
             });
-        }
-
-        // we don't need this
-        internal static IServiceCollection AddServerLocalization(this IServiceCollection services)
-        {
-            //services.TryAddScoped(typeof(IStringLocalizer<>), typeof(ServerLocalizer<>));
-            return services;
         }
     }
 }

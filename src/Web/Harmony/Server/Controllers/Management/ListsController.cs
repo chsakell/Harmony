@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
 {
+    /// <summary>
+    /// Controller for List operations
+    /// </summary>
     public class ListsController : BaseApiController<ListsController>
     {
 

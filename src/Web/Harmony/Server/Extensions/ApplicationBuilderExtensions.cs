@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Server.Extensions
 {
+    /// <summary>
+    /// App builder extensions
+    /// </summary>
     internal static class ApplicationBuilderExtensions
     {
         internal static void ConfigureSwagger(this IApplicationBuilder app)

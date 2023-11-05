@@ -8,6 +8,9 @@ using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
+    /// <summary>
+    /// Client manager for board lists
+    /// </summary>
     public class BoardListManager : IBoardListManager
     {
         private readonly HttpClient _httpClient;

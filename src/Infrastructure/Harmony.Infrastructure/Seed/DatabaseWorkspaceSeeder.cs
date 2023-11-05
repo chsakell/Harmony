@@ -20,6 +20,9 @@ using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Infrastructure.Seed
 {
+    /// <summary>
+    /// Seeder for mock workspace/board (optional)
+    /// </summary>
     public class DatabaseWorkspaceSeeder : IDatabaseSeeder
     {
         private readonly HarmonyContext _context;

@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
 {
+    /// <summary>
+    /// Controller for Label operations
+    /// </summary>
     public class LabelsController : BaseApiController<LabelsController>
     {
         [HttpPost]

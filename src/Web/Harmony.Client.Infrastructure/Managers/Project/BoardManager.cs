@@ -17,6 +17,9 @@ using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
+    /// <summary>
+    /// Client manager for boards
+    /// </summary>
     public class BoardManager : IBoardManager
     {
         private readonly HttpClient _httpClient;

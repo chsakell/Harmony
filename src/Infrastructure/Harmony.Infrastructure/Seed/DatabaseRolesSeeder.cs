@@ -11,6 +11,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Harmony.Infrastructure.Seed
 {
+    /// <summary>
+    /// Seeder for admin and basic user roles (optional)
+    /// Adds two users
+    /// </summary>
     public class DatabaseRolesSeeder : IDatabaseSeeder
     {
         public int Order => 1;

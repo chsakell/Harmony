@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
 {
+    /// <summary>
+    /// Controller for Board List operations
+    /// </summary>
     public class BoardListsController : BaseApiController<BoardListsController>
     {
         [HttpPut("{id:guid}/title")]

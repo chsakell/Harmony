@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
 {
+    /// <summary>
+    /// Controller for Check List items
+    /// </summary>
     public class CheckListItemsController : BaseApiController<CheckListItemsController>
     {
 

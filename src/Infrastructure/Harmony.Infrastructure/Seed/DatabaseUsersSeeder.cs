@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Harmony.Infrastructure.Seed
 {
+    /// <summary>
+    /// Seeder for mock users (optional)
+    /// </summary>
     public class DatabaseUsersSeeder : IDatabaseSeeder
     {
         public int Order => 2;

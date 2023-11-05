@@ -18,6 +18,9 @@ using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
+    /// <summary>
+    /// Client manager for cards
+    /// </summary>
     public class CardManager : ICardManager
     {
         private readonly HttpClient _httpClient;

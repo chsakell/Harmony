@@ -14,6 +14,9 @@ using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
+    /// <summary>
+    /// Client manager for workspaces
+    /// </summary>
     public class WorkspaceManager : IWorkspaceManager
     {
         private readonly HttpClient _httpClient;

@@ -7,7 +7,9 @@ using Harmony.Client.Infrastructure.Models.Board;
 
 namespace Harmony.Client.Infrastructure.Mappings
 {
-
+    /// <summary>
+    /// Automapper profile
+    /// </summary>
     public class ClientProfile : Profile
     {
         public ClientProfile()

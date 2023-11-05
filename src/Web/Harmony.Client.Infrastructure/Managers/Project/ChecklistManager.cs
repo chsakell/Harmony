@@ -9,6 +9,9 @@ using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
+    /// <summary>
+    /// Client manager for check lists
+    /// </summary>
     public class CheckListManager : ICheckListManager
     {
         private readonly HttpClient _httpClient;

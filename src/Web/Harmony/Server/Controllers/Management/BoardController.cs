@@ -12,14 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
 {
+    /// <summary>
+    /// Controller for Board operations
+    /// </summary>
     public class BoardController : BaseApiController<BoardController>
     {
-        /// <summary>
-        /// Add a Board
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns>Status 200 OK</returns>
-        //[Authorize(Policy = Permissions.Products.Create)]
         [HttpPost]
         public async Task<IActionResult> Post(CreateBoardCommand command)
         {
