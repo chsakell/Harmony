@@ -46,7 +46,7 @@ namespace Harmony.Infrastructure.Services.Identity
                 return await Result<bool>.FailAsync("User Not Found");
             }
 
-            user.ProfilePictureDataUrl = profilePicture;
+            user.ProfilePicture = profilePicture;
             var identityResult = await _userManager.UpdateAsync(user);
             var errors = identityResult.Errors.Select(e => e.Description.ToString()).ToList();
             return identityResult.Succeeded ? await Result<bool>.SuccessAsync(true) : await Result<bool>.FailAsync(errors);

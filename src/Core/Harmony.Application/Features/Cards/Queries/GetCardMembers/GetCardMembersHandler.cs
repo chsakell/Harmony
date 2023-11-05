@@ -39,7 +39,7 @@ namespace Harmony.Application.Features.Cards.Queries.GetCardMembers
                     EmailConfirmed = boardMember.EmailConfirmed,
                     FirstName = boardMember.FirstName,
                     LastName = boardMember.LastName,
-                    ProfilePictureDataUrl = boardMember.ProfilePictureDataUrl,
+                    ProfilePicture = boardMember.ProfilePicture,
                     UserName = boardMember.UserName,
                     IsMember = isCardMember
                 });

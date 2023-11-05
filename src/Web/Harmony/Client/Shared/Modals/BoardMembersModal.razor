@@ -33,13 +33,13 @@ else
                             <MudPaper Class="pa-4">
                                 <MudStack Row="true">
                                     <MudAvatar Color="Color.Secondary">
-                                        @if (string.IsNullOrEmpty(context.ProfilePictureDataUrl))
+                                        @if (string.IsNullOrEmpty(context.ProfilePicture))
                                         {
                                             @context.FirstName[0]@context.LastName[0]
                                         }
                                         else
                                         {
-                                            <MudImage Src="@context.ProfilePictureDataUrl" />
+                                            <MudImage Src="@context.ProfilePicture" />
                                         }
                                     </MudAvatar>
                                         <MudStack Justify="Justify.Center" Spacing="0">
@@ -77,13 +77,13 @@ else
                     <MudStack Row="true" Justify="Justify.SpaceBetween">
                         <MudStack Row="true" Class="align-center">
                             <MudAvatar Color="Color.Secondary">
-                                @if (string.IsNullOrEmpty(member.ProfilePictureDataUrl))
+                                @if (string.IsNullOrEmpty(member.ProfilePicture))
                                 {
                                     @member.FirstName[0]@member.LastName[0]
                                 }
                                 else
                                 {
-                                    <MudImage Src="@member.ProfilePictureDataUrl" />
+                                    <MudImage Src="@member.ProfilePicture" />
                                 }
                             </MudAvatar>
                                 <MudStack Justify="Justify.Center" Spacing="0">

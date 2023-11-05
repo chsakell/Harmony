@@ -8,9 +8,9 @@
             <MudCard Elevation="25">
                 <MudCardContent>
                     <div class="d-flex justify-center mb-4">
-                        @if (!string.IsNullOrEmpty(_user.ProfilePictureDataUrl))
+                        @if (!string.IsNullOrEmpty(_user.ProfilePicture))
                         {
-                            <MudAvatar Image="@_user.ProfilePictureDataUrl" Style="height:250px; width:250px;"> </MudAvatar>
+                            <MudAvatar Image="@_user.ProfilePicture" Style="height:250px; width:250px;"> </MudAvatar>
                         }
                         else if (!string.IsNullOrEmpty(_user.FirstName))
                         {
@@ -30,7 +30,7 @@
                                for="fileInput">
                         Upload Image
                     </MudButton>
-                    @if (!string.IsNullOrEmpty(@_user.ProfilePictureDataUrl))
+                    @if (!string.IsNullOrEmpty(@_user.ProfilePicture))
                     {
                         <MudButton Variant="Variant.Text"
                                    Color="Color.Error"

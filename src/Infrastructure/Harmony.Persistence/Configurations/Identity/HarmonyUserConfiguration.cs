@@ -13,7 +13,7 @@ namespace Harmony.Persistence.Configurations.Identity
         {
             builder.ToTable("Users", "identity");
 
-            builder.Property(u => u.ProfilePictureDataUrl).HasColumnType("text");
+            builder.Property(u => u.ProfilePicture).HasColumnType("text");
 
             // A user can create multiple workspaces and a board belongs to one user (1-M relationship)
             builder.HasMany(user => user.Workspaces)

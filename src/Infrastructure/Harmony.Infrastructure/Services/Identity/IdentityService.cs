@@ -77,7 +77,7 @@ namespace Harmony.Infrastructure.Services.Identity
             { 
                 Token = token, 
                 RefreshToken = user.RefreshToken, 
-                UserImageURL = user.ProfilePictureDataUrl 
+                UserImageURL = user.ProfilePicture 
             };
 
             return await Result<TokenResponse>.SuccessAsync(response);

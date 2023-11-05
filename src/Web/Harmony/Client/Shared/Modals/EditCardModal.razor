@@ -28,13 +28,13 @@ else
                             {
                                 <MudTooltip Text="@member.FullName">
                                     <MudAvatar Size="Size.Medium" Color="Color.Info">
-                                        @if(string.IsNullOrEmpty(member.ProfilePictureDataUrl))
+                                        @if(string.IsNullOrEmpty(member.ProfilePicture))
                                         {
                                             @member.FirstName[0]@member.LastName[0]
                                         }
                                         else
                                         {
-                                            <MudImage Src="@member.ProfilePictureDataUrl" title="@member.FullName" />
+                                            <MudImage Src="@member.ProfilePicture" title="@member.FullName" />
                                         }
                                     </MudAvatar>
                                 </MudTooltip>

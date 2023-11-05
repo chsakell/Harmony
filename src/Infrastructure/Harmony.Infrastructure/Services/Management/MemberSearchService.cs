@@ -47,7 +47,7 @@ namespace Harmony.Infrastructure.Services.Management
                             Email = user.Email,
                             FirstName = user.FirstName,
                             LastName = user.LastName,
-                            ProfilePictureDataUrl = user.ProfilePictureDataUrl,
+                            ProfilePicture = user.ProfilePicture,
                             IsMember = true
                         };
             }
@@ -68,7 +68,7 @@ namespace Harmony.Infrastructure.Services.Management
                             Email = user.Email,
                             FirstName = user.FirstName,
                             LastName = user.LastName,
-                            ProfilePictureDataUrl = user.ProfilePictureDataUrl,
+                            ProfilePicture = user.ProfilePicture,
                             IsMember = res.WorkspaceId == workspaceId
                         };
             }

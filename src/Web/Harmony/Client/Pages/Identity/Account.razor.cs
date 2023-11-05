@@ -101,7 +101,7 @@ namespace Harmony.Client.Pages.Identity
 
             if (result.Succeeded)
             {
-                _user.ProfilePictureDataUrl = result.Data.ProfilePicture;
+                _user.ProfilePicture = result.Data.ProfilePicture;
             }
 
             DisplayMessage(result);
@@ -133,7 +133,7 @@ namespace Harmony.Client.Pages.Identity
 
                 if (result.Succeeded)
                 {
-                    _user.ProfilePictureDataUrl = result.Data.ProfilePicture;
+                    _user.ProfilePicture = result.Data.ProfilePicture;
                 }
 
                 DisplayMessage(result);

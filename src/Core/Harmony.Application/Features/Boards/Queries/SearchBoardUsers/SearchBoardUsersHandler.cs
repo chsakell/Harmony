@@ -47,7 +47,7 @@ namespace Harmony.Application.Features.Boards.Queries.SearchBoardUsers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     UserName = user.UserName,
-                    ProfilePictureDataUrl = user.ProfilePictureDataUrl,
+                    ProfilePicture = user.ProfilePicture,
                 };
 
                 var boardMember = boardMembers.FirstOrDefault(boardMember => boardMember.Id == user.Id);

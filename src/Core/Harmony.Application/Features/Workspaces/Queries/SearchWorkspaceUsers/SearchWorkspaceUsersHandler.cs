@@ -28,7 +28,7 @@ namespace Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers
                     FirstName = workspaceUser.FirstName,
                     LastName = workspaceUser.LastName,
                     Email = workspaceUser.Email,
-                    ProfilePictureDataUrl   = workspaceUser.ProfilePictureDataUrl,
+                    ProfilePicture   = workspaceUser.ProfilePicture,
                     EmailConfirmed = workspaceUser.EmailConfirmed,
                     UserName = workspaceUser.UserName,
                 };

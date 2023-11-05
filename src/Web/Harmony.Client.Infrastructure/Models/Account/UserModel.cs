@@ -24,6 +24,6 @@ namespace Harmony.Client.Infrastructure.Models.Account
         [EmailAddress]
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string ProfilePictureDataUrl { get; set; }
+        public string ProfilePicture { get; set; }
     }
 }

@@ -70,7 +70,7 @@ namespace Harmony.Client.Shared.Modals
                 FirstName = _newBoardMember.FirstName,
                 LastName = _newBoardMember.LastName,
                 UserName = _newBoardMember.UserName,
-                ProfilePictureDataUrl = _newBoardMember.ProfilePictureDataUrl,
+                ProfilePicture = _newBoardMember.ProfilePicture,
                 Email = _newBoardMember.Email
             };
 

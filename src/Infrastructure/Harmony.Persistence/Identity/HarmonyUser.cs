@@ -18,7 +18,7 @@ namespace Harmony.Persistence.Identity
         public bool IsActive { get; set; }
         public string RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
-        public string ProfilePictureDataUrl { get; set; }
+        public string ProfilePicture { get; set; }
 
 
         public List<Workspace> Workspaces { get; set; } // Workspaces created by the user

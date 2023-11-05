@@ -88,7 +88,7 @@ namespace Harmony.Infrastructure.Services.Identity
             {
                 return await Result<string>.FailAsync("User Not Found");
             }
-            return await Result<string>.SuccessAsync(data: user.ProfilePictureDataUrl);
+            return await Result<string>.SuccessAsync(data: user.ProfilePicture);
         }
 
         public async Task<IResult<string>> UpdateProfilePictureAsync(UpdateProfilePictureRequest request, string userId)
@@ -96,7 +96,7 @@ namespace Harmony.Infrastructure.Services.Identity
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return await Result<string>.FailAsync(message: "User Not Found");
             var filePath = _uploadService.UploadAsync(request);
-            user.ProfilePictureDataUrl = filePath;
+            user.ProfilePicture = filePath;
             var identityResult = await _userManager.UpdateAsync(user);
             var errors = identityResult.Errors.Select(e => e.Description.ToString()).ToList();
             return identityResult.Succeeded ? await Result<string>.SuccessAsync(data: filePath) : await Result<string>.FailAsync(errors);
