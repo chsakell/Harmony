@@ -23,7 +23,7 @@ else
                     }
                     @if (_card.Members.Any())
                     {
-                        <MudAvatarGroup Max="3" Spacing="3" MaxColor="Color.Primary">
+                        <MudAvatarGroup Max="6" Spacing="3" MaxColor="Color.Primary">
                             @foreach (var member in _card.Members)
                             {
                                 <MudTooltip Text="@member.FullName">

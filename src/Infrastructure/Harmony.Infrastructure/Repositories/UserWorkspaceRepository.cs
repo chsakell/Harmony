@@ -99,7 +99,8 @@ namespace Harmony.Infrastructure.Repositories
                                             EmailConfirmed = user.EmailConfirmed,
                                             IsActive = user.IsActive,
                                             IsMember = true,
-                                            PhoneNumber = user.PhoneNumber
+                                            PhoneNumber = user.PhoneNumber,
+                                            ProfilePicture = user.ProfilePicture
                                         })
                           .ToListAsync();
 

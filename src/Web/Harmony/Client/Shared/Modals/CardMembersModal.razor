@@ -32,7 +32,16 @@ else
                         <ItemTemplate>
                             <MudPaper Class="pa-4">
                                 <MudStack Row="true">
-                                    <MudAvatar Color="Color.Secondary">@(context.FirstName[0])</MudAvatar>
+                                    <MudAvatar Color="Color.Secondary">
+                                        @if (string.IsNullOrEmpty(context.ProfilePicture))
+                                        {
+                                            @context.FirstName[0]@context.LastName[0]
+                                        }
+                                        else
+                                        {
+                                            <MudImage Src="@context.ProfilePicture" />
+                                        }
+                                    </MudAvatar>
                                         <MudStack Justify="Justify.Center" Spacing="0">
                                             <MudText Typo="Typo.body1">@context.FullName</MudText>
                                             <MudText Typo="Typo.body2">@@@context.UserName</MudText>
