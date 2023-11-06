@@ -11,5 +11,10 @@ namespace Harmony.Server.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, boardId);
         }
+
+        public async Task StopListeningForBoardEvents(string boardId)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, boardId);
+        }
     }
 }

@@ -10,6 +10,7 @@
             public const string HubUrl = "/signalRHub";
 
             public const string ListenForBoardEvents = "ListenForBoardEvents";
+            public const string StopListeningForBoardEvents = "StopListeningForBoardEvents";
 
             // Board events
             public const string OnBoardListAdded = "OnBoardListAdded";

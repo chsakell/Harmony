@@ -286,5 +286,11 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 card.TotalItemsCompleted -= totalItemsCompleted;
             }
         }
+
+        public void Dispose()
+        {
+            _boardLoading = true;
+            _board = new GetBoardResponse();
+        }
     }
 }

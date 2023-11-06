@@ -58,6 +58,22 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         {
             await _hubConnection.SendAsync(ApplicationConstants.SignalR.ListenForBoardEvents, boardId);
         }
+
+        public async Task StopListeningForBoardEvents(string boardId)
+        {
+            if (_hubConnection.State == HubConnectionState.Connected)
+            {
+                try
+                {
+                    await _hubConnection.SendAsync(ApplicationConstants.SignalR.StopListeningForBoardEvents, boardId);
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex);
+                }
+            }
+        }
+
         #endregion
 
         #region Event Handlers

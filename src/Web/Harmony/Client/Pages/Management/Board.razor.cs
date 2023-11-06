@@ -18,7 +18,7 @@ using MudBlazor;
 
 namespace Harmony.Client.Pages.Management
 {
-    public partial class Board
+    public partial class Board : IAsyncDisposable
     {
         [Parameter]
         public string Id { get; set; }
@@ -42,22 +42,7 @@ namespace Harmony.Client.Pages.Management
             {
                 KanbanStore.LoadBoard(result.Data);
 
-                _hubSubscriptionManager.OnBoardListAdded += OnBoardListAdded;
-                _hubSubscriptionManager.OnBoardListTitleChanged += OnBoardListTitleChanged;
-                _hubSubscriptionManager.OnBoardListArchived += OnBoardListArchived;
-                _hubSubscriptionManager.OnBoardListsPositionsChanged += OnBoardListsPositionsChanged;
-                _hubSubscriptionManager.OnCardItemChecked += OnCardItemChecked;
-                _hubSubscriptionManager.OnCardItemAdded += OnCardItemAdded;
-                _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
-                _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
-                _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
-                _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
-                _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
-                _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
-                _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
-                _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
-
-                await _hubSubscriptionManager.ListenForBoardEvents(Id);
+                await RegisterBoardEvents();
             }
             else
             {
@@ -66,6 +51,46 @@ namespace Harmony.Client.Pages.Management
 
                 DisplayMessage(result);
             }
+        }
+
+        private async Task RegisterBoardEvents()
+        {
+            _hubSubscriptionManager.OnBoardListAdded += OnBoardListAdded;
+            _hubSubscriptionManager.OnBoardListTitleChanged += OnBoardListTitleChanged;
+            _hubSubscriptionManager.OnBoardListArchived += OnBoardListArchived;
+            _hubSubscriptionManager.OnBoardListsPositionsChanged += OnBoardListsPositionsChanged;
+            _hubSubscriptionManager.OnCardItemChecked += OnCardItemChecked;
+            _hubSubscriptionManager.OnCardItemAdded += OnCardItemAdded;
+            _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
+            _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
+            _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
+            _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
+            _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
+            _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
+            _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
+            _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
+
+            await _hubSubscriptionManager.ListenForBoardEvents(Id);
+        }
+
+        private async Task UnRegisterBoardEvents()
+        {
+            _hubSubscriptionManager.OnBoardListAdded -= OnBoardListAdded;
+            _hubSubscriptionManager.OnBoardListTitleChanged -= OnBoardListTitleChanged;
+            _hubSubscriptionManager.OnBoardListArchived -= OnBoardListArchived;
+            _hubSubscriptionManager.OnBoardListsPositionsChanged -= OnBoardListsPositionsChanged;
+            _hubSubscriptionManager.OnCardItemChecked -= OnCardItemChecked;
+            _hubSubscriptionManager.OnCardItemAdded -= OnCardItemAdded;
+            _hubSubscriptionManager.OnCardDescriptionChanged -= OnCardDescriptionChanged;
+            _hubSubscriptionManager.OnCardTitleChanged -= OnCardTitleChanged;
+            _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
+            _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
+            _hubSubscriptionManager.OnCardAttachmentAdded -= OnCardAttachmentAdded;
+            _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
+            _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
+            _hubSubscriptionManager.OnCheckListRemoved -= OnCheckListRemoved;
+
+            await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
         }
 
         private void OnCheckListRemoved(object? sender, CheckListRemovedEvent e)
@@ -378,6 +403,17 @@ namespace Harmony.Client.Pages.Management
             {
                 _snackBar.Add(message, severity);
             }
+        }
+
+        //public async Task DisposeAsync()
+        //{
+        //    KanbanStore.Dispose();
+        //}
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            KanbanStore.Dispose();
+            await UnRegisterBoardEvents();
         }
     }
 }

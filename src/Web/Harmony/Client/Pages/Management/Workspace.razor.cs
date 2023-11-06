@@ -10,7 +10,7 @@ using MudBlazor;
 
 namespace Harmony.Client.Pages.Management
 {
-    public partial class Workspace
+    public partial class Workspace : IDisposable
     {
         [Parameter]
         public string Id { get; set; }
@@ -20,7 +20,7 @@ namespace Harmony.Client.Pages.Management
 
         private List<BoardDto> _userBoards = new List<BoardDto>();
         private List<BoardActivityDto> _boardActivities = new List<BoardActivityDto>();
-        private bool _userBoardsLoading;
+        private bool _userBoardsLoading = true;
 
         protected override void OnInitialized()
         {
@@ -82,6 +82,12 @@ namespace Harmony.Client.Pages.Management
             }
 
             _userBoardsLoading = false;
+        }
+
+        public void Dispose()
+        {
+            _boardManager.OnBoardCreated -= BoardManager_OnBoardCreated;
+            _userBoardsLoading = true;
         }
     }
 }

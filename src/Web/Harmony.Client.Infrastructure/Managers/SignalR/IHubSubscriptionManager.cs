@@ -12,6 +12,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
 
         #region Listeners
         Task ListenForBoardEvents(string boardId);
+        Task StopListeningForBoardEvents(string boardId);
         #endregion
 
         #region Events
