@@ -111,6 +111,13 @@ namespace Harmony.Server.Services
                     new CardMemberAddedEvent(cardId, cardMember));
         }
 
+        public async Task RemoveCardMember(Guid boardId, Guid cardId, CardMemberDto cardMember)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardMemberRemoved,
+                    new CardMemberRemovedEvent(cardId, cardMember));
+        }
+
         public async Task RemoveCheckList(Guid boardId, Guid checkListId, Guid cardId, int totalItems, int totalItemsCompleted)
         {
             await _hubContext.Clients.Group(boardId.ToString())

@@ -274,6 +274,20 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
+        public void RemoveCardMember(Guid cardId, CardMemberDto cardMember)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                var memberToRemove = card.Members.FirstOrDefault(l => l.Id == cardMember.Id); ;
+                if (memberToRemove != null)
+                {
+                    card.Members.Remove(memberToRemove);
+                }
+            }
+        }
+
         public void ReduceCardProgress(Guid cardId, int totalItems, int totalItemsCompleted)
         {
             var card = _board.Lists

@@ -22,6 +22,7 @@
             public const string OnCardDatesChanged = "OnCardDatesChanged";
             public const string OnCardLabelToggled = "OnCardLabelToggled";
             public const string OnCardMemberAdded = "OnCardMemberAdded";
+            public const string OnCardMemberRemoved = "OnCardMemberRemoved";
             public const string OnCardAttachmentAdded = "OnCardAttachmentAdded";
             public const string OnCardItemAdded = "OnCardItemAdded";
             public const string OnCardItemChecked = "OnCardItemChecked";

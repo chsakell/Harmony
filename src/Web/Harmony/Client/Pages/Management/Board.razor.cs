@@ -68,6 +68,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
             _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
 
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
@@ -88,6 +89,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardAttachmentAdded -= OnCardAttachmentAdded;
             _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
             _hubSubscriptionManager.OnCheckListRemoved -= OnCheckListRemoved;
 
             await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
@@ -102,6 +104,12 @@ namespace Harmony.Client.Pages.Management
         private void OnCardMemberAdded(object? sender, CardMemberAddedEvent e)
         {
             KanbanStore.AddCardMember(e.CardId, e.Member);
+            _dropContainer.Refresh();
+        }
+
+        private void OnCardMemberRemoved(object? sender, CardMemberRemovedEvent e)
+        {
+            KanbanStore.RemoveCardMember(e.CardId, e.Member);
             _dropContainer.Refresh();
         }
 
