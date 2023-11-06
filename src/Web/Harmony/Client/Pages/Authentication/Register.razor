@@ -3,6 +3,7 @@
 @attribute [AllowAnonymous]
 
 <EditForm Model="@_registerUserModel" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
     <MudGrid>
         <MudItem xs="12">
             <div class="d-flex justify-center">

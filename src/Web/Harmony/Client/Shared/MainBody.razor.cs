@@ -110,7 +110,7 @@ namespace Harmony.Client.Shared
         {
             var parameters = new DialogParameters
             {
-                {nameof(Dialogs.Logout.ContentText), $"{"Logout Confirmation"}"},
+                {nameof(Dialogs.Logout.ContentText), $"{"Are you sure you want to logout?"}"},
                 {nameof(Dialogs.Logout.ButtonText), $"{"Logout"}"},
                 {nameof(Dialogs.Logout.Color), Color.Error},
                 {nameof(Dialogs.Logout.CurrentUserId), CurrentUserId},
