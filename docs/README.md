@@ -2,6 +2,8 @@
 
 > Bring harmony to your teams with the `Harmony` __Project management tool__. 
 
+![Kanban](./images/harmony_full_board_12_light.png)
+
 ## Features
 
 1. Create __workspaces__ to organize different departements in your organization _(e.g. Engineering, Marketing, etc)_

@@ -1,5 +1,7 @@
 ## Example migrations (add/remove/update)
 
+When running migrations through Visual Studio, open the `Package Manager Console` and set the `Default project` to __src\Infrastructure\Harmony.Persistence__.
+
 ```
 Add-Migration Initial -Context HarmonyContext -StartUpProject Harmony.Server -v
 ```

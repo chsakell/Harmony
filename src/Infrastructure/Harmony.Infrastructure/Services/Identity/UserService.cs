@@ -107,8 +107,8 @@ namespace Harmony.Infrastructure.Services.Identity
                 LastName = request.LastName,
                 UserName = request.UserName,
                 PhoneNumber = request.PhoneNumber,
-                IsActive = request.ActivateUser,
-                EmailConfirmed = request.AutoConfirmEmail
+                IsActive = true, //request.ActivateUser,
+                EmailConfirmed = true //request.AutoConfirmEmail
             };
 
             if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
