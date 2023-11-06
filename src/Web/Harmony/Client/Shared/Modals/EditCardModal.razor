@@ -43,12 +43,12 @@ else
                     }
                     @if (_card.Labels.Any())
                     {
-                        <MudPaper Class="d-flex flex-wrap" MaxWidth="200px" Elevation="0">
+                        <MudPaper Class="d-flex flex-wrap" Elevation="0">
                             @foreach (var label in _card.Labels)
                             {
                                 <MudTooltip Text="@label.Title">
                                     <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
-                                              Height="10px" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
+                                              Height="100%" Width="50px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
                                 </MudTooltip>
                             }
                         </MudPaper>
