@@ -43,6 +43,8 @@ namespace Harmony.Infrastructure.Seed
         private List<Label> _boardLabels = new List<Label>();
         public int Order => 3;
 
+        private bool _active = false;
+
         public DatabaseWorkspaceSeeder(HarmonyContext context,
             ISender sender,
             IWorkspaceRepository workspaceRepository,
@@ -72,6 +74,11 @@ namespace Harmony.Infrastructure.Seed
 
         public async Task Initialize()
         {
+            if(!_active)
+            {
+                return;
+            }
+
             _admin = await _userManager.FindByEmailAsync("admin@harmony.com");
 
             await CreateWorkspace();

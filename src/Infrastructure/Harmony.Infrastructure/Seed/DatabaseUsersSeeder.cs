@@ -23,6 +23,8 @@ namespace Harmony.Infrastructure.Seed
         private readonly UserManager<HarmonyUser> _userManager;
         private readonly RoleManager<HarmonyRole> _roleManager;
 
+        private bool _active;
+
         public DatabaseUsersSeeder(
             UserManager<HarmonyUser> userManager,
             RoleManager<HarmonyRole> roleManager,
@@ -39,6 +41,11 @@ namespace Harmony.Infrastructure.Seed
 
         public async Task Initialize()
         {
+            if (!_active)
+            {
+                return;
+            }
+
             _db.Database.EnsureCreated();
 
             await AddBasicUsers();
