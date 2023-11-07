@@ -17,3 +17,9 @@ Update-Database -Context HarmonyContext -StartUpProject Harmony.Server -v
 ```
 dotnet ef database update --context HarmonyContext --startup-project "../../Web/Harmony/Server/Harmony.Server.csproj"
 ```
+
+## Notes
+In case you decide for some reason to clean/remove the migrations folder, make sure to keep the following migrations which add two stored procedures.
+
+1. `20231031152602_LoadBoardSp`
+2. `20231104191204_LoadBoardListCardsSp`
