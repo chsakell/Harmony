@@ -1,7 +1,7 @@
 ﻿@using System.Linq.Expressions;
 @if (_editing)
 {
-    <MudForm @ref="_form" Style="@Style" IsValidChanged="FormValidChanged">
+    <MudForm @ref="_form" Style="@Style" IsValidChanged="FormValidChanged" @onkeydown="OnEnter">
         <MudStack Row="true">
             <MudTextField Immediate="true" @ref="_textReference" Class="editable-text"
                           For="For" @bind-Value="Text" DisableUnderLine="true"
@@ -65,7 +65,15 @@ else
                 return _form.IsValid && !_isSaving;
             }
 
-            return _form.IsValid && !_originalText.Equals(Text) && !_isSaving;
+            return _form.IsValid && !_originalText.Equals(Text.Trim()) && !_isSaving;
+        }
+    }
+
+    private async Task OnEnter(KeyboardEventArgs e)
+    {
+        if (IsSaveEnabled && (e.Code == "Enter" || e.Code == "NumpadEnter"))
+        {
+                await SaveValue();
         }
     }
 
