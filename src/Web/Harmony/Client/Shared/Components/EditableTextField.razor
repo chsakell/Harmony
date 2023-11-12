@@ -73,7 +73,8 @@ else
     {
         if (IsSaveEnabled && (e.Code == "Enter" || e.Code == "NumpadEnter"))
         {
-                await SaveValue();
+            await SaveValue();
+            await CancelEditing();
         }
     }
 
