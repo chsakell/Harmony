@@ -137,6 +137,7 @@ else
                 </MudContainer>
             </ChildContent>
             <ItemRenderer>
+                <span id="@context.Id.ToString()" />
                 <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
                     <MudCardHeader Class="pa-0">
                         <MudText Typo="Typo.body1">@context.Title</MudText>

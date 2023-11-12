@@ -14,7 +14,9 @@ using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Pages.Management
 {
@@ -28,6 +30,8 @@ namespace Harmony.Client.Pages.Management
 
         [Inject]
         public IKanbanStore KanbanStore { get; set; }
+
+        [Inject] private IJSRuntime JSRuntime { get; set; }
 
         private MudDropContainer<CardDto> _dropContainer;
         public bool CardDescriptionVisibility { get; set; }
@@ -343,6 +347,8 @@ namespace Harmony.Client.Pages.Management
 
                 KanbanStore.AddCardToList(cardAdded, list);
                 _dropContainer.Refresh();
+
+                await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
             }
 
             list.CreateCard.Creating = false;
