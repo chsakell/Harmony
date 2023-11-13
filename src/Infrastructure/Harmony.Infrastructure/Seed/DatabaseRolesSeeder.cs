@@ -63,8 +63,8 @@ namespace Harmony.Infrastructure.Seed
             //Check if User Exists
             var superUser = new HarmonyUser
             {
-                FirstName = "Chris",
-                LastName = "Sakellarios",
+                FirstName = "John",
+                LastName = "Smith",
                 Email = "admin@harmony.com",
                 UserName = "administrator",
                 EmailConfirmed = true,
