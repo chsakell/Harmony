@@ -276,7 +276,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = false, DisableBackdropClick = true };
             var dialog = _dialogService.Show<CreateBoardListModal>(_localizer["Create board list"], parameters, options);
             var result = await dialog.Result;
             if (!result.Canceled)
