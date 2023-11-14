@@ -3,6 +3,7 @@ using Harmony.Application.Contracts.Persistence;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Harmony.Shared.Constants.Role;
+using Harmony.Shared.Constants.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -83,7 +84,7 @@ namespace Harmony.Infrastructure.Seed
                     NormalizedUserName = userName.ToUpper(),
                     Email = faker.Person.Email,
                     EmailConfirmed = true,
-                    PasswordHash = hasher.HashPassword(null, "P@ssw0rd1"),
+                    PasswordHash = hasher.HashPassword(null, UserConstants.DefaultPassword),
                     IsActive = true
                 };
 
