@@ -24,10 +24,11 @@ using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using System.Net.Mail;
 
 namespace Harmony.Client.Shared.Modals
 {
-    public partial class EditCardModal
+    public partial class EditCardModal : IDisposable
     {
         private EditableCardModel _card = new();
         private bool _loading = true;
@@ -152,10 +153,36 @@ namespace Harmony.Client.Shared.Modals
 
             _loading = false;
 
+            RegisterEvents();
+        }
+
+        private void RegisterEvents()
+        {
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
+            _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
+        }
+
+        private void UnRegisterEvents()
+        {
+            _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
+            _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
+            _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
+            _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
+        }
+
+        private void OnCardAttachmentRemoved(object? sender, AttachmentRemovedEvent e)
+        {
+            var attachment = _card.Attachments.FirstOrDefault(x => x.Id == e.AttachmentId);
+
+            if (attachment != null)
+            {
+                _card.Attachments.Remove(attachment);
+                StateHasChanged();
+            }
         }
 
         private void OnCardLabelToggled(object? sender, CardLabelToggledEvent e)
@@ -407,11 +434,11 @@ namespace Harmony.Client.Shared.Modals
                     _card.Activities.AddRange(activityResult.Data);
                 }
             }
-            //else
-            //{
-            //    // Reset after a while to prevent sudden collapse.
-            //    Task.Delay(350).ContinueWith(t => _panelContent = null).AndForget();
-            //}
+        }
+
+        public void Dispose()
+        {
+            UnRegisterEvents();
         }
     }
 }

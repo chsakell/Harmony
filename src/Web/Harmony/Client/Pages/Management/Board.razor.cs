@@ -70,6 +70,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
+            _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
             _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
@@ -91,6 +92,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentAdded -= OnCardAttachmentAdded;
+            _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
             _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
             _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
@@ -150,6 +152,13 @@ namespace Harmony.Client.Pages.Management
         private void OnCardAttachmentAdded(object? sender, AttachmentAddedEvent e)
         {
             KanbanStore.ChangeTotalCardAttachments(e.CardId, true);
+
+            _dropContainer.Refresh();
+        }
+
+        private void OnCardAttachmentRemoved(object? sender, AttachmentRemovedEvent e)
+        {
+            KanbanStore.ChangeTotalCardAttachments(e.CardId, false);
 
             _dropContainer.Refresh();
         }

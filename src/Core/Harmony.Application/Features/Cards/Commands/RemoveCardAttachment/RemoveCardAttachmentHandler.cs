@@ -67,6 +67,10 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 
                 if (dbResult > 0)
                 {
+                    var boardId = await _cardRepository.GetBoardId(card.Id);
+
+                    await _hubClientNotifierService.RemoveCardAttachment(boardId, card.Id, command.AttachmentId);
+
                     var result = new RemoveCardAttachmentResponse(command.CardId, command.AttachmentId);
 
                     return await Result<RemoveCardAttachmentResponse>

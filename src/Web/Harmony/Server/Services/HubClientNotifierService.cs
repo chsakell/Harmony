@@ -6,6 +6,7 @@ using Harmony.Domain.Entities;
 using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.SignalR;
+using System.Net.Mail;
 using static Harmony.Application.Events.BoardListArchivedEvent;
 using static MudBlazor.CategoryTypes;
 
@@ -60,6 +61,13 @@ namespace Harmony.Server.Services
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardAttachmentAdded,
                     new AttachmentAddedEvent(cardId, attachment));
+        }
+
+        public async Task RemoveCardAttachment(Guid boardId, Guid cardId, Guid attachmentId)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardAttachmentRemoved,
+                    new AttachmentRemovedEvent(cardId, attachmentId));
         }
 
         public async Task ToggleCardListItemChecked(Guid boardId, Guid cardId, Guid listItemId, bool isChecked)

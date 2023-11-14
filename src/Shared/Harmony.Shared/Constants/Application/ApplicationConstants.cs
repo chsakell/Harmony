@@ -24,6 +24,7 @@
             public const string OnCardMemberAdded = "OnCardMemberAdded";
             public const string OnCardMemberRemoved = "OnCardMemberRemoved";
             public const string OnCardAttachmentAdded = "OnCardAttachmentAdded";
+            public const string OnCardAttachmentRemoved = "OnCardAttachmentRemoved";
             public const string OnCardItemAdded = "OnCardItemAdded";
             public const string OnCardItemChecked = "OnCardItemChecked";
             public const string OnCardLabelRemoved = "OnCardLabelRemoved";
