@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
+using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
@@ -17,6 +18,7 @@ using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -66,6 +68,37 @@ namespace Harmony.Client.Shared.Modals
                 DisplayMessage(result);
 
                 _card.UploadingAttachment = false;
+            }
+        }
+
+        private async Task RemoveAttachment(Guid attachmentId)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to delete this attachment?"},
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var command = new RemoveCardAttachmentCommand(CardId, attachmentId);
+                var result = await _cardManager.RemoveCardAttachmentAsync(command);
+
+                if (result.Succeeded)
+                {
+                    var attachment = _card.Attachments.FirstOrDefault(x => x.Id == attachmentId);
+
+                    if (attachment != null)
+                    {
+                        _card.Attachments.Remove(attachment);
+                    }
+                }
+
+                DisplayMessage(result);
             }
         }
 

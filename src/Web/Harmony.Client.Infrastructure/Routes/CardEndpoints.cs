@@ -24,5 +24,10 @@
         {
             return $"{Index}/{cardId}/members/{userId}/";
         }
+
+        public static string GetCardAttachment(Guid cardId, Guid attachmentId)
+        {
+            return $"{Index}/{cardId}/attachments/{attachmentId}/";
+        }
     }
 }

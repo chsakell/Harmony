@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
@@ -122,6 +123,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .GetCardMember(command.CardId.ToString(), command.UserId));
 
             return await response.ToResult<RemoveUserCardResponse>();
+        }
+
+        public async Task<IResult<RemoveCardAttachmentResponse>> RemoveCardAttachmentAsync(RemoveCardAttachmentCommand command)
+        {
+            var response = await _httpClient.DeleteAsync(Routes.CardEndpoints
+                .GetCardAttachment(command.CardId, command.AttachmentId));
+
+            return await response.ToResult<RemoveCardAttachmentResponse>();
         }
     }
 }

@@ -93,6 +93,9 @@ else
                                                             <MudText Typo="Typo.body1">@attachment.OriginalFileName</MudText>
                                                             <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
                                                         </MudStack>
+                                                        <MudStack Justify="Justify.Center">
+                                                            <MudIconButton Color="Color.Error" OnClick="() => RemoveAttachment(attachment.Id)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                                                        </MudStack>
                                                     </MudStack>
                                                 }
                                             </div>

@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
@@ -97,6 +98,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> RemoveMember(Guid id, string userId)
         {
             return Ok(await _mediator.Send(new RemoveUserCardCommand(id, userId)));
+        }
+
+        [HttpDelete("{id:guid}/attachments/{attachmentId:guid}")]
+        public async Task<IActionResult> DeleteAttachment(Guid id, Guid attachmentId)
+        {
+            return Ok(await _mediator.Send(new RemoveCardAttachmentCommand(id, attachmentId)));
         }
     }
 }
