@@ -30,6 +30,20 @@ namespace Harmony.Client.Shared.Modals
             MudDialog.Cancel();
         }
 
+        private async Task Clear()
+        {
+            var result = await _cardManager
+                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, null, null));
+
+            if(result.Succeeded)
+            {
+                _dateRange.Start = null;
+                _dateRange.End = null;
+            }
+
+            DisplayMessage(result);
+        }
+
         protected override async Task OnInitializedAsync()
         {
             _dateRange = new DateRange(StartDate, DueDate);

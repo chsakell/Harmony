@@ -16,6 +16,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Close"]</MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="Clear">@_localizer["Clear"]</MudButton>
         <MudButton Disabled="@(_processing)"
                    OnClick="SaveDates" Variant="Variant.Filled" Color="Color.Primary">
             @if (_processing)
