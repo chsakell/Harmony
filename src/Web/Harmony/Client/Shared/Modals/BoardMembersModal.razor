@@ -26,9 +26,6 @@ else
                 <MudToolBar>
                     <MudAutocomplete DebounceInterval="300" ShowProgressIndicator="_searching" T="SearchBoardUserResponse" Label="Search users" @bind-Value="_newBoardMember"
                                      SearchFunc="@SearchUsers" ToStringFunc="@(e=> e==null?null : $"{e.FullName} ({e.UserName})")">
-                        <BeforeItemsTemplate>
-                            <MudText Color="Color.Primary" Class="px-4 py-1">Always Shows Before List</MudText>
-                        </BeforeItemsTemplate>
                         <ItemTemplate>
                             <MudPaper Class="pa-4">
                                 <MudStack Row="true">
