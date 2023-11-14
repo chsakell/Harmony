@@ -41,6 +41,14 @@ namespace Harmony.Client.Shared
             hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage);
 
             _snackBar.Add(string.Format("Welcome {0}", FirstName), Severity.Success);
+
+            _fileManager.OnUserProfilePictureUpdated += OnUserProfilePictureUpdated;
+        }
+
+        private void OnUserProfilePictureUpdated(object? sender, Application.Events.UserProfilePictureUpdated e)
+        {
+            ImageDataUrl = e.ProfilePicture;
+            StateHasChanged();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
