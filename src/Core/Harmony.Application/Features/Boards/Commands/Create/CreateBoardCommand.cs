@@ -21,5 +21,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
         [Required]
         public string WorkspaceId { get; set; }
         public BoardVisibility Visibility { get; set; }
+
+        [Required]
+        public BoardType BoardType { get; set; }
     }
 }

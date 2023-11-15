@@ -16,5 +16,6 @@ namespace Harmony.Domain.Entities
         public List<BoardList> Lists { get; set; }
         public List<UserBoard> Users { get; set; }
         public List<Label> Labels { get; set; }
+        public BoardType Type { get; set; }
     }
 }

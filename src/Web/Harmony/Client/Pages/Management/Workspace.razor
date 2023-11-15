@@ -61,9 +61,10 @@ else
                             </MudStack>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudTooltip Text="Visibility">
-                                <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
-                            </MudTooltip>
+                            <MudStack Row="true">
+                                    <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
+                                    <MudChip Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
+                            </MudStack>
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>

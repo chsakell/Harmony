@@ -132,7 +132,8 @@ namespace Harmony.Infrastructure.Seed
                 Description = "The best project management tool ever",
                 Visibility = Domain.Enums.BoardVisibility.Workspace,
                 UserId = _admin.Id,
-                Labels = labels
+                Labels = labels,
+                Type = Domain.Enums.BoardType.Kanban
             };
 
             await _boardRepository.CreateAsync(harmonyBoard);

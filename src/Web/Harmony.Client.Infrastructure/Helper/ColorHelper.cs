@@ -20,5 +20,15 @@ namespace Harmony.Client.Infrastructure.Helper
                 _ => Color.Info,
             };
         }
+
+        public static Color GetBoardTypeColor(BoardType type)
+        {
+            return type switch
+            {
+                BoardType.Kanban => Color.Info,
+                BoardType.Scrum => Color.Tertiary,
+                _ => Color.Info,
+            };
+        }
     }
 }

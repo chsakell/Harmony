@@ -26,6 +26,8 @@ namespace Harmony.Persistence.Configurations
             builder.HasMany(board => board.Labels)
                 .WithOne(label => label.Board)
                 .HasForeignKey(label => label.BoardId);
+
+            builder.Property(b => b.Type).IsRequired();
         }
     }
 }

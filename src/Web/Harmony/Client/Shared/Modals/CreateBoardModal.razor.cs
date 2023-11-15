@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Domain.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -16,6 +17,9 @@ namespace Harmony.Client.Shared.Modals
         [Parameter]
         public Guid? FilterWorkspaceId { get; set; }
 
+        [Parameter]
+        public BoardType? Type { get; set; }
+
         private void Cancel()
         {
             MudDialog.Cancel();
@@ -28,6 +32,11 @@ namespace Harmony.Client.Shared.Modals
             if (ownedWorkspacesResult.Succeeded)
             {
                 _ownedWorkspaces = ownedWorkspacesResult.Data;
+            }
+
+            if(Type.HasValue)
+            {
+                _createBoardModel.BoardType = Type.Value;
             }
         }
 

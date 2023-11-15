@@ -14,19 +14,17 @@
         </TitleContent>
         <DialogContent>
             <MudStack Spacing="4">
-                <MudStack Row="false">
+                <MudStack Row="true">
                     <MudTextField For="@(() => _createBoardModel.Title)" @bind-Value="_createBoardModel.Title" Label="@_localizer["Title"]" />
                     <MudTextField For="@(() => _createBoardModel.Description)" @bind-Value="_createBoardModel.Description" Label="@_localizer["Description"]" />
                 </MudStack>
                 <MudStack Row="true">
-                    <MudSelect T="string" @bind-Value="@_createBoardModel.WorkspaceId"
-                               Label="Select workspace" AnchorOrigin="Origin.BottomCenter"
+                    <MudSelect T="BoardType" @bind-Value="@_createBoardModel.BoardType"
+                               Label="Type" AnchorOrigin="Origin.BottomCenter"
                                Variant="Variant.Outlined" Clearable>
-                        @foreach (var workspace in _ownedWorkspaces)
+                        @foreach (var type in Enum.GetValues<BoardType>())
                         {
-                            <MudSelectItem Value="workspace.Id.ToString()"
-                                Disabled="FilterWorkspaceId.HasValue && workspace.Id != FilterWorkspaceId.Value"
-                                >@workspace.Name</MudSelectItem>
+                            <MudSelectItem Disabled="Type.HasValue && type != Type" Value="type">@type.ToString()</MudSelectItem>
                         }
                     </MudSelect>
                     <MudSelect T="BoardVisibility" @bind-Value="@_createBoardModel.Visibility"
@@ -38,6 +36,15 @@
                         }
                     </MudSelect>
                 </MudStack>
+                <MudSelect T="string" @bind-Value="@_createBoardModel.WorkspaceId"
+                           Label="Select workspace" AnchorOrigin="Origin.BottomCenter"
+                           Variant="Variant.Outlined" Clearable>
+                    @foreach (var workspace in _ownedWorkspaces)
+                    {
+                        <MudSelectItem Value="workspace.Id.ToString()"
+                                       Disabled="FilterWorkspaceId.HasValue && workspace.Id != FilterWorkspaceId.Value">@workspace.Name</MudSelectItem>
+                    }
+                </MudSelect>
             </MudStack>
         </DialogContent>
         <DialogActions>

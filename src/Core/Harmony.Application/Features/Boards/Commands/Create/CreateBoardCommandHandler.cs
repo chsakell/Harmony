@@ -47,7 +47,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 Description = request.Description,
                 WorkspaceId = Guid.Parse(request.WorkspaceId),
                 UserId = userId,
-                Visibility = request.Visibility
+                Visibility = request.Visibility,
+                Type = request.BoardType
             };
 
             await _boardRepository.AddAsync(board);
