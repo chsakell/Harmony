@@ -1,17 +1,27 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Domain.Entities;
+using Harmony.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.Services.Management
 {
     public class CardService : ICardService
 	{
 		private readonly ICardRepository _cardRepository;
+        private readonly IBoardRepository _boardRepository;
+        private readonly IBoardListRepository _boardListRepository;
 
-		public CardService(ICardRepository cardRepository)
+        public CardService(ICardRepository cardRepository, 
+			IBoardRepository boardRepository,
+			IBoardListRepository boardListRepository)
         {
 			_cardRepository = cardRepository;
-		}
+            _boardRepository = boardRepository;
+            _boardListRepository = boardListRepository;
+        }
 
         public async Task<bool> PositionCard(Card card, Guid newListId, byte newPosition)
 		{
@@ -25,7 +35,36 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-		private async Task<bool> ReorderOtherCardsAndMove(Card card, Guid newListId, short newPosition)
+        public async Task<List<GetBacklogItemResponse>> SearchBacklog(Guid boardId, string term, int pageNumber, int pageSize)
+        {
+            IQueryable<GetBacklogItemResponse> query = null;
+
+
+			query = from card in _cardRepository.Entities
+					join boardList in _boardListRepository.Entities
+						on card.BoardListId equals boardList.Id
+					join board in _boardRepository.Entities
+						on boardList.BoardId equals board.Id
+					where (board.Id == boardId
+						&& card.Status == Domain.Enums.CardStatus.Backlog &&
+						(string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)))
+					select new GetBacklogItemResponse()
+					{
+						Id = card.Id,
+						Title = card.Title,
+						StartDate = card.StartDate,
+						DueDate = card.DueDate,
+                        SerialKey = $"{board.Key}-{card.SerialNumber}"
+					};
+
+
+			var result = await query.Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize).ToListAsync();
+
+            return result;
+        }
+
+        private async Task<bool> ReorderOtherCardsAndMove(Card card, Guid newListId, short newPosition)
 		{
 			var currentPosition = card.Position;
 

@@ -14,6 +14,8 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public IQueryable<Board> Entities => _context.Set<Board>();
+
         public async Task<Board?> GetAsync(Guid boardId)
         {
             return await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Id == boardId);

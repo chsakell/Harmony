@@ -331,7 +331,7 @@ namespace Harmony.Client.Pages.Management
 
         private void ViewBacklog()
         {
-
+            _navigationManager.NavigateTo($"/projects/{Id}/backlog");
         }
 
         private async Task OpenShareBoardModal()

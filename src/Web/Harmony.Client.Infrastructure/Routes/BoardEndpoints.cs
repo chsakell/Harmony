@@ -1,4 +1,6 @@
-﻿namespace Harmony.Client.Infrastructure.Routes
+﻿using Harmony.Domain.Entities;
+
+namespace Harmony.Client.Infrastructure.Routes
 {
     public static class BoardEndpoints
     {
@@ -37,6 +39,21 @@
         public static string BoardListPositions(string boardId)
         {
             return $"{Index}{boardId}/positions/";
+        }
+
+        public static string Backlog(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
+        {
+            var url = $"{Index}{boardId}/backlog/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";
+            
+            if (orderBy?.Any() == true)
+            {
+                foreach (var orderByPart in orderBy)
+                {
+                    url += $"{orderByPart},";
+                }
+                url = url[..^1];
+            }
+            return url;
         }
 
         public static string GetBoardList(string boardId, Guid listId, int page, int maxCards)

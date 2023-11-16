@@ -5,12 +5,15 @@ using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
+using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -111,6 +114,15 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .GetAsync(Routes.BoardEndpoints.GetBoardList(request.BoardId.ToString(), 
                     request.BoardListId, request.Page, request.PageSize));
             return await response.ToResult<List<CardDto>>();
+        }
+
+        public async Task<PaginatedResult<GetBacklogItemResponse>> GetBacklog(GetBacklogQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints
+                .Backlog(request.BoardId.ToString(), request.PageNumber, request.PageSize,
+                     request.SearchTerm, request.OrderBy));
+
+            return await response.ToPaginatedResult<GetBacklogItemResponse>();
         }
     }
 }

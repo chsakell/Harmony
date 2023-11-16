@@ -7,6 +7,7 @@ namespace Harmony.Application.Contracts.Repositories
     /// </summary>
     public interface IBoardRepository
     {
+        IQueryable<Board> Entities { get; }
         Task<Board> GetAsync(Guid boardId);
         Task<int> CreateAsync(Board Board);
         Task AddAsync(Board Board);

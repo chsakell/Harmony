@@ -2,6 +2,7 @@
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
@@ -36,6 +37,7 @@ namespace Harmony.Application.Mappings.Management
                     opt.MapFrom(c => c.Labels.Select(cl => cl.Label)))
                 .ForMember(dto => dto.TotalAttachments, opt => 
                     opt.MapFrom(c => c.Attachments != null ? c.Attachments.Count : 0));
+            CreateMap<Card, GetBacklogItemResponse>();
 
             CreateMap<CheckList, CheckListDto>();
             CreateMap<CheckListItem, CheckListItemDto>();

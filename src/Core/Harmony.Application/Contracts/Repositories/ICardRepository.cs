@@ -19,5 +19,6 @@ namespace Harmony.Application.Contracts.Repositories
 		Task<int> Update(Card card);
 		void UpdateEntry(Card Card);
         Task<int> GetNextSerialNumber(Guid boardId);
+        Task<int> CountBacklogCards(Guid boardId);
     }
 }

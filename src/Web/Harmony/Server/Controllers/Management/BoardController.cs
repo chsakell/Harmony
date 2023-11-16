@@ -8,6 +8,8 @@ using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
+using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -69,6 +71,14 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> LoadBoardListCards(Guid id, Guid listId, int page, int maxCards)
         {
             return Ok(await _mediator.Send(new LoadBoardListQuery(id, listId, page, maxCards)));
+        }
+
+        [HttpGet("{id:guid}/backlog")]
+        public async Task<IActionResult> GetBacklog(Guid id, int pageNumber, int pageSize,
+            string searchTerm = null, string orderBy = null, bool membersOnly = false)
+        {
+            return Ok(await _mediator.Send(new
+                GetBacklogQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
         }
     }
 }
