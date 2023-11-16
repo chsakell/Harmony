@@ -37,6 +37,7 @@ namespace Harmony.Client.Shared.Modals
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
+        [Parameter] public string SerialKey { get; set; }
 
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
         {

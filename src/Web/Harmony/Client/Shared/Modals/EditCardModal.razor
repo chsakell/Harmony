@@ -11,12 +11,12 @@ else
     <MudDialog>
         <TitleContent>
             <MudStack>
-                <EditableTextField Style="width:50%"
-                                    For="@(() => _card.Title)"
+                <EditableTextField Style="width:50%" For="@(() => _card.Title)"
                                    AdornmentIcon="@Icons.Material.Filled.Edit"
                                    OnSave="(newTitle) => SaveTitle(newTitle)"
                                    Text="@_card.Title" Label="@_localizer["Title"]" />
                 <MudStack Row="true">
+                    <MudChip Label="true" Color="Color.Warning">@SerialKey</MudChip>
                     @if (_card.StartDate != null || _card.DueDate != null)
                     {
                         <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(_card.StartDate, _card.DueDate)</MudChip>
@@ -28,9 +28,11 @@ else
                             {
                                 <MudTooltip Text="@member.FullName">
                                     <MudAvatar Size="Size.Medium" Color="Color.Info">
-                                        @if(string.IsNullOrEmpty(member.ProfilePicture))
+                                        @if (string.IsNullOrEmpty(member.ProfilePicture))
                                         {
-                                            @member.FirstName[0]@member.LastName[0]
+                                            @member.FirstName[0]
+
+                                            @member.LastName[0]
                                         }
                                         else
                                         {
@@ -91,12 +93,12 @@ else
                                                         }
                                                         <MudStack Justify="Justify.Center" Spacing="0">
                                                             <MudText Typo="Typo.body1">@attachment.OriginalFileName</MudText>
-                                                            <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
+                                                                <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
+                                                            </MudStack>
+                                                            <MudStack Justify="Justify.Center">
+                                                                <MudIconButton Color="Color.Error" OnClick="() => RemoveAttachment(attachment.Id)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                                                            </MudStack>
                                                         </MudStack>
-                                                        <MudStack Justify="Justify.Center">
-                                                            <MudIconButton Color="Color.Error" OnClick="() => RemoveAttachment(attachment.Id)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
-                                                        </MudStack>
-                                                    </MudStack>
                                                 }
                                             </div>
                                         </MudStack>
@@ -134,7 +136,7 @@ else
                                                         </MudPaper>
                                                         <MudPaper Class="flex-initial d-flex" Width="135px" Elevation="0" Style="margin-top:-18px">
                                                             <MudDatePicker Label="Due date" @ref="@item.DatePicker"
-                                                            @bind-Date="@item.DueDate"
+                                                                           @bind-Date="@item.DueDate"
                                                                            DateFormat="yyyy-MM-dd"
                                                                            IsDateDisabledFunc="@((DateTime dt)=>(dt < DateTime.Now))">
                                                                 <PickerActions>
@@ -161,9 +163,9 @@ else
                                                         </div>
                                                         <MudPaper Class="d-flex pa-2 justify-end">
                                                             <MudButton Size="Size.Small" StartIcon="@Icons.Material.Filled.Cancel" OnClick="() => checkList.NewItem = null">@_localizer["Cancel"]</MudButton>
-                                                            <MudButton ButtonType="ButtonType.Submit" Disabled="string.IsNullOrEmpty(checkList.NewItem.Description)" Size="Size.Small" StartIcon="@Icons.Material.Filled.Save">@_localizer["Add"]</MudButton>
-                                                        </MudPaper>
-                                                    </EditForm>
+                                                                <MudButton ButtonType="ButtonType.Submit" Disabled="string.IsNullOrEmpty(checkList.NewItem.Description)" Size="Size.Small" StartIcon="@Icons.Material.Filled.Save">@_localizer["Add"]</MudButton>
+                                                            </MudPaper>
+                                                        </EditForm>
                                                 }
                                                 else
                                                 {
@@ -189,10 +191,10 @@ else
                                                         <MudCardHeader Class="pb-0">
                                                             <CardHeaderAvatar>
                                                                 <MudAvatar Color="Color.Secondary">@(activity.Actor[0])</MudAvatar>
-                                                                </CardHeaderAvatar>
-                                                                <CardHeaderContent>
-                                                                    <MudText Typo="Typo.body1"><b>@activity.Actor</b></MudText>
-                                                                    <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
+                                                            </CardHeaderAvatar>
+                                                            <CardHeaderContent>
+                                                                <MudText Typo="Typo.body1"><b>@activity.Actor</b></MudText>
+                                                                <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
                                                                 </CardHeaderContent>
                                                             </MudCardHeader>
                                                             @if (activity.Type == CardActivityType.ImageAttachmentAdded)
@@ -227,9 +229,9 @@ else
                                                                         break;
                                                                 }
                                                                 <MudText Typo="Typo.body2" Style="margin-top:2px">@((MarkupString)activity.Activity)</MudText>
-                                                                </MudStack>
-                                                            </MudCardContent>
-                                                        </MudCard>
+                                                            </MudStack>
+                                                        </MudCardContent>
+                                                    </MudCard>
                                                 }
                                             </ChildContent>
                                         </MudExpansionPanel>
