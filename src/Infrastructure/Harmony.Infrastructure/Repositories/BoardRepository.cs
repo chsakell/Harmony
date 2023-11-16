@@ -38,6 +38,13 @@ namespace Harmony.Infrastructure.Repositories
                 .CountAsync() > 0;
         }
 
+        public async Task<bool> Exists(string key)
+        {
+            return await _context.Boards
+                .Where(b => b.Key == key)
+                .CountAsync() > 0;
+        }
+
         public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList)
         {
             return await _context.Boards

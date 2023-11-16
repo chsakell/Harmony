@@ -61,6 +61,13 @@ namespace Harmony.Client.Shared.Modals
             _processing = false;
         }
 
+        private void SetTitle(string title)
+        {
+            _createBoardModel.Title = title;
+
+            _createBoardModel.Key = title.Substring(0, 4).ToUpper();
+        }
+
         Func<WorkspaceDto, string> converter = p => p?.Name;
     }
 }

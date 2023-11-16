@@ -6,7 +6,7 @@
 {
     <Loader />
 }
-else if(!_userBoards.Any())
+else if (!_userBoards.Any())
 {
     <MudContainer Class="mt-16">
         <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Empty workspace :(</MudText>
@@ -17,35 +17,35 @@ else if(!_userBoards.Any())
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h5" Align="Align.Center">@Name</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <div class="d-flex justify-center">
-                            <MudText Typo="Typo.h5" Color="Color.Secondary">Add a board</MudText>
-                        </div>
-                        <MudList Class="mx-auto mt-4">
-                            <MudListItem Icon="@Icons.Material.Filled.Dashboard">
-                                Select <b>Create</b> -> <b>Create Board</b> and add a board to your workspace
-                            </MudListItem>
-                            <MudListItem Icon="@Icons.Material.Filled.List">
-                                Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
-                            </MudListItem>
-                            <MudListItem Icon="@Icons.Material.Filled.Share">
-                                Share your board with your team members 
-                            </MudListItem>
-                            <MudListItem Icon="@Icons.Material.Filled.Task">
-                                Add tasks to your lists and start monitor your project!
-                            </MudListItem>
-                        </MudList>
-                    </MudCardContent>
-                    <MudCardActions Class="d-flex justify-center">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;"
-                                   OnClick="OpenCreateBoardModal">Start Now</MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-    </MudContainer>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <div class="d-flex justify-center">
+                                <MudText Typo="Typo.h5" Color="Color.Secondary">Add a board</MudText>
+                            </div>
+                            <MudList Class="mx-auto mt-4">
+                                <MudListItem Icon="@Icons.Material.Filled.Dashboard">
+                                    Select <b>Create</b> -> <b>Create Board</b> and add a board to your workspace
+                                </MudListItem>
+                                <MudListItem Icon="@Icons.Material.Filled.List">
+                                    Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
+                                </MudListItem>
+                                <MudListItem Icon="@Icons.Material.Filled.Share">
+                                    Share your board with your team members
+                                </MudListItem>
+                                <MudListItem Icon="@Icons.Material.Filled.Task">
+                                    Add tasks to your lists and start monitor your project!
+                                </MudListItem>
+                            </MudList>
+                        </MudCardContent>
+                        <MudCardActions Class="d-flex justify-center">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;"
+                                       OnClick="OpenCreateBoardModal">Start Now</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
 }
 else
 {
@@ -56,25 +56,26 @@ else
                 <MudCard>
                     <MudCardHeader Class="pb-0">
                         <CardHeaderContent>
-                            <MudStack>
-                                <MudText Typo="Typo.h5">@board.Title</MudText>
-                            </MudStack>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
                             <MudStack Row="true">
+                                <MudText Typo="Typo.h5">@board.Title</MudText>
+                                    <MudText Color="Color.Info" Typo="Typo.body1">[@board.Key]</MudText>
+                                </MudStack>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudStack Row="true">
                                     <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
                                     <MudChip Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
-                            </MudStack>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudText Typo="Typo.h6">@board.Description</MudText>
-                        <MudDivider />
-                        @if (_boardActivities != null && _boardActivities.Any())
+                                </MudStack>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6">@board.Description</MudText>
+                            <MudDivider />
+                            @if (_boardActivities != null && _boardActivities.Any())
                         {
-                            <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" 
-                            TimelinePosition="TimelinePosition.Start" Reverse="false">
-                                @foreach(var activity in _boardActivities)
+                            <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
+                                         TimelinePosition="TimelinePosition.Start" Reverse="false">
+                                @foreach (var activity in _boardActivities)
                                 {
                                     <MudTimelineItem Class="pb-0" Color="Color.Success" Size="Size.Small" Variant="Variant.Outlined">
                                         <ItemContent>
@@ -82,8 +83,8 @@ else
                                         </ItemContent>
                                         <ItemOpposite>
                                             <MudText Color="Color.Default">@activity.DateCreated.ToShortDateString()</MudText>
-                                        </ItemOpposite>
-                                    </MudTimelineItem>
+                                            </ItemOpposite>
+                                        </MudTimelineItem>
                                 }
                             </MudTimeline>
                         }

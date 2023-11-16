@@ -24,5 +24,9 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
         [Required]
         public BoardType BoardType { get; set; }
+
+        [Required]
+        [MaxLength(5)]
+        public string Key { get; set; }
     }
 }

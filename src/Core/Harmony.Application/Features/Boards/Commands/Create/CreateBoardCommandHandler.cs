@@ -41,6 +41,13 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 return await Result<Guid>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
+            var boardWithSameKeyExists = await _boardRepository.Exists(request.Key);
+
+            if(boardWithSameKeyExists)
+            {
+                return await Result<Guid>.FailAsync(_localizer["A board with the same key already exists. Pick a different key."]);
+            }
+
             var board = new Board()
             {
                 Title = request.Title,
@@ -48,7 +55,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 WorkspaceId = Guid.Parse(request.WorkspaceId),
                 UserId = userId,
                 Visibility = request.Visibility,
-                Type = request.BoardType
+                Type = request.BoardType,
+                Key = request.Key,
             };
 
             await _boardRepository.AddAsync(board);

@@ -16,5 +16,6 @@ namespace Harmony.Application.DTO
         public Guid WorkspaceId { get; set; }
         public BoardVisibility Visibility { get; set; }
         public BoardType Type { get; set; }
+        public string Key { get; set; }
     }
 }
