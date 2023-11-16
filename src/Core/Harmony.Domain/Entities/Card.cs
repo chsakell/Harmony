@@ -5,7 +5,7 @@ namespace Harmony.Domain.Entities
     /// <summary>
     /// Class to represent cards in lists
     /// </summary>
-    public class Card : AuditableEntity<Guid>
+    public class Card : AuditableEntity<int>
     {
         public string Title { get; set; }
         public string Description { get; set; }

@@ -48,7 +48,7 @@ namespace Harmony.Persistence.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProfilePictureDataUrl = table.Column<string>(type: "text", nullable: true),
+                    ProfilePicture = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -225,6 +225,8 @@ namespace Harmony.Persistence.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     WorkspaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Visibility = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -275,7 +277,7 @@ namespace Harmony.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Position = table.Column<short>(type: "smallint", nullable: false),
@@ -351,7 +353,8 @@ namespace Harmony.Persistence.Migrations
                 name: "Cards",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -388,7 +391,7 @@ namespace Harmony.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     OriginalFileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CardId = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<byte>(type: "tinyint", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -410,7 +413,7 @@ namespace Harmony.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Activity = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CardId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
@@ -438,7 +441,7 @@ namespace Harmony.Persistence.Migrations
                 name: "CardLabels",
                 columns: table => new
                 {
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CardId = table.Column<int>(type: "int", nullable: false),
                     LabelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -463,7 +466,7 @@ namespace Harmony.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CardId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Position = table.Column<byte>(type: "tinyint", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -492,7 +495,7 @@ namespace Harmony.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CardId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -519,7 +522,7 @@ namespace Harmony.Persistence.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CardId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -576,6 +579,12 @@ namespace Harmony.Persistence.Migrations
                 name: "IX_BoardLists_UserId",
                 table: "BoardLists",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Boards_Key",
+                table: "Boards",
+                column: "Key",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Boards_UserId",

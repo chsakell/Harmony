@@ -10,19 +10,19 @@ namespace Harmony.Application.Contracts.Services.Hubs
     {
         Task AddBoardList(Guid boardId, BoardListDto boardList);
         Task UpdateBoardListTitle(Guid boardId, Guid boardListId, string title);
-        Task UpdateCardTitle(Guid boardId, Guid cardId, string title);
-        Task UpdateCardDescription(Guid boardId, Guid cardId, string description);
-        Task UpdateCardDates(Guid boardId, Guid cardId, DateTime? startDate, DateTime? dueDate);
-        Task ToggleCardLabel(Guid boardId, Guid cardId, LabelDto label);
-        Task AddCardAttachment(Guid boardId, Guid cardId, AttachmentDto attachment);
-        Task RemoveCardAttachment(Guid boardId, Guid cardId, Guid attachmentId);
-        Task CreateCheckListItem(Guid boardId, Guid cardId);
-        Task ToggleCardListItemChecked(Guid boardId, Guid cardId, Guid listItemId, bool isChecked);
+        Task UpdateCardTitle(Guid boardId, int cardId, string title);
+        Task UpdateCardDescription(Guid boardId, int cardId, string description);
+        Task UpdateCardDates(Guid boardId, int cardId, DateTime? startDate, DateTime? dueDate);
+        Task ToggleCardLabel(Guid boardId, int cardId, LabelDto label);
+        Task AddCardAttachment(Guid boardId, int cardId, AttachmentDto attachment);
+        Task RemoveCardAttachment(Guid boardId, int cardId, Guid attachmentId);
+        Task CreateCheckListItem(Guid boardId, int cardId);
+        Task ToggleCardListItemChecked(Guid boardId, int cardId, Guid listItemId, bool isChecked);
         Task ArchiveBoardList(Guid boardId, Guid archivedList, List<BoardListOrder> positions);
         Task RemoveCardLabel(Guid boardId, Guid cardLabelId);
         Task UpdateBoardListsPositions(Guid boardId, Dictionary<Guid, short> positions);
-        Task AddCardMember(Guid boardId, Guid cardId, CardMemberDto cardMember);
-        Task RemoveCardMember(Guid boardId, Guid cardId, CardMemberDto cardMember);
-        Task RemoveCheckList(Guid boardId, Guid checkListId, Guid cardId, int totalItems, int totalItemsCompleted);
+        Task AddCardMember(Guid boardId, int cardId, CardMemberDto cardMember);
+        Task RemoveCardMember(Guid boardId, int cardId, CardMemberDto cardMember);
+        Task RemoveCheckList(Guid boardId, Guid checkListId, int cardId, int totalItems, int totalItemsCompleted);
     }
 }

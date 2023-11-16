@@ -5,7 +5,7 @@ namespace Harmony.Application.Specifications.Cards
 {
     public class CardFilterSpecification : HarmonySpecification<Card>
     {
-        public CardFilterSpecification(Guid? cardId, CardIncludes includes)
+        public CardFilterSpecification(int? cardId, CardIncludes includes)
         {
             if(includes.Attachments)
             {

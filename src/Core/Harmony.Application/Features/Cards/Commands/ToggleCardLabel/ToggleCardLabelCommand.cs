@@ -6,10 +6,10 @@ namespace Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 
 public class ToggleCardLabelCommand : IRequest<Result<LabelDto>>
 {
-    public Guid CardId { get; set; }
+    public int CardId { get; set; }
     public Guid LabelId { get; set; }
 
-	public ToggleCardLabelCommand(Guid cardId, Guid labelId)
+	public ToggleCardLabelCommand(int cardId, Guid labelId)
 	{
 		CardId = cardId;
         LabelId = labelId;

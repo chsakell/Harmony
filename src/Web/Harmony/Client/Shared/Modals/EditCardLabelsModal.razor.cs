@@ -28,7 +28,7 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter]
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
 
         [Parameter]
         public Guid BoardId { get; set; }
@@ -82,7 +82,7 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task CreateNewLabel()
         {
-            Guid? cardId = _createLabelModel.IsChecked ? CardId : null;
+            int? cardId = _createLabelModel.IsChecked ? CardId : null;
             var result = await _labelManager
                 .CreateCardLabel(new CreateCardLabelCommand(BoardId, cardId,
                 _createLabelModel.Color, _createLabelModel.Title));

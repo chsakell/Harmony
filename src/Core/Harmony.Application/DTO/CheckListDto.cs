@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public List<CheckListItemDto> Items { get; set; }
         public byte Position { get; set; }
     }

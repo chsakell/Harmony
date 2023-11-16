@@ -15,7 +15,7 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<UserCard?> GetUserCard(Guid cardId, string userId)
+        public async Task<UserCard?> GetUserCard(int cardId, string userId)
         {
             return await _context.UserCards
                 .FirstOrDefaultAsync(uc => uc.CardId == cardId && uc.UserId == userId);
@@ -28,14 +28,14 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> CountCardUsers(Guid cardId)
+        public async Task<int> CountCardUsers(int cardId)
         {
             return await _context.UserCards
                 .Where(userCard => userCard.CardId == cardId)
                 .CountAsync();
         }
 
-        public async Task<List<CardMemberResponse>> GetCardUsers(Guid cardId)
+        public async Task<List<CardMemberResponse>> GetCardUsers(int cardId)
         {
             var boardUsers = await (from userCard in _context.UserCards
                                     join user in _context.Users
@@ -58,7 +58,7 @@ namespace Harmony.Infrastructure.Repositories
             return boardUsers;
         }
 
-        public async Task<CardMemberResponse?> GetBoardAccessMember(Guid cardId, string userId)
+        public async Task<CardMemberResponse?> GetBoardAccessMember(int cardId, string userId)
         {
             var cardUser = await (from userBoard in _context.UserCards
                                     join user in _context.Users

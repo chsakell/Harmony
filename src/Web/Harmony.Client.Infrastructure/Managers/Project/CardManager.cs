@@ -76,7 +76,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
         public async Task<IResult<LabelDto>> ToggleCardLabel(ToggleCardLabelCommand request)
         {
-            var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Labels(request.LabelId), request);
+            var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Labels(request.CardId), request);
             
             return await response.ToResult<LabelDto>();
         }

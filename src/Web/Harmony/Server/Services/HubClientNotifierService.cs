@@ -28,56 +28,56 @@ namespace Harmony.Server.Services
                     new BoardListTitleChangedEvent(boardId, boardListId, title));
         }
 
-        public async Task UpdateCardTitle(Guid boardId, Guid cardId, string title)
+        public async Task UpdateCardTitle(Guid boardId, int cardId, string title)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardTitleChanged,
                     new CardTitleChangedEvent(cardId, title));
         }
 
-        public async Task UpdateCardDescription(Guid boardId, Guid cardId, string description)
+        public async Task UpdateCardDescription(Guid boardId, int cardId, string description)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardDescriptionChanged,
                     new CardDescriptionChangedEvent(cardId, description));
         }
 
-        public async Task UpdateCardDates(Guid boardId, Guid cardId, DateTime? startDate, DateTime? dueDate)
+        public async Task UpdateCardDates(Guid boardId, int cardId, DateTime? startDate, DateTime? dueDate)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardDatesChanged,
                     new CardDatesChangedEvent(cardId, startDate, dueDate));
         }
 
-        public async Task ToggleCardLabel(Guid boardId, Guid cardId, LabelDto label)
+        public async Task ToggleCardLabel(Guid boardId, int cardId, LabelDto label)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardLabelToggled,
                     new CardLabelToggledEvent(cardId, label));
         }
 
-        public async Task AddCardAttachment(Guid boardId, Guid cardId, AttachmentDto attachment)
+        public async Task AddCardAttachment(Guid boardId, int cardId, AttachmentDto attachment)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardAttachmentAdded,
                     new AttachmentAddedEvent(cardId, attachment));
         }
 
-        public async Task RemoveCardAttachment(Guid boardId, Guid cardId, Guid attachmentId)
+        public async Task RemoveCardAttachment(Guid boardId, int cardId, Guid attachmentId)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardAttachmentRemoved,
                     new AttachmentRemovedEvent(cardId, attachmentId));
         }
 
-        public async Task ToggleCardListItemChecked(Guid boardId, Guid cardId, Guid listItemId, bool isChecked)
+        public async Task ToggleCardListItemChecked(Guid boardId, int cardId, Guid listItemId, bool isChecked)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardItemChecked,
                     new CardItemCheckedEvent(cardId, listItemId, isChecked));
         }
 
-        public async Task CreateCheckListItem(Guid boardId, Guid cardId)
+        public async Task CreateCheckListItem(Guid boardId, int cardId)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardItemAdded,
@@ -112,21 +112,21 @@ namespace Harmony.Server.Services
                     new BoardListsPositionsChangedEvent(boardId, positions));
         }
 
-        public async Task AddCardMember(Guid boardId, Guid cardId, CardMemberDto cardMember)
+        public async Task AddCardMember(Guid boardId, int cardId, CardMemberDto cardMember)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardMemberAdded,
                     new CardMemberAddedEvent(cardId, cardMember));
         }
 
-        public async Task RemoveCardMember(Guid boardId, Guid cardId, CardMemberDto cardMember)
+        public async Task RemoveCardMember(Guid boardId, int cardId, CardMemberDto cardMember)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardMemberRemoved,
                     new CardMemberRemovedEvent(cardId, cardMember));
         }
 
-        public async Task RemoveCheckList(Guid boardId, Guid checkListId, Guid cardId, int totalItems, int totalItemsCompleted)
+        public async Task RemoveCheckList(Guid boardId, Guid checkListId, int cardId, int totalItems, int totalItemsCompleted)
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCheckListRemoved,

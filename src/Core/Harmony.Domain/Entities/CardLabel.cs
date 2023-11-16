@@ -6,7 +6,7 @@
     public class CardLabel
     {
         public Card Card { get; set; }
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public Label Label { get; set; }
         public Guid LabelId { get; set; }
     }

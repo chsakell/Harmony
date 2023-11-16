@@ -5,9 +5,9 @@ namespace Harmony.Application.Features.Cards.Queries.GetCardMembers
 {
     public class GetCardMembersQuery : IRequest<Result<List<CardMemberResponse>>>
     {
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
 
-        public GetCardMembersQuery(Guid cardId)
+        public GetCardMembersQuery(int cardId)
         {
             CardId = cardId;
         }

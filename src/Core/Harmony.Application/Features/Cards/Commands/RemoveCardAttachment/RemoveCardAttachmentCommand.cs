@@ -6,13 +6,13 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 {
     public class RemoveCardAttachmentCommand : IRequest<Result<RemoveCardAttachmentResponse>>
     {
-        public RemoveCardAttachmentCommand(Guid cardId, Guid attachmentId)
+        public RemoveCardAttachmentCommand(int cardId, Guid attachmentId)
         {
             CardId = cardId;
             AttachmentId = attachmentId;
         }
 
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public Guid AttachmentId { get; set; }
     }
 }

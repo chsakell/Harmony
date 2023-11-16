@@ -2,10 +2,10 @@
 {
     public class CardTitleChangedEvent
     {
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public string Title { get; set; }
 
-        public CardTitleChangedEvent(Guid cardId, string title)
+        public CardTitleChangedEvent(int cardId, string title)
         {
             CardId = cardId;
             Title = title;

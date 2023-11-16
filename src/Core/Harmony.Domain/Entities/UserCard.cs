@@ -8,6 +8,6 @@
     {
         public string UserId { get; set; }
         public Card Card { get; set; }
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20231021071041_Initial")]
+    [Migration("20231116082322_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -31,8 +31,8 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -77,10 +77,18 @@ namespace Harmony.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -93,6 +101,9 @@ namespace Harmony.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -116,11 +127,6 @@ namespace Harmony.Persistence.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<short>("Position")
                         .HasColumnType("smallint");
 
@@ -128,6 +134,11 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -144,9 +155,11 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.Card", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("BoardListId")
                         .HasColumnType("uniqueidentifier");
@@ -206,8 +219,8 @@ namespace Harmony.Persistence.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -238,8 +251,8 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.CardLabel", b =>
                 {
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("LabelId")
                         .HasColumnType("uniqueidentifier");
@@ -257,8 +270,8 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -329,8 +342,8 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -408,8 +421,8 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.UserCard", b =>
                 {
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -616,7 +629,7 @@ namespace Harmony.Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfilePictureDataUrl")
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("text");
 
                     b.Property<string>("RefreshToken")

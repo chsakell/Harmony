@@ -28,8 +28,8 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -152,9 +152,11 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.Card", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("BoardListId")
                         .HasColumnType("uniqueidentifier");
@@ -214,8 +216,8 @@ namespace Harmony.Persistence.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -246,8 +248,8 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.CardLabel", b =>
                 {
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("LabelId")
                         .HasColumnType("uniqueidentifier");
@@ -265,8 +267,8 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -337,8 +339,8 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -416,8 +418,8 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.UserCard", b =>
                 {
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");

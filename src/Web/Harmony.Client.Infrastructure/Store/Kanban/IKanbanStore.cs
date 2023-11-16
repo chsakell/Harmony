@@ -20,19 +20,19 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 		void UpdateBoardListTitle(Guid listId, string title);
 		void ArchiveList(BoardListDto list);
 		void ArchiveListAndReorder(Guid listId, List<BoardListOrder> listPositions);
-        void ArchiveCard(Guid cardId);
+        void ArchiveCard(int cardId);
 		void UpdateBoardListCards(Guid listId, List<CardDto> cards);
-        void UpdateTodalCardItemsCompleted(Guid cardId, bool increase);
-        void UpdateTodalCardItems(Guid cardId, bool increase);
-        void UpdateCardDescription(Guid cardId, string description);
-        void UpdateCardTitle(Guid cardId, string title);
-		void ToggleCardLabel(Guid cardId, LabelDto label);
-        void UpdateCardDates(Guid cardId, DateTime? startDate, DateTime? dueDate);
-		void ChangeTotalCardAttachments(Guid cardId, bool increase);
+        void UpdateTodalCardItemsCompleted(int cardId, bool increase);
+        void UpdateTodalCardItems(int cardId, bool increase);
+        void UpdateCardDescription(int cardId, string description);
+        void UpdateCardTitle(int cardId, string title);
+		void ToggleCardLabel(int cardId, LabelDto label);
+        void UpdateCardDates(int cardId, DateTime? startDate, DateTime? dueDate);
+		void ChangeTotalCardAttachments(int cardId, bool increase);
 		void RemoveCardLabel(Guid labelId);
 		void ReorderLists(Dictionary<Guid, short> listPositions);
-		void AddCardMember(Guid cardId, CardMemberDto cardMember);
-		void RemoveCardMember(Guid cardId, CardMemberDto cardMember);
-        void ReduceCardProgress(Guid cardId, int totalItems, int totalItemsCompleted);
+		void AddCardMember(int cardId, CardMemberDto cardMember);
+		void RemoveCardMember(int cardId, CardMemberDto cardMember);
+        void ReduceCardProgress(int cardId, int totalItems, int totalItemsCompleted);
     }
 }

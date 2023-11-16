@@ -8,9 +8,9 @@ namespace Harmony.Application.Contracts.Repositories
     public interface ICardRepository
     {
         IQueryable<Card> Entities { get; }
-        Task<Card> Get(Guid cardId);
-        Task<Guid> GetBoardId(Guid cardId);
-        Task<Card> Load(Guid cardId);
+        Task<Card> Get(int cardId);
+        Task<Guid> GetBoardId(int cardId);
+        Task<Card> Load(int cardId);
         Task<Card> GetByPosition(Guid boardListId, short position);
 		Task<List<Card>> GetCardsInPositionGreaterThan(Guid boardListId, short position);
 		Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, short position);

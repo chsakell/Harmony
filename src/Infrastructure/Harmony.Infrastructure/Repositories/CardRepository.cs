@@ -16,12 +16,12 @@ namespace Harmony.Infrastructure.Repositories
 
         public IQueryable<Card> Entities => _context.Set<Card>();
 
-        public async Task<Card?> Get(Guid cardId)
+        public async Task<Card?> Get(int cardId)
 		{
 			return await _context.Cards.FirstOrDefaultAsync(card => card.Id == cardId);
 		}
 
-        public async Task<Guid> GetBoardId(Guid cardId)
+        public async Task<Guid> GetBoardId(int cardId)
         {
 			var card = (await _context.Cards
 					.Include(c => c.BoardList)
@@ -30,7 +30,7 @@ namespace Harmony.Infrastructure.Repositories
 			return card.BoardList.BoardId;
         }
 
-        public async Task<Card?> Load(Guid cardId)
+        public async Task<Card?> Load(int cardId)
         {
             return await _context.Cards
 				.Include(card => card.BoardList)

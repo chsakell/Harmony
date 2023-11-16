@@ -4,9 +4,9 @@ namespace Harmony.Application.Events
 {
     public class CardLabelToggledEvent
     {
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public LabelDto Label { get; set; }
-        public CardLabelToggledEvent(Guid cardId, LabelDto label)
+        public CardLabelToggledEvent(int cardId, LabelDto label)
         {
             CardId = cardId;
             Label = label;

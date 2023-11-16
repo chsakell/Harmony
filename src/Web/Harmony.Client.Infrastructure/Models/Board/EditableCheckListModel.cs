@@ -9,7 +9,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
 
         [Required]
         public string Title { get; set; }
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public List<EditableCheckListItemModel> Items { get; set; }
         public byte Position { get; set; }
 

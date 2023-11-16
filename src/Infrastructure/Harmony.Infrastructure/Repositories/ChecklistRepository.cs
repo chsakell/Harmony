@@ -64,14 +64,14 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<List<CheckList>> GetCardCheckLists(Guid cardId)
+        public async Task<List<CheckList>> GetCardCheckLists(int cardId)
         {
             return await _context.CheckLists
 				.Where(checklist => checklist.CardId == cardId)
 				.ToListAsync();
         }
 
-        public async Task<int> CountCardCheckLists(Guid cardId)
+        public async Task<int> CountCardCheckLists(int cardId)
         {
             return await _context.CheckLists
                 .Where(checklist => checklist.CardId == cardId)

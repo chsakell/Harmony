@@ -2,13 +2,13 @@
 {
     public class AddUserCardResponse 
     {
-        public AddUserCardResponse(Guid cardId, string userId)
+        public AddUserCardResponse(int cardId, string userId)
         {
             CardId = cardId;
             UserId = userId;
         }
 
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public string UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

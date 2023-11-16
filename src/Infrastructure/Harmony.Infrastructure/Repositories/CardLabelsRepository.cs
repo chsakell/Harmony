@@ -14,7 +14,7 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<CardLabel>> GetLabels(Guid cardId)
+        public async Task<List<CardLabel>> GetLabels(int cardId)
         {
             return await _context.CardLabels
                     .Include(cl => cl.Label)
@@ -22,7 +22,7 @@ namespace Harmony.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<CardLabel?> GetLabel(Guid cardId, Guid labelId)
+        public async Task<CardLabel?> GetLabel(int cardId, Guid labelId)
         {
             return await _context.CardLabels
                 .Where(cl => cl.CardId == cardId && cl.LabelId == labelId)

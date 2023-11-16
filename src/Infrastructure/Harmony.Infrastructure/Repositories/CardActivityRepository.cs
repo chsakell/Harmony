@@ -16,7 +16,7 @@ namespace Harmony.Infrastructure.Repositories
 
         public IQueryable<CardActivity> Entities => _context.Set<CardActivity>();
 
-        public async Task<List<CardActivity>> GetAsync(Guid cardId)
+        public async Task<List<CardActivity>> GetAsync(int cardId)
         {
             return await _context.CardActivities.Where(ca => ca.CardId == cardId)
                 .ToListAsync();

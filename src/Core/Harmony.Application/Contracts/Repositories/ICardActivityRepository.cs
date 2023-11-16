@@ -8,7 +8,7 @@ namespace Harmony.Application.Contracts.Repositories
     public interface ICardActivityRepository
     {
         IQueryable<CardActivity> Entities { get; }
-        Task<List<CardActivity>> GetAsync(Guid cardId);
+        Task<List<CardActivity>> GetAsync(int cardId);
         Task<int> CreateAsync(CardActivity activity);
     }
 }

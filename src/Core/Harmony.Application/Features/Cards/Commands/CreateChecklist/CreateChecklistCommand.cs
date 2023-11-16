@@ -7,7 +7,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist;
 
 public class CreateCheckListCommand : IRequest<Result<CheckListDto>>
 {
-    public Guid CardId { get; set; }
+    public int CardId { get; set; }
 
     [Required]
     public string Title { get; set; }
@@ -17,7 +17,7 @@ public class CreateCheckListCommand : IRequest<Result<CheckListDto>>
         
     }
 
-    public CreateCheckListCommand(Guid cardId, string title)
+    public CreateCheckListCommand(int cardId, string title)
     {
         CardId = cardId;
         Title = title;

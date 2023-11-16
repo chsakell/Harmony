@@ -2,11 +2,11 @@
 {
     public class CardItemCheckedEvent
     {
-        public Guid CardId { get; set; }
+        public int CardId { get; set; }
         public Guid CheckListItemId { get; set; }
         public bool IsChecked { get; set; }
 
-        public CardItemCheckedEvent(Guid cardId, Guid checkListItemId, bool isChecked)
+        public CardItemCheckedEvent(int cardId, Guid checkListItemId, bool isChecked)
         {
             CardId = cardId;
             CheckListItemId = checkListItemId;
