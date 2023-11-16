@@ -1,49 +1,34 @@
 ﻿@page "/projects/{id}/backlog"
 @using Harmony.Application.Features.Boards.Queries.GetBacklog
 
-<MudGrid>
-    <MudItem xs="12" sm="6">
-        <MudPaper>
-            <MudTable Hover="true" Elevation="25"
-                      T="GetBacklogItemResponse"
-                      ServerData="@(new Func<TableState, Task<TableData<GetBacklogItemResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
-                <ToolBarContent>
-                    <MudSpacer />
-                    <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search backlog.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh Style="max-width:150px;"><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
-                    <MudTh Style="text-align:right"></MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="SerialKey">
-                        <MudHighlighter Text="@context.SerialKey" HighlightedText="@_searchString" />
-                    </MudTd>
-                    <MudTd DataLabel="Title">
-                        <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
-                    </MudTd>
+<MudPaper>
+    <MudTable Hover="true" Elevation="25"
+              T="GetBacklogItemResponse"
+              ServerData="@(new Func<TableState, Task<TableData<GetBacklogItemResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search backlog.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+            <MudTh Style="text-align:right">Add to sprint</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="SerialKey">
+                <MudHighlighter Text="@context.SerialKey" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Title">
+                <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+            </MudTd>
 
-                    @* <MudTd DataLabel="Actions" Style="text-align:right">
-                    @if (context.IsMember)
-                    {
-                    <MudButton OnClick="() => RemoveMember(context)" EndIcon="@Icons.Material.Outlined.PersonRemove" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error">Remove</MudButton>
-                    }
-                    else
-                    {
-                    <MudButton OnClick="() => AddMember(context)" EndIcon="@Icons.Material.Outlined.PersonAdd" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Success">Add</MudButton>
-                    }
-                    </MudTd> *@
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-            </MudTable>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <MudPaper>
-
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+            <MudTd DataLabel="Actions" Style="text-align:right">
+            <MudButton EndIcon="@Icons.Material.Outlined.AddCard" ButtonType="ButtonType.Button" 
+                    Variant="Variant.Filled" Color="Color.Success">Add</MudButton>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
