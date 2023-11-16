@@ -4,10 +4,10 @@ namespace Harmony.Application.Events
 {
     public class AttachmentAddedEvent
     {
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
         public AttachmentDto Attachment { get; set; }
 
-        public AttachmentAddedEvent(int cardId, AttachmentDto attachment)
+        public AttachmentAddedEvent(Guid cardId, AttachmentDto attachment)
         {
             CardId = cardId;
             Attachment = attachment;

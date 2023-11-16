@@ -7,8 +7,8 @@ namespace Harmony.Application.Contracts.Repositories
     /// </summary>
     public interface ICardLabelRepository
     {
-        Task<CardLabel> GetLabel(int cardId, Guid labelId);
-        Task<List<CardLabel>> GetLabels(int cardId);
+        Task<CardLabel> GetLabel(Guid cardId, Guid labelId);
+        Task<List<CardLabel>> GetLabels(Guid cardId);
         Task AddAsync(Label label);
         Task<int> CreateAsync(Label label);
         Task<Label> GetLabel(Guid labelId);

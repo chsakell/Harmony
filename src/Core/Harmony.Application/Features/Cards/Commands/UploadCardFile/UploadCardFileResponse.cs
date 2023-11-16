@@ -4,13 +4,13 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 {
     public class UploadCardFileResponse
     {
-        public UploadCardFileResponse(int cardId, AttachmentDto attachment)
+        public UploadCardFileResponse(Guid cardId, AttachmentDto attachment)
         {
             CardId = cardId;
             Attachment = attachment;
         }
 
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
         public AttachmentDto Attachment { get; set; }
     }
 }

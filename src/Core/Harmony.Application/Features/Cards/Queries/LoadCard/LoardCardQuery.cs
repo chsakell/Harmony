@@ -8,9 +8,9 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
     /// </summary>
     public class LoadCardQuery : IRequest<IResult<LoadCardResponse>>
     {
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
-        public LoadCardQuery(int cardId)
+        public LoadCardQuery(Guid cardId)
         {
             CardId = cardId;
         }

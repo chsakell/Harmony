@@ -251,7 +251,7 @@ namespace Harmony.Infrastructure.Seed
             }
         }
 
-        private async Task GenerateCheckLists(int cardId)
+        private async Task GenerateCheckLists(Guid cardId)
         {
             for(var i = 0; i < 2; i++ )
             {

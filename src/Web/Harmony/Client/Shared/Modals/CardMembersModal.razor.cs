@@ -24,7 +24,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _searching;
 
         [Parameter]
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
         protected override async Task OnInitializedAsync()
         {

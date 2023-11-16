@@ -2,9 +2,9 @@
 {
     public class CardItemAddedEvent
     {
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
-        public CardItemAddedEvent(int cardId)
+        public CardItemAddedEvent(Guid cardId)
         {
             CardId = cardId;
         }

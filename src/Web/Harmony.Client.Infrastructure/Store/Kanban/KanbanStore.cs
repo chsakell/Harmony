@@ -107,7 +107,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void ArchiveCard(int cardId)
+        public void ArchiveCard(Guid cardId)
         {
             var card = _board.Lists.SelectMany(l => l.Cards)
                 .FirstOrDefault(c => c.Id == cardId);
@@ -122,7 +122,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void UpdateTodalCardItemsCompleted(int cardId, bool increase)
+        public void UpdateTodalCardItemsCompleted(Guid cardId, bool increase)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -140,7 +140,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void UpdateTodalCardItems(int cardId, bool increase)
+        public void UpdateTodalCardItems(Guid cardId, bool increase)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -158,7 +158,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void UpdateCardDescription(int cardId, string description)
+        public void UpdateCardDescription(Guid cardId, string description)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -168,7 +168,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void UpdateCardTitle(int cardId, string title)
+        public void UpdateCardTitle(Guid cardId, string title)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -178,7 +178,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void ToggleCardLabel(int cardId, LabelDto label)
+        public void ToggleCardLabel(Guid cardId, LabelDto label)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -200,7 +200,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void UpdateCardDates(int cardId, DateTime? startDate, DateTime? dueDate)
+        public void UpdateCardDates(Guid cardId, DateTime? startDate, DateTime? dueDate)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -211,7 +211,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void ChangeTotalCardAttachments(int cardId, bool increase)
+        public void ChangeTotalCardAttachments(Guid cardId, bool increase)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -264,7 +264,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void AddCardMember(int cardId, CardMemberDto cardMember)
+        public void AddCardMember(Guid cardId, CardMemberDto cardMember)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -274,7 +274,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void RemoveCardMember(int cardId, CardMemberDto cardMember)
+        public void RemoveCardMember(Guid cardId, CardMemberDto cardMember)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
 
@@ -288,7 +288,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
-        public void ReduceCardProgress(int cardId, int totalItems, int totalItemsCompleted)
+        public void ReduceCardProgress(Guid cardId, int totalItems, int totalItemsCompleted)
         {
             var card = _board.Lists
                 .SelectMany(l => l.Cards)

@@ -9,9 +9,9 @@ namespace Harmony.Application.Features.Cards.Queries.GetLabels
     /// </summary>
     public class GetCardLabelsQuery : IRequest<IResult<List<LabelDto>>>
     {
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
-        public GetCardLabelsQuery(int cardId)
+        public GetCardLabelsQuery(Guid cardId)
         {
             CardId = cardId;
         }

@@ -181,7 +181,7 @@ else
                                 </div>
                                 <MudStack Row="true" Justify="Justify.FlexEnd">
 
-                                    <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.Id}")</MudChip>
+                                    <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
                                     @if (context.Members.Any())
                                     {
                                         <MudAvatarGroup Max="2" Spacing="2" MaxColor="Color.Primary" MaxSize="Size.Small">

@@ -5,7 +5,7 @@ namespace Harmony.Domain.Entities
     /// <summary>
     /// Class to represent cards in lists
     /// </summary>
-    public class Card : AuditableEntity<int>
+    public class Card : AuditableEntity<Guid>
     {
         public string Title { get; set; }
         public string Description { get; set; }
@@ -19,10 +19,10 @@ namespace Harmony.Domain.Entities
         public List<CardActivity> Activities { get; set; }
         public CardStatus Status { get; set; }
         public List<CardLabel> Labels { get; set; }
-
         public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
         public List<Attachment> Attachments { get; set; }
+        public int SerialNumber { get; set; }
     }
 }

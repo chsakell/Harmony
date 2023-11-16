@@ -17,7 +17,7 @@ namespace Harmony.Client.Shared.Modals
         private DateRange _dateRange = new();
 
         [Parameter]
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
         [Parameter]
         public DateTime? StartDate { get; set; }

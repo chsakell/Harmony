@@ -36,13 +36,15 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             }
 
             var totalCards = await _cardRepository.CountCards(request.ListId);
+            var nextSerialNumber = await _cardRepository.GetNextSerialNumber(request.BoardId);
 
             var card = new Card()
             {
                 Title = request.Title,
                 UserId = userId,
                 BoardListId = request.ListId,
-                Position = (byte)totalCards
+                Position = (byte)totalCards,
+                SerialNumber = nextSerialNumber,
             };
 
             var dbResult = await _cardRepository.CreateAsync(card);

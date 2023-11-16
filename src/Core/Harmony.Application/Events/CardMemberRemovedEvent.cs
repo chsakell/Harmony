@@ -9,13 +9,13 @@ namespace Harmony.Application.Events
 {
     public class CardMemberRemovedEvent
     {
-        public CardMemberRemovedEvent(int cardId, CardMemberDto member)
+        public CardMemberRemovedEvent(Guid cardId, CardMemberDto member)
         {
             CardId = cardId;
             Member = member;
         }
 
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
         public CardMemberDto Member { get; set; }
     }
 }

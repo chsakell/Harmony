@@ -35,7 +35,7 @@ namespace Harmony.Client.Shared.Modals
 
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
-        [Parameter] public int CardId { get; set; }
+        [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
 
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)

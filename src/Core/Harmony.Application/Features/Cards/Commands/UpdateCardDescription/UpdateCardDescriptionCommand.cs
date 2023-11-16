@@ -5,10 +5,10 @@ namespace Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 
 public class UpdateCardDescriptionCommand : IRequest<Result<bool>>
 {
-    public int CardId { get; set; }
+    public Guid CardId { get; set; }
     public string Description { get; set; }
 
-	public UpdateCardDescriptionCommand(int cardId, string description)
+	public UpdateCardDescriptionCommand(Guid cardId, string description)
 	{
 		CardId = cardId;
         Description = description;

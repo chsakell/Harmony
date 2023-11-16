@@ -6,10 +6,10 @@ namespace Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 
 public class UpdateCardStatusCommand : IRequest<Result<bool>>
 {
-    public int CardId { get; set; }
+    public Guid CardId { get; set; }
     public CardStatus Status { get; set; }
 
-	public UpdateCardStatusCommand(int cardId, CardStatus status)
+	public UpdateCardStatusCommand(Guid cardId, CardStatus status)
 	{
 		CardId = cardId;
         Status = status;

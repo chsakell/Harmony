@@ -18,7 +18,7 @@ namespace Harmony.Client.Shared.Modals
         public Guid BoardId { get; set; }
 
         [Parameter]
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
         [Parameter]
         public IEnumerable<OrderedBoardListModel> Lists { get; set; }

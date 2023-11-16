@@ -12,7 +12,7 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter]
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
         private void Cancel()
         {

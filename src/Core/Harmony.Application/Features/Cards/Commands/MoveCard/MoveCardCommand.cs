@@ -6,11 +6,11 @@ namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 
 public class MoveCardCommand : IRequest<Result<CardDto>>
 {
-    public int CardId { get; set; }
+    public Guid CardId { get; set; }
     public Guid ListId { get; set; }
     public byte Position { get; set; }
 
-	public MoveCardCommand(int cardId, Guid listId, byte position)
+	public MoveCardCommand(Guid cardId, Guid listId, byte position)
 	{
 		CardId = cardId;
 		ListId = listId;

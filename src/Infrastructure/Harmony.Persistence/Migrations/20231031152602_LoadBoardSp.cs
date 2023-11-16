@@ -31,9 +31,9 @@ BEGIN
 	INSERT into @boardListIds (Id)
 	select Id from BoardLists  where BoardId = @BoardId AND Status = 0
 
-	DECLARE @cards Table(Id int, Title nvarchar(300), Description nvarchar(max), UserId nvarchar(450),
+	DECLARE @cards Table(Id uniqueidentifier, Title nvarchar(300), Description nvarchar(max), UserId nvarchar(450),
 	BoardListId uniqueidentifier, Position smallint, Status int, StartDate datetime2, DueDate datetime2, ReminderDate datetime2,
-	DateCreated datetime2, DateUpdated datetime2);
+	SerialNumber int, DateCreated datetime2, DateUpdated datetime2);
 
 	DECLARE @boardListId uniqueidentifier
 

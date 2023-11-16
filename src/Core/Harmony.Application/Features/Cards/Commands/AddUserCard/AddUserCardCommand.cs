@@ -5,13 +5,13 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
     public class AddUserCardCommand : IRequest<Result<AddUserCardResponse>>
     {
-        public AddUserCardCommand(int cardId, string userId)
+        public AddUserCardCommand(Guid cardId, string userId)
         {
             CardId = cardId;
             UserId = userId;
         }
 
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
         public string UserId { get; set; }
     }
 }

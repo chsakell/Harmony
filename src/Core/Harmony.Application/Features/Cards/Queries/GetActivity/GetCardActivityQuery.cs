@@ -6,9 +6,9 @@ namespace Harmony.Application.Features.Cards.Queries.GetActivity
 {
     public class GetCardActivityQuery : IRequest<IResult<List<CardActivityDto>>>
     {
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
 
-        public GetCardActivityQuery(int cardId)
+        public GetCardActivityQuery(Guid cardId)
         {
             CardId = cardId;
         }

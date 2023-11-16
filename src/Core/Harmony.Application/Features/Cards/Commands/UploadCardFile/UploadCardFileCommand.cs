@@ -6,6 +6,6 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 {
     public class UploadCardFileCommand : UploadRequest, IRequest<Result<UploadCardFileResponse>>
     {
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
     }
 }

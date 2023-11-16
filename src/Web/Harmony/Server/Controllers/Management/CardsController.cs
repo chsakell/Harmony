@@ -22,8 +22,8 @@ namespace Harmony.Server.Controllers.Management
     public class CardsController : BaseApiController<CardsController>
     {
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await _mediator.Send(new LoadCardQuery(id)));
         }
@@ -34,74 +34,74 @@ namespace Harmony.Server.Controllers.Management
             return Ok(await _mediator.Send(command));
         }
 
-		[HttpPut("{id:int}/move")]
+		[HttpPut("{id:guid}/move")]
 		public async Task<IActionResult> Put(Guid id, MoveCardCommand command)
 		{
 			return Ok(await _mediator.Send(command));
 		}
 
-        [HttpPut("{id:int}/description")]
+        [HttpPut("{id:guid}/description")]
         public async Task<IActionResult> UpdateDescription(Guid id, UpdateCardDescriptionCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
 
-        [HttpPut("{id:int}/title")]
+        [HttpPut("{id:guid}/title")]
         public async Task<IActionResult> UpdateTitle(Guid id, UpdateCardTitleCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
 
-        [HttpPut("{id:int}/status")]
+        [HttpPut("{id:guid}/status")]
         public async Task<IActionResult> UpdateStatus(Guid id, UpdateCardStatusCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
 
-        [HttpGet("{id:int}/labels")]
-        public async Task<IActionResult> GetLabels(int id)
+        [HttpGet("{id:guid}/labels")]
+        public async Task<IActionResult> GetLabels(Guid id)
         {
             return Ok(await _mediator.Send(new GetCardLabelsQuery(id)));
         }
 
-        [HttpGet("{id:int}/activity")]
-        public async Task<IActionResult> GetActivity(int id)
+        [HttpGet("{id:guid}/activity")]
+        public async Task<IActionResult> GetActivity(Guid id)
         {
             return Ok(await _mediator.Send(new GetCardActivityQuery(id)));
         }
 
-        [HttpPut("{id:int}/labels")]
+        [HttpPut("{id:guid}/labels")]
         public async Task<IActionResult> ToggleLabel(ToggleCardLabelCommand request)
         {
             return Ok(await _mediator.Send(request));
         }
 
-        [HttpPut("{id:int}/dates")]
+        [HttpPut("{id:guid}/dates")]
         public async Task<IActionResult> UpdateDates(UpdateCardDatesCommand request)
         {
             return Ok(await _mediator.Send(request));
         }
 
-        [HttpGet("{id:int}/members")]
-        public async Task<IActionResult> GetMembers(int id)
+        [HttpGet("{id:guid}/members")]
+        public async Task<IActionResult> GetMembers(Guid id)
         {
             return Ok(await _mediator.Send(new GetCardMembersQuery(id)));
         }
 
-        [HttpPost("{id:int}/members")]
+        [HttpPost("{id:guid}/members")]
         public async Task<IActionResult> GetMembers(AddUserCardCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
 
-        [HttpDelete("{id:int}/members/{userId}")]
-        public async Task<IActionResult> RemoveMember(int id, string userId)
+        [HttpDelete("{id:guid}/members/{userId}")]
+        public async Task<IActionResult> RemoveMember(Guid id, string userId)
         {
             return Ok(await _mediator.Send(new RemoveUserCardCommand(id, userId)));
         }
 
-        [HttpDelete("{id:int}/attachments/{attachmentId:guid}")]
-        public async Task<IActionResult> DeleteAttachment(int id, Guid attachmentId)
+        [HttpDelete("{id:guid}/attachments/{attachmentId:guid}")]
+        public async Task<IActionResult> DeleteAttachment(Guid id, Guid attachmentId)
         {
             return Ok(await _mediator.Send(new RemoveCardAttachmentCommand(id, attachmentId)));
         }

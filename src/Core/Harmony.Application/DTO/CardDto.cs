@@ -2,7 +2,7 @@
 {
     public class CardDto
 	{
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public Guid BoardListId { get; set; }
@@ -15,5 +15,6 @@
         public DateTime? DueDate { get; set; }
         public DateTime? ReminderDate { get; set; }
 		public List<CardMemberDto> Members { get; set; }
+        public int SerialNumber { get; set; }
     }
 }

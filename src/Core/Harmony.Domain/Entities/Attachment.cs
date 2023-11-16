@@ -8,7 +8,7 @@ namespace Harmony.Domain.Entities
         public string FileName { get; set; }
         public string OriginalFileName { get; set; }
         public Card Card { get; set; }
-        public int CardId { get; set; }
+        public Guid CardId { get; set; }
         public AttachmentType Type { get; set; }
     }
 }

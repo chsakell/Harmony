@@ -27,7 +27,7 @@ namespace Harmony.Infrastructure.Services.Management
             _cardActivityRepository = cardActivityRepository;
         }
 
-        public async Task<List<CardActivityDto>> GetAsync(int cardId)
+        public async Task<List<CardActivityDto>> GetAsync(Guid cardId)
         {
             var query = from cardActivity in _cardActivityRepository.Entities
                         join user in _userManager.Users on cardActivity.UserId equals user.Id
@@ -46,7 +46,7 @@ namespace Harmony.Infrastructure.Services.Management
             return await query.ToListAsync();
         }
 
-        public async Task CreateActivity(int cardId, string userId, CardActivityType type,
+        public async Task CreateActivity(Guid cardId, string userId, CardActivityType type,
             DateTime date, string? extraInfo = null, string url = null)
         {
             var activity = new CardActivity()

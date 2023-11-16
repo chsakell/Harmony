@@ -16,12 +16,12 @@ namespace Harmony.Infrastructure.Repositories
 
         public IQueryable<Card> Entities => _context.Set<Card>();
 
-        public async Task<Card?> Get(int cardId)
+        public async Task<Card?> Get(Guid cardId)
 		{
 			return await _context.Cards.FirstOrDefaultAsync(card => card.Id == cardId);
 		}
 
-        public async Task<Guid> GetBoardId(int cardId)
+        public async Task<Guid> GetBoardId(Guid cardId)
         {
 			var card = (await _context.Cards
 					.Include(c => c.BoardList)
@@ -30,7 +30,7 @@ namespace Harmony.Infrastructure.Repositories
 			return card.BoardList.BoardId;
         }
 
-        public async Task<Card?> Load(int cardId)
+        public async Task<Card?> Load(Guid cardId)
         {
             return await _context.Cards
 				.Include(card => card.BoardList)
@@ -55,7 +55,15 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.Cards.Where(c => c.BoardListId == listId).CountAsync();
 		}
 
-		public async Task<int> CreateAsync(Card Card)
+        public async Task<int> GetNextSerialNumber(Guid boardId)
+        {
+            var totalCards = await _context.Cards.Include(c => c.BoardList)
+					.Where(c => c.BoardList.BoardId == boardId).CountAsync();
+
+			return totalCards + 1;
+        }
+
+        public async Task<int> CreateAsync(Card Card)
 		{
 			_context.Cards.Add(Card);
 

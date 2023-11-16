@@ -8,14 +8,14 @@ namespace Harmony.Application.Contracts.Repositories
     /// </summary>
     public interface IUserCardRepository
     {
-        Task<UserCard?> GetUserCard(int cardId, string userId);
+        Task<UserCard?> GetUserCard(Guid cardId, string userId);
         Task<int> CreateAsync(UserCard Board);
 
-        Task<int> CountCardUsers(int cardId);
+        Task<int> CountCardUsers(Guid cardId);
 
-        Task<List<CardMemberResponse>> GetCardUsers(int cardId);
+        Task<List<CardMemberResponse>> GetCardUsers(Guid cardId);
 
-        Task<CardMemberResponse?> GetBoardAccessMember(int cardId, string userId);
+        Task<CardMemberResponse?> GetBoardAccessMember(Guid cardId, string userId);
 
         Task<int> Delete(UserCard userBoard);
     }
