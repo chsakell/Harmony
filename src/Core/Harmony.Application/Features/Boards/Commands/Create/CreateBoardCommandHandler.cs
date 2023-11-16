@@ -80,6 +80,33 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             board.Labels = labels;
 
+            if(request.BoardType == BoardType.Scrum)
+            {
+                var boardLists = new List<BoardList>
+                {
+                    new BoardList()
+                    {
+                        Title = "TODO",
+                        Position = 0,
+                        UserId = userId,
+                    },
+                    new BoardList()
+                    {
+                        Title = "IN PROGRESS",
+                        Position = 1,
+                        UserId = userId,
+                    },
+                    new BoardList()
+                    {
+                        Title = "DONE",
+                        Position = 2,
+                        UserId = userId,
+                    }
+                };
+
+                board.Lists = boardLists;
+            }
+
             var dbResult = await _userBoardRepository.CreateAsync(userBoard);
 
             if (dbResult > 0)
