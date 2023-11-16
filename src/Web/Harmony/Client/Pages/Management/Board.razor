@@ -20,6 +20,10 @@ else
             {
                 <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">Reorder lists</MudButton>
             }
+            @if(KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
+            {
+                <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
+            }
             <MudTooltip Text="Toggle card's description visibility">
                 <MudToggleIconButton @bind-Toggled:get="@CardDescriptionVisibility"
                 @bind-Toggled:set="@ToggleCardDescriptionVisibility"

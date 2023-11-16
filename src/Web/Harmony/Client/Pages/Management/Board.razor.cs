@@ -329,6 +329,11 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private void ViewBacklog()
+        {
+
+        }
+
         private async Task OpenShareBoardModal()
         {
             var parameters = new DialogParameters<BoardMembersModal>
