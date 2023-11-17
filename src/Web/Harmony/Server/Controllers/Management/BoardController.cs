@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
@@ -10,6 +11,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
+using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -86,6 +88,20 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> GetIssueTypes(Guid id)
         {
             return Ok(await _mediator.Send(new GetIssueTypesQuery(id)));
+        }
+
+        [HttpGet("{id:guid}/sprints")]
+        public async Task<IActionResult> GetSprints(Guid id, int pageNumber, int pageSize,
+            string searchTerm = null, string orderBy = null)
+        {
+            return Ok(await _mediator.Send(new
+                GetSprintsQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+        }
+
+        [HttpPost("{id:guid}/sprints")]
+        public async Task<IActionResult> CreateSprint(Guid id, CreateSprintCommand command)
+        {
+            return Ok(await _mediator.Send(command));
         }
     }
 }

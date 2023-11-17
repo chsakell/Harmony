@@ -16,16 +16,22 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
         private readonly ICardService _cardService;
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardRepository _cardRepository;
+        private readonly ISprintRepository _sprintRepository;
+        private readonly IBoardService _boardService;
         private readonly IStringLocalizer<GetSprintsHandler> _localizer;
 
         public GetSprintsHandler(ICardService cardService,
             ICurrentUserService currentUserService,
             ICardRepository cardRepository,
+            ISprintRepository sprintRepository,
+            IBoardService boardService,
             IStringLocalizer<GetSprintsHandler> localizer)
         {
             _cardService = cardService;
             _currentUserService = currentUserService;
             _cardRepository = cardRepository;
+            _sprintRepository = sprintRepository;
+            _boardService = boardService;
             _localizer = localizer;
         }
 
@@ -34,15 +40,14 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
             request.PageNumber = request.PageNumber == 0 ? 1 : request.PageNumber;
             request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
 
-            var totalWorkspaceUsers = 
-                await _cardRepository.CountBacklogCards(request.BoardId);
+            var totalSprints = 
+                await _sprintRepository.CountSprints(request.BoardId);
 
-            var result = await _cardService.SearchBacklog(request.BoardId,
+            var result = await _boardService.SearchSprints(request.BoardId,
                  request.SearchTerm, request.PageNumber, request.PageSize);
 
-            return null;
-            //return PaginatedResult<GetSprintItemResponse>
-            //    .Success(result, totalWorkspaceUsers, request.PageNumber, request.PageSize);
+            return PaginatedResult<GetSprintItemResponse>
+                .Success(result, totalSprints, request.PageNumber, request.PageSize);
         }
     }
 }

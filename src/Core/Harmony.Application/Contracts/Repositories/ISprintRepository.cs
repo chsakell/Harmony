@@ -14,5 +14,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CreateAsync(Sprint sprint);
         Task<int> Update(Sprint sprint);
         Task<int> Delete(Sprint sprint);
+        Task<int> CountSprints(Guid boardId);
     }
 }

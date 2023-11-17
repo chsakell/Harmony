@@ -42,7 +42,6 @@ namespace Harmony.Infrastructure.Services.Management
         {
             IQueryable<GetBacklogItemResponse> query = null;
 
-
 			query = from card in _cardRepository.Entities
 					join issueType in _issueTypeRepository.Entities
 						on card.IssueTypeId equals issueType.Id

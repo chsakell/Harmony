@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
@@ -141,6 +142,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints.GetIssueTypes(boardId));
 
             return await response.ToResult<List<IssueTypeDto>>();
+        }
+
+        public async Task<IResult<SprintDto>> CreateSprintAsync(CreateSprintCommand request)
+        {
+            var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints
+                .Sprints(request.BoardId), request);
+
+            return await response.ToResult<SprintDto>();
         }
     }
 }

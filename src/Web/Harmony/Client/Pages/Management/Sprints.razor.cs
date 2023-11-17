@@ -1,5 +1,6 @@
 ﻿using AutoMapper.Execution;
 using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
@@ -28,7 +29,7 @@ namespace Harmony.Client.Pages.Management
 
         private TableGroupDefinition<GetSprintItemResponse> _groupDefinition = new()
         {
-            GroupName = "Group",
+            GroupName = "Sprint",
             Indentation = false,
             Expandable = true,
             IsInitiallyExpanded = false,
@@ -57,16 +58,16 @@ namespace Harmony.Client.Pages.Management
 
         private async Task CreateSprint()
         {
-            var parameters = new DialogParameters<CreateBacklogModal>
+            var parameters = new DialogParameters<CreateSprintModal>
             {
                 {
-                    modal => modal.CreateBacklogCommandModel,
-                    new CreateBacklogCommand(null, Guid.Parse(Id))
+                    modal => modal.CreateSprintCommandModel,
+                    new CreateSprintCommand(Guid.Parse(Id))
                 }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
-            var dialog = _dialogService.Show<CreateBacklogModal>(_localizer["Create backlog item"], parameters, options);
+            var dialog = _dialogService.Show<CreateSprintModal>(_localizer["Create sprint"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)

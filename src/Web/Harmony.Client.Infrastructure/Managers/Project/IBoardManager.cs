@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
+using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
@@ -32,5 +33,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<PaginatedResult<GetBacklogItemResponse>> GetBacklog(GetBacklogQuery request);
         Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId);
         Task<PaginatedResult<GetSprintItemResponse>> GetSprints(GetSprintsQuery request);
+        Task<IResult<SprintDto>> CreateSprintAsync(CreateSprintCommand request);
     }
 }

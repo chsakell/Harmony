@@ -2,8 +2,13 @@
 using Dapper;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
+using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Domain.Entities;
+using Harmony.Infrastructure.Repositories;
 using Harmony.Persistence.DbContext;
+using Harmony.Persistence.Migrations;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,15 +29,26 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly IBoardRepository _boardRepository;
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
+        private readonly ISprintRepository _sprintRepository;
+        private readonly IBoardListRepository _boardListRepository;
+        private readonly IIssueTypeRepository _issueTypeRepository;
+        private readonly ICardRepository _cardRepository;
         private readonly string _connectionString;
 
         public BoardService(IConfiguration configuration, IBoardRepository boardRepository,
-            IUserBoardRepository userBoardRepository, IUserWorkspaceRepository userWorkspaceRepository)
+            IUserBoardRepository userBoardRepository, IUserWorkspaceRepository userWorkspaceRepository,
+            ISprintRepository sprintRepository, IBoardListRepository boardListRepository,
+            IIssueTypeRepository issueTypeRepository,
+            ICardRepository cardRepository)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _boardRepository = boardRepository;
             _userBoardRepository = userBoardRepository;
             _userWorkspaceRepository = userWorkspaceRepository;
+            _sprintRepository = sprintRepository;
+            _boardListRepository = boardListRepository;
+            _issueTypeRepository = issueTypeRepository;
+            _cardRepository = cardRepository;
         }
 
         public async Task<bool> HasUserAccessToBoard(string userId, Guid boardId)
@@ -224,6 +240,47 @@ namespace Harmony.Infrastructure.Services.Management
             {
                 throw;
             }
+        }
+
+        public async Task<List<GetSprintItemResponse>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize)
+        {
+            IQueryable<GetSprintItemResponse> query = null;
+
+            query = from sprint in _sprintRepository.Entities
+                    join board in _boardRepository.Entities
+                        on sprint.BoardId equals board.Id
+                    join card in _cardRepository.Entities
+                        on sprint.Id equals card.SprintId into grouping
+                    from p in grouping.DefaultIfEmpty()
+                    join issueType in _issueTypeRepository.Entities
+                        on p.IssueTypeId equals issueType.Id into issueGrouping
+                    from issue in issueGrouping.DefaultIfEmpty()
+                    where (board.Id == boardId
+                        && p.Status != Domain.Enums.CardStatus.Backlog &&
+                        (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term)))
+                    select new GetSprintItemResponse()
+                    {
+                        CardId = (Guid?)p.Id,
+                        CardTitle = p != null ? p.Title : null,
+                        CardStartDate = p != null ? p.StartDate : null,
+                        CardDueDate = p != null ? p.DueDate : null,
+                        CardSerialKey = p != null ? $"{board.Key}-{p.SerialNumber}" : null,
+                        Sprint = sprint.Name,
+                        SprintStartDate = sprint.StartDate,
+                        SprintEndDate = sprint.EndDate,
+                        SprintId = sprint.Id,
+                        CardIssueType = new IssueTypeDto()
+                        {
+                            Id = issue != null ? issue.Id : Guid.Empty,
+                            Summary = issue != null ? issue.Summary : null
+                        }
+                    };
+
+
+            var result = await query.Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize).ToListAsync();
+
+            return result;
         }
     }
 }

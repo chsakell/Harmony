@@ -65,6 +65,7 @@ namespace Harmony.Application.Mappings.Management
             CreateMap<UpdateListsPositionsCommand, UpdateListsPositionsResponse>();
 
             CreateMap<IssueType, IssueTypeDto>();
+            CreateMap<Sprint, SprintDto>();
         }
     }
 }

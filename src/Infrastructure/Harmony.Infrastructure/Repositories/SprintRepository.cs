@@ -54,5 +54,11 @@ namespace Harmony.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<int> CountSprints(Guid boardId)
+        {
+            return await _context.Sprints
+                .Where(sprint => sprint.BoardId == boardId).CountAsync();
+        }
     }
 }

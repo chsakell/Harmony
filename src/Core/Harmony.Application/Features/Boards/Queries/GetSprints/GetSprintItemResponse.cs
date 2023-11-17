@@ -6,12 +6,15 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
 {
     public class GetSprintItemResponse
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? DueDate { get; set; }
-        public string SerialKey { get; set; }
-        public IssueTypeDto IssueType { get; set; }
+        public Guid? CardId { get; set; }
+        public string CardTitle { get; set; }
+        public DateTime? CardStartDate { get; set; }
+        public DateTime? CardDueDate { get; set; }
+        public string CardSerialKey { get; set; }
+        public IssueTypeDto? CardIssueType { get; set; }
         public string Sprint { get; set; }
+        public Guid SprintId { get; set; }
+        public DateTime SprintStartDate { get; set; }
+        public DateTime SprintEndDate { get; set; }
     }
 }
