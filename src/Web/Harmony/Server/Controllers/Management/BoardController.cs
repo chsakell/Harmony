@@ -9,6 +9,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
+using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,6 +80,12 @@ namespace Harmony.Server.Controllers.Management
         {
             return Ok(await _mediator.Send(new
                 GetBacklogQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+        }
+
+        [HttpGet("{id:guid}/issuetypes")]
+        public async Task<IActionResult> GetIssueTypes(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetIssueTypesQuery(id)));
         }
     }
 }

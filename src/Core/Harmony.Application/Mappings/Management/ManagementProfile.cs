@@ -63,6 +63,8 @@ namespace Harmony.Application.Mappings.Management
             CreateMap<UserResponse, CardMemberDto>();
 
             CreateMap<UpdateListsPositionsCommand, UpdateListsPositionsResponse>();
+
+            CreateMap<IssueType, IssueTypeDto>();
         }
     }
 }

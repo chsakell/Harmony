@@ -28,5 +28,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<UpdateListsPositionsResponse>> UpdateBoardListsPositions(UpdateListsPositionsCommand request);
         Task<IResult<List<CardDto>>> GetBoardListCardsAsync(LoadBoardListQuery request);
         Task<PaginatedResult<GetBacklogItemResponse>> GetBacklog(GetBacklogQuery request);
+        Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId);
     }
 }

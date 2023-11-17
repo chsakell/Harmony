@@ -14,7 +14,7 @@ namespace Harmony.Persistence.Configurations
         {
             builder.ToTable("Cards");
 
-            builder.Property(c => c.BoardListId).IsRequired();
+            builder.Property(c => c.BoardListId).IsRequired(false);
 
             builder.Property(c => c.Status).IsRequired().HasDefaultValue(CardStatus.Active);
 

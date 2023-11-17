@@ -12,14 +12,17 @@ namespace Harmony.Infrastructure.Services.Management
 	{
 		private readonly ICardRepository _cardRepository;
         private readonly IBoardRepository _boardRepository;
+        private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly IBoardListRepository _boardListRepository;
 
         public CardService(ICardRepository cardRepository, 
 			IBoardRepository boardRepository,
+			IIssueTypeRepository issueTypeRepository,
 			IBoardListRepository boardListRepository)
         {
 			_cardRepository = cardRepository;
             _boardRepository = boardRepository;
+            _issueTypeRepository = issueTypeRepository;
             _boardListRepository = boardListRepository;
         }
 
@@ -41,10 +44,10 @@ namespace Harmony.Infrastructure.Services.Management
 
 
 			query = from card in _cardRepository.Entities
-					join boardList in _boardListRepository.Entities
-						on card.BoardListId equals boardList.Id
+					join issueType in _issueTypeRepository.Entities
+						on card.IssueTypeId equals issueType.Id
 					join board in _boardRepository.Entities
-						on boardList.BoardId equals board.Id
+						on issueType.BoardId equals board.Id
 					where (board.Id == boardId
 						&& card.Status == Domain.Enums.CardStatus.Backlog &&
 						(string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)))
@@ -54,7 +57,12 @@ namespace Harmony.Infrastructure.Services.Management
 						Title = card.Title,
 						StartDate = card.StartDate,
 						DueDate = card.DueDate,
-                        SerialKey = $"{board.Key}-{card.SerialNumber}"
+                        SerialKey = $"{board.Key}-{card.SerialNumber}",
+						IssueType = new Application.DTO.IssueTypeDto()
+						{
+							Id = issueType.Id,
+							Summary = issueType.Summary
+						}
 					};
 
 
@@ -68,7 +76,7 @@ namespace Harmony.Infrastructure.Services.Management
 		{
 			var currentPosition = card.Position;
 
-			await ReorderCards(card.BoardListId, currentPosition, true);
+			await ReorderCards(card.BoardListId.Value, currentPosition, true);
 
 			return await MoveCard(card, newListId, newPosition);
 		}
@@ -110,7 +118,8 @@ namespace Harmony.Infrastructure.Services.Management
 			// needs swapping
 			if (currentPosition != newPosition)
 			{
-				var currentCardInNewPosition = await _cardRepository.GetByPosition(card.BoardListId, newPosition);
+				var currentCardInNewPosition = await _cardRepository
+						.GetByPosition(card.BoardListId.Value, newPosition);
 				
 				if (currentCardInNewPosition != null)
 				{

@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Responses;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Responses;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Boards.Queries.GetBacklog
 {
@@ -9,5 +11,6 @@ namespace Harmony.Application.Features.Boards.Queries.GetBacklog
         public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
         public string SerialKey { get; set; }
+        public IssueTypeDto IssueType { get; set; }
     }
 }

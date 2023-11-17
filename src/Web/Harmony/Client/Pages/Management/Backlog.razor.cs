@@ -1,7 +1,12 @@
 ﻿using AutoMapper.Execution;
+using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
+using Harmony.Application.Features.Cards.Commands.CreateBacklog;
+using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
+using Harmony.Client.Infrastructure.Store.Kanban;
+using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -37,6 +42,26 @@ namespace Harmony.Client.Pages.Management
                 TotalItems = _totalItems,
                 Items = _cards
             };
+        }
+
+        private async Task CreateIssue()
+        {
+            var parameters = new DialogParameters<CreateBacklogModal>
+            {
+                {
+                    modal => modal.CreateBacklogCommandModel,
+                    new CreateBacklogCommand(null, Guid.Parse(Id))
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateBacklogModal>(_localizer["Create backlog item"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                await _table.ReloadServerData();
+            }
         }
 
         private async Task LoadData(int pageNumber, int pageSize, TableState state)

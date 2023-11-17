@@ -4,6 +4,7 @@
     {
         public static string Index = "api/cards";
 
+        public static string Backlog => $"api/cards/backlog/";
         public static string Get(Guid id) => $"api/cards/{id}/";
         public static string GetLabels(Guid id) => $"api/cards/{id}/labels/";
         public static string GetActivity(Guid id) => $"api/cards/{id}/activity/";

@@ -1,4 +1,6 @@
-﻿namespace Harmony.Application.DTO
+﻿using Harmony.Domain.Enums;
+
+namespace Harmony.Application.DTO
 {
     public class CardDto
 	{
@@ -16,5 +18,6 @@
         public DateTime? ReminderDate { get; set; }
 		public List<CardMemberDto> Members { get; set; }
         public int SerialNumber { get; set; }
+        public CardStatus Status { get; set; }
     }
 }

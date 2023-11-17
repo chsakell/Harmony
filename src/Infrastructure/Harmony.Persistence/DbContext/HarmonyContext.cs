@@ -23,6 +23,8 @@ namespace Harmony.Persistence.DbContext
         public DbSet<CardLabel> CardLabels { get; set; }
         public DbSet<CardActivity> CardActivities { get; set; }
 
+        public DbSet<IssueType> IssueTypes { get; set; }
+
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {
 

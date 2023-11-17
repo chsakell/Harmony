@@ -7,18 +7,18 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
 
-namespace Harmony.Application.Features.Cards.Commands.CreateCard
+namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
 {
-    public class CreateCardCommandHandler : IRequestHandler<CreateCardCommand, Result<CardDto>>
+    public class CreateBacklogCommandHandler : IRequestHandler<CreateBacklogCommand, Result<CardDto>>
     {
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IStringLocalizer<CreateCardCommandHandler> _localizer;
+        private readonly IStringLocalizer<CreateBacklogCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
-        public CreateCardCommandHandler(ICardRepository cardRepository,
+        public CreateBacklogCommandHandler(ICardRepository cardRepository,
             ICurrentUserService currentUserService,
-            IStringLocalizer<CreateCardCommandHandler> localizer,
+            IStringLocalizer<CreateBacklogCommandHandler> localizer,
             IMapper mapper)
         {
             _cardRepository = cardRepository;
@@ -26,7 +26,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             _localizer = localizer;
             _mapper = mapper;
         }
-        public async Task<Result<CardDto>> Handle(CreateCardCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CardDto>> Handle(CreateBacklogCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
@@ -35,16 +35,18 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 return await Result<CardDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var totalCards = await _cardRepository.CountCards(request.ListId);
-            var nextSerialNumber = await _cardRepository.GetNextSerialNumber(request.BoardId);
+            var totalBacklogCards = await _cardRepository.CountBacklogCards(request.BoardId);
+
+            var nextSerialNumber = (await _cardRepository.CountBoardCards(request.BoardId)) + 1;
 
             var card = new Card()
             {
                 Title = request.Title,
                 UserId = userId,
-                BoardListId = request.ListId,
-                Position = (byte)totalCards,
-                SerialNumber = nextSerialNumber
+                Position = (byte)totalBacklogCards,
+                SerialNumber = nextSerialNumber,
+                Status = Domain.Enums.CardStatus.Backlog,
+                IssueTypeId = request.IssueType.Id,
             };
 
             var dbResult = await _cardRepository.CreateAsync(card);
@@ -52,7 +54,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             if (dbResult > 0)
             {
                 var result = _mapper.Map<CardDto>(card);
-                return await Result<CardDto>.SuccessAsync(result, _localizer["Card Created"]);
+                return await Result<CardDto>.SuccessAsync(result, _localizer["Issue Created"]);
             }
 
             return await Result<CardDto>.FailAsync(_localizer["Operation failed"]);

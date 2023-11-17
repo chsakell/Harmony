@@ -58,17 +58,25 @@ namespace Harmony.Infrastructure.Repositories
         public async Task<int> CountBacklogCards(Guid boardId)
         {
             return await _context.Cards
-					.Include(c => c.BoardList)
-				.Where(c => c.BoardList.BoardId == boardId 
+					.Include(c => c.IssueType)
+				.Where(c => c.IssueType.BoardId == boardId 
 				&& c.Status == Domain.Enums.CardStatus.Backlog).CountAsync();
+        }
+
+        public async Task<int> CountBoardCards(Guid boardId)
+        {
+            return await _context.Cards
+                    .Include(c => c.BoardList)
+					.Include(c => c.IssueType)
+                .Where(c => c.BoardList.BoardId == boardId || c.IssueType.BoardId == boardId)
+				.Select(c => c.Id)
+				.CountAsync();
         }
 
         public async Task<int> GetNextSerialNumber(Guid boardId)
         {
-            var totalCards = await _context.Cards.Include(c => c.BoardList)
-					.Where(c => c.BoardList.BoardId == boardId).CountAsync();
-
-			return totalCards + 1;
+			var totalCards = await CountBoardCards(boardId);
+            return totalCards + 1;
         }
 
         public async Task<int> CreateAsync(Card Card)

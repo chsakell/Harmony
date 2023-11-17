@@ -124,5 +124,12 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
             return await response.ToPaginatedResult<GetBacklogItemResponse>();
         }
+
+        public async Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.GetIssueTypes(boardId));
+
+            return await response.ToResult<List<IssueTypeDto>>();
+        }
     }
 }
