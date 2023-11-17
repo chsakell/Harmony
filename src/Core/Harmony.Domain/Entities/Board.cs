@@ -19,5 +19,6 @@ namespace Harmony.Domain.Entities
         public List<IssueType> IssueTypes { get; set; }
         public BoardType Type { get; set; }
         public string Key {  get; set; }
+        public List<Sprint> Sprints { get; set; }
     }
 }

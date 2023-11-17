@@ -33,6 +33,10 @@ namespace Harmony.Persistence.Configurations
                 .WithOne(label => label.Board)
                 .HasForeignKey(label => label.BoardId);
 
+            builder.HasMany(board => board.Sprints)
+                .WithOne(label => label.Board)
+                .HasForeignKey(label => label.BoardId);
+
             builder.Property(b => b.Type).IsRequired();
 
             builder.HasIndex(b => b.Key).IsUnique();

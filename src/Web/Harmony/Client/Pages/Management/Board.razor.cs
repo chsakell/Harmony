@@ -334,6 +334,11 @@ namespace Harmony.Client.Pages.Management
             _navigationManager.NavigateTo($"/projects/{Id}/backlog");
         }
 
+        private void ViewSprints()
+        {
+            _navigationManager.NavigateTo($"/projects/{Id}/sprints");
+        }
+
         private async Task OpenShareBoardModal()
         {
             var parameters = new DialogParameters<BoardMembersModal>

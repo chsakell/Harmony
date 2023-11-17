@@ -7,12 +7,14 @@ using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
+using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
@@ -123,6 +125,15 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                      request.SearchTerm, request.OrderBy));
 
             return await response.ToPaginatedResult<GetBacklogItemResponse>();
+        }
+
+        public async Task<PaginatedResult<GetSprintItemResponse>> GetSprints(GetSprintsQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints
+                .Sprints(request.BoardId.ToString(), request.PageNumber, request.PageSize,
+                     request.SearchTerm, request.OrderBy));
+
+            return await response.ToPaginatedResult<GetSprintItemResponse>();
         }
 
         public async Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId)

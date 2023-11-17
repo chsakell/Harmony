@@ -7,10 +7,12 @@ using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
+using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
@@ -29,5 +31,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<CardDto>>> GetBoardListCardsAsync(LoadBoardListQuery request);
         Task<PaginatedResult<GetBacklogItemResponse>> GetBacklog(GetBacklogQuery request);
         Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId);
+        Task<PaginatedResult<GetSprintItemResponse>> GetSprints(GetSprintsQuery request);
     }
 }

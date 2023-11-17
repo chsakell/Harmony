@@ -26,5 +26,6 @@ namespace Harmony.Domain.Entities
         public int SerialNumber { get; set; }
         public IssueType IssueType { get; set; }
         public Guid? IssueTypeId { get; set; }
+        public Guid? SprintId { get; set; }
     }
 }
