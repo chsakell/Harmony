@@ -33,7 +33,7 @@ BEGIN
 
 	DECLARE @cards Table(Id uniqueidentifier, Title nvarchar(300), Description nvarchar(max), UserId nvarchar(450),
 	BoardListId uniqueidentifier, Position smallint, Status int, StartDate datetime2, DueDate datetime2, ReminderDate datetime2,
-	SerialNumber int, DateCreated datetime2, DateUpdated datetime2);
+	SerialNumber int, DateCreated datetime2, DateUpdated datetime2, IssueTypeId uniqueidentifier);
 
 	DECLARE @boardListId uniqueidentifier
 

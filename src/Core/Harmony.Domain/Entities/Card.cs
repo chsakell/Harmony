@@ -24,5 +24,7 @@ namespace Harmony.Domain.Entities
         public DateTime? ReminderDate { get; set; }
         public List<Attachment> Attachments { get; set; }
         public int SerialNumber { get; set; }
+        public IssueType IssueType { get; set; }
+        public Guid? IssueTypeId { get; set; }
     }
 }

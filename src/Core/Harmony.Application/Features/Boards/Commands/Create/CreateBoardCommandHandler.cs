@@ -80,6 +80,17 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             board.Labels = labels;
 
+            var issueTypes = new List<IssueType>();
+            foreach (var issueType in IssueTypesConstants.GetDefaultIssueTypes())
+            {
+                issueTypes.Add(new IssueType()
+                {
+                    Summary = issueType
+                });
+            }
+
+            board.IssueTypes = issueTypes;
+
             if(request.BoardType == BoardType.Scrum)
             {
                 var boardLists = new List<BoardList>
