@@ -1,4 +1,6 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
+using Harmony.Shared.Constants.Application;
 using MudBlazor;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,30 @@ namespace Harmony.Client.Infrastructure.Helper
                 BoardType.Kanban => Color.Info,
                 BoardType.Scrum => Color.Tertiary,
                 _ => Color.Info,
+            };
+        }
+
+        public static Color GetIssueTypeColor(string type)
+        {
+            return type switch
+            {
+                IssueTypesConstants.EPIC => Color.Surface,
+                IssueTypesConstants.BUG => Color.Error,
+                IssueTypesConstants.STORY => Color.Success,
+                IssueTypesConstants.TASK => Color.Info,
+                _ => Color.Info,
+            };
+        }
+
+        public static string GetIssueTypeIcon(string type)
+        {
+            return type switch
+            {
+                IssueTypesConstants.EPIC => Icons.Material.Outlined.ElectricBolt,
+                IssueTypesConstants.BUG => Icons.Material.Outlined.BugReport,
+                IssueTypesConstants.STORY => Icons.Material.Outlined.LabelImportant,
+                IssueTypesConstants.TASK => Icons.Material.Outlined.CheckBox,
+                _ => Icons.Material.Outlined.Task,
             };
         }
     }

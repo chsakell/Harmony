@@ -1,6 +1,7 @@
 ﻿@page "/projects/{id}/backlog"
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Backlog> _localizer
 @using Harmony.Application.Features.Boards.Queries.GetBacklog
+@using Harmony.Client.Infrastructure.Helper
 
 <MudPaper>
     <MudTable Hover="true" Elevation="25"
@@ -29,7 +30,8 @@
             </MudTd>
             <MudTd DataLabel="Type">
                 <MudStack Row="true">
-                    <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Color="Color.Info" />
+                    <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)" 
+                            Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
                     <MudText>@context.IssueType.Summary</MudText>
                     </MudStack>
                 </MudTd>
