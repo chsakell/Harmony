@@ -8,53 +8,50 @@ using Harmony.Shared.Constants.Application;
 using Harmony.Domain.Enums;
 using Harmony.Application.DTO;
 using AutoMapper;
+using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Features.Lists.Queries.LoadBoardList;
+using System.Collections.Generic;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveToSprint
 {
     /// <summary>
     /// Handler for moving cards from backlog to sprints
     /// </summary>
-    public class MoveToSprintCommandHandler : IRequestHandler<MoveToSprintCommand, Result<SprintDto>>
+    public class MoveToSprintCommandHandler : IRequestHandler<MoveToSprintCommand, IResult<List<CardDto>>>
     {
         private readonly ICurrentUserService _currentUserService;
-        private readonly ISprintRepository _sprintRepository;
+        private readonly ICardService _cardService;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<MoveToSprintCommandHandler> _localizer;
 
         public MoveToSprintCommandHandler(ICurrentUserService currentUserService,
-            ISprintRepository sprintRepository,
-            IMapper mapper,
-            IStringLocalizer<MoveToSprintCommandHandler> localizer)
+            ICardService cardService,
+            IMapper mapper, IStringLocalizer<MoveToSprintCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
-            _sprintRepository = sprintRepository;
+            _cardService = cardService;
             _mapper = mapper;
             _localizer = localizer;
         }
-        public async Task<Result<SprintDto>> Handle(MoveToSprintCommand request, CancellationToken cancellationToken)
+        public async Task<IResult<List<CardDto>>> Handle(MoveToSprintCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<SprintDto>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<List<CardDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var sprint = new Sprint()
+            var operationResult = await _cardService.MoveCardsToSprint(request.Cards, request.SprintId, request.BoardListId);
+
+            if (operationResult.Succeeded)
             {
-                
-            };
+                var result = _mapper.Map<List<CardDto>>(operationResult.Data);
 
-            var dbResult = await _sprintRepository.CreateAsync(sprint);
-
-            if (dbResult > 0)
-            {
-                var result = _mapper.Map<SprintDto>(sprint);
-
-                return await Result<SprintDto>.SuccessAsync(result, _localizer["Sprint Created"]);
+                return await Result<List<CardDto>>.SuccessAsync(result, "Cards moved successfully");
             }
 
-            return await Result<SprintDto>.FailAsync(_localizer["Operation failed"]);
+            return await Result<List<CardDto>>.FailAsync(_localizer["Operation failed"]);
         }
     }
 }

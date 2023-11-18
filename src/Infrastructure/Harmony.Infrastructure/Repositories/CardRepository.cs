@@ -93,7 +93,14 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.SaveChangesAsync();
 		}
 
-		public void UpdateEntry(Card Card)
+        public async Task<int> UpdateRange(List<Card> cards)
+        {
+            _context.Cards.UpdateRange(cards);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public void UpdateEntry(Card Card)
 		{
 			_context.Cards.Update(Card);
 		}

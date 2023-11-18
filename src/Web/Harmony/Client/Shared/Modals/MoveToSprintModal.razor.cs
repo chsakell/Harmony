@@ -6,11 +6,14 @@ using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Lists.Commands.CreateList;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System;
 using System.Globalization;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {
@@ -20,7 +23,7 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter]
-        public MoveToSprintCommand MoveToSprintCommandModel { get; set; }
+        public Guid BoardId { get; set; }
 
         [Parameter]
         public HashSet<GetBacklogItemResponse> Items { get; set; }
@@ -29,10 +32,49 @@ namespace Harmony.Client.Shared.Modals
         private string _searchString = "";
         private List<SprintDto> _sprints;
         private int _totalItems;
+        private List<GetBoardListResponse> _boardLists = new List<GetBoardListResponse>();
+        private GetBoardListResponse _selectedBoardList;
 
+        private int selectedRowNumber = -1;
         private void Cancel()
         {
             MudDialog.Cancel();
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            var boardListsResult = await _boardManager
+                .GetBoardListsAsync(BoardId.ToString());
+
+            if ((boardListsResult.Succeeded))
+            {
+                _boardLists = boardListsResult.Data.OrderBy(l => l.Position).ToList();
+
+                if (_boardLists.Any())
+                {
+                    _selectedBoardList = _boardLists.First();
+                }
+            }
+        }
+
+        private async Task MoveCards()
+        {
+            var selectedSprint = _table.SelectedItem;
+
+            _processing = true;
+
+            var result = await _boardManager
+                .MoveCardsToSprint(new MoveToSprintCommand(BoardId, selectedSprint.Id, 
+                _selectedBoardList.Id, Items.Select(i => i.Id).ToList()));
+
+            DisplayMessage(result);
+
+            _processing = false;
+
+            if (result.Succeeded)
+            {
+                MudDialog.Close(result.Data);
+            }
         }
 
         private async Task<TableData<SprintDto>> ReloadData(TableState state)
@@ -64,7 +106,7 @@ namespace Harmony.Client.Shared.Modals
                 orderings = state.SortDirection != SortDirection.None ? new[] { $"{state.SortLabel} {state.SortDirection}" } : new[] { $"{state.SortLabel}" };
             }
 
-            var request = new GetSprintsQuery(MoveToSprintCommandModel.BoardId)
+            var request = new GetSprintsQuery(BoardId)
             {
                 PageSize = pageSize,
                 PageNumber = pageNumber + 1,
@@ -87,6 +129,37 @@ namespace Harmony.Client.Shared.Modals
                 }
             }
         }
+
+        private void RowClickEvent(TableRowClickEventArgs<SprintDto> tableRowClickEventArgs)
+        {
+            
+        }
+
+        private string SelectedRowClassFunc(SprintDto sprint, int rowNumber)
+        {
+            if (selectedRowNumber == rowNumber)
+            {
+                selectedRowNumber = -1;
+
+                return string.Empty;
+            }
+            else if (_table.SelectedItem != null && _table.SelectedItem.Equals(sprint))
+            {
+                selectedRowNumber = rowNumber;
+
+                return "mud-harmony";
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+
+        Func<GetBoardListResponse, string> converter = p =>
+        {
+            return p?.Title ?? "Move to list";
+        };
 
         private void DisplayMessage(IResult result)
         {

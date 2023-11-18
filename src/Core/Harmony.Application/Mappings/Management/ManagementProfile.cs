@@ -5,6 +5,7 @@ using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
@@ -27,6 +28,8 @@ namespace Harmony.Application.Mappings.Management
                     opt.MapFrom(c => c.Users.Count()));
 
             CreateMap<BoardList, BoardListDto>();
+            CreateMap<BoardList, GetBoardListResponse>();
+
             CreateMap<Card, CardDto>()
                 .ForMember(dto => dto.TotalItems, opt =>
                     opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items).Count()))

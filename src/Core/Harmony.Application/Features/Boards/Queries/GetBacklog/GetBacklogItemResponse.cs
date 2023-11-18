@@ -12,5 +12,6 @@ namespace Harmony.Application.Features.Boards.Queries.GetBacklog
         public DateTime? DueDate { get; set; }
         public string SerialKey { get; set; }
         public IssueTypeDto IssueType { get; set; }
+        public short Position { get; set; }
     }
 }

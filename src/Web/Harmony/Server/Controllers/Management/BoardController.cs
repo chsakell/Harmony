@@ -7,8 +7,11 @@ using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
+using Harmony.Application.Features.Cards.Commands.MoveToSprint;
+using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
@@ -111,6 +114,18 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> CreateSprint(Guid id, CreateSprintCommand command)
         {
             return Ok(await _mediator.Send(command));
+        }
+
+        [HttpGet("{id:guid}/boardlists")]
+        public async Task<IActionResult> GetBoardLists(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetBoardListsQuery(id)));
+        }
+
+        [HttpPut("{id:guid}/movecardstosprint")]
+        public async Task<IActionResult> MoveCardsToSprint(Guid id, MoveToSprintCommand request)
+        {
+            return Ok(await _mediator.Send(request));
         }
     }
 }

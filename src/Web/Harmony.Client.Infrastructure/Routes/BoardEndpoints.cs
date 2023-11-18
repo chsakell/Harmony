@@ -21,6 +21,11 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Index}{boardId}/issuetypes/";
         }
 
+        public static string GetBoardLists(string boardId)
+        {
+            return $"{Index}{boardId}/boardlists/";
+        }
+
         public static string Member(string boardId, string userId)
         {
             return $"{Index}{boardId}/members/{userId}/";
@@ -29,6 +34,11 @@ namespace Harmony.Client.Infrastructure.Routes
         public static string MemberStatus(string boardId, string userId)
         {
             return $"{Index}{boardId}/members/{userId}/status/";
+        }
+
+        public static string MoveCardsToSprint(string boardId)
+        {
+            return $"{Index}{boardId}/movecardstosprint/";
         }
 
         public static string SearchMembers(string boardId, string term)

@@ -5,7 +5,7 @@ using MediatR;
 namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
 {
     /// <summary>
-    /// Query for returning card labels
+    /// Query for returning list cards
     /// </summary>
     public class LoadBoardListQuery : IRequest<IResult<List<CardDto>>>
     {

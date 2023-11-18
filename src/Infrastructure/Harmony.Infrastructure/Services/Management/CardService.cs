@@ -1,9 +1,12 @@
-﻿using Harmony.Application.Contracts.Repositories;
+﻿using Azure.Core;
+using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Domain.Entities;
 using Harmony.Infrastructure.Repositories;
+using Harmony.Shared.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.Services.Management
@@ -38,6 +41,37 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
+		public async Task<IResult<List<Card>>> MoveCardsToSprint(List<Guid> cardsToMove, Guid sprintId, Guid boardListId)
+		{
+			var cards = await _cardRepository
+				.Entities.Where(card => cardsToMove.Contains(card.Id) 
+					&& card.Status == Domain.Enums.CardStatus.Backlog)
+				.ToListAsync();
+
+			if(cards.Any())
+			{
+                // Get the last index in the board list id
+                var totalCards = await _cardRepository.CountCards(boardListId);
+
+				foreach(var card in cards.OrderBy(c => c.Position))
+				{
+					card.BoardListId = boardListId;
+					card.Position = (short)totalCards++;
+					card.SprintId = sprintId;
+					card.Status = Domain.Enums.CardStatus.Active;
+				}
+
+				var result = await _cardRepository.UpdateRange(cards);
+
+				if(result > 0)
+				{
+					return await Result<List<Card>>.SuccessAsync(cards);
+                }
+            }
+
+			return await Result<List<Card>>.FailAsync("Failed to move cards");
+		}
+
         public async Task<List<GetBacklogItemResponse>> SearchBacklog(Guid boardId, string term, int pageNumber, int pageSize)
         {
             IQueryable<GetBacklogItemResponse> query = null;
@@ -57,6 +91,7 @@ namespace Harmony.Infrastructure.Services.Management
 						StartDate = card.StartDate,
 						DueDate = card.DueDate,
                         SerialKey = $"{board.Key}-{card.SerialNumber}",
+						Position = card.Position,
 						IssueType = new Application.DTO.IssueTypeDto()
 						{
 							Id = issueType.Id,

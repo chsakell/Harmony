@@ -1,6 +1,14 @@
 ﻿@using Harmony.Application.DTO
+@using Harmony.Application.Features.Lists.Queries.GetBoardLists
+@using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<MoveToSprintModal> _localizer
+
+<style>
+    .mud-toolbar {
+        margin-bottom: 15px;
+    }
+</style>
 
 <MudDialog>
     <TitleContent>
@@ -12,10 +20,41 @@
         }
     </TitleContent>
     <DialogContent>
-        <MudTable Hover="true" Elevation="25"
-                  T="SprintDto"
-                  ServerData="@(new Func<TableState, Task<TableData<SprintDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
-            <ToolBarContent>
+        <MudExpansionPanels Class="mb-4">
+            <MudExpansionPanel Text="Cards to be moved" MaxHeight="450">
+                <MudTable Items="@Items.AsEnumerable()" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+                    <HeaderContent>
+                        <MudTh>Title</MudTh>
+                        <MudTh>Type</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Title">@context.Title</MudTd>
+                            <MudTd DataLabel="Type">
+                                <MudStack Row="true">
+                                    <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                             Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                                    <MudText>@context.IssueType.Summary</MudText>
+                                </MudStack>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+            <MudTable Hover="true" Elevation="25"
+                      T="SprintDto"
+                      FixedHeader="true"
+                      RowClassFunc="@SelectedRowClassFunc" OnRowClick="RowClickEvent"
+                      ServerData="@(new Func<TableState, Task<TableData<SprintDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+                <ToolBarContent>
+                    <MudSelect @bind-Value="_selectedBoardList"
+                               ToStringFunc="@converter"
+                               HelperText="Items will be moved to this list in the board"
+                               T="GetBoardListResponse" Label="Select a list" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var list in _boardLists)
+                    {
+                        <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                    }
+                </MudSelect>
                 <MudSpacer />
                 <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search sprint.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
@@ -24,7 +63,6 @@
                 <MudTh><MudTableSortLabel SortBy="new Func<SprintDto, object>(x => x.Status)">Status</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<SprintDto, object>(x => x.StartDate)">Start Date</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<SprintDto, object>(x => x.EndDate)">End Date</MudTableSortLabel></MudTh>
-                <MudTh Style="text-align:right"></MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Name">
@@ -39,9 +77,6 @@
                 <MudTd DataLabel="EndDate">
                     <MudHighlighter Text="@context.EndDate.ToShortDateString()" HighlightedText="@_searchString" />
                 </MudTd>
-                <MudTd DataLabel="Actions" Style="text-align:right">
-                    <MudButton  EndIcon="@Icons.Material.Outlined.ArrowRight" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Success">Move</MudButton>
-                </MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager />
@@ -50,5 +85,17 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-        </DialogActions>
-    </MudDialog>
+            <MudButton OnClick="MoveCards"
+                       ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary">
+                @if (_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+            }
+            else
+            {
+                <MudText>@_localizer["Confirm"]</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -35,8 +35,7 @@ namespace Harmony.Client.Pages.Management
             var parameters = new DialogParameters<MoveToSprintModal>
             {
                 {
-                    modal => modal.MoveToSprintCommandModel,
-                    new MoveToSprintCommand(Guid.Parse(Id))
+                    modal => modal.BoardId,Guid.Parse(Id)
                 },
                 {
                     modal => modal.Items, _selectedCards
