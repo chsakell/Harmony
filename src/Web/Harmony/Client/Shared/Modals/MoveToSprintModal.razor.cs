@@ -61,6 +61,13 @@ namespace Harmony.Client.Shared.Modals
         {
             var selectedSprint = _table.SelectedItem;
 
+            if(selectedSprint == null)
+            {
+                _snackBar.Add("Please select a sprint first.", Severity.Warning);
+
+                return;
+            }
+
             _processing = true;
 
             var result = await _boardManager
@@ -140,6 +147,8 @@ namespace Harmony.Client.Shared.Modals
             if (selectedRowNumber == rowNumber)
             {
                 selectedRowNumber = -1;
+
+                _table.SetSelectedItem(null);
 
                 return string.Empty;
             }

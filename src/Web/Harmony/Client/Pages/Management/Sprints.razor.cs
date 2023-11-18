@@ -32,8 +32,9 @@ namespace Harmony.Client.Pages.Management
             GroupName = "Sprint",
             Indentation = false,
             Expandable = true,
-            IsInitiallyExpanded = false,
-            Selector = (e) => e.Sprint
+            IsInitiallyExpanded = true,
+            Selector = (e) => e.Sprint + 
+            $" [{e.SprintStartDate.ToShortDateString()}-{e.SprintEndDate.ToShortDateString()}]"
         };
 
         protected override Task OnInitializedAsync()

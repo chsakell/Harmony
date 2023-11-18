@@ -23,7 +23,7 @@ else
             @if(KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
             {
                 <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
-                <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.SystemUpdateAlt">Sprints</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
             }
             <MudTooltip Text="Toggle card's description visibility">
                 <MudToggleIconButton @bind-Toggled:get="@CardDescriptionVisibility"

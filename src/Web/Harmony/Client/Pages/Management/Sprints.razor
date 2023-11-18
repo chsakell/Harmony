@@ -63,7 +63,7 @@
                 </MudTd>
             </RowTemplate>
             <GroupFooterTemplate>
-                <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="5">Total items: </MudTh>
+                <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="5">Total cards: @context.Items.Count(item => item.CardId.HasValue)</MudTh>
             </GroupFooterTemplate>
         </MudTable>
     </MudPaper>
