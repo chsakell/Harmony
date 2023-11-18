@@ -242,9 +242,9 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-        public async Task<List<GetSprintItemResponse>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize)
+        public async Task<List<GetSprintCardResponse>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize)
         {
-            IQueryable<GetSprintItemResponse> query = null;
+            IQueryable<GetSprintCardResponse> query = null;
 
             query = from sprint in _sprintRepository.Entities
                     join board in _boardRepository.Entities
@@ -258,7 +258,7 @@ namespace Harmony.Infrastructure.Services.Management
                     where (board.Id == boardId
                         && p.Status != Domain.Enums.CardStatus.Backlog &&
                         (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term)))
-                    select new GetSprintItemResponse()
+                    select new GetSprintCardResponse()
                     {
                         CardId = (Guid?)p.Id,
                         CardTitle = p != null ? p.Title : null,

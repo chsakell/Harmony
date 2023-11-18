@@ -66,6 +66,21 @@ namespace Harmony.Client.Infrastructure.Routes
             return url;
         }
 
+        public static string SprintCards(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
+        {
+            var url = $"{Index}{boardId}/sprints/cards/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";
+
+            if (orderBy?.Any() == true)
+            {
+                foreach (var orderByPart in orderBy)
+                {
+                    url += $"{orderByPart},";
+                }
+                url = url[..^1];
+            }
+            return url;
+        }
+
         public static string Sprints(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
         {
             var url = $"{Index}{boardId}/sprints/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";

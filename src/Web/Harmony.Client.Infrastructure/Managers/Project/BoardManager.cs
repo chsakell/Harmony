@@ -11,6 +11,7 @@ using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
@@ -128,13 +129,22 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToPaginatedResult<GetBacklogItemResponse>();
         }
 
-        public async Task<PaginatedResult<GetSprintItemResponse>> GetSprints(GetSprintsQuery request)
+        public async Task<PaginatedResult<GetSprintCardResponse>> GetSprintCards(GetSprintCardsQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints
+                .SprintCards(request.BoardId.ToString(), request.PageNumber, request.PageSize,
+                     request.SearchTerm, request.OrderBy));
+
+            return await response.ToPaginatedResult<GetSprintCardResponse>();
+        }
+
+        public async Task<PaginatedResult<SprintDto>> GetSprints(GetSprintsQuery request)
         {
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints
                 .Sprints(request.BoardId.ToString(), request.PageNumber, request.PageSize,
                      request.SearchTerm, request.OrderBy));
 
-            return await response.ToPaginatedResult<GetSprintItemResponse>();
+            return await response.ToPaginatedResult<SprintDto>();
         }
 
         public async Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId)

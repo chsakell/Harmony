@@ -1,4 +1,6 @@
 ﻿using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Domain.Entities;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +61,15 @@ namespace Harmony.Infrastructure.Repositories
         {
             return await _context.Sprints
                 .Where(sprint => sprint.BoardId == boardId).CountAsync();
+        }
+
+        public async Task<List<Sprint>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize)
+        {
+            return await _context.Sprints
+                .Where(s => s.BoardId == boardId && 
+                    (string.IsNullOrEmpty(term) ? true : s.Name.Contains(term)))
+                .Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
         }
     }
 }

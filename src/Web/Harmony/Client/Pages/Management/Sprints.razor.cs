@@ -24,10 +24,10 @@ namespace Harmony.Client.Pages.Management
 
         private string _searchString = "";
         private int _totalItems;
-        private List<GetSprintItemResponse> _cards = new List<GetSprintItemResponse>();
-        private MudTable<GetSprintItemResponse> _table;
+        private List<GetSprintCardResponse> _cards = new List<GetSprintCardResponse>();
+        private MudTable<GetSprintCardResponse> _table;
 
-        private TableGroupDefinition<GetSprintItemResponse> _groupDefinition = new()
+        private TableGroupDefinition<GetSprintCardResponse> _groupDefinition = new()
         {
             GroupName = "Sprint",
             Indentation = false,
@@ -41,7 +41,7 @@ namespace Harmony.Client.Pages.Management
             return base.OnInitializedAsync();
         }
 
-        private async Task<TableData<GetSprintItemResponse>> ReloadData(TableState state)
+        private async Task<TableData<GetSprintCardResponse>> ReloadData(TableState state)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {
@@ -49,7 +49,7 @@ namespace Harmony.Client.Pages.Management
             }
             await LoadData(state.Page, state.PageSize, state);
 
-            return new TableData<GetSprintItemResponse>
+            return new TableData<GetSprintCardResponse>
             {
                 TotalItems = _totalItems,
                 Items = _cards
@@ -84,7 +84,7 @@ namespace Harmony.Client.Pages.Management
                 orderings = state.SortDirection != SortDirection.None ? new[] { $"{state.SortLabel} {state.SortDirection}" } : new[] { $"{state.SortLabel}" };
             }
 
-            var request = new GetSprintsQuery(Guid.Parse(Id))
+            var request = new GetSprintCardsQuery(Guid.Parse(Id))
             {
                 BoardId = Guid.Parse(Id),
                 PageSize = pageSize,
@@ -93,7 +93,7 @@ namespace Harmony.Client.Pages.Management
                 OrderBy = orderings
             };
 
-            var response = await _boardManager.GetSprints(request);
+            var response = await _boardManager.GetSprintCards(request);
 
             if (response.Succeeded)
             {

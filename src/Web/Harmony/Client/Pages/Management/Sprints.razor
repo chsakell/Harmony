@@ -17,8 +17,8 @@
 
 <MudPaper>
     <MudTable Hover="true" Breakpoint="Breakpoint.Sm" Height="500px" FixedHeader="true"
-              T="GetSprintItemResponse"
-              ServerData="@(new Func<TableState, Task<TableData<GetSprintItemResponse>>>(ReloadData))" Dense="true" Striped="true"
+              T="GetSprintCardResponse"
+              ServerData="@(new Func<TableState, Task<TableData<GetSprintCardResponse>>>(ReloadData))" Dense="true" Striped="true"
               GroupBy="@_groupDefinition"
               GroupHeaderStyle="background-color:var(--mud-palette-background-grey)"
               GroupFooterClass="mb-4"

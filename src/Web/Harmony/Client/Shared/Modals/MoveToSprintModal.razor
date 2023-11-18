@@ -1,0 +1,54 @@
+﻿@using Harmony.Application.DTO
+@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MoveToSprintModal> _localizer
+
+<MudDialog>
+    <TitleContent>
+        @{
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Class="mr-3 mb-n1" />
+                @_localizer["Move to sprint"]
+            </MudText>
+        }
+    </TitleContent>
+    <DialogContent>
+        <MudTable Hover="true" Elevation="25"
+                  T="SprintDto"
+                  ServerData="@(new Func<TableState, Task<TableData<SprintDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+            <ToolBarContent>
+                <MudSpacer />
+                <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search sprint.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<SprintDto, object>(x => x.Name)">Sprint</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<SprintDto, object>(x => x.Status)">Status</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<SprintDto, object>(x => x.StartDate)">Start Date</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<SprintDto, object>(x => x.EndDate)">End Date</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align:right"></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">
+                    <MudHighlighter Text="@context.Name" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="Status">
+                    <MudHighlighter Text="@context.Status.ToString()" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="StartDate">
+                    <MudHighlighter Text="@context.StartDate.ToShortDateString()" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="EndDate">
+                    <MudHighlighter Text="@context.EndDate.ToShortDateString()" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="Actions" Style="text-align:right">
+                    <MudButton  EndIcon="@Icons.Material.Outlined.ArrowRight" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Success">Move</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>

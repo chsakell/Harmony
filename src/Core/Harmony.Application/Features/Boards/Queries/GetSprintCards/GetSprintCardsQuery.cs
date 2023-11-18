@@ -1,25 +1,25 @@
-﻿using Harmony.Application.DTO;
+﻿using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Requests;
 using Harmony.Shared.Wrapper;
 using MediatR;
 
-namespace Harmony.Application.Features.Boards.Queries.GetSprints
+namespace Harmony.Application.Features.Workspaces.Queries.GetSprints
 {
-    public class GetSprintsQuery : PagedRequest, IRequest<PaginatedResult<SprintDto>>
+    public class GetSprintCardsQuery : PagedRequest, IRequest<PaginatedResult<GetSprintCardResponse>>
     {
         public Guid BoardId { get; set; }
 
-        public GetSprintsQuery(Guid boardId)
+        public GetSprintCardsQuery(Guid boardId)
         {
             BoardId = boardId;
         }
 
         public string SearchTerm { get; set; }
 
-        public GetSprintsQuery(Guid workspaceId, int pageNumber, int pageSize,
+        public GetSprintCardsQuery(Guid boardId, int pageNumber, int pageSize, 
             string searchTerm, string orderBy)
         {
-            BoardId = workspaceId;
+            BoardId = boardId;
             PageNumber = pageNumber;
             PageSize = pageSize;
             SearchTerm = searchTerm;

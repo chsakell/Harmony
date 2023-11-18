@@ -6,38 +6,50 @@
 <MudPaper>
     <MudTable Hover="true" Elevation="25"
               T="GetBacklogItemResponse"
+              MultiSelection="true"
+              @bind-SelectedItems="_selectedCards"
               ServerData="@(new Func<TableState, Task<TableData<GetBacklogItemResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
         <ToolBarContent>
             <div class="justify-center mud-text-align-center">
                 <MudButton EndIcon="@Icons.Material.Outlined.AddCard" ButtonType="ButtonType.Button"
                            Variant="Variant.Filled" Color="Color.Default" OnClick="CreateIssue">Create issue</MudButton>
             </div>
-            <MudSpacer />
-            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search backlog.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
-            <MudTh>Type</MudTh>
-            <MudTh Style="text-align:right">Add to sprint</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="SerialKey">
-                <MudHighlighter Text="@context.SerialKey" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="Title">
-                <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="Type">
-                <MudStack Row="true">
-                    <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)" 
-                            Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
-                    <MudText>@context.IssueType.Summary</MudText>
+            <div class="justify-center mud-text-align-center ml-2">
+                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
+                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
+                         AnchorOrigin="Origin.BottomLeft">
+                    <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
+                    OnClick="MoveToSprint" Icon="@Icons.Material.Filled.ArrowRight">Move to sprint</MudMenuItem>
+                    </MudMenu>
+                </div>
+                <MudSpacer />
+                <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search backlog.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+                <MudTh>Type</MudTh>
+                <MudTh Style="text-align:right"></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="SerialKey">
+                    <MudHighlighter Text="@context.SerialKey" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="Title">
+                    <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="Type">
+                    <MudStack Row="true">
+                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                 Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                        <MudText>@context.IssueType.Summary</MudText>
                     </MudStack>
                 </MudTd>
-                <MudTd DataLabel="Actions" Style="text-align:right">
-                    <MudButton EndIcon="@Icons.Material.Outlined.AddCard" ButtonType="ButtonType.Button"
-                               Variant="Variant.Filled" Color="Color.Success">Add</MudButton>
+                <MudTd Style="text-align:right">
+                    <MudStack Row="true">
+                        <MudIconButton Icon="@Icons.Material.Filled.MoveDown" Color="Color.Default"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.MoveUp" Color="Color.Default"></MudIconButton>
+                    </MudStack>
                 </MudTd>
             </RowTemplate>
             <PagerContent>

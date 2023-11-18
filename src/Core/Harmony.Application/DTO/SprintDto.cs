@@ -10,6 +10,7 @@ namespace Harmony.Application.DTO
 {
     public class SprintDto
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Goal { get; set; }
         public Guid BoardId { get; set; }

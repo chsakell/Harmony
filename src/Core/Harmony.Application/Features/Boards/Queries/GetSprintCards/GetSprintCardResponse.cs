@@ -4,7 +4,7 @@ using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Boards.Queries.GetSprints
 {
-    public class GetSprintItemResponse
+    public class GetSprintCardResponse
     {
         public Guid? CardId { get; set; }
         public string CardTitle { get; set; }

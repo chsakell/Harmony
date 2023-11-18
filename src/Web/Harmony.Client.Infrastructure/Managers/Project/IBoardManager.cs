@@ -10,6 +10,7 @@ using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
+using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
@@ -32,7 +33,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<CardDto>>> GetBoardListCardsAsync(LoadBoardListQuery request);
         Task<PaginatedResult<GetBacklogItemResponse>> GetBacklog(GetBacklogQuery request);
         Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId);
-        Task<PaginatedResult<GetSprintItemResponse>> GetSprints(GetSprintsQuery request);
+        Task<PaginatedResult<GetSprintCardResponse>> GetSprintCards(GetSprintCardsQuery request);
+        Task<PaginatedResult<SprintDto>> GetSprints(GetSprintsQuery request);
         Task<IResult<SprintDto>> CreateSprintAsync(CreateSprintCommand request);
     }
 }

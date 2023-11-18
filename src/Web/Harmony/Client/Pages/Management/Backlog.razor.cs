@@ -2,6 +2,7 @@
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
+using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
@@ -23,10 +24,33 @@ namespace Harmony.Client.Pages.Management
         private int _totalItems;
         private List<GetBacklogItemResponse> _cards;
         private MudTable<GetBacklogItemResponse> _table;
-
+        private HashSet<GetBacklogItemResponse> _selectedCards = new HashSet<GetBacklogItemResponse>();
         protected override Task OnInitializedAsync()
         {
             return base.OnInitializedAsync();
+        }
+
+        private async Task MoveToSprint()
+        {
+            var parameters = new DialogParameters<MoveToSprintModal>
+            {
+                {
+                    modal => modal.MoveToSprintCommandModel,
+                    new MoveToSprintCommand(Guid.Parse(Id))
+                },
+                {
+                    modal => modal.Items, _selectedCards
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<MoveToSprintModal>(_localizer["Move to sprint"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                await _table.ReloadServerData();
+            }
         }
 
         private async Task<TableData<GetBacklogItemResponse>> ReloadData(TableState state)

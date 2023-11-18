@@ -5,6 +5,7 @@ using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
@@ -88,6 +89,14 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> GetIssueTypes(Guid id)
         {
             return Ok(await _mediator.Send(new GetIssueTypesQuery(id)));
+        }
+
+        [HttpGet("{id:guid}/sprints/cards")]
+        public async Task<IActionResult> GetSprintCards(Guid id, int pageNumber, int pageSize,
+            string searchTerm = null, string orderBy = null)
+        {
+            return Ok(await _mediator.Send(new
+                GetSprintCardsQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
         }
 
         [HttpGet("{id:guid}/sprints")]

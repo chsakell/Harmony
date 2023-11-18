@@ -3,6 +3,7 @@ using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
@@ -139,6 +140,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .GetCardAttachment(command.CardId, command.AttachmentId));
 
             return await response.ToResult<RemoveCardAttachmentResponse>();
+        }
+
+        public async Task<IResult<SprintDto>> MoveCardsToSprintAsync(MoveToSprintCommand request)
+        {
+            var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints
+                .Sprints(request.BoardId), request);
+
+            return await response.ToResult<SprintDto>();
         }
     }
 }
