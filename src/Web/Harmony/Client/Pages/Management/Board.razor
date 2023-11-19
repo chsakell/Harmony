@@ -1,6 +1,7 @@
 ﻿@page "/boards/{id}/{name}"
 @using Harmony.Application.DTO;
 @using Harmony.Application.Helpers;
+@using Harmony.Client.Infrastructure.Helper
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Board> _localizer
 
 @if (KanbanStore.BoardLoading)
@@ -20,15 +21,15 @@ else
             {
                 <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">Reorder lists</MudButton>
             }
-            @if(KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
+            @if (KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
             {
                 <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
-                @if(AddCardsDisabled)
+                @if (AddCardsDisabled)
                 {
                     <MudTooltip>
                         <ChildContent>
-                        <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Medium" />
+                            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Medium" />
                         </ChildContent>
                         <TooltipContent>
                             <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
@@ -40,16 +41,16 @@ else
             {
                 <MudTooltip Text="Toggle card's description visibility">
                     <MudToggleIconButton @bind-Toggled:get="@CardDescriptionVisibility"
-                @bind-Toggled:set="@ToggleCardDescriptionVisibility"
-                                     Icon="@Icons.Material.Filled.VisibilityOff" Color="@Color.Error" Title="Off"
-                                     ToggledIcon="@Icons.Material.Filled.Visibility" ToggledColor="@Color.Tertiary" ToggledTitle="On" />
-            </MudTooltip>
+                                         @bind-Toggled:set="@ToggleCardDescriptionVisibility"
+                                         Icon="@Icons.Material.Filled.VisibilityOff" Color="@Color.Error" Title="Off"
+                                         ToggledIcon="@Icons.Material.Filled.Visibility" ToggledColor="@Color.Tertiary" ToggledTitle="On" />
+                </MudTooltip>
             }
             <MudSpacer />
             <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
             <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
         </MudToolBar>
-        
+
     </MudPaper>
     @if (!KanbanStore.KanbanLists.Any())
     {
@@ -62,32 +63,32 @@ else
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h5" Align="Align.Center">@KanbanStore.Board.Title</MudText>
-                            </CardHeaderContent>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <div class="d-flex justify-center">
-                                <MudText Typo="Typo.h5" Color="Color.Secondary">Add lists</MudText>
-                            </div>
-                            <MudList Class="mx-auto mt-4">
-                                <MudListItem Icon="@Icons.Material.Filled.List">
-                                    Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
-                                </MudListItem>
-                                <MudListItem Icon="@Icons.Material.Filled.Share">
-                                    Click <b>Share board</b> find your team members and share your board with your team members
-                                </MudListItem>
-                                <MudListItem Icon="@Icons.Material.Filled.Task">
-                                    Add tasks to your lists and start monitor your project!
-                                </MudListItem>
-                            </MudList>
-                        </MudCardContent>
-                        <MudCardActions Class="d-flex justify-center">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                                       Style="width:50%;" OnClick="OpenCreateBoardListModal">Start Now</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-            </MudGrid>
-        </MudContainer>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <div class="d-flex justify-center">
+                                    <MudText Typo="Typo.h5" Color="Color.Secondary">Add lists</MudText>
+                                </div>
+                                <MudList Class="mx-auto mt-4">
+                                    <MudListItem Icon="@Icons.Material.Filled.List">
+                                        Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
+                                    </MudListItem>
+                                    <MudListItem Icon="@Icons.Material.Filled.Share">
+                                        Click <b>Share board</b> find your team members and share your board with your team members
+                                    </MudListItem>
+                                    <MudListItem Icon="@Icons.Material.Filled.Task">
+                                        Add tasks to your lists and start monitor your project!
+                                    </MudListItem>
+                                </MudList>
+                            </MudCardContent>
+                            <MudCardActions Class="d-flex justify-center">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                                           Style="width:50%;" OnClick="OpenCreateBoardListModal">Start Now</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
     }
     else
     {
@@ -137,10 +138,10 @@ else
                 <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
                     <MudCardHeader Class="pa-0">
                         <MudText Typo="Typo.body1">@context.Title</MudText>
-                    </MudCardHeader>
-                    <MudCardContent Class="pa-0 mt-2">
-                        <MudStack Justify="Justify.SpaceBetween">
-                            @if (context.Labels.Any())
+                        </MudCardHeader>
+                        <MudCardContent Class="pa-0 mt-2">
+                            <MudStack Justify="Justify.SpaceBetween">
+                                @if (context.Labels.Any())
                             {
                                 <MudPaper Class="d-flex flex-wrap" Elevation="0">
                                     @foreach (var label in context.Labels)
@@ -178,6 +179,15 @@ else
                                 <MudStack Row="true" Justify="Justify.FlexEnd">
 
                                     <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
+                                    @if (context.IssueType != null)
+                                    {
+                                        <MudStack Row="true" AlignItems="AlignItems.End">
+                                            <MudTooltip Text="@context.IssueType.Summary" Delay="2000">
+                                                <MudIcon Size="Size.Medium" Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                                         Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                                            </MudTooltip>
+                                        </MudStack>
+                                    }
                                     @if (context.Members.Any())
                                     {
                                         <MudAvatarGroup Max="2" Spacing="2" MaxColor="Color.Primary" MaxSize="Size.Small">

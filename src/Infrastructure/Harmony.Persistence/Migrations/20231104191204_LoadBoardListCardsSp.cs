@@ -55,6 +55,8 @@ BEGIN
 	select * from CheckListItems 
 	where CheckListId in (select Id from CheckLists where CardId in (select id from @cards))
 	order by CheckListId, Position
+
+	select * from IssueTypes where BoardId = @BoardId order by DateCreated
 END
 GO
 

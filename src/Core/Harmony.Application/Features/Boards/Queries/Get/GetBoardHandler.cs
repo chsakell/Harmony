@@ -88,7 +88,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);
             
-            if(activeSprints.Any())
+            if(activeSprints != null && activeSprints.Any())
             {
                 result.ActiveSprints = _mapper.Map<List<SprintDto>>(activeSprints);
             }

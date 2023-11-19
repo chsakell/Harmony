@@ -39,7 +39,14 @@ namespace Harmony.Application.Mappings.Management
                 .ForMember(dto => dto.Labels, opt =>
                     opt.MapFrom(c => c.Labels.Select(cl => cl.Label)))
                 .ForMember(dto => dto.TotalAttachments, opt => 
-                    opt.MapFrom(c => c.Attachments != null ? c.Attachments.Count : 0));
+                    opt.MapFrom(c => c.Attachments != null ? c.Attachments.Count : 0))
+                .ForMember(dto => dto.IssueType, opt =>
+                    opt.MapFrom(c => new IssueTypeDto()
+                    {
+                        Id = c.IssueType.Id,
+                        Summary = c.IssueType.Summary,
+                    }));
+
             CreateMap<Card, GetBacklogItemResponse>();
 
             CreateMap<CheckList, CheckListDto>();

@@ -112,6 +112,7 @@ namespace Harmony.Infrastructure.Services.Management
                         var userCards = (await multi.ReadAsync<UserCard>()).ToList();
                         var checkLists = (await multi.ReadAsync<CheckList>()).ToList();
                         var checkListItems = (await multi.ReadAsync<CheckListItem>()).ToList();
+                        var issueTypes = (await multi.ReadAsync<IssueType>()).ToList();
 
                         foreach (var cardLabel in cardLabels)
                         {
@@ -148,6 +149,12 @@ namespace Harmony.Infrastructure.Services.Management
                             }
 
                             card.CheckLists = checkLists.Where(l => l.CardId == card.Id).ToList();
+
+                            if(card.IssueTypeId.HasValue)
+                            {
+                                card.IssueType = issueTypes
+                                    .FirstOrDefault(it => it.Id == card.IssueTypeId);
+                            }
                         }
 
                         board.Lists = new List<BoardList>();
@@ -158,6 +165,8 @@ namespace Harmony.Infrastructure.Services.Management
 
                             board.Lists.Add(boardList);
                         }
+
+                        board.IssueTypes = issueTypes;
 
                         return board;
                     }
@@ -195,6 +204,7 @@ namespace Harmony.Infrastructure.Services.Management
                         var userCards = (await multi.ReadAsync<UserCard>()).ToList();
                         var checkLists = (await multi.ReadAsync<CheckList>()).ToList();
                         var checkListItems = (await multi.ReadAsync<CheckListItem>()).ToList();
+                        var issueTypes = (await multi.ReadAsync<IssueType>()).ToList();
 
                         foreach (var cardLabel in cardLabels)
                         {
