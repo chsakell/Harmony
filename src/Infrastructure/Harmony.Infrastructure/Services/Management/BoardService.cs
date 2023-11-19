@@ -241,7 +241,13 @@ namespace Harmony.Infrastructure.Services.Management
                             }
 
                             card.CheckLists = checkLists.Where(l => l.CardId == card.Id).ToList();
-                        }
+
+                            if (card.IssueTypeId.HasValue)
+                            {
+                                card.IssueType = issueTypes
+                                    .FirstOrDefault(it => it.Id == card.IssueTypeId);
+                            }
+                    }
 
                     return cards;
                 }
