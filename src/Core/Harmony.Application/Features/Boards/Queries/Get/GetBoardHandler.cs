@@ -4,6 +4,7 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
@@ -20,6 +21,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetBoardsHandler> _localizer;
         private readonly IBoardService _boardService;
+        private readonly ISprintRepository _sprintRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
@@ -28,6 +30,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
             ICurrentUserService currentUserService,
             IStringLocalizer<GetBoardsHandler> localizer,
             IBoardService boardService,
+            ISprintRepository sprintRepository,
             IUserService userService,
             IMapper mapper)
         {
@@ -36,6 +39,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
             _currentUserService = currentUserService;
             _localizer = localizer;
             _boardService = boardService;
+            _sprintRepository = sprintRepository;
             _userService = userService;
             _mapper = mapper;
         }
@@ -43,6 +47,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         public async Task<IResult<GetBoardResponse>> Handle(GetBoardQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
+            List<Sprint> activeSprints = null;
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -50,9 +55,9 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var boardExists = await _boardRepository.Exists(request.BoardId);
+            var board = await _boardRepository.GetAsync(request.BoardId);
 
-            if (!boardExists)
+            if (board == null)
             {
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Board doesn't exist"]);
             }
@@ -64,9 +69,29 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync(_localizer["You are not authorized to view this board's content."], ResultCode.UnauthorisedAccess);
             }
 
+            if(board.Type == Domain.Enums.BoardType.Scrum)
+            {
+                activeSprints = await _sprintRepository.GetActiveSprints(request.BoardId);
+
+                if(!activeSprints.Any())
+                {
+                    board = await _boardRepository.GetBoardWithLists(request.BoardId);
+                    var emptyBoard = _mapper.Map<GetBoardResponse>(board);
+
+                    emptyBoard.ActiveSprints = Enumerable.Empty<SprintDto>().ToList();
+
+                    return await Result<GetBoardResponse>.SuccessAsync(emptyBoard);
+                }
+            }
+
             var userBoard = await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList);
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);
+            
+            if(activeSprints.Any())
+            {
+                result.ActiveSprints = _mapper.Map<List<SprintDto>>(activeSprints);
+            }
 
             var totalCardsPerList = await _boardListRepository
                         .GetTotalCardsForBoardLists(result.Lists.Select(l => l.Id).ToList());

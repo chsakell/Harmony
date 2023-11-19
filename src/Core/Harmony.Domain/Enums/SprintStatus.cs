@@ -9,7 +9,7 @@ namespace Harmony.Domain.Enums
     public enum SprintStatus
     {
         Idle = 0,
-        Started = 1,
+        Active = 1,
         Completed = 2
     }
 }

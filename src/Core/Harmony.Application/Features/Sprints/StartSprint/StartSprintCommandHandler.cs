@@ -43,7 +43,7 @@ namespace Harmony.Application.Features.Sprints.StartSprint
 
             var sprint = await _sprintRepository.GetSprint(request.SprintId);
 
-            sprint.Status = SprintStatus.Started;
+            sprint.Status = SprintStatus.Active;
 
             var dbResult = await _sprintRepository.Update(sprint);
 

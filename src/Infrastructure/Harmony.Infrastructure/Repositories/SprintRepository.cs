@@ -31,6 +31,13 @@ namespace Harmony.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Sprint>> GetActiveSprints(Guid boardId)
+        {
+            return await _context.Sprints
+                .Where(s => s.BoardId == boardId && s.Status == Domain.Enums.SprintStatus.Active)
+                .ToListAsync();
+        }
+
         public async Task AddAsync(Sprint sprint)
         {
             await _context.Sprints.AddAsync(sprint);

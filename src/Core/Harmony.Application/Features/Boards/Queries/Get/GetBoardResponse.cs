@@ -15,5 +15,6 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         public Guid WorkspaceId { get; set; }
 		public List<BoardListDto> Lists { get; set; }
         public BoardType Type { get; set; }
+        public List<SprintDto> ActiveSprints { get; set; } = new List<SprintDto>();
     }
 }

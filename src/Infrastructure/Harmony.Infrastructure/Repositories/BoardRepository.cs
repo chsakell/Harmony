@@ -90,7 +90,7 @@ namespace Harmony.Infrastructure.Repositories
         public async Task<Board?> GetBoardWithLists(Guid boardId)
 		{
             return await _context.Boards
-                .Include (b => b.Lists)
+                .Include (b => b.Lists.Where(l => l.Status == Domain.Enums.BoardListStatus.Active))
                 .FirstOrDefaultAsync(board => board.Id == boardId);
 		}
 

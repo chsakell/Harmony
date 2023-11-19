@@ -38,6 +38,9 @@ namespace Harmony.Client.Pages.Management
         private bool _unauthorisedAccess = false;
         private int _listCardsSize = 10;
 
+        private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum && 
+            KanbanStore.Board.ActiveSprints.Count == 0;
+
         protected async override Task OnInitializedAsync()
         {
             var result = await _boardManager.GetBoardAsync(Id, _listCardsSize);
