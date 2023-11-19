@@ -71,7 +71,7 @@
                     {
                         var firstItem = context.Items.FirstOrDefault();
                         var sprintStatus = firstItem.SprintStatus;
-                        <MudChip Color="Color.Info">@sprintStatus</MudChip>
+                        <MudChip Color="@(sprintStatus == SprintStatus.Idle ? Color.Info : sprintStatus == SprintStatus.Started ? Color.Success : Color.Tertiary)">@sprintStatus</MudChip>
 
                         switch(sprintStatus)
                         {
@@ -80,7 +80,7 @@
                                            Variant="Variant.Filled" Color="Color.Success" OnClick="() => StartSprint(firstItem.SprintId, firstItem.Sprint)">Start sprint</MudButton>
                                 break;
                             case SprintStatus.Started:
-                                <MudButton EndIcon="@Icons.Material.Outlined.Stop" ButtonType="ButtonType.Button"
+                                <MudButton EndIcon="@Icons.Material.Outlined.Check" ButtonType="ButtonType.Button"
                                            Variant="Variant.Filled" Color="Color.Error" OnClick="() => CompleteSprint(firstItem.SprintId, firstItem.Sprint)">Complete sprint</MudButton>
                                 break;
                         }
