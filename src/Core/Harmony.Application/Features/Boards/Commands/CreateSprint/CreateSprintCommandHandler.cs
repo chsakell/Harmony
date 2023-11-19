@@ -47,7 +47,7 @@ namespace Harmony.Application.Features.Boards.Commands.CreateSprint
                 StartDate = request.StartDate.Value,
                 EndDate = request.EndDate.Value,
                 BoardId = request.BoardId,
-                Status = SprintStatus.Created
+                Status = SprintStatus.Idle
             };
 
             var dbResult = await _sprintRepository.CreateAsync(sprint);

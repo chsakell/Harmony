@@ -3,6 +3,7 @@
 @using Harmony.Application.Features.Boards.Queries.GetBacklog
 @using Harmony.Application.Features.Boards.Queries.GetSprints
 @using Harmony.Client.Infrastructure.Helper
+@using Harmony.Domain.Enums
 
 <style>
     .mud-table-cell-custom-group {
@@ -63,7 +64,29 @@
                 </MudTd>
             </RowTemplate>
             <GroupFooterTemplate>
-                <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="5">Total cards: @context.Items.Count(item => item.CardId.HasValue)</MudTh>
+                <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="3">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexEnd">
+                        <MudText>Total cards: @context.Items.Count(item => item.CardId.HasValue)</MudText>
+                        @if (context.Items.FirstOrDefault() != null && context.Items.FirstOrDefault().CardId.HasValue)
+                    {
+                        var firstItem = context.Items.FirstOrDefault();
+                        var sprintStatus = firstItem.SprintStatus;
+                        <MudChip Color="Color.Info">@sprintStatus</MudChip>
+
+                        switch(sprintStatus)
+                        {
+                            case SprintStatus.Idle:
+                                <MudButton EndIcon="@Icons.Material.Outlined.Start" ButtonType="ButtonType.Button"
+                                           Variant="Variant.Filled" Color="Color.Success" OnClick="() => StartSprint(firstItem.SprintId, firstItem.Sprint)">Start sprint</MudButton>
+                                break;
+                            case SprintStatus.Started:
+                                <MudButton EndIcon="@Icons.Material.Outlined.Stop" ButtonType="ButtonType.Button"
+                                           Variant="Variant.Filled" Color="Color.Error" OnClick="() => CompleteSprint(firstItem.SprintId, firstItem.Sprint)">Complete sprint</MudButton>
+                                break;
+                        }
+                    }
+                    </MudStack>
+                </MudTh>
             </GroupFooterTemplate>
         </MudTable>
     </MudPaper>

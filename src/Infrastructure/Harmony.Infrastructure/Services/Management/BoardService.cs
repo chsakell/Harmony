@@ -266,6 +266,7 @@ namespace Harmony.Infrastructure.Services.Management
                         CardDueDate = p != null ? p.DueDate : null,
                         CardSerialKey = p != null ? $"{board.Key}-{p.SerialNumber}" : null,
                         Sprint = sprint.Name,
+                        SprintStatus = sprint.Status,
                         SprintStartDate = sprint.StartDate,
                         SprintEndDate = sprint.EndDate,
                         SprintId = sprint.Id,
