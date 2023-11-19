@@ -44,7 +44,9 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 UserId = userId,
                 BoardListId = request.ListId,
                 Position = (byte)totalCards,
-                SerialNumber = nextSerialNumber
+                SerialNumber = nextSerialNumber,
+                IssueTypeId = request.IssueType.Id,
+                SprintId = request.SprintId,
             };
 
             var dbResult = await _cardRepository.CreateAsync(card);

@@ -111,7 +111,7 @@ else
                                 @if (!item.TitleEditing)
                                 {
                                     <MudIconButton Style="margin-bottom:10px" Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
-                                                   OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)"
+                                                   OnClick="@(() => AddCard(item))"
                                                    aria-label="add" Disabled="AddCardsDisabled"></MudIconButton>
                                     <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
                                              Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
@@ -119,30 +119,6 @@ else
                                     </MudMenu>
                                 }
                             </MudToolBar>
-                            @if (item.CreateCard.NewTaskOpen)
-                            {
-                                <EditForm Model="item.CreateCard" OnValidSubmit="() => AddCard(item)">
-                                    <DataAnnotationsValidator />
-                                    <MudPaper Elevation="25" Class="pa-2 rounded-lg mt-2">
-                                        <MudTextField AutoFocus="true" Clearable="true" For="() => item.CreateCard.Title" Lines="1" @bind-Value="item.CreateCard.Title" Placeholder="Card's title.." DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-                                        <div class="d-flex justify-space-around flex-grow-1 gap-4">
-                                            <MudButton OnClick="@(() => item.CreateCard.NewTaskOpen = !item.CreateCard.NewTaskOpen)" StartIcon="@Icons.Material.Rounded.Cancel" Color="Color.Default">Cancel</MudButton>
-
-                                            @if (item.CreateCard.Creating)
-                                            {
-                                                <MudButton Disabled="true" Variant="Variant.Text" Size="Size.Small" Color="Color.Default">
-                                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                                                </MudButton>
-                                            }
-                                            else
-                                            {
-                                                <MudButton Disabled="item.CreateCard.Creating" ButtonType="ButtonType.Submit"
-                                                           StartIcon="@Icons.Material.Rounded.Save" Color="Color.Default">Create</MudButton>
-                                            }
-                                        </div>
-                                    </MudPaper>
-                                </EditForm>
-                            }
                             <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
                             @if (item.TotalPages > 1)
                             {

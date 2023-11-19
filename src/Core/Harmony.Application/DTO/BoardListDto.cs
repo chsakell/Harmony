@@ -11,7 +11,6 @@ namespace Harmony.Application.DTO
 
 		// helpers for kanban
 
-        public CreateCardDto CreateCard { get; set; } = new CreateCardDto();
         public BoardListStatus Status { get; set; }
 
         // manual setup for pagination

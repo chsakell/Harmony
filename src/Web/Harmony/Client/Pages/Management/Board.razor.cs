@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -358,14 +359,27 @@ namespace Harmony.Client.Pages.Management
 
         private async Task AddCard(BoardListDto list)
         {
-            list.CreateCard.Creating = true;
-
-            var result = await _cardManager
-                .CreateCardAsync(new CreateCardCommand(list.CreateCard.Title, Guid.Parse(Id), list.Id));
-
-            if (result.Succeeded)
+            var parameters = new DialogParameters<CreateCardModal>
             {
-                var cardAdded = result.Data;
+                {
+                    modal => modal.CreateCardCommandModel,
+                    new CreateCardCommand(null, Guid.Parse(Id), list.Id)
+                },
+                {
+                    modal => modal.ActiveSprints, KanbanStore.Board.ActiveSprints
+                },
+                {
+                    modal => modal.ListTitle, list.Title
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateCardModal>(_localizer["Create card"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                var cardAdded = result.Data as CardDto;
 
                 KanbanStore.AddCardToList(cardAdded, list);
                 _dropContainer.Refresh();
@@ -373,9 +387,24 @@ namespace Harmony.Client.Pages.Management
                 await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
             }
 
-            list.CreateCard.Creating = false;
+            //list.CreateCard.Creating = true;
 
-            DisplayMessage(result);
+            //var result = await _cardManager
+            //    .CreateCardAsync(new CreateCardCommand(list.CreateCard.Title, Guid.Parse(Id), list.Id));
+
+            //if (result.Succeeded)
+            //{
+            //    var cardAdded = result.Data;
+
+            //    KanbanStore.AddCardToList(cardAdded, list);
+            //    _dropContainer.Refresh();
+
+            //    await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
+            //}
+
+            //list.CreateCard.Creating = false;
+
+            //DisplayMessage(result);
         }
 
         private async Task ArchiveList(BoardListDto list)

@@ -11,6 +11,8 @@ public class CreateCardCommand : IRequest<Result<CardDto>>
     public string Title { get; set; }
     public Guid BoardId { get; set; }
     public Guid ListId { get; set; }
+    public IssueTypeDto IssueType { get; set; }
+    public Guid? SprintId  { get; set; }
 
     public CreateCardCommand(string title, Guid boardId, Guid listId)
     {

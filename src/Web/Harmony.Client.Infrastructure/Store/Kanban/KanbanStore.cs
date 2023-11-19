@@ -44,8 +44,6 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
 
             boardList.Cards.Add(card);
-            list.CreateCard.Title = string.Empty;
-            list.CreateCard.NewTaskOpen = false;
         }
 
         public void MoveCard(CardDto card, Guid previousListId, Guid nextListId, byte newPosition)
