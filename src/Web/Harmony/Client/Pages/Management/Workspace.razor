@@ -71,11 +71,11 @@ else
                         <MudCardContent>
                             <MudText Typo="Typo.h6">@board.Description</MudText>
                             <MudDivider />
-                            @if (_boardActivities != null && _boardActivities.Any())
+                            @if (_boardActivities != null && _boardActivities.Where(a => a.BoardId == board.Id).Any())
                         {
                             <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
                                          TimelinePosition="TimelinePosition.Start" Reverse="false">
-                                @foreach (var activity in _boardActivities)
+                                @foreach (var activity in _boardActivities.Where(a => a.BoardId == board.Id).OrderByDescending(a => a.DateCreated))
                                 {
                                     <MudTimelineItem Class="pb-0" Color="Color.Success" Size="Size.Small" Variant="Variant.Outlined">
                                         <ItemContent>
