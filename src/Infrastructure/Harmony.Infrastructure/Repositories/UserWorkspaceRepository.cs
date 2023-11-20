@@ -154,8 +154,6 @@ namespace Harmony.Infrastructure.Repositories
                             (board.Visibility == Domain.Enums.BoardVisibility.Workspace || board.Visibility == Domain.Enums.BoardVisibility.Public)
                         select board;
 
-            //var result = await query.ToListAsync();
-
             return query;
         }
 

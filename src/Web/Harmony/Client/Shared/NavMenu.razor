@@ -16,10 +16,47 @@
 
     @if ((_canViewUsers || _canViewRoles) && _workspaceManager.SelectedWorkspace != null)
     {
-        <MudListSubheader Class="mt-2 mb-n2">@(_selectedWorkspace?.Name ?? _workspaceManager.SelectedWorkspace?.Name)</MudListSubheader>
-        @if (_canViewRoles)
+        @if (_workspaceManager.UserWorkspaces.Any())
         {
-            <MudNavLink Href="@($"{WorkspaceUrl()}/members")" Icon="@Icons.Material.Outlined.Groups2">Members</MudNavLink>
+            foreach (var workspace in _workspaceManager.UserWorkspaces)
+            {
+                <MudList Clickable="true">
+                    <MudListSubheader Class="mt-2 mb-n2">@(workspace?.Name)</MudListSubheader>
+                    @if (_canViewRoles)
+                    {
+                        <MudListItem Href="@($"{WorkspaceUrl(workspace)}/members")" Icon="@Icons.Material.Outlined.Groups2">
+                            Members
+                        </MudListItem>
+                    }
+                </MudList>
+                @if (workspace.Boards.Any())
+                {
+                    <MudDivider />
+                    <MudList Clickable="true">
+                        @foreach (var board in workspace.Boards)
+                        {
+                            <MudListItem Text="@board.Title"
+                                         InitiallyExpanded="true">
+                                <NestedList>
+                                    <MudListItem Href="@GetBoardUrl(board)" Icon="@Icons.Material.Filled.Dashboard">
+                                        Board
+                                    </MudListItem>
+                                    @if (board.Type == Domain.Enums.BoardType.Scrum)
+                                    {
+                                        <MudListItem Href="@GetBacklogUrl(board)" Icon="@Icons.Material.Filled.ListAlt">
+                                            Backlog
+                                        </MudListItem>
+                                        <MudListItem Href="@GetSprints(board)" Icon="@Icons.Material.Filled.Update">
+                                            Sprints
+                                        </MudListItem>
+                                    }
+                                </NestedList>
+                            </MudListItem>
+                            <MudDivider />
+                        }
+                    </MudList>
+                }
+            }
         }
     }
 
@@ -42,11 +79,28 @@
 
     protected void SelectedWorkspaceChanged(object sender, WorkspaceDto selectedWorkspace)
     {
-        if (_selectedWorkspace == null || (_selectedWorkspace.Id != selectedWorkspace.Id)) 
+        if (_selectedWorkspace == null || (_selectedWorkspace.Id != selectedWorkspace.Id))
         {
             _selectedWorkspace = selectedWorkspace;
             StateHasChanged();
         }
+    }
+
+    private string GetBoardUrl(BoardDto board)
+    {
+        var slug = StringUtilities.SlugifyString(board.Title.ToString());
+
+        return $"boards/{board.Id}/{slug}";
+    }
+
+    private string GetBacklogUrl(BoardDto board)
+    {
+        return $"/projects/{board.Id}/backlog";
+    }
+
+    private string GetSprints(BoardDto board)
+    {
+        return $"/projects/{board.Id}/sprints";
     }
 
     protected override async Task OnParametersSetAsync()
@@ -59,6 +113,12 @@
     private string WorkspaceUrl()
     {
         var workspace = _selectedWorkspace ?? _workspaceManager.SelectedWorkspace;
+        var slug = StringUtilities.SlugifyString(workspace.Name);
+        return $"/workspaces/{workspace.Id}/{slug}";
+    }
+
+    private string WorkspaceUrl(WorkspaceDto workspace)
+    {
         var slug = StringUtilities.SlugifyString(workspace.Name);
         return $"/workspaces/{workspace.Id}/{slug}";
     }

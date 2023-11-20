@@ -160,7 +160,7 @@ namespace Harmony.Infrastructure.Services.Identity
 
         public async Task<IResult<List<Workspace>>> GetAccessWorkspacesAsync(string userId)
         {
-            var user = await _userManager.Users
+            var user = await _userManager.Users.AsNoTracking()
                 .Include(u => u.AccessWorkspaces)
                     .ThenInclude(ac => ac.Workspace)
                 .Where(u => u.Id == userId)
