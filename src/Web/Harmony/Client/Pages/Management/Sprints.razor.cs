@@ -1,8 +1,10 @@
 ﻿using AutoMapper.Execution;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
+using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Sprints.StartSprint;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
@@ -29,6 +31,7 @@ namespace Harmony.Client.Pages.Management
         private int _totalItems;
         private List<GetSprintCardResponse> _cards = new List<GetSprintCardResponse>();
         private MudTable<GetSprintCardResponse> _table;
+        private HashSet<GetSprintCardResponse> _selectedCards = new HashSet<GetSprintCardResponse>();
 
         private TableGroupDefinition<GetSprintCardResponse> _groupDefinition = new()
         {
@@ -58,6 +61,36 @@ namespace Harmony.Client.Pages.Management
                 TotalItems = _totalItems,
                 Items = _cards
             };
+        }
+
+        private async Task MoveToBacklog()
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to move the selected cards to backlog?"},
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Warning }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var cardIds = _selectedCards.Where(c => c.CardId.HasValue)
+                                        .Select(c => c.CardId.Value).ToList();
+
+                var request = new MoveToBacklogCommand(Guid.Parse(Id), cardIds);
+
+                var result = await _boardManager.MoveCardsToBacklog(request);
+
+                if (result.Succeeded)
+                {
+                    await _table.ReloadServerData();
+                }
+
+                DisplayMessage(result);
+            }
         }
 
         private async Task StartSprint(Guid sprintId, string sprintName)

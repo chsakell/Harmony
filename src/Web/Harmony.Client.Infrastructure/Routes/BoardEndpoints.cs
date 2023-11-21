@@ -41,6 +41,11 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Index}{boardId}/movecardstosprint/";
         }
 
+        public static string MoveCardsToBacklog(string boardId)
+        {
+            return $"{Index}{boardId}/movecardstobacklog/";
+        }
+
         public static string SearchMembers(string boardId, string term)
         {
             return $"{Index}{boardId}/members/search?term={term}";

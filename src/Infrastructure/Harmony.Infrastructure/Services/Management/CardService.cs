@@ -72,6 +72,36 @@ namespace Harmony.Infrastructure.Services.Management
 			return await Result<List<Card>>.FailAsync("Failed to move cards");
 		}
 
+        public async Task<IResult<List<Card>>> MoveCardsToBacklog(Guid boardId, List<Guid> cardsToMove)
+        {
+            var cards = await _cardRepository
+                .Entities.Where(card => cardsToMove.Contains(card.Id))
+                .ToListAsync();
+
+            // Get the last index in the board list id
+            var nextPosition = await _cardRepository.GetNextBacklogPosition(boardId);
+
+            if (cards.Any())
+            {
+                foreach (var card in cards.OrderBy(c => c.Position))
+                {
+                    card.BoardListId = null;
+                    card.Position = (short)nextPosition++;
+                    card.SprintId = null;
+                    card.Status = Domain.Enums.CardStatus.Backlog;
+                }
+
+                var result = await _cardRepository.UpdateRange(cards);
+
+                if (result > 0)
+                {
+                    return await Result<List<Card>>.SuccessAsync(cards);
+                }
+            }
+
+            return await Result<List<Card>>.FailAsync("Failed to move cards");
+        }
+
         public async Task<List<GetBacklogItemResponse>> SearchBacklog(Guid boardId, string term, int pageNumber, int pageSize)
         {
             IQueryable<GetBacklogItemResponse> query = null;

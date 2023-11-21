@@ -7,6 +7,7 @@ using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
+using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -124,6 +125,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("{id:guid}/movecardstosprint")]
         public async Task<IActionResult> MoveCardsToSprint(Guid id, MoveToSprintCommand request)
+        {
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPut("{id:guid}/movecardstobacklog")]
+        public async Task<IActionResult> MoveCardsToBacklog(Guid id, MoveToBacklogCommand request)
         {
             return Ok(await _mediator.Send(request));
         }

@@ -19,6 +19,8 @@
 <MudPaper>
     <MudTable Hover="true" Breakpoint="Breakpoint.Sm" Height="500px" FixedHeader="true"
               T="GetSprintCardResponse"
+              MultiSelection="true"
+              @bind-SelectedItems="_selectedCards"
               ServerData="@(new Func<TableState, Task<TableData<GetSprintCardResponse>>>(ReloadData))" Dense="true" Striped="true"
               GroupBy="@_groupDefinition"
               GroupHeaderStyle="background-color:var(--mud-palette-background-grey)"
@@ -28,6 +30,14 @@
             <div class="justify-center mud-text-align-center">
                 <MudButton EndIcon="@Icons.Material.Outlined.AddCard" ButtonType="ButtonType.Button"
                            Variant="Variant.Filled" Color="Color.Default" OnClick="CreateSprint">Create sprint</MudButton>
+            </div>
+            <div class="justify-center mud-text-align-center ml-2">
+                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
+                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
+                         AnchorOrigin="Origin.BottomLeft">
+                    <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
+                                 OnClick="MoveToBacklog" Icon="@Icons.Material.Filled.ArrowRight">Move to backlog</MudMenuItem>
+                </MudMenu>
             </div>
             <MudSpacer />
             <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search sprints.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>

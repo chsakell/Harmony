@@ -63,6 +63,15 @@ namespace Harmony.Infrastructure.Repositories
 				&& c.Status == Domain.Enums.CardStatus.Backlog).CountAsync();
         }
 
+        public async Task<int> GetNextBacklogPosition(Guid boardId)
+        {
+            return (await _context.Cards
+                    .Include(c => c.IssueType)
+                .Where(c => c.IssueType.BoardId == boardId
+                && c.Status == Domain.Enums.CardStatus.Backlog)
+				.Select(c => c.Position).MaxAsync()) + 1;
+        }
+
         public async Task<int> CountBoardCards(Guid boardId)
         {
             return await _context.Cards
