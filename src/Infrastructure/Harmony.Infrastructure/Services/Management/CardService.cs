@@ -5,6 +5,7 @@ using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Shared.Wrapper;
 using Microsoft.EntityFrameworkCore;
@@ -29,15 +30,15 @@ namespace Harmony.Infrastructure.Services.Management
             _boardListRepository = boardListRepository;
         }
 
-        public async Task<bool> PositionCard(Card card, Guid newListId, byte newPosition)
+        public async Task<bool> PositionCard(Card card, Guid? newListId, short newPosition, CardStatus status)
 		{
 			if(card.BoardListId == newListId)
 			{
-				return await SwapCards(card, newPosition);
+				return await SwapCards(card, newPosition, status);
 			}
             else
             {
-				return await ReorderOtherCardsAndMove(card, newListId, newPosition);
+				return await ReorderOtherCardsAndMove(card, newListId.Value, newPosition);
             }
         }
 
@@ -114,6 +115,7 @@ namespace Harmony.Infrastructure.Services.Management
 					where (board.Id == boardId
 						&& card.Status == Domain.Enums.CardStatus.Backlog &&
 						(string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)))
+					orderby card.Position
 					select new GetBacklogItemResponse()
 					{
 						Id = card.Id,
@@ -175,7 +177,7 @@ namespace Harmony.Infrastructure.Services.Management
 			}
 		}
 
-		private async Task<bool> SwapCards(Card card, short newPosition)
+		private async Task<bool> SwapCards(Card card, short newPosition, CardStatus status)
 		{
 			var currentPosition = card.Position;
 
@@ -183,7 +185,7 @@ namespace Harmony.Infrastructure.Services.Management
 			if (currentPosition != newPosition)
 			{
 				var currentCardInNewPosition = await _cardRepository
-						.GetByPosition(card.BoardListId.Value, newPosition);
+						.GetByPosition(card.BoardListId, newPosition, status);
 				
 				if (currentCardInNewPosition != null)
 				{

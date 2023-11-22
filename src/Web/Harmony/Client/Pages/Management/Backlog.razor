@@ -19,36 +19,44 @@
                          EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
                          AnchorOrigin="Origin.BottomLeft">
                     <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
-                    OnClick="MoveToSprint" Icon="@Icons.Material.Filled.ArrowRight">Move to sprint</MudMenuItem>
-                    </MudMenu>
-                </div>
-                <MudSpacer />
-                <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search backlog.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
-                <MudTh>Type</MudTh>
-                <MudTh Style="text-align:right"></MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="SerialKey">
-                    <MudHighlighter Text="@context.SerialKey" HighlightedText="@_searchString" />
-                </MudTd>
-                <MudTd DataLabel="Title">
-                    <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
-                </MudTd>
-                <MudTd DataLabel="Type">
-                    <MudStack Row="true">
-                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
-                                 Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
-                        <MudText>@context.IssueType.Summary</MudText>
+                                 OnClick="MoveToSprint" Icon="@Icons.Material.Filled.ArrowRight">Move to sprint</MudMenuItem>
+                </MudMenu>
+            </div>
+            <MudSpacer />
+            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search backlog.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+            <MudTh>Type</MudTh>
+            <MudTh Style="text-align:right"></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="SerialKey">
+                <MudHighlighter Text="@context.SerialKey" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Title">
+                <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Type">
+                <MudStack Row="true">
+                    <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                             Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                    <MudText>@context.IssueType.Summary</MudText>
                     </MudStack>
                 </MudTd>
                 <MudTd Style="text-align:right">
                     <MudStack Row="true">
-                        <MudIconButton Icon="@Icons.Material.Filled.MoveDown" Color="Color.Default"></MudIconButton>
-                        <MudIconButton Icon="@Icons.Material.Filled.MoveUp" Color="Color.Default"></MudIconButton>
+                        <MudTooltip Text="Move down" Delay="3000">
+                            <MudIconButton Icon="@Icons.Material.Filled.MoveDown"
+                                           Color="Color.Default"
+                                           OnClick="() => Move(context, 1)"></MudIconButton>
+                        </MudTooltip>
+                        <MudTooltip Text="Move up" Delay="3000">
+                            <MudIconButton Icon="@Icons.Material.Filled.MoveUp" Color="Color.Default"
+                                           Disabled="context.Position == 0"
+                                           OnClick="() => Move(context, -1)"></MudIconButton>
+                        </MudTooltip>
                     </MudStack>
                 </MudTd>
             </RowTemplate>

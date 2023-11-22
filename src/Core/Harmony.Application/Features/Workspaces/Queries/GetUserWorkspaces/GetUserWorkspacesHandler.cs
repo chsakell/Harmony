@@ -45,6 +45,11 @@ namespace Harmony.Application.Features.Workspaces.Queries.GetAllForUser
 
             var userAccessWorkspaces = await _userService.GetAccessWorkspacesAsync(userId);
 
+            if(!userAccessWorkspaces.Succeeded)
+            {
+                return await Result<List<WorkspaceDto>>.FailAsync(userAccessWorkspaces.Messages);
+            }
+
             foreach (var workspace in userAccessWorkspaces.Data)
             {
                 var workspaceBoards = await _boardService.GetUserBoards(workspace.Id, userId);

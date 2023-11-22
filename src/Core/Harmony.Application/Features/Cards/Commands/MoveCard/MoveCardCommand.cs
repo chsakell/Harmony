@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 
@@ -7,13 +8,15 @@ namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 public class MoveCardCommand : IRequest<Result<CardDto>>
 {
     public Guid CardId { get; set; }
-    public Guid ListId { get; set; }
-    public byte Position { get; set; }
+    public Guid? ListId { get; set; }
+    public short Position { get; set; }
+	public CardStatus Status { get; set; }
 
-	public MoveCardCommand(Guid cardId, Guid listId, byte position)
-	{
-		CardId = cardId;
-		ListId = listId;
-		Position = position;
-	}
+    public MoveCardCommand(Guid cardId, Guid? listId, short position, CardStatus status)
+    {
+        CardId = cardId;
+        ListId = listId;
+        Position = position;
+        Status = status;
+    }
 }

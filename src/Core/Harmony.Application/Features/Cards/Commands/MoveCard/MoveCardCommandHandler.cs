@@ -41,7 +41,8 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 		var card = await _cardRepository.Get(request.CardId);
 
 		// commit all the changes
-		var operationCompleted = await _cardService.PositionCard(card, request.ListId, request.Position);
+		var operationCompleted = await _cardService
+			.PositionCard(card, request.ListId, request.Position, request.Status);
 
 		if (operationCompleted)
 		{

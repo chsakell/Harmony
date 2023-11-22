@@ -2,6 +2,7 @@
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
+using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
@@ -50,6 +51,22 @@ namespace Harmony.Client.Pages.Management
             {
                 await _table.ReloadServerData();
             }
+        }
+
+        private async Task Move(GetBacklogItemResponse card, int offset)
+        {
+            var currentCardPosition = card.Position;
+
+            var result = await _cardManager
+                .MoveCardAsync(new MoveCardCommand(card.Id, null,
+                        (short)(currentCardPosition + offset), Domain.Enums.CardStatus.Backlog));
+
+            if (result.Succeeded)
+            {
+                await _table.ReloadServerData();
+            }
+
+            DisplayMessage(result);
         }
 
         private async Task<TableData<GetBacklogItemResponse>> ReloadData(TableState state)

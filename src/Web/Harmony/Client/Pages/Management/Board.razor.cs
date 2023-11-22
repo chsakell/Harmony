@@ -257,7 +257,8 @@ namespace Harmony.Client.Pages.Management
             }
 
             var result = await _cardManager
-                .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, newPosition));
+                .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, 
+                        newPosition, Domain.Enums.CardStatus.Active));
 
             if (result.Succeeded)
             {

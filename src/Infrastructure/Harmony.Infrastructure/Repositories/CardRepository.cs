@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,10 +45,11 @@ namespace Harmony.Infrastructure.Repositories
 				.FirstOrDefaultAsync(card => card.Id == cardId);
         }
 
-        public async Task<Card?> GetByPosition(Guid boardListId, short position)
+        public async Task<Card?> GetByPosition(Guid? boardListId, short position, CardStatus status)
 		{
 			return await _context.Cards
-				.FirstOrDefaultAsync(card => card.BoardListId == boardListId && card.Position == position);
+				.FirstOrDefaultAsync(card => card.BoardListId == boardListId 
+				&& card.Position == position && card.Status == status);
 		}
 
 		public async Task<int> CountCards(Guid listId)
