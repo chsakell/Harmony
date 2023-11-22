@@ -7,6 +7,7 @@ using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
+using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -29,6 +30,9 @@ namespace Harmony.Client.Shared.Modals
         public Guid BoardId { get; set; }
 
         [Parameter]
+        public Guid SprintId { get; set; }
+
+        [Parameter]
         public List<CardDto> PendingCards { get; set; }
 
         [Parameter]
@@ -45,19 +49,33 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task CompleteSprint()
         {
-
             _processing = true;
 
-            
+            Guid? moveToSprintId = null;
 
-            //DisplayMessage(result);
+            var moveToBacklog = _moveToSprint.Id == BackLogSprint;
+            var createNewSprint = _moveToSprint.Id == NewSprint;
+            if(!moveToBacklog && !createNewSprint)
+            {
+                moveToSprintId = _moveToSprint.Id;
+            }
 
-            //_processing = false;
+            var result = await _sprintManager
+                .CompleteSprint(new CompleteSprintCommand(BoardId, SprintId)
+                {
+                    MoveToBacklog = moveToBacklog,
+                    CreateNewSprint = createNewSprint,
+                    MoveToSprintId = moveToSprintId
+                });
 
-            //if (result.Succeeded)
-            //{
-            //    MudDialog.Close(result.Data);
-            //}
+            DisplayMessage(result);
+
+            _processing = false;
+
+            if (result.Succeeded)
+            {
+                MudDialog.Close(result.Data);
+            }
         }
 
         Func<SprintDto, string> converter = p =>

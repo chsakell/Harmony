@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Sprints.Commands.StartSprint;
+﻿using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
+using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -21,6 +22,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient
                 .PutAsJsonAsync(Routes.SprintEndpoints.Start(request.SprintId), request);
+
+            return await response.ToResult<bool>();
+        }
+
+        public async Task<IResult<bool>> CompleteSprint(CompleteSprintCommand request)
+        {
+            var response = await _httpClient
+                .PostAsJsonAsync(Routes.SprintEndpoints.Complete(request.SprintId), request);
 
             return await response.ToResult<bool>();
         }

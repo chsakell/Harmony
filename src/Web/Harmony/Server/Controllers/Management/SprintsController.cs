@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Sprints.Commands.StartSprint;
+﻿using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
+using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("{id:guid}/start")]
         public async Task<IActionResult> Put(Guid id, StartSprintCommand command)
+        {
+            return Ok(await _sender.Send(command));
+        }
+
+        [HttpPost("{id:guid}/complete")]
+        public async Task<IActionResult> CompleteSprint(Guid id, CompleteSprintCommand command)
         {
             return Ok(await _sender.Send(command));
         }

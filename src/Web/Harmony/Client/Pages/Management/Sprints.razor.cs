@@ -135,14 +135,12 @@ namespace Harmony.Client.Pages.Management
                     { x => x.BoardId, Guid.Parse(Id) },
                     { x => x.PendingCards, pendingCards },
                     { x => x.AvailableSprints, availableSprints },
-                
+                    { x => x.SprintId , sprintId },
                 };
 
                 var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
                 var dialog = _dialogService.Show<CompleteSprintModal>(_localizer["Complete sprint"], parameters, options);
             }
-
-
         }
 
         private async Task CreateSprint()
