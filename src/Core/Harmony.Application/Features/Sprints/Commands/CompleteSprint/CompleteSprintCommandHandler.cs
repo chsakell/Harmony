@@ -76,7 +76,9 @@ namespace Harmony.Application.Features.Sprints.Commands.CompleteSprint
 
                 if(createSprintResult.Succeeded)
                 {
-                    operationResult = await MoveToSprint(board, request); ;
+                    var sprintCreated = createSprintResult.Data;
+
+                    operationResult = await MoveToSprint(board, request, sprintCreated.Id); ;
                 }
                 else
                 {
@@ -85,7 +87,7 @@ namespace Harmony.Application.Features.Sprints.Commands.CompleteSprint
             }
             else if (request.MoveToSprintId.HasValue)
             {
-                operationResult = await MoveToSprint(board, request);
+                operationResult = await MoveToSprint(board, request, request.MoveToSprintId.Value);
             }
 
             if (!operationResult.Succeeded)
@@ -107,7 +109,7 @@ namespace Harmony.Application.Features.Sprints.Commands.CompleteSprint
             return await Result<bool>.FailAsync(_localizer["Operation failed"]);
         }
 
-        private async Task<IResult> MoveToSprint(Board board, CompleteSprintCommand request)
+        private async Task<IResult> MoveToSprint(Board board, CompleteSprintCommand request, Guid moveToSprintId)
         {
             var pendingCards = await _cardRepository.GetPendingSprintCards(request.SprintId);
 
@@ -119,8 +121,8 @@ namespace Harmony.Application.Features.Sprints.Commands.CompleteSprint
                 return await Result<bool>.FailAsync("TODO or IN PROGRESS board lists not found in the new sprint");
             }
 
-            var moveToSprintCommand = new MoveToSprintCommand(request.BoardId, moveToList.Id,
-                request.MoveToSprintId.Value, pendingCards.Select(c => c.Id).ToList());
+            var moveToSprintCommand = new MoveToSprintCommand(request.BoardId, moveToSprintId, 
+                moveToList.Id, pendingCards.Select(c => c.Id).ToList());
 
             return await _mediator.Send(moveToSprintCommand);
         }

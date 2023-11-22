@@ -14,8 +14,8 @@ namespace Harmony.Application.DTO
         public string Name { get; set; }
         public string Goal { get; set; }
         public Guid BoardId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public SprintStatus Status { get; set; }
     }
 }

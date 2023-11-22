@@ -44,8 +44,8 @@ namespace Harmony.Application.Features.Boards.Commands.CreateSprint
             {
                 Name = request.Name,
                 Goal = request.Goal,
-                StartDate = request.StartDate.Value,
-                EndDate = request.EndDate.Value,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
                 BoardId = request.BoardId,
                 Status = SprintStatus.Idle
             };

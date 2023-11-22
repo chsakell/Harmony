@@ -46,7 +46,7 @@ namespace Harmony.Infrastructure.Services.Management
 		{
 			var cards = await _cardRepository
 				.Entities.Where(card => cardsToMove.Contains(card.Id) 
-					&& card.Status == Domain.Enums.CardStatus.Backlog)
+					/*&& card.Status == Domain.Enums.CardStatus.Backlog*/)
 				.ToListAsync();
 
 			if(cards.Any())

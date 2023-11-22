@@ -17,10 +17,11 @@
     }
 </style>
 
-<MudPaper>
-    <MudTable Hover="true" Breakpoint="Breakpoint.Sm" Height="500px" FixedHeader="true"
+<MudPaper Style="height:calc(100vh - 100px);overflow:auto">
+    <MudTable Hover="true" Breakpoint="Breakpoint.Sm" FixedHeader="true"
               T="GetSprintCardResponse"
               MultiSelection="true"
+              SelectOnRowClick="true"
               @bind-SelectedItems="_selectedCards"
               ServerData="@(new Func<TableState, Task<TableData<GetSprintCardResponse>>>(ReloadData))" Dense="true" Striped="true"
               GroupBy="@_groupDefinition"

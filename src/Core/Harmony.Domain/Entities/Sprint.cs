@@ -13,8 +13,8 @@ namespace Harmony.Domain.Entities
         public string Goal {  get; set; }
         public Board Board { get; set; }
         public Guid BoardId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public SprintStatus Status { get; set; }
         public List<Card> Cards { get; set; }
     }

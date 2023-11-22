@@ -72,10 +72,10 @@
                     <MudHighlighter Text="@context.Status.ToString()" HighlightedText="@_searchString" />
                 </MudTd>
                 <MudTd DataLabel="StartDate">
-                    <MudHighlighter Text="@context.StartDate.ToShortDateString()" HighlightedText="@_searchString" />
+                    <MudHighlighter Text="@context.StartDate?.ToShortDateString()" HighlightedText="@_searchString" />
                 </MudTd>
                 <MudTd DataLabel="EndDate">
-                    <MudHighlighter Text="@context.EndDate.ToShortDateString()" HighlightedText="@_searchString" />
+                    <MudHighlighter Text="@context.EndDate?.ToShortDateString()" HighlightedText="@_searchString" />
                 </MudTd>
             </RowTemplate>
             <PagerContent>

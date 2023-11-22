@@ -16,8 +16,8 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
         public Guid SprintId { get; set; }
         public string Sprint { get; set; }
         public SprintStatus SprintStatus { get; set; }
-        public DateTime SprintStartDate { get; set; }
-        public DateTime SprintEndDate { get; set; }
+        public DateTime? SprintStartDate { get; set; }
+        public DateTime? SprintEndDate { get; set; }
         public bool IsCompleted { get; set; }
     }
 }
