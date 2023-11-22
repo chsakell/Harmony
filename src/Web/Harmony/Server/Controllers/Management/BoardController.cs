@@ -19,6 +19,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Server.Controllers.Management
 {
@@ -101,6 +102,12 @@ namespace Harmony.Server.Controllers.Management
         {
             return Ok(await _mediator.Send(new
                 GetSprintCardsQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+        }
+
+        [HttpGet("{id:guid}/sprints/{sprintId:guid}/cards/pending")]
+        public async Task<IActionResult> GetPendingItems(Guid id, Guid sprintId)
+        {
+            return Ok(await _mediator.Send(new GetPendingSprintCardsQuery(id, sprintId)));
         }
 
         [HttpGet("{id:guid}/sprints")]

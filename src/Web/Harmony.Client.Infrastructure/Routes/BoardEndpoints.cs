@@ -96,6 +96,11 @@ namespace Harmony.Client.Infrastructure.Routes
             return url;
         }
 
+        public static string GetSprintPendingCards(Guid boardId, Guid sprintId)
+        {
+            return $"{Index}{boardId}/sprints/{sprintId}/cards/pending/";
+        }
+
         public static string Sprints(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
         {
             var url = $"{Index}{boardId}/sprints/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";

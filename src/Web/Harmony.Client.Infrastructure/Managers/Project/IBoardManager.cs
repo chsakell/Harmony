@@ -41,5 +41,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<GetBoardListResponse>>> GetBoardListsAsync(string boardId);
         Task<IResult<List<CardDto>>> MoveCardsToSprint(MoveToSprintCommand request);
         Task<IResult<List<CardDto>>> MoveCardsToBacklog(MoveToBacklogCommand request);
+        Task<IResult<GetPendingSprintCardsResponse>> GetPendingSprintCards(GetPendingSprintCardsQuery request);
     }
 }

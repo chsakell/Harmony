@@ -122,6 +122,15 @@ namespace Harmony.Client.Pages.Management
 
         private async Task CompleteSprint(Guid sprintId, string sprintName)
         {
+            var pendingSprintResult = await _boardManager
+                .GetPendingSprintCards(new GetPendingSprintCardsQuery(Guid.Parse(Id), sprintId));
+
+            if (pendingSprintResult.Succeeded)
+            {
+                var pendingCards = pendingSprintResult.Data.PendingCards;
+                var availableSprints = pendingSprintResult.Data.AvailableSprints;
+            }
+
             //var parameters = new DialogParameters<Confirmation>
             //{
             //    { x => x.ContentText, $"Are you sure you want to complete {sprintName}? " +

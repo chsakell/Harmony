@@ -125,5 +125,13 @@ namespace Harmony.Infrastructure.Repositories
 		{
 			return await _context.Cards.Where(c => c.BoardListId == boardListId && c.Position >= position).ToListAsync();
 		}
+
+		public async Task<List<Card>> GetPendingSprintCards(Guid sprintId)
+		{
+            return await _context.Cards
+				.Include(c => c.BoardList)
+				.Where(c => c.BoardList.CardStatus != BoardListCardStatus.DONE && c.SprintId == sprintId)
+				.ToListAsync();
+        }
     }
 }

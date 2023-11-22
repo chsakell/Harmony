@@ -141,6 +141,15 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToPaginatedResult<GetSprintCardResponse>();
         }
 
+        public async Task<IResult<GetPendingSprintCardsResponse>> GetPendingSprintCards(GetPendingSprintCardsQuery request)
+        {
+            var response = await _httpClient
+                .GetAsync(Routes.BoardEndpoints
+                .GetSprintPendingCards(request.BoardId, request.SprintId));
+
+            return await response.ToResult<GetPendingSprintCardsResponse>();
+        }
+
         public async Task<PaginatedResult<SprintDto>> GetSprints(GetSprintsQuery request)
         {
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints

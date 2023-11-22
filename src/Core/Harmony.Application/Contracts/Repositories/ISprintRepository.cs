@@ -17,5 +17,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CountSprints(Guid boardId);
         Task<List<Sprint>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize);
         Task<List<Sprint>> GetActiveSprints(Guid boardId);
+        Task<List<Sprint>> GetNonCompletedSprints(Guid boardId);
     }
 }
