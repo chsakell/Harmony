@@ -6,7 +6,7 @@ using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Lists.Commands.CreateList;
-using Harmony.Application.Features.Sprints.StartSprint;
+using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;

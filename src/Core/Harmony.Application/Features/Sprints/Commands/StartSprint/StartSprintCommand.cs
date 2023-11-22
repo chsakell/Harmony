@@ -4,7 +4,7 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 
-namespace Harmony.Application.Features.Sprints.StartSprint
+namespace Harmony.Application.Features.Sprints.Commands.StartSprint
 {
     /// <summary>
     /// Command to start a sprint

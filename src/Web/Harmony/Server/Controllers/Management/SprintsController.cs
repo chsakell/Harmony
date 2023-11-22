@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Features.Sprints.StartSprint;
+﻿using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -8,9 +8,8 @@ using Harmony.Shared.Constants.Application;
 using Harmony.Domain.Enums;
 using Harmony.Application.DTO;
 using AutoMapper;
-using Harmony.Application.Features.Sprints.StartSprint;
 
-namespace Harmony.Application.Features.Sprints.StartSprint
+namespace Harmony.Application.Features.Sprints.Commands.StartSprint
 {
     /// <summary>
     /// Handler for starting sprints
