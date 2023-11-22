@@ -6,6 +6,7 @@ using Harmony.Domain.Entities;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
+using Harmony.Persistence.Migrations;
 using Harmony.Shared.Constants.Application;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -40,7 +41,7 @@ namespace Harmony.Infrastructure.Seed
 
         private HarmonyUser _admin;
         private List<string> _boardUsers = new List<string>();
-        private List<Label> _boardLabels = new List<Label>();
+        private List<IssueType> _issueTypes;
         public int Order => 3;
 
         private bool _active = false;
@@ -125,6 +126,15 @@ namespace Harmony.Infrastructure.Seed
                 });
             }
 
+            var issueTypes = new List<IssueType>();
+            foreach (var issueType in IssueTypesConstants.GetDefaultIssueTypes())
+            {
+                issueTypes.Add(new IssueType()
+                {
+                    Summary = issueType
+                });
+            }
+
             var harmonyBoard = new Board()
             {
                 WorkspaceId = workspaceId,
@@ -133,10 +143,14 @@ namespace Harmony.Infrastructure.Seed
                 Visibility = Domain.Enums.BoardVisibility.Workspace,
                 UserId = _admin.Id,
                 Labels = labels,
-                Type = Domain.Enums.BoardType.Kanban
+                Type = Domain.Enums.BoardType.Kanban,
+                IssueTypes = issueTypes,
+                Key = "HARM"
             };
 
             await _boardRepository.CreateAsync(harmonyBoard);
+
+            _issueTypes = harmonyBoard.IssueTypes;
 
             var userBoard = new UserBoard()
             {
@@ -208,6 +222,8 @@ namespace Harmony.Infrastructure.Seed
                 var faker = new Faker(locale: "en");
 
                 var randomMembers = faker.PickRandom(_boardUsers, 3);
+                var issueType = faker.PickRandom(_issueTypes);
+
                 var members = new List<UserCard>();
 
                 foreach (var member in randomMembers)
@@ -242,7 +258,8 @@ namespace Harmony.Infrastructure.Seed
                     Position = (short)i,
                     Status = Domain.Enums.CardStatus.Active,
                     Members = members,
-                    Labels = cardLabels
+                    Labels = cardLabels,
+                    IssueType = issueType
                 };
 
                 await _cardRepository.CreateAsync(card);

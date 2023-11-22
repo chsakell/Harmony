@@ -15,9 +15,7 @@ namespace Harmony.Shared.Constants.Application
 
         public static List<string> GetDefaultIssueTypes()
         {
-            var types = new List<string> { EPIC, BUG, STORY, TASK };
-
-            return types;
+            return new List<string> { TASK, STORY, BUG, EPIC };
         }
     }
 }

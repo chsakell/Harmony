@@ -24,7 +24,7 @@ namespace Harmony.Infrastructure.Seed
         private readonly UserManager<HarmonyUser> _userManager;
         private readonly RoleManager<HarmonyRole> _roleManager;
 
-        private bool _active;
+        private bool _active = false;
 
         public DatabaseUsersSeeder(
             UserManager<HarmonyUser> userManager,
