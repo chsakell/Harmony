@@ -48,7 +48,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             if (result.Succeeded)
             {
                 OnBoardCreated?.Invoke(this, new BoardCreatedEvent(request.WorkspaceId,
-                    result.Data, request.Title, request.Description, request.Visibility));
+                    result.Data, request.Title, request.Description, request.Visibility,
+                    request.BoardType));
             }
 
             return result;

@@ -41,7 +41,9 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public event EventHandler<WorkspaceDto> OnSelectedWorkspace;
         public event EventHandler<WorkspaceAddedEvent> OnWorkspaceAdded;
 
-        public WorkspaceManager(HttpClient client, ClientPreferenceManager clientPreferenceManager)
+        public WorkspaceManager(HttpClient client, 
+            ClientPreferenceManager clientPreferenceManager,
+            IBoardManager boardManager)
         {
             _httpClient = client;
             _clientPreferenceManager = clientPreferenceManager;

@@ -2,6 +2,7 @@
 
 @using System.Security.Claims
 @using Harmony.Application.DTO;
+@using Harmony.Application.Events
 @using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 @using Harmony.Shared.Constants.Permission;
 @using Harmony.Shared.Utilities;
@@ -80,6 +81,26 @@
     protected override void OnInitialized()
     {
         _workspaceManager.OnSelectedWorkspace += SelectedWorkspaceChanged;
+        _boardManager.OnBoardCreated += OnBoardCreated;
+    }
+
+    private void OnBoardCreated(object sender, BoardCreatedEvent e)
+    {
+        var userWorkspace = _workspaceManager.UserWorkspaces.FirstOrDefault(uw => uw.Id.ToString() == e.WorkspaceId);
+
+        if (userWorkspace != null)
+        {
+            userWorkspace.Boards.Add(new BoardDto()
+                {
+                    Id = e.BoardId,
+                    Title = e.Title,
+                    Description = e.Description,
+                    Visibility = e.Visibility,
+                    Type = e.Type
+                });
+        }
+
+        StateHasChanged();
     }
 
     protected void SelectedWorkspaceChanged(object sender, WorkspaceDto selectedWorkspace)
