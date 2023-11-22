@@ -39,8 +39,7 @@ namespace Harmony.Client.Pages.Management
             Indentation = false,
             Expandable = true,
             IsInitiallyExpanded = true,
-            Selector = (e) => e.Sprint + 
-            $" [{e.SprintStartDate.ToShortDateString()}-{e.SprintEndDate.ToShortDateString()}]"
+            Selector = (e) => e.Sprint + $" [{e.SprintStatus}]"
         };
 
         protected override Task OnInitializedAsync()

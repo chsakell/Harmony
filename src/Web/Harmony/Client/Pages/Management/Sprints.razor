@@ -2,6 +2,7 @@
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Sprints> _localizer
 @using Harmony.Application.Features.Boards.Queries.GetBacklog
 @using Harmony.Application.Features.Boards.Queries.GetSprints
+@using Harmony.Application.Helpers
 @using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums
 
@@ -81,6 +82,8 @@
                     {
                         var firstItem = context.Items.FirstOrDefault();
                         var sprintStatus = firstItem.SprintStatus;
+
+                        <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(firstItem.SprintStartDate, firstItem.SprintEndDate)</MudChip>
                         <MudChip Color="@(sprintStatus == SprintStatus.Idle ? Color.Info : sprintStatus == SprintStatus.Active ? Color.Success : Color.Tertiary)">@sprintStatus</MudChip>
 
                         switch(sprintStatus)
