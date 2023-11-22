@@ -11,6 +11,7 @@ using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
+using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
@@ -140,6 +141,13 @@ namespace Harmony.Client.Pages.Management
 
                 var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
                 var dialog = _dialogService.Show<CompleteSprintModal>(_localizer["Complete sprint"], parameters, options);
+
+                var result = await dialog.Result;
+
+                if (!result.Canceled && result.Data is bool sprintSucceeded)
+                {
+                    await _table.ReloadServerData();
+                }
             }
         }
 

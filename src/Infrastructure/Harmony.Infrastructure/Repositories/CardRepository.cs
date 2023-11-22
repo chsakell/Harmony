@@ -67,11 +67,13 @@ namespace Harmony.Infrastructure.Repositories
 
         public async Task<int> GetNextBacklogPosition(Guid boardId)
         {
-            return (await _context.Cards
+            var positions = await _context.Cards
                     .Include(c => c.IssueType)
                 .Where(c => c.IssueType.BoardId == boardId
                 && c.Status == Domain.Enums.CardStatus.Backlog)
-				.Select(c => c.Position).MaxAsync()) + 1;
+				.Select(c => c.Position).ToListAsync();
+
+			return !positions.Any() ? 1 : positions.Max() + 1;
         }
 
         public async Task<int> CountBoardCards(Guid boardId)

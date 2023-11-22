@@ -263,9 +263,9 @@ namespace Harmony.Infrastructure.Services.Management
             IQueryable<GetSprintCardResponse> query = null;
 
             query = from sprint in _sprintRepository.Entities
-                    join board in _boardRepository.Entities
+                    join board in _boardRepository.Entities.Include(b => b.Lists)
                         on sprint.BoardId equals board.Id
-                    join card in _cardRepository.Entities
+                    join card in _cardRepository.Entities.Include(c => c.BoardList)
                         on sprint.Id equals card.SprintId into grouping
                     from p in grouping.DefaultIfEmpty()
                     join issueType in _issueTypeRepository.Entities
@@ -274,6 +274,7 @@ namespace Harmony.Infrastructure.Services.Management
                     where (board.Id == boardId
                         && p.Status != Domain.Enums.CardStatus.Backlog &&
                         (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term)))
+                    orderby sprint.DateCreated descending
                     select new GetSprintCardResponse()
                     {
                         CardId = (Guid?)p.Id,
@@ -286,6 +287,7 @@ namespace Harmony.Infrastructure.Services.Management
                         SprintStartDate = sprint.StartDate,
                         SprintEndDate = sprint.EndDate,
                         SprintId = sprint.Id,
+                        IsCompleted = p.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE,
                         CardIssueType = new IssueTypeDto()
                         {
                             Id = issue != null ? issue.Id : Guid.Empty,
