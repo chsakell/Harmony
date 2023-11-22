@@ -14,5 +14,6 @@ namespace Harmony.Domain.Entities
         public short Position { get; set; } // position on the board
         public List<Card> Cards { get; set; }
         public BoardListStatus Status { get; set; }
+        public BoardListCardStatus? CardStatus { get; set; }
     }
 }

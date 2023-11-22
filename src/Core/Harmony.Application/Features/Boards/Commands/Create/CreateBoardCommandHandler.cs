@@ -100,18 +100,21 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                         Title = "TODO",
                         Position = 0,
                         UserId = userId,
+                        CardStatus = BoardListCardStatus.TODO
                     },
                     new BoardList()
                     {
                         Title = "IN PROGRESS",
                         Position = 1,
                         UserId = userId,
+                        CardStatus= BoardListCardStatus.IN_PROGRESS
                     },
                     new BoardList()
                     {
                         Title = "DONE",
                         Position = 2,
                         UserId = userId,
+                        CardStatus = BoardListCardStatus.DONE
                     }
                 };
 

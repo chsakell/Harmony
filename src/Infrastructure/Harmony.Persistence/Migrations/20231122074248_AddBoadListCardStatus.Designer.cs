@@ -4,6 +4,7 @@ using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    partial class HarmonyContextModelSnapshot : ModelSnapshot
+    [Migration("20231122074248_AddBoadListCardStatus")]
+    partial class AddBoadListCardStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,7 +121,7 @@ namespace Harmony.Persistence.Migrations
                     b.Property<Guid>("BoardId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CardStatus")
+                    b.Property<int>("CardStatus")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
