@@ -129,36 +129,20 @@ namespace Harmony.Client.Pages.Management
             {
                 var pendingCards = pendingSprintResult.Data.PendingCards;
                 var availableSprints = pendingSprintResult.Data.AvailableSprints;
+
+                var parameters = new DialogParameters<CompleteSprintModal>
+                {
+                    { x => x.BoardId, Guid.Parse(Id) },
+                    { x => x.PendingCards, pendingCards },
+                    { x => x.AvailableSprints, availableSprints },
+                
+                };
+
+                var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+                var dialog = _dialogService.Show<CompleteSprintModal>(_localizer["Complete sprint"], parameters, options);
             }
 
-            //var parameters = new DialogParameters<Confirmation>
-            //{
-            //    { x => x.ContentText, $"Are you sure you want to complete {sprintName}? " +
-            //    $"All of it's cards will be available on the board" },
-            //    { x => x.ButtonText, "Yes" },
-            //    { x => x.Color, Color.Warning }
-            //};
 
-            //var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
-            //var dialogResult = await dialog.Result;
-
-            //if (!dialogResult.Canceled)
-            //{
-            //    var request = new UploadProfilePictureCommand
-            //    {
-            //        Data = new byte[0],
-            //        Type = Domain.Enums.AttachmentType.ProfilePicture
-            //    };
-
-            //    var result = await _fileManager.UploadProfilePicture(request);
-
-            //    if (result.Succeeded)
-            //    {
-            //        _user.ProfilePicture = result.Data.ProfilePicture;
-            //    }
-
-            //    DisplayMessage(result);
-            //}
         }
 
         private async Task CreateSprint()
