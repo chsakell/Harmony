@@ -1,4 +1,5 @@
 ﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<NavMenu> _localizer
+@implements IDisposable
 
 @using System.Security.Claims
 @using Harmony.Application.DTO;
@@ -147,5 +148,10 @@
     {
         var slug = StringUtilities.SlugifyString(workspace.Name);
         return $"/workspaces/{workspace.Id}/{slug}";
+    }
+
+    void IDisposable.Dispose()
+    {
+        _boardManager.OnBoardCreated -= OnBoardCreated;
     }
 }
