@@ -31,13 +31,7 @@ namespace Harmony.Client.Pages.Management
         {
             if (e.WorkspaceId.Equals(Id))
             {
-                _userBoards.Add(new BoardDto()
-                {
-                    Description = e.Description,
-                    Title = e.Title,
-                    Id = e.BoardId,
-                    WorkspaceId = Guid.Parse(Id)
-                });
+                _userBoards.Add(e.Board);
 
                 StateHasChanged();
             }

@@ -6,46 +6,51 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Shared.Constants.Application;
 using Harmony.Domain.Enums;
+using Harmony.Application.DTO;
+using AutoMapper;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
     /// <summary>
     /// Handler for creating boards
     /// </summary>
-    public class CreateBoardCommandHandler : IRequestHandler<CreateBoardCommand, Result<Guid>>
+    public class CreateBoardCommandHandler : IRequestHandler<CreateBoardCommand, Result<BoardDto>>
     {
         private readonly IBoardRepository _boardRepository;
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IMapper _mapper;
         private readonly IBoardLabelRepository _boardLabelRepository;
         private readonly IStringLocalizer<CreateBoardCommandHandler> _localizer;
 
         public CreateBoardCommandHandler(IBoardRepository boardRepository,
             IUserBoardRepository userBoardRepository,
             ICurrentUserService currentUserService,
+            IMapper mapper,
             IBoardLabelRepository boardLabelRepository,
             IStringLocalizer<CreateBoardCommandHandler> localizer)
         {
             _boardRepository = boardRepository;
             _userBoardRepository = userBoardRepository;
             _currentUserService = currentUserService;
+            _mapper = mapper;
             _boardLabelRepository = boardLabelRepository;
             _localizer = localizer;
         }
-        public async Task<Result<Guid>> Handle(CreateBoardCommand request, CancellationToken cancellationToken)
+        public async Task<Result<BoardDto>> Handle(CreateBoardCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<Guid>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<BoardDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var boardWithSameKeyExists = await _boardRepository.Exists(request.Key);
 
             if(boardWithSameKeyExists)
             {
-                return await Result<Guid>.FailAsync(_localizer["A board with the same key already exists. Pick a different key."]);
+                return await Result<BoardDto>.FailAsync(_localizer["A board with the same key already exists. Pick a different key."]);
             }
 
             var board = new Board()
@@ -125,10 +130,12 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             if (dbResult > 0)
             {
-                return await Result<Guid>.SuccessAsync(board.Id, _localizer["Board Created"]);
+                var result = _mapper.Map<BoardDto>(board);
+
+                return await Result<BoardDto>.SuccessAsync(result, _localizer["Board created"]);
             }
 
-            return await Result<Guid>.FailAsync(_localizer["Operation failed"]);
+            return await Result<BoardDto>.FailAsync(_localizer["Operation failed"]);
         }
     }
 }

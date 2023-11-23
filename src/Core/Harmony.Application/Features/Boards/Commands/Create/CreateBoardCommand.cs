@@ -1,4 +1,5 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Application.DTO;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
     /// <summary>
     /// Command to create board
     /// </summary>
-    public class CreateBoardCommand : IRequest<Result<Guid>>
+    public class CreateBoardCommand : IRequest<Result<BoardDto>>
     {
         [Required]
         [MaxLength(300)]

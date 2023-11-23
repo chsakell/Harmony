@@ -1,24 +1,17 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Application.DTO;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Events
 {
     public class BoardCreatedEvent
     {
-        public BoardCreatedEvent(string workspaceId, Guid boardId, string title, string description, BoardVisibility visibility, BoardType type)
+        public BoardCreatedEvent(string workspaceId, BoardDto board)
         {
             WorkspaceId = workspaceId;
-            BoardId = boardId;
-            Title = title;
-            Description = description;
-            Visibility = visibility;
-            Type = type;
+            Board = board;
         }
 
         public string WorkspaceId { get; set; }
-        public Guid BoardId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public BoardVisibility Visibility { get; set; }
-        public BoardType Type { get; set; }
+        public BoardDto Board { get; set; }
     }
 }

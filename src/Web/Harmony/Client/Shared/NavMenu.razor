@@ -91,14 +91,7 @@
 
         if (userWorkspace != null)
         {
-            userWorkspace.Boards.Add(new BoardDto()
-                {
-                    Id = e.BoardId,
-                    Title = e.Title,
-                    Description = e.Description,
-                    Visibility = e.Visibility,
-                    Type = e.Type
-                });
+            userWorkspace.Boards.Add(e.Board);
         }
 
         StateHasChanged();

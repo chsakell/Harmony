@@ -39,17 +39,18 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             _httpClient = client;
         }
 
-        public async Task<IResult<Guid>> CreateAsync(CreateBoardCommand request)
+        public async Task<IResult<BoardDto>> CreateAsync(CreateBoardCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints.Index, request);
 
-            var result = await response.ToResult<Guid>();
+            var result = await response.ToResult<BoardDto>();
 
             if (result.Succeeded)
             {
-                OnBoardCreated?.Invoke(this, new BoardCreatedEvent(request.WorkspaceId,
-                    result.Data, request.Title, request.Description, request.Visibility,
-                    request.BoardType));
+                var board = result.Data;
+
+                OnBoardCreated?.Invoke(this, 
+                    new BoardCreatedEvent(request.WorkspaceId, board));
             }
 
             return result;
