@@ -43,8 +43,9 @@
             <MudTable Hover="true" Elevation="25"
                       T="SprintDto"
                       FixedHeader="true"
+                      RowClass="cursor-pointer"
                       RowClassFunc="@SelectedRowClassFunc" OnRowClick="RowClickEvent"
-                      ServerData="@(new Func<TableState, Task<TableData<SprintDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+                      ServerData="@(new Func<TableState, Task<TableData<SprintDto>>>(ReloadData))" Dense="false" Striped="true" @ref="_table">
                 <ToolBarContent>
                     <MudSelect @bind-Value="_selectedBoardList"
                                ToStringFunc="@converter"

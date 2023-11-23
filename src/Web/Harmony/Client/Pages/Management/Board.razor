@@ -42,6 +42,10 @@ else
                                 }
                             </MudList>
                         }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
+                        }
                     </TooltipContent>
                 </MudTooltip>
                 @if (AddCardsDisabled)
