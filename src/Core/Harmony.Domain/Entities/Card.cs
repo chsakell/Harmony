@@ -27,5 +27,6 @@ namespace Harmony.Domain.Entities
         public IssueType IssueType { get; set; }
         public Guid? IssueTypeId { get; set; }
         public Guid? SprintId { get; set; }
+        public Sprint Sprint { get; set; }
     }
 }

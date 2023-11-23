@@ -42,6 +42,7 @@ namespace Harmony.Infrastructure.Repositories
 				.Include(card => card.Members)
 				.Include(card => card.Labels)
 					.ThenInclude(cl => cl.Label)
+				.Include(card => card.Sprint)
 				.FirstOrDefaultAsync(card => card.Id == cardId);
         }
 

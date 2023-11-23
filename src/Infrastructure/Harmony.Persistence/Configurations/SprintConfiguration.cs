@@ -20,7 +20,7 @@ namespace Harmony.Persistence.Configurations
             builder.Property(b => b.EndDate).IsRequired(false);
 
             builder.HasMany(sprint => sprint.Cards)
-                .WithOne()
+                .WithOne(c => c.Sprint)
                 .HasForeignKey(card => card.SprintId)
                 .IsRequired(false);
         }

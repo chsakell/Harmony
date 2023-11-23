@@ -113,6 +113,7 @@ namespace Harmony.Infrastructure.Services.Management
                         var checkLists = (await multi.ReadAsync<CheckList>()).ToList();
                         var checkListItems = (await multi.ReadAsync<CheckListItem>()).ToList();
                         var issueTypes = (await multi.ReadAsync<IssueType>()).ToList();
+                        var sprints = (await multi.ReadAsync<Sprint>()).ToList();
 
                         foreach (var cardLabel in cardLabels)
                         {
@@ -154,6 +155,11 @@ namespace Harmony.Infrastructure.Services.Management
                             {
                                 card.IssueType = issueTypes
                                     .FirstOrDefault(it => it.Id == card.IssueTypeId);
+                            }
+
+                            if(card.SprintId.HasValue && sprints.Any())
+                            {
+                                card.Sprint = sprints.FirstOrDefault(s => s.Id == card.SprintId);
                             }
                         }
 

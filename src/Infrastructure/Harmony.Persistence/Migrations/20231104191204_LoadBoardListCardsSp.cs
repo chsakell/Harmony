@@ -57,6 +57,8 @@ BEGIN
 	order by CheckListId, Position
 
 	select * from IssueTypes where BoardId = @BoardId order by DateCreated
+
+	select * from Sprints where BoardId = @BoardId
 END
 GO
 

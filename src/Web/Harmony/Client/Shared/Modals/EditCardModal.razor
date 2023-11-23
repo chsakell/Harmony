@@ -17,6 +17,10 @@ else
                                    Text="@_card.Title" Label="@_localizer["Title"]" />
                 <MudStack Row="true">
                     <MudChip Label="true" Color="Color.Warning">@SerialKey</MudChip>
+                    @if(_card.Sprint != null)
+                    {
+                        <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
+                    }
                     @if (_card.StartDate != null || _card.DueDate != null)
                     {
                         <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(_card.StartDate, _card.DueDate)</MudChip>

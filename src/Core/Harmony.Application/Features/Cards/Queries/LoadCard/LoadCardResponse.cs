@@ -20,5 +20,6 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public DateTime? ReminderDate { get; set; }
         public List<CardMemberDto> Members { get; set; }
         public List<LabelDto> Labels { get; set; }
+        public SprintDto Sprint { get; set; }
     }
 }

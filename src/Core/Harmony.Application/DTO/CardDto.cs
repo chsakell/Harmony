@@ -20,5 +20,6 @@ namespace Harmony.Application.DTO
         public int SerialNumber { get; set; }
         public CardStatus Status { get; set; }
 		public IssueTypeDto IssueType { get; set; }
+		public SprintDto Sprint { get; set; }
     }
 }
