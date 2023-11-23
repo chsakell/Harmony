@@ -877,7 +877,7 @@ namespace Harmony.Persistence.Migrations
                         .WithMany("Cards")
                         .HasForeignKey("IssueTypeId");
 
-                    b.HasOne("Harmony.Domain.Entities.Sprint", null)
+                    b.HasOne("Harmony.Domain.Entities.Sprint", "Sprint")
                         .WithMany("Cards")
                         .HasForeignKey("SprintId");
 
@@ -890,6 +890,8 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("BoardList");
 
                     b.Navigation("IssueType");
+
+                    b.Navigation("Sprint");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.CardActivity", b =>

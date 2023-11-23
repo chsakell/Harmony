@@ -58,7 +58,7 @@ else
             <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Empty board :(</MudText>
             <MudText Align="Align.Center">Looks like this board is currently empty. Here's a few suggestions to help you start with.</MudText>
             <MudGrid Class="mt-8 d-flex justify-center">
-                <MudItem xs="12" sm="6">
+                <MudItem xs="12" sm="8">
                     <MudCard Elevation="25" Class="rounded-lg pb-4">
                         <MudCardHeader>
                             <CardHeaderContent>
@@ -128,6 +128,12 @@ else
                                                    SelectedChanged="(page) => LoadListCards(item.Id, page)"
                                                    BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
                                 </div>
+                            }
+                            @if (item.CardStatus.HasValue && item.CardStatus
+                           == Domain.Enums.BoardListCardStatus.DONE)
+                            {
+                                <MudIconButton Title="Items on this list will be considered as DONE" Icon="@Icons.Material.Outlined.Check"
+                                               Style="position:absolute;bottom:20px;" Color="Color.Tertiary"></MudIconButton>
                             }
                         </MudPaper>
                     }

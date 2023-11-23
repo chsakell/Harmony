@@ -40,8 +40,6 @@ namespace Harmony.Client.Shared
             _interceptor.RegisterEvent();
             hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage);
 
-            _snackBar.Add(string.Format("Welcome {0}", FirstName), Severity.Success);
-
             _fileManager.OnUserProfilePictureUpdated += OnUserProfilePictureUpdated;
         }
 

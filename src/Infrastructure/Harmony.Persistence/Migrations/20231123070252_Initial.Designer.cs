@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20231116094857_Initial")]
+    [Migration("20231123070252_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -121,6 +121,9 @@ namespace Harmony.Persistence.Migrations
                     b.Property<Guid>("BoardId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("CardStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -159,7 +162,7 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BoardListId")
+                    b.Property<Guid?>("BoardListId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateCreated")
@@ -174,6 +177,9 @@ namespace Harmony.Persistence.Migrations
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("IssueTypeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<short>("Position")
                         .HasColumnType("smallint");
 
@@ -182,6 +188,9 @@ namespace Harmony.Persistence.Migrations
 
                     b.Property<int>("SerialNumber")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("SprintId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
@@ -203,6 +212,10 @@ namespace Harmony.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BoardListId");
+
+                    b.HasIndex("IssueTypeId");
+
+                    b.HasIndex("SprintId");
 
                     b.HasIndex("UserId");
 
@@ -369,6 +382,36 @@ namespace Harmony.Persistence.Migrations
                     b.ToTable("Comments", (string)null);
                 });
 
+            modelBuilder.Entity("Harmony.Domain.Entities.IssueType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BoardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Summary")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId");
+
+                    b.ToTable("IssueTypes", (string)null);
+                });
+
             modelBuilder.Entity("Harmony.Domain.Entities.Label", b =>
                 {
                     b.Property<Guid>("Id")
@@ -398,6 +441,45 @@ namespace Harmony.Persistence.Migrations
                     b.HasIndex("BoardId");
 
                     b.ToTable("Labels", (string)null);
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.Sprint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BoardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Goal")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId");
+
+                    b.ToTable("Sprints", (string)null);
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.UserBoard", b =>
@@ -792,9 +874,15 @@ namespace Harmony.Persistence.Migrations
                 {
                     b.HasOne("Harmony.Domain.Entities.BoardList", "BoardList")
                         .WithMany("Cards")
-                        .HasForeignKey("BoardListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BoardListId");
+
+                    b.HasOne("Harmony.Domain.Entities.IssueType", "IssueType")
+                        .WithMany("Cards")
+                        .HasForeignKey("IssueTypeId");
+
+                    b.HasOne("Harmony.Domain.Entities.Sprint", "Sprint")
+                        .WithMany("Cards")
+                        .HasForeignKey("SprintId");
 
                     b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("Cards")
@@ -803,6 +891,10 @@ namespace Harmony.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("BoardList");
+
+                    b.Navigation("IssueType");
+
+                    b.Navigation("Sprint");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.CardActivity", b =>
@@ -886,10 +978,32 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("Card");
                 });
 
+            modelBuilder.Entity("Harmony.Domain.Entities.IssueType", b =>
+                {
+                    b.HasOne("Harmony.Domain.Entities.Board", "Board")
+                        .WithMany("IssueTypes")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+                });
+
             modelBuilder.Entity("Harmony.Domain.Entities.Label", b =>
                 {
                     b.HasOne("Harmony.Domain.Entities.Board", "Board")
                         .WithMany("Labels")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.Sprint", b =>
+                {
+                    b.HasOne("Harmony.Domain.Entities.Board", "Board")
+                        .WithMany("Sprints")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1012,9 +1126,13 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.Board", b =>
                 {
+                    b.Navigation("IssueTypes");
+
                     b.Navigation("Labels");
 
                     b.Navigation("Lists");
+
+                    b.Navigation("Sprints");
 
                     b.Navigation("Users");
                 });
@@ -1044,9 +1162,19 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("Items");
                 });
 
+            modelBuilder.Entity("Harmony.Domain.Entities.IssueType", b =>
+                {
+                    b.Navigation("Cards");
+                });
+
             modelBuilder.Entity("Harmony.Domain.Entities.Label", b =>
                 {
                     b.Navigation("Labels");
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.Sprint", b =>
+                {
+                    b.Navigation("Cards");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.Workspace", b =>

@@ -282,6 +282,7 @@ namespace Harmony.Persistence.Migrations
                     BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Position = table.Column<short>(type: "smallint", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    CardStatus = table.Column<int>(type: "int", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -303,6 +304,28 @@ namespace Harmony.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "IssueTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Summary = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IssueTypes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_IssueTypes_Boards_BoardId",
+                        column: x => x.BoardId,
+                        principalTable: "Boards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Labels",
                 columns: table => new
                 {
@@ -318,6 +341,31 @@ namespace Harmony.Persistence.Migrations
                     table.PrimaryKey("PK_Labels", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Labels_Boards_BoardId",
+                        column: x => x.BoardId,
+                        principalTable: "Boards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sprints",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Goal = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sprints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sprints_Boards_BoardId",
                         column: x => x.BoardId,
                         principalTable: "Boards",
                         principalColumn: "Id",
@@ -357,13 +405,15 @@ namespace Harmony.Persistence.Migrations
                     Title = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BoardListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BoardListId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Position = table.Column<short>(type: "smallint", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReminderDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SerialNumber = table.Column<int>(type: "int", nullable: false),
+                    IssueTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SprintId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -374,8 +424,17 @@ namespace Harmony.Persistence.Migrations
                         name: "FK_Cards_BoardLists_BoardListId",
                         column: x => x.BoardListId,
                         principalTable: "BoardLists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Cards_IssueTypes_IssueTypeId",
+                        column: x => x.IssueTypeId,
+                        principalTable: "IssueTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Cards_Sprints_SprintId",
+                        column: x => x.SprintId,
+                        principalTable: "Sprints",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Cards_Users_UserId",
                         column: x => x.UserId,
@@ -617,6 +676,16 @@ namespace Harmony.Persistence.Migrations
                 column: "BoardListId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cards_IssueTypeId",
+                table: "Cards",
+                column: "IssueTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cards_SprintId",
+                table: "Cards",
+                column: "SprintId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cards_UserId",
                 table: "Cards",
                 column: "UserId");
@@ -647,6 +716,11 @@ namespace Harmony.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_IssueTypes_BoardId",
+                table: "IssueTypes",
+                column: "BoardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Labels_BoardId",
                 table: "Labels",
                 column: "BoardId");
@@ -664,6 +738,11 @@ namespace Harmony.Persistence.Migrations
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sprints_BoardId",
+                table: "Sprints",
+                column: "BoardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserBoards_UserId",
@@ -780,6 +859,12 @@ namespace Harmony.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "BoardLists");
+
+            migrationBuilder.DropTable(
+                name: "IssueTypes");
+
+            migrationBuilder.DropTable(
+                name: "Sprints");
 
             migrationBuilder.DropTable(
                 name: "Boards");

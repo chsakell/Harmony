@@ -17,5 +17,6 @@ namespace Harmony.Application.DTO
         public int TotalCards{ get; set; }
         public int TotalPages { get; set; }
         public bool TitleEditing { get; set; }
+        public BoardListCardStatus? CardStatus { get; set; }
     }
 }
