@@ -42,8 +42,13 @@ namespace Harmony.Client.Pages.Management
         private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum && 
             KanbanStore.Board.ActiveSprints.Count == 0;
 
-        protected async override Task OnInitializedAsync()
+        protected async override Task OnParametersSetAsync()
         {
+            if(KanbanStore.Board.WorkspaceId != Guid.Empty)
+            {
+                await CleanBoard();
+            }
+
             var result = await _boardManager.GetBoardAsync(Id, _listCardsSize);
 
             if (result.Succeeded)
@@ -472,15 +477,15 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        //public async Task DisposeAsync()
-        //{
-        //    KanbanStore.Dispose();
-        //}
-
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        private async ValueTask CleanBoard()
         {
             KanbanStore.Dispose();
             await UnRegisterBoardEvents();
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            await CleanBoard();
         }
     }
 }
