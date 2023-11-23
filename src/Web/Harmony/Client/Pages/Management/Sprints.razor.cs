@@ -153,16 +153,43 @@ namespace Harmony.Client.Pages.Management
 
         private async Task CreateSprint()
         {
-            var parameters = new DialogParameters<CreateSprintModal>
+            var parameters = new DialogParameters<CreateEditSprintModal>
             {
                 {
-                    modal => modal.CreateSprintCommandModel,
-                    new CreateSprintCommand(Guid.Parse(Id))
+                    modal => modal.CreateEditSprintCommandModel,
+                    new CreateEditSprintCommand(Guid.Parse(Id))
                 }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
-            var dialog = _dialogService.Show<CreateSprintModal>(_localizer["Create sprint"], parameters, options);
+            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                await _table.ReloadServerData();
+            }
+        }
+
+        private async Task EditSprint(GetSprintCardResponse sprint)
+        {
+            var parameters = new DialogParameters<CreateEditSprintModal>
+            {
+                {
+                    modal => modal.CreateEditSprintCommandModel,
+                    new CreateEditSprintCommand(Guid.Parse(Id))
+                    {
+                        SprintId = sprint.SprintId,
+                        Name = sprint.Sprint,
+                        StartDate = sprint.SprintStartDate,
+                        EndDate = sprint.SprintEndDate,
+                        Goal = sprint.SprintGoal
+                    }
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)

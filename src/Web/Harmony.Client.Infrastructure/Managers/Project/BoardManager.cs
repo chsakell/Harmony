@@ -167,7 +167,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<List<IssueTypeDto>>();
         }
 
-        public async Task<IResult<SprintDto>> CreateSprintAsync(CreateSprintCommand request)
+        public async Task<IResult<SprintDto>> CreateSprintAsync(CreateEditSprintCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.BoardEndpoints
                 .Sprints(request.BoardId), request);

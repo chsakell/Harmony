@@ -67,7 +67,7 @@ namespace Harmony.Application.Features.Sprints.Commands.CompleteSprint
             {
                 var totalSprints = await _sprintRepository.CountSprints(request.BoardId);
 
-                var createNewSprintCommand = new CreateSprintCommand(request.BoardId)
+                var createNewSprintCommand = new CreateEditSprintCommand(request.BoardId)
                 {
                     Name = $"{board.Key} - Sprint {totalSprints + 1}"
                 };

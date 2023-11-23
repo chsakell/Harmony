@@ -45,8 +45,7 @@ namespace Harmony.Infrastructure.Services.Management
 		public async Task<IResult<List<Card>>> MoveCardsToSprint(List<Guid> cardsToMove, Guid sprintId, Guid boardListId)
 		{
 			var cards = await _cardRepository
-				.Entities.Where(card => cardsToMove.Contains(card.Id) 
-					/*&& card.Status == Domain.Enums.CardStatus.Backlog*/)
+				.Entities.Where(card => cardsToMove.Contains(card.Id))
 				.ToListAsync();
 
 			if(cards.Any())

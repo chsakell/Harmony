@@ -15,6 +15,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
         public IssueTypeDto? CardIssueType { get; set; }
         public Guid SprintId { get; set; }
         public string Sprint { get; set; }
+        public string SprintGoal { get; set; }
         public SprintStatus SprintStatus { get; set; }
         public DateTime? SprintStartDate { get; set; }
         public DateTime? SprintEndDate { get; set; }

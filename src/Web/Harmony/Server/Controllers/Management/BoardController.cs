@@ -119,7 +119,7 @@ namespace Harmony.Server.Controllers.Management
         }
 
         [HttpPost("{id:guid}/sprints")]
-        public async Task<IActionResult> CreateSprint(Guid id, CreateSprintCommand command)
+        public async Task<IActionResult> CreateSprint(Guid id, CreateEditSprintCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

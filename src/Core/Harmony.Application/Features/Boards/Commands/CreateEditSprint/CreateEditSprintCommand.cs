@@ -9,12 +9,14 @@ namespace Harmony.Application.Features.Boards.Commands.CreateSprint
     /// <summary>
     /// Command to create sprint
     /// </summary>
-    public class CreateSprintCommand : IRequest<Result<SprintDto>>
+    public class CreateEditSprintCommand : IRequest<Result<SprintDto>>
     {
         [Required]
         public Guid BoardId { get; set; }
 
-        public CreateSprintCommand(Guid boardId)
+        public Guid? SprintId { get; set; }
+
+        public CreateEditSprintCommand(Guid boardId)
         {
             BoardId = boardId;
         }

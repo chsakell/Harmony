@@ -107,6 +107,9 @@
                                            Variant="Variant.Filled" Color="Color.Error" OnClick="() => CompleteSprint(firstItem.SprintId, firstItem.Sprint)">Complete sprint</MudButton>
                                 break;
                         }
+
+                        <MudIconButton Icon="@Icons.Material.Outlined.Edit" ButtonType="ButtonType.Button"
+                                   Variant="Variant.Filled" Color="Color.Default" OnClick="() => EditSprint(firstItem)"></MudIconButton>
                     }
                 </MudStack>
             </MudTh>

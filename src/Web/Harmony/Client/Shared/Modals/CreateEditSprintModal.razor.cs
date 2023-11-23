@@ -9,13 +9,13 @@ using System.Globalization;
 
 namespace Harmony.Client.Shared.Modals
 {
-    public partial class CreateSprintModal
+    public partial class CreateEditSprintModal
     {
         private bool _processing;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter]
-        public CreateSprintCommand CreateSprintCommandModel { get; set; }
+        public CreateEditSprintCommand CreateEditSprintCommandModel { get; set; }
 
         private void Cancel()
         {
@@ -26,7 +26,7 @@ namespace Harmony.Client.Shared.Modals
         {
             _processing = true;
 
-            var result = await _boardManager.CreateSprintAsync(CreateSprintCommandModel);
+            var result = await _boardManager.CreateSprintAsync(CreateEditSprintCommandModel);
 
             MudDialog.Close(result.Data);
 
