@@ -24,7 +24,26 @@ else
             @if (KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
             {
                 <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
-                <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
+                
+                <MudTooltip Delay="2000">
+                    <ChildContent>
+                        <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
+                    </ChildContent>
+                    <TooltipContent>
+                        @if (KanbanStore.Board.ActiveSprints.Any())
+                        {
+                            <MudList>
+                                <MudListSubheader>
+                                    Active sprints
+                                </MudListSubheader>
+                                @foreach(var sprint in KanbanStore.Board.ActiveSprints)
+                                {
+                                    <MudListItem Class="mud-tertiary-text">@sprint.Name</MudListItem>
+                                }
+                            </MudList>
+                        }
+                    </TooltipContent>
+                </MudTooltip>
                 @if (AddCardsDisabled)
                 {
                     <MudTooltip>
@@ -66,9 +85,6 @@ else
                                 </CardHeaderContent>
                             </MudCardHeader>
                             <MudCardContent>
-                                <div class="d-flex justify-center">
-                                    <MudText Typo="Typo.h5" Color="Color.Secondary">Add lists</MudText>
-                                </div>
                                 <MudList Class="mx-auto mt-4">
                                     <MudListItem Icon="@Icons.Material.Filled.List">
                                         Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
