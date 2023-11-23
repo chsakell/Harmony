@@ -1,5 +1,7 @@
 ## Documentation
 
+__Always prefer Harmony's [official documentation](https://chsakell.gitbook.io/harmony/) which always contain the latest docs.__
+
 ### Set database connection string
 Open __appsettings.json__ and set the connection string to point to your SQL Server instance
 ```javascript
@@ -16,8 +18,8 @@ Set the `Harmony.Server` project as the startup and fire up the application
 
 ### Default users created
 By default two users will be created for you:
-1. username: __administrator__ , password: __Pa$$w0rd!__
-2. username: __johndoe__ , password: __Pa$$w0rd!__
+1. username: __administrator__ , password: __123Pa$$word!__
+2. username: __johndoe__ , password: __123Pa$$word!__
 
 You can use both of them but you can register your own of course. Make sure you change the administrator's password in a production environment from the account page.
 
@@ -39,7 +41,7 @@ With an __administrator__ account click the `Members` menu item on the left menu
 ![Add workspace members](./images/harmony_workspace_add_member_19.png)
 
 
-### Add a board
+### Add a board or a scrum project
 From the upper right click `CREATE` and select `Create Board`. Or you can click the `START NOW` button on the empty's workspace page
 ![Empty workspace](./images/harmony-empty-workspace_3.png)
 ![Create board](./images/harmony_create_board_4.png)
