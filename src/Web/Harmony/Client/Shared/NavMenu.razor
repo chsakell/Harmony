@@ -13,10 +13,10 @@
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">Home</MudNavLink>
     @* <MudNavLink Href="/swagger/index.html" Target="_blank" Icon="@Icons.Material.Outlined.LiveHelp">
-        Swagger
+    Swagger
     </MudNavLink> *@
 
-    @if ((_canViewUsers || _canViewRoles) && _workspaceManager.SelectedWorkspace != null)
+    @if (_workspaceManager.SelectedWorkspace != null)
     {
         @if (_workspaceManager.UserWorkspaces.Any())
         {
@@ -26,39 +26,36 @@
                     <MudListItem Text="@workspace?.Name"
                                  InitiallyExpanded="true">
                         <NestedList>
-                            @if (_canViewRoles)
+                            <MudListItem Href="@($"{WorkspaceUrl(workspace)}/members")" Icon="@Icons.Material.Outlined.Groups2">
+                                Members
+                            </MudListItem>
+                            @if (workspace.Boards.Any())
                             {
-                                <MudListItem Href="@($"{WorkspaceUrl(workspace)}/members")" Icon="@Icons.Material.Outlined.Groups2">
-                                    Members
-                                </MudListItem>
-                                @if (workspace.Boards.Any())
-                                {
-                                    <MudDivider />
-                                    <MudList Clickable="true">
-                                        @foreach (var board in workspace.Boards)
-                                        {
-                                            <MudListItem Text="@board.Title"
-                                                         Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.ListAlt : Icons.Material.Filled.Update)"
-                                                         InitiallyExpanded="false">
-                                                <NestedList>
-                                                    <MudListItem Href="@GetBoardUrl(board)" Icon="@Icons.Material.Filled.Dashboard">
-                                                        Board
+                                <MudDivider />
+                                <MudList Clickable="true">
+                                    @foreach (var board in workspace.Boards)
+                                    {
+                                        <MudListItem Text="@board.Title"
+                                                     Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.ListAlt : Icons.Material.Filled.Update)"
+                                                     InitiallyExpanded="false">
+                                            <NestedList>
+                                                <MudListItem Href="@GetBoardUrl(board)" Icon="@Icons.Material.Filled.Dashboard">
+                                                    Board
+                                                </MudListItem>
+                                                @if (board.Type == Domain.Enums.BoardType.Scrum)
+                                                {
+                                                    <MudListItem Href="@GetBacklogUrl(board)" Icon="@Icons.Material.Filled.ListAlt">
+                                                        Backlog
                                                     </MudListItem>
-                                                    @if (board.Type == Domain.Enums.BoardType.Scrum)
-                                                    {
-                                                        <MudListItem Href="@GetBacklogUrl(board)" Icon="@Icons.Material.Filled.ListAlt">
-                                                            Backlog
-                                                        </MudListItem>
-                                                        <MudListItem Href="@GetSprints(board)" Icon="@Icons.Material.Filled.Update">
-                                                            Sprints
-                                                        </MudListItem>
-                                                    }
-                                                </NestedList>
-                                            </MudListItem>
-                                            <MudDivider />
-                                        }
-                                    </MudList>
-                                }
+                                                    <MudListItem Href="@GetSprints(board)" Icon="@Icons.Material.Filled.Update">
+                                                        Sprints
+                                                    </MudListItem>
+                                                }
+                                            </NestedList>
+                                        </MudListItem>
+                                        <MudDivider />
+                                    }
+                                </MudList>
                             }
                         </NestedList>
                     </MudListItem>
