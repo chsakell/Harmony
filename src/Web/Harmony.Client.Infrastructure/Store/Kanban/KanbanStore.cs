@@ -179,13 +179,16 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         public void ToggleCardLabel(Guid cardId, LabelDto label)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
-
+            var labelExists = card.Labels.Any(l => l.Id == label.Id);
             if (card != null)
             {
                 switch (label.IsChecked)
                 {
                     case true:
-                        card.Labels.Add(label);
+                        if (!labelExists)
+                        {
+                            card.Labels.Add(label);
+                        }
                         break;
                     case false:
                         var labelToRemove = card.Labels.FirstOrDefault(c => c.Id == label.Id);

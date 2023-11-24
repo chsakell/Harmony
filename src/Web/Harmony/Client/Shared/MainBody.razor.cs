@@ -92,9 +92,6 @@ namespace Harmony.Client.Shared
                     var currentUserResult = await _userManager.GetAsync(CurrentUserId);
                     if (!currentUserResult.Succeeded || currentUserResult.Data == null)
                     {
-                        _snackBar.Add(
-                            "You are logged out because the user with your Token has been deleted.",
-                            Severity.Error);
                         CurrentUserId = string.Empty;
                         ImageDataUrl = string.Empty;
                         FirstName = string.Empty;

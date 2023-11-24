@@ -188,17 +188,15 @@ namespace Harmony.Client.Shared.Modals
 
         private void OnCardLabelToggled(object? sender, CardLabelToggledEvent e)
         {
-            if(e.Label.IsChecked)
+            var label = _card.Labels.FirstOrDefault(l => l.Id == e.Label.Id);
+
+            if (e.Label.IsChecked && label == null)
             {
                 _card.Labels.Add(e.Label);
             }
-            else
+            else if (!e.Label.IsChecked && label != null)
             {
-                var label = _card.Labels.FirstOrDefault(l => l.Id == e.Label.Id);
-                if (label != null)
-                {
-                    _card.Labels.Remove(label);
-                }
+                _card.Labels.Remove(label);
             }
 
             StateHasChanged();
@@ -429,7 +427,7 @@ namespace Harmony.Client.Shared.Modals
             {
                 var activityResult = await _cardManager.GetCardActivityAsync(new GetCardActivityQuery(CardId));
 
-                if(activityResult.Succeeded)
+                if (activityResult.Succeeded)
                 {
                     _card.Activities.Clear();
                     _card.Activities.AddRange(activityResult.Data);
