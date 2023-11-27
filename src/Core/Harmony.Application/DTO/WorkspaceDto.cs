@@ -1,6 +1,4 @@
-﻿using Harmony.Domain.Entities;
-
-namespace Harmony.Application.DTO
+﻿namespace Harmony.Application.DTO
 {
     public class WorkspaceDto
     {

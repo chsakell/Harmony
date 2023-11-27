@@ -1,6 +1,4 @@
-﻿using Harmony.Application.DTO;
-
-namespace Harmony.Application.Features.Users.Commands.UpdateProfile;
+﻿namespace Harmony.Application.Features.Users.Commands.UpdateProfile;
 
 /// <summary>
 /// Response for updating password

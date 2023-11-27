@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
-using Harmony.Application.Responses;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Boards.Queries.GetSprints
 {

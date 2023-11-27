@@ -1,6 +1,4 @@
-﻿using Harmony.Application.DTO;
-
-namespace Harmony.Application.Features.Users.Commands.UploadProfilePicture
+﻿namespace Harmony.Application.Features.Users.Commands.UploadProfilePicture
 {
     /// <summary>
     /// Response for uploading profile picture

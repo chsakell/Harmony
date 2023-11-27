@@ -1,6 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Lists.Commands.CreateList;
-using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
+﻿using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;

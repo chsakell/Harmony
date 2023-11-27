@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
 {

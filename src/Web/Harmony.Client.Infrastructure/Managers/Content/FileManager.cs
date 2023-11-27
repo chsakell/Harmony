@@ -3,7 +3,6 @@ using Harmony.Application.Features.Cards.Commands.UploadCardFile;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
-using MediatR;
 using System.Net.Http.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Content

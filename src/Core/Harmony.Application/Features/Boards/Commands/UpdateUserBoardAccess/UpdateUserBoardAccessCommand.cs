@@ -1,5 +1,4 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
-using Harmony.Domain.Enums;
+﻿using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 

@@ -1,6 +1,4 @@
-﻿using Harmony.Domain.Entities;
-
-namespace Harmony.Client.Infrastructure.Routes
+﻿namespace Harmony.Client.Infrastructure.Routes
 {
     public static class BoardEndpoints
     {

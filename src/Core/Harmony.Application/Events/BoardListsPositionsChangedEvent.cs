@@ -1,6 +1,4 @@
-﻿using Harmony.Application.DTO;
-
-namespace Harmony.Application.Events
+﻿namespace Harmony.Application.Events
 {
     public class BoardListsPositionsChangedEvent
     {

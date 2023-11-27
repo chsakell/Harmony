@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
-using Harmony.Shared.Constants.Application;
 
 namespace Harmony.Server.Hubs
 {

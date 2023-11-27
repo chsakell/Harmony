@@ -1,7 +1,4 @@
-﻿using Harmony.Application.Features.Lists.Commands.ArchiveList;
-using Harmony.Application.Features.Lists.Commands.CreateList;
-using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+﻿using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management

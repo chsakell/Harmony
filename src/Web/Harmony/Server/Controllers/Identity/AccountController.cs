@@ -6,7 +6,6 @@ using Harmony.Application.Requests.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Server.Controllers.Identity
 {

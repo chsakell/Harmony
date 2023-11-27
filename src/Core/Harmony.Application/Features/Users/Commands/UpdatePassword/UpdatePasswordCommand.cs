@@ -1,5 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Shared.Wrapper;
+﻿using Harmony.Shared.Wrapper;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 

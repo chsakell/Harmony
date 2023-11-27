@@ -1,21 +1,12 @@
-﻿using Harmony.Application.Features.Lists.Commands.ArchiveList;
-using Harmony.Application.Features.Users.Commands.UpdatePassword;
+﻿using Harmony.Application.Features.Users.Commands.UpdatePassword;
 using Harmony.Application.Features.Users.Commands.UpdateProfile;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
-using Harmony.Application.Helpers;
-using Harmony.Application.Requests.Identity;
-using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Models.Account;
-using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
-using Harmony.Shared.Storage;
 using Harmony.Shared.Wrapper;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using System;
 using System.Security.Claims;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Client.Pages.Identity
 {

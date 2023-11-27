@@ -1,19 +1,11 @@
-﻿using AutoMapper.Execution;
-using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Commands.CreateSprint;
+﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
-using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
-using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System;
-using System.Globalization;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {

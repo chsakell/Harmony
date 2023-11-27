@@ -1,6 +1,4 @@
 ﻿using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Domain.Entities;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;

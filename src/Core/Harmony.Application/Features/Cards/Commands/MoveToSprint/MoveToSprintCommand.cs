@@ -1,9 +1,6 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetBacklog;
-using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveToSprint
 {

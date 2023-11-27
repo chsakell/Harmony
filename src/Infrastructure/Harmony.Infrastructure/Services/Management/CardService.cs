@@ -1,12 +1,8 @@
-﻿using Azure.Core;
-using Harmony.Application.Contracts.Repositories;
+﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
-using Harmony.Application.Features.Lists.Queries.GetBoardLists;
-using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
-using Harmony.Infrastructure.Repositories;
 using Harmony.Shared.Wrapper;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -17,7 +16,6 @@ using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Pages.Management
 {

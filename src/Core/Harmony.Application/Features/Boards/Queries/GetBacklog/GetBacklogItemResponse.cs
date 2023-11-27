@@ -1,6 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Responses;
-using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Boards.Queries.GetBacklog
 {

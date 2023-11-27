@@ -13,18 +13,13 @@ using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
-using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
-using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using System.Net.Mail;
 
 namespace Harmony.Client.Shared.Modals
 {

@@ -1,11 +1,8 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
-using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 
 namespace Harmony.Application.Features.Boards.Commands.SetUserBoardAccess

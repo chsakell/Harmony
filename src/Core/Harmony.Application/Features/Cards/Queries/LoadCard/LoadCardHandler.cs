@@ -3,7 +3,6 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.DTO;
-using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;

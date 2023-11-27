@@ -4,9 +4,7 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
-using AutoMapper.Execution;
 using Harmony.Application.Contracts.Services.Hubs;
-using Harmony.Domain.Entities;
 using Harmony.Application.DTO;
 using AutoMapper;
 

@@ -1,11 +1,8 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
-using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Globalization;
 
 namespace Harmony.Client.Shared.Modals
 {

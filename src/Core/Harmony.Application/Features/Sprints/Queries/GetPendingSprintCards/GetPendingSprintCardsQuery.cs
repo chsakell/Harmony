@@ -1,5 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetSprints;
+﻿using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Requests;
 using Harmony.Shared.Wrapper;
 using MediatR;

@@ -1,7 +1,5 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Shared.Wrapper;
+﻿using Harmony.Shared.Wrapper;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Users.Commands.UpdateProfile;
 

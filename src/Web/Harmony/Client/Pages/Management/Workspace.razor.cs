@@ -1,9 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
-using Harmony.Application.Features.Lists.Commands.CreateList;
-using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Client.Shared.Modals;
-using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;

@@ -1,6 +1,4 @@
-﻿using Harmony.Application.DTO;
-
-namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
+﻿namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 {
     public class RemoveCardAttachmentResponse
     {

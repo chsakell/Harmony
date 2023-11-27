@@ -1,26 +1,14 @@
-﻿using Bogus.DataSets;
-using Dapper;
+﻿using Dapper;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Domain.Entities;
-using Harmony.Infrastructure.Repositories;
-using Harmony.Persistence.DbContext;
-using Harmony.Persistence.Migrations;
+using Harmony.Domain.Enums;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -278,9 +266,9 @@ namespace Harmony.Infrastructure.Services.Management
                         on p.IssueTypeId equals issueType.Id into issueGrouping
                     from issue in issueGrouping.DefaultIfEmpty()
                     where (board.Id == boardId
-                        && p.Status != Domain.Enums.CardStatus.Backlog &&
+                        && p.Status != CardStatus.Backlog &&
                         (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term)))
-                    orderby sprint.DateCreated descending
+                    orderby sprint.DateCreated
                     select new GetSprintCardResponse()
                     {
                         CardId = (Guid?)p.Id,
@@ -294,7 +282,7 @@ namespace Harmony.Infrastructure.Services.Management
                         SprintStartDate = sprint.StartDate,
                         SprintEndDate = sprint.EndDate,
                         SprintId = sprint.Id,
-                        IsCompleted = p.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE,
+                        IsCompleted = p.BoardList.CardStatus == BoardListCardStatus.DONE,
                         CardIssueType = new IssueTypeDto()
                         {
                             Id = issue != null ? issue.Id : Guid.Empty,
@@ -302,11 +290,20 @@ namespace Harmony.Infrastructure.Services.Management
                         }
                     };
 
-
             var result = await query.Skip((pageNumber - 1) * pageSize)
                                     .Take(pageSize).ToListAsync();
 
             return result;
         }
+    }
+
+    public class SprintStatusOrder
+    {
+        public static Dictionary<SprintStatus, int> Orders =
+        new Dictionary<SprintStatus, int>() {
+          {SprintStatus.Idle, 2},
+          {SprintStatus.Active, 1},
+          {SprintStatus.Completed, 2},
+      };
     }
 }

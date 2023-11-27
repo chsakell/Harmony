@@ -5,7 +5,6 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Hubs;
-using System.Collections.Generic;
 using Harmony.Domain.Entities;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 

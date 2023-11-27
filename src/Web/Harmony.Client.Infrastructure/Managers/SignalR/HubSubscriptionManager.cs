@@ -4,7 +4,6 @@ using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {

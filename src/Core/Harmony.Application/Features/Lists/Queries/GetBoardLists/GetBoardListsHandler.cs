@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
-using System.Collections.Generic;
 
 namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
 {

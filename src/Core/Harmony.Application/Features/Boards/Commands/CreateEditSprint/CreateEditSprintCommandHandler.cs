@@ -4,11 +4,9 @@ using MediatR;
 using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Shared.Constants.Application;
 using Harmony.Domain.Enums;
 using Harmony.Application.DTO;
 using AutoMapper;
-using System.Xml.Linq;
 
 namespace Harmony.Application.Features.Boards.Commands.CreateSprint
 {

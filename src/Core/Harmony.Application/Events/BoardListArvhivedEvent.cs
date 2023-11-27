@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Harmony.Application.Events
+﻿namespace Harmony.Application.Events
 {
     public class BoardListArchivedEvent
     {

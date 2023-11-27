@@ -1,16 +1,10 @@
-﻿using Harmony.Application.Contracts.Repositories;
-using Harmony.Shared.Wrapper;
+﻿using Harmony.Shared.Wrapper;
 using MediatR;
-using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Shared.Constants.Application;
-using Harmony.Domain.Enums;
 using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.Features.Lists.Queries.LoadBoardList;
-using System.Collections.Generic;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveToBacklog
 {

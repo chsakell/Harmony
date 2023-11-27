@@ -1,23 +1,13 @@
 ﻿using Bogus;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Domain.Entities;
-using Harmony.Infrastructure.Repositories;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
-using Harmony.Persistence.Migrations;
 using Harmony.Shared.Constants.Application;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Infrastructure.Seed
 {
