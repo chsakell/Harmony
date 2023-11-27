@@ -252,7 +252,8 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-        public async Task<List<GetSprintCardResponse>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize)
+        public async Task<List<GetSprintCardResponse>> SearchSprints(Guid boardId, string term, 
+            int pageNumber, int pageSize, SprintStatus? status)
         {
             IQueryable<GetSprintCardResponse> query = null;
 
@@ -267,7 +268,8 @@ namespace Harmony.Infrastructure.Services.Management
                     from issue in issueGrouping.DefaultIfEmpty()
                     where (board.Id == boardId
                         && p.Status != CardStatus.Backlog &&
-                        (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term)))
+                        (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term))
+                        && status == null ? true : sprint.Status == status)
                     orderby sprint.DateCreated
                     select new GetSprintCardResponse()
                     {

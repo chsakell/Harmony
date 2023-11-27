@@ -40,8 +40,18 @@
                     <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
                                  OnClick="MoveToBacklog" Icon="@Icons.Material.Filled.ArrowRight">Move to backlog</MudMenuItem>
                 </MudMenu>
+                
             </div>
             <MudSpacer />
+            <div class="justify-center mud-text-align-center ml-2" style="width: 150px; margin-bottom: 6px; margin-right: 10px;">
+                <MudSelect T="int" @bind-Value:get="_filterSprintStatus" Label=""
+                           @bind-Value:set="FilterSprintStatus" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="-1">ALL</MudSelectItem>
+                    <MudSelectItem Value="@((int)SprintStatus.Idle)">@(SprintStatus.Idle.ToString())</MudSelectItem>
+                    <MudSelectItem Value="@((int)SprintStatus.Active)">@(SprintStatus.Active.ToString())</MudSelectItem>
+                    <MudSelectItem Value="@((int)SprintStatus.Completed)">@(SprintStatus.Completed.ToString())</MudSelectItem>
+                </MudSelect>
+            </div>
             <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search sprints.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <ColGroup>

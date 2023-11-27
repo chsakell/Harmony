@@ -135,7 +135,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints
                 .SprintCards(request.BoardId.ToString(), request.PageNumber, request.PageSize,
-                     request.SearchTerm, request.OrderBy));
+                     request.SearchTerm, request.OrderBy, request.SprintStatus));
 
             return await response.ToPaginatedResult<GetSprintCardResponse>();
         }

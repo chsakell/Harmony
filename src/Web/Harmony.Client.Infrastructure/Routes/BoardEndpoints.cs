@@ -1,4 +1,6 @@
-﻿namespace Harmony.Client.Infrastructure.Routes
+﻿using Harmony.Domain.Enums;
+
+namespace Harmony.Client.Infrastructure.Routes
 {
     public static class BoardEndpoints
     {
@@ -79,9 +81,11 @@
             return url;
         }
 
-        public static string SprintCards(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
+        public static string SprintCards(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy, SprintStatus? status)
         {
-            var url = $"{Index}{boardId}/sprints/cards/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";
+            var url = $"{Index}{boardId}/sprints/cards/?pageNumber={pageNumber}" +
+                $"&pageSize={pageSize}&searchTerm={searchTerm}" + (status == null ? string.Empty : $"&status={status}") +
+                $"&orderBy=";
 
             if (orderBy?.Any() == true)
             {

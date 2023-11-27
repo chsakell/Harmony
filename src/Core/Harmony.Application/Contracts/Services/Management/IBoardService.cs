@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Contracts.Services.Management
 {
@@ -12,6 +13,6 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<List<Board>> GetUserBoards(Guid workspaceId, string userId);
         Task<Board> LoadBoard(Guid boardId, int maxCardsPerList);
         Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList);
-        Task<List<GetSprintCardResponse>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize);
+        Task<List<GetSprintCardResponse>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize, SprintStatus? status);
     }
 }

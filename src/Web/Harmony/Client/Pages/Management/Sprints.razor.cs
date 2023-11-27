@@ -5,6 +5,7 @@ using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -21,6 +22,7 @@ namespace Harmony.Client.Pages.Management
         private List<GetSprintCardResponse> _cards = new List<GetSprintCardResponse>();
         private MudTable<GetSprintCardResponse> _table;
         private HashSet<GetSprintCardResponse> _selectedCards = new HashSet<GetSprintCardResponse>();
+        private int _filterSprintStatus = -1;
 
         private TableGroupDefinition<GetSprintCardResponse> _groupDefinition = new()
         {
@@ -79,6 +81,12 @@ namespace Harmony.Client.Pages.Management
 
                 DisplayMessage(result);
             }
+        }
+
+        private async Task FilterSprintStatus(int status)
+        {
+            _filterSprintStatus = status;
+            await _table.ReloadServerData();
         }
 
         private async Task StartSprint(Guid sprintId, string sprintName)
@@ -200,7 +208,8 @@ namespace Harmony.Client.Pages.Management
                 PageSize = pageSize,
                 PageNumber = pageNumber + 1,
                 SearchTerm = _searchString,
-                OrderBy = orderings
+                OrderBy = orderings,
+                SprintStatus = _filterSprintStatus == -1 ? null : (SprintStatus)_filterSprintStatus
             };
 
             var response = await _boardManager.GetSprintCards(request);

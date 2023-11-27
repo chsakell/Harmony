@@ -15,6 +15,7 @@ using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
+using Harmony.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -94,10 +95,10 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpGet("{id:guid}/sprints/cards")]
         public async Task<IActionResult> GetSprintCards(Guid id, int pageNumber, int pageSize,
-            string searchTerm = null, string orderBy = null)
+            string searchTerm = null, string orderBy = null, SprintStatus? status = null)
         {
             return Ok(await _mediator.Send(new
-                GetSprintCardsQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+                GetSprintCardsQuery(id, pageNumber, pageSize, searchTerm, orderBy, status)));
         }
 
         [HttpGet("{id:guid}/sprints/{sprintId:guid}/cards/pending")]
