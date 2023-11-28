@@ -110,11 +110,11 @@
                         {
                             case SprintStatus.Idle:
                                 <MudButton ButtonType="ButtonType.Button"
-                                           Variant="Variant.Filled" Color="Color.Success" OnClick="() => StartSprint(firstItem.SprintId, firstItem.Sprint)">Start sprint</MudButton>
+                                           Variant="Variant.Filled" Color="Color.Default" OnClick="() => StartSprint(firstItem.SprintId, firstItem.Sprint)">Start sprint</MudButton>
                                 break;
                             case SprintStatus.Active:
                                 <MudButton EndIcon="@Icons.Material.Outlined.Check" ButtonType="ButtonType.Button"
-                                           Variant="Variant.Filled" Color="Color.Error" OnClick="() => CompleteSprint(firstItem.SprintId, firstItem.Sprint)">Complete sprint</MudButton>
+                                           Variant="Variant.Filled" Color="Color.Default" OnClick="() => CompleteSprint(firstItem.SprintId, firstItem.Sprint)">Complete sprint</MudButton>
                                 break;
                         }
 

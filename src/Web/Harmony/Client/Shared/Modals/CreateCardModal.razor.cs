@@ -62,6 +62,11 @@ namespace Harmony.Client.Shared.Modals
             return type.Summary;
         };
 
+        private bool SprintRequired()
+        {
+            return _selectedSprint?.Id == null && ActiveSprints != null && ActiveSprints.Any();
+        }
+
         private void DisplayMessage(IResult result)
         {
             if (result == null)

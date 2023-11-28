@@ -55,7 +55,7 @@
         </DialogContent>
         <DialogActions>
             <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing || SprintRequired())"
                        ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
                 @if (_processing)
                 {
