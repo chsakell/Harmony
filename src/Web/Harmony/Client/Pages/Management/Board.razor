@@ -238,6 +238,9 @@ else
                         </MudStack>
 
                     </MudCardContent>
+                    <MudOverlay Visible="@context.IsUpdating" DarkBackground="true" Absolute="true">
+                        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                    </MudOverlay>
                 </MudCard>
             </ItemRenderer>
         </MudDropContainer>

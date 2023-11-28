@@ -27,6 +27,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         event EventHandler<AttachmentAddedEvent> OnCardAttachmentAdded;
         event EventHandler<AttachmentRemovedEvent> OnCardAttachmentRemoved;
         event EventHandler<CardItemAddedEvent> OnCardItemAdded;
+        event EventHandler<CardItemPositionChangedEvent> OnCardItemPositionChanged;
         event EventHandler<CardItemCheckedEvent> OnCardItemChecked;
         event EventHandler<CardLabelRemovedEvent> OnCardLabelRemoved;
         event EventHandler<CardMemberAddedEvent> OnCardMemberAdded;

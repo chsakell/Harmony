@@ -176,6 +176,17 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
+        public void UpdateCardPosition(Guid cardId, Guid boardListId, short position)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.BoardListId = boardListId;
+                card.Position = position;
+            }
+        }
+
         public void ToggleCardLabel(Guid cardId, LabelDto label)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
