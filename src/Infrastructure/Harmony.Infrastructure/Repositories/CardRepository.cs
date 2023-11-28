@@ -22,12 +22,6 @@ namespace Harmony.Infrastructure.Repositories
 			return await _context.Cards.FirstOrDefaultAsync(card => card.Id == cardId);
 		}
 
-        public async Task<Card?> GetWithBoardList(Guid cardId)
-        {
-            return await _context.Cards.Include(c => c.BoardList)
-				.FirstOrDefaultAsync(card => card.Id == cardId);
-        }
-
         public async Task<Guid> GetBoardId(Guid cardId)
         {
 			var card = (await _context.Cards

@@ -1,7 +1,6 @@
 ﻿using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using Harmony.Application.Events;
-using Harmony.Domain.Entities;
 using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.SignalR;
@@ -128,13 +127,6 @@ namespace Harmony.Server.Services
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCheckListRemoved,
                     new CheckListRemovedEvent(checkListId, cardId, totalItems, totalItemsCompleted));
-        }
-
-        public async Task UpdateCardPosition(Guid boardId, Guid boardListId, Guid cardId, short position)
-        {
-            await _hubContext.Clients.Group(boardId.ToString())
-                .SendAsync(ApplicationConstants.SignalR.OnCardItemPositionChanged,
-                    new CardItemPositionChangedEvent(boardId, boardListId, cardId, position));
         }
     }
 }

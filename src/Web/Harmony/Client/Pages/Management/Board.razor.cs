@@ -72,7 +72,6 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnBoardListsPositionsChanged += OnBoardListsPositionsChanged;
             _hubSubscriptionManager.OnCardItemChecked += OnCardItemChecked;
             _hubSubscriptionManager.OnCardItemAdded += OnCardItemAdded;
-            _hubSubscriptionManager.OnCardItemPositionChanged += OnCardItemPositionChanged;
             _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
             _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
@@ -95,7 +94,6 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnBoardListsPositionsChanged -= OnBoardListsPositionsChanged;
             _hubSubscriptionManager.OnCardItemChecked -= OnCardItemChecked;
             _hubSubscriptionManager.OnCardItemAdded -= OnCardItemAdded;
-            _hubSubscriptionManager.OnCardItemPositionChanged -= OnCardItemPositionChanged;
             _hubSubscriptionManager.OnCardDescriptionChanged -= OnCardDescriptionChanged;
             _hubSubscriptionManager.OnCardTitleChanged -= OnCardTitleChanged;
             _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
@@ -207,13 +205,6 @@ namespace Harmony.Client.Pages.Management
             _dropContainer.Refresh();
         }
 
-        private void OnCardItemPositionChanged(object? sender, CardItemPositionChangedEvent e)
-        {
-            KanbanStore.UpdateCardPosition(e.CardId, e.BoardListId, e.Position);
-
-            _dropContainer.Refresh();
-        }
-
         private void OnCardItemChecked(object? sender, CardItemCheckedEvent e)
         {
             KanbanStore.UpdateTodalCardItemsCompleted(e.CardId, e.IsChecked);
@@ -260,53 +251,36 @@ namespace Harmony.Client.Pages.Management
             };
 
             var moveToListId = Guid.Parse(info.DropzoneIdentifier);
+            var currentListId = info.Item.BoardListId;
+            var newPosition = (byte)info.IndexInZone;
 
-            await Task.Run(() =>
+            if (moveToListId == currentListId && info.Item.Position == newPosition)
             {
-                var currentListId = info.Item.BoardListId;
-                var newPosition = (byte)info.IndexInZone;
+                return;
+            }
 
-                if (moveToListId == currentListId && info.Item.Position == newPosition)
+            var result = await _cardManager
+                .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, 
+                        newPosition, Domain.Enums.CardStatus.Active));
+
+            if (result.Succeeded)
+            {
+                var cardDto = result.Data;
+                cardDto.Labels = info.Item.Labels;
+                cardDto.TotalItems = info.Item.TotalItems;
+                cardDto.TotalItemsCompleted = info.Item.TotalItemsCompleted;
+                cardDto.TotalAttachments = info.Item.TotalAttachments;
+                cardDto.Members = info.Item.Members;
+
+                KanbanStore.MoveCard(cardDto, currentListId, moveToListId, newPosition);
+
+                if (currentListId != moveToListId)
                 {
-                    return;
+                    _dropContainer.Refresh();
                 }
+            }
 
-                info.Item.Position = newPosition;
-                info.Item.BoardListId = moveToListId;
-                info.Item.IsUpdating = true;
-
-                var result = _cardManager
-                    .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId,
-                            newPosition, Domain.Enums.CardStatus.Active));
-
-                result.ContinueWith(res =>
-                {
-                    var response = res.Result;
-                    if (response.Succeeded)
-                    {
-                        var cardDto = response.Data;
-                        cardDto.Labels = info.Item.Labels;
-                        cardDto.TotalItems = info.Item.TotalItems;
-                        cardDto.TotalItemsCompleted = info.Item.TotalItemsCompleted;
-                        cardDto.TotalAttachments = info.Item.TotalAttachments;
-                        cardDto.Members = info.Item.Members;
-                        cardDto.IssueType = info.Item.IssueType;
-
-                        KanbanStore.MoveCard(cardDto, currentListId, moveToListId, newPosition);
-
-                        if (currentListId != moveToListId)
-                        {
-                            _dropContainer.Refresh();
-                        }
-                    }
-                    else
-                    {
-                        DisplayMessage(response);
-                    }
-                });
-                
-            });
-            
+            DisplayMessage(result);
         }
 
         private async Task OpenCreateBoardListModal()
@@ -416,6 +390,25 @@ namespace Harmony.Client.Pages.Management
 
                 await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
             }
+
+            //list.CreateCard.Creating = true;
+
+            //var result = await _cardManager
+            //    .CreateCardAsync(new CreateCardCommand(list.CreateCard.Title, Guid.Parse(Id), list.Id));
+
+            //if (result.Succeeded)
+            //{
+            //    var cardAdded = result.Data;
+
+            //    KanbanStore.AddCardToList(cardAdded, list);
+            //    _dropContainer.Refresh();
+
+            //    await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
+            //}
+
+            //list.CreateCard.Creating = false;
+
+            //DisplayMessage(result);
         }
 
         private async Task ArchiveList(BoardListDto list)

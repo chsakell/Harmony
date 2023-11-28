@@ -10,7 +10,6 @@ namespace Harmony.Application.Contracts.Repositories
     {
         IQueryable<Card> Entities { get; }
         Task<Card> Get(Guid cardId);
-        Task<Card> GetWithBoardList(Guid cardId);
         Task<Guid> GetBoardId(Guid cardId);
         Task<Card> Load(Guid cardId);
         Task<Card> GetByPosition(Guid? boardListId, short position, CardStatus status);

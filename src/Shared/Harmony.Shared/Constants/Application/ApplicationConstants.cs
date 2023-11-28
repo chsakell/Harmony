@@ -28,7 +28,6 @@
             public const string OnCardItemAdded = "OnCardItemAdded";
             public const string OnCardItemChecked = "OnCardItemChecked";
             public const string OnCardLabelRemoved = "OnCardLabelRemoved";
-            public const string OnCardItemPositionChanged = "OnCardItemPositionChanged";
             public const string OnCheckListRemoved = "OnCheckListRemoved";
         }
     }
