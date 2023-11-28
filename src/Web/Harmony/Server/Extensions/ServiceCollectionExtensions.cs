@@ -136,7 +136,7 @@ namespace Harmony.Server.Extensions
 #else
                                 c.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                                 c.Response.ContentType = "application/json";
-                                var result = JsonSerializer.Serialize(Result.Fail(["An unhandled error has occurred."));
+                                var result = JsonSerializer.Serialize(Result.Fail("An unhandled error has occurred."));
                                 return c.Response.WriteAsync(result);
 #endif
                             }

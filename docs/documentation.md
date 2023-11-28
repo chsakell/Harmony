@@ -18,8 +18,8 @@ Set the `Harmony.Server` project as the startup and fire up the application
 
 ### Default users created
 By default two users will be created for you:
-1. username: __administrator__ , password: __123Pa$$word!__
-2. username: __johndoe__ , password: __123Pa$$word!__
+1. username: __administrator__ , password: __Pa$$w0rd!__
+2. username: __johndoe__ , password: __Pa$$w0rd!__
 
 You can use both of them but you can register your own of course. Make sure you change the administrator's password in a production environment from the account page.
 
