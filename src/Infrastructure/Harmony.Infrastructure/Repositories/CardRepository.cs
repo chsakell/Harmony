@@ -93,6 +93,11 @@ namespace Harmony.Infrastructure.Repositories
             return totalCards + 1;
         }
 
+        public async Task LoadIssueEntryAsync(Card Card)
+        {
+            await _context.Entry(Card).Reference(card => card.IssueType).LoadAsync();
+        }
+
         public async Task<int> CreateAsync(Card Card)
 		{
 			_context.Cards.Add(Card);

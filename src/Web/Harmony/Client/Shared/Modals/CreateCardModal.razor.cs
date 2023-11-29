@@ -47,7 +47,10 @@ namespace Harmony.Client.Shared.Modals
 
             MudDialog.Close(result.Data);
 
-            DisplayMessage(result);
+            if (!result.Succeeded)
+            {
+                DisplayMessage(result);
+            }
 
             _processing = false;
         }

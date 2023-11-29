@@ -53,6 +53,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
 
             if (dbResult > 0)
             {
+                await _cardRepository.LoadIssueEntryAsync(card);
+
                 var result = _mapper.Map<CardDto>(card);
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Card Created"]);
             }

@@ -280,7 +280,10 @@ namespace Harmony.Client.Pages.Management
                 }
             }
 
-            DisplayMessage(result);
+            if (!result.Succeeded)
+            {
+                DisplayMessage(result);
+            }
         }
 
         private async Task OpenCreateBoardListModal()
@@ -390,25 +393,6 @@ namespace Harmony.Client.Pages.Management
 
                 await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
             }
-
-            //list.CreateCard.Creating = true;
-
-            //var result = await _cardManager
-            //    .CreateCardAsync(new CreateCardCommand(list.CreateCard.Title, Guid.Parse(Id), list.Id));
-
-            //if (result.Succeeded)
-            //{
-            //    var cardAdded = result.Data;
-
-            //    KanbanStore.AddCardToList(cardAdded, list);
-            //    _dropContainer.Refresh();
-
-            //    await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
-            //}
-
-            //list.CreateCard.Creating = false;
-
-            //DisplayMessage(result);
         }
 
         private async Task ArchiveList(BoardListDto list)
