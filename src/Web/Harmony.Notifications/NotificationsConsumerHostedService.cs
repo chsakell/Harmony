@@ -1,9 +1,12 @@
 ﻿using Harmony.Application.Configurations;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Channels;
 
 namespace Harmony.Notifications
@@ -39,7 +42,13 @@ namespace Harmony.Notifications
             _channel = _connection.CreateModel();
 
             //_channel.ExchangeDeclare("demo.exchange", ExchangeType.Topic);
-            _channel.QueueDeclare("notifications", false, false, true, null);
+            _channel.QueueDeclare(
+                queue: BrokerConstants.NotificationsQueue,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
             //_channel.QueueBind("notifications", "", "notifications", null);
             _channel.BasicQos(0, 1, false);
 
@@ -53,13 +62,20 @@ namespace Harmony.Notifications
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (ch, ea) =>
             {
+                var _key = "notification_type";
+                //ea.BasicProperties.Headers.TryGetValue(_key, out var messageTypeRaw);
+                //var messageTypeValue = (messageTypeRaw as byte[]) is null
+                //? messageTypeRaw?.ToString() : Encoding.UTF8.GetString((byte[])messageTypeRaw);
+                
+                var notification = JsonSerializer.Deserialize<CardDueTimeExpiredNotification>(ea.Body.Span);
+
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine($" [x] Received {message}");
 
                 // handle the received message  
                 HandleMessage(message);
-                _channel.BasicAck(ea.DeliveryTag, false);
+                //_channel.BasicAck(ea.DeliveryTag, false);
             };
 
             consumer.Shutdown += OnConsumerShutdown;
@@ -67,7 +83,7 @@ namespace Harmony.Notifications
             consumer.Unregistered += OnConsumerUnregistered;
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
-            _channel.BasicConsume("notifications", false, consumer);
+            _channel.BasicConsume(BrokerConstants.NotificationsQueue, true, consumer);
             return Task.CompletedTask;
         }
 
