@@ -1,4 +1,6 @@
 using Hangfire;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Configuration;
 
 namespace Harmony.Notifications
 {
@@ -7,6 +9,8 @@ namespace Harmony.Notifications
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
 
             // Add services to the container.
             builder.Services.AddRazorPages();
@@ -20,6 +24,7 @@ namespace Harmony.Notifications
 
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();
+            builder.Services.AddHostedService<NotificationsConsumerHostedService>();
 
             var app = builder.Build();
 
