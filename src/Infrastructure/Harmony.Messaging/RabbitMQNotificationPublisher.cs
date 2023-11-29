@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -33,17 +34,25 @@ namespace Harmony.Messaging
                 arguments: null);
         }
 
-        public void Publish<T>(T notification)
+        public void Publish<T>(T notification) where T : BaseNotification
         {
             using var channel = connection.CreateModel();
 
             var json = JsonConvert.SerializeObject(notification);
             var body = Encoding.UTF8.GetBytes(json);
 
+            var props = channel.CreateBasicProperties();
+            props.ContentType = "text/plain";
+            props.DeliveryMode = 2;
+            props.Headers = new Dictionary<string, object>
+            {
+                { BrokerConstants.NotificationHeader, notification.Type.ToString() }
+            };
+
             channel.BasicPublish(
                 exchange: "", 
                 routingKey: BrokerConstants.NotificationsQueue, 
-                basicProperties: null,
+                basicProperties: props,
                 body: body);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
+using Harmony.Application.Enums;
 using Harmony.Application.Notifications;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
@@ -32,7 +33,8 @@ namespace Harmony.Notifications
             var factory = new ConnectionFactory 
             { 
                 HostName = _brokerConfiguration.Host,
-                Port = _brokerConfiguration.Port
+                Port = _brokerConfiguration.Port,
+                AutomaticRecoveryEnabled = true
             };
 
             // create connection  
@@ -62,20 +64,20 @@ namespace Harmony.Notifications
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (ch, ea) =>
             {
-                var _key = "notification_type";
-                //ea.BasicProperties.Headers.TryGetValue(_key, out var messageTypeRaw);
-                //var messageTypeValue = (messageTypeRaw as byte[]) is null
-                //? messageTypeRaw?.ToString() : Encoding.UTF8.GetString((byte[])messageTypeRaw);
-                
-                var notification = JsonSerializer.Deserialize<CardDueTimeExpiredNotification>(ea.Body.Span);
-
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine($" [x] Received {message}");
-
-                // handle the received message  
-                HandleMessage(message);
-                //_channel.BasicAck(ea.DeliveryTag, false);
+               if(ea.BasicProperties.Headers
+                    .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) && 
+                    Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
+                {
+                    switch (notificationType)
+                    {
+                        case NotificationType.CardChangedDueDate:
+                            var notification = JsonSerializer
+                                                .Deserialize<BaseNotification>(ea.Body.Span);
+                            break;
+                        default:
+                            break;
+                    }
+                }
             };
 
             consumer.Shutdown += OnConsumerShutdown;
@@ -85,12 +87,6 @@ namespace Harmony.Notifications
 
             _channel.BasicConsume(BrokerConstants.NotificationsQueue, true, consumer);
             return Task.CompletedTask;
-        }
-
-        private void HandleMessage(string content)
-        {
-            // we just print this message   
-            _logger.LogInformation($"consumer received {content}");
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }
