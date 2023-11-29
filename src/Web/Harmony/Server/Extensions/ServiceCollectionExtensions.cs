@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Configurations;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Account;
@@ -9,6 +10,7 @@ using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
+using Harmony.Messaging;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Harmony.Server.Services;
@@ -57,6 +59,15 @@ namespace Harmony.Server.Extensions
             services.AddScoped<IMemberSearchService, MemberSearchService>();
 
 			return services;
+        }
+
+        internal static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<BrokerConfiguration>(configuration.GetSection("BrokerConfiguration"));
+
+            services.AddSingleton<IMessageProducer, RabbitMQProducer>();
+
+            return services;
         }
 
         internal static IServiceCollection AddIdentityServices(this IServiceCollection services)

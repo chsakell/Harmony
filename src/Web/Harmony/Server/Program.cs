@@ -23,6 +23,7 @@ builder.Services.AddSignalR();
 builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
+builder.Services.AddMessaging(builder.Configuration);
 
 var app = builder.Build();
 
