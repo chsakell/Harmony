@@ -7,11 +7,11 @@ using System.Text;
 
 namespace Harmony.Messaging
 {
-    public class RabbitMQProducer : IMessageProducer
+    public class RabbitMQNotificationPublisher : INotificationsPublisher
     {
         IConnection connection;
         const string NotificationsQueue = "notifications";
-        public RabbitMQProducer(IOptions<BrokerConfiguration> brokerConfig)
+        public RabbitMQNotificationPublisher(IOptions<BrokerConfiguration> brokerConfig)
         {
             var config = brokerConfig.Value;
 
@@ -28,11 +28,11 @@ namespace Harmony.Messaging
             channel.QueueDeclare(NotificationsQueue, exclusive: false);
         }
 
-        public void SendMessage<T>(T message)
+        public void Publish<T>(T notification)
         {
             using var channel = connection.CreateModel();
 
-            var json = JsonConvert.SerializeObject(message);
+            var json = JsonConvert.SerializeObject(notification);
             var body = Encoding.UTF8.GetBytes(json);
 
             channel.BasicPublish(exchange: "", routingKey: NotificationsQueue, body: body);

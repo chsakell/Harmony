@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.Contracts.Messaging
 {
-    public interface IMessageProducer
+    public interface INotificationsPublisher
     {
-        void SendMessage<T>(T message);
+        void Publish<T>(T notification);
     }
 }

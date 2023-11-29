@@ -65,7 +65,7 @@ namespace Harmony.Server.Extensions
         {
             services.Configure<BrokerConfiguration>(configuration.GetSection("BrokerConfiguration"));
 
-            services.AddSingleton<IMessageProducer, RabbitMQProducer>();
+            services.AddSingleton<INotificationsPublisher, RabbitMQNotificationPublisher>();
 
             return services;
         }

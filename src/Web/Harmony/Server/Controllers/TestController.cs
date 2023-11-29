@@ -10,9 +10,9 @@ namespace Harmony.Server.Controllers
 {
     public class TestController : BaseApiController<TestController>
     {
-        private readonly IMessageProducer _messageProducer;
+        private readonly INotificationsPublisher _messageProducer;
 
-        public TestController(IMessageProducer messageProducer)
+        public TestController(INotificationsPublisher messageProducer)
         {
             _messageProducer = messageProducer;
         }
@@ -28,7 +28,7 @@ namespace Harmony.Server.Controllers
                 Title = "hello from rabbit"
             };
 
-            _messageProducer.SendMessage(label);
+            _messageProducer.Publish(label);
 
             return Ok();
         }
