@@ -8,6 +8,8 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Application.Helpers;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 
@@ -18,6 +20,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 	private readonly ICurrentUserService _currentUserService;
     private readonly ICardActivityService _cardActivityService;
     private readonly IHubClientNotifierService _hubClientNotifierService;
+    private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IStringLocalizer<UpdateCardDatesCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
@@ -26,6 +29,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		ICurrentUserService currentUserService,
 		ICardActivityService cardActivityService,
 		IHubClientNotifierService hubClientNotifierService,
+		INotificationsPublisher notificationsPublisher,
 		IStringLocalizer<UpdateCardDatesCommandHandler> localizer,
 		IMapper mapper)
 	{
@@ -34,6 +38,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		_currentUserService = currentUserService;
         _cardActivityService = cardActivityService;
         _hubClientNotifierService = hubClientNotifierService;
+        _notificationsPublisher = notificationsPublisher;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -62,6 +67,8 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 
             var boardId = await _cardRepository.GetBoardId(card.Id);
             await _hubClientNotifierService.UpdateCardDates(boardId, card.Id, card.StartDate, card.DueDate);
+
+			_notificationsPublisher.Publish(new CardDueTimeExpiredNotification(card.Id));
 
             return await Result<bool>.SuccessAsync(true, _localizer["Dates updated"]);
 		}

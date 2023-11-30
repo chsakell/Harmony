@@ -15,7 +15,7 @@ namespace Harmony.Notifications.Models
 
         public Message(IEnumerable<MailboxAddress> to, string subject, string content)
         {
-            To = [.. to];
+            To = to.ToList();
             Subject = subject;
             Content = content;
         }

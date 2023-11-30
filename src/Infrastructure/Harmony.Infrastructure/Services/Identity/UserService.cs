@@ -19,21 +19,16 @@ namespace Harmony.Infrastructure.Services.Identity
     {
         private readonly UserManager<HarmonyUser> _userManager;
         private readonly RoleManager<HarmonyRole> _roleManager;
-        //private readonly IMailService _mailService;
-        //private readonly IStringLocalizer<UserService> _localizer;
-        private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
 
         public UserService(
             UserManager<HarmonyUser> userManager,
             IMapper mapper,
-            ICurrentUserService currentUserService,
             RoleManager<HarmonyRole> roleManager
             )
         {
             _userManager = userManager;
             _mapper = mapper;
-            _currentUserService = currentUserService;
             _roleManager = roleManager;
         }
 
@@ -203,14 +198,14 @@ namespace Harmony.Infrastructure.Services.Identity
             return await Result<UserRolesResponse>.SuccessAsync(result);
         }
 
-        public async Task<IResult> UpdateRolesAsync(UpdateUserRolesRequest request)
+        public async Task<IResult> UpdateRolesAsync(UpdateUserRolesRequest request, string userId)
         {
             var user = await _userManager.FindByIdAsync(request.UserId);
 
             var roles = await _userManager.GetRolesAsync(user);
             var selectedRoles = request.UserRoles.Where(x => x.Selected).ToList();
 
-            var currentUser = await _userManager.FindByIdAsync(_currentUserService.UserId);
+            var currentUser = await _userManager.FindByIdAsync(userId);
             if (!await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdministratorRole))
             {
                 var tryToAddAdministratorRole = selectedRoles

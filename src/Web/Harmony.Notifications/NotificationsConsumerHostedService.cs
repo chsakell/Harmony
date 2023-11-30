@@ -4,6 +4,8 @@ using Harmony.Application.Constants;
 using Harmony.Application.Enums;
 using Harmony.Application.Notifications;
 using Harmony.Notifications.Contracts;
+using Harmony.Notifications.Persistence;
+using Harmony.Notifications.Services;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -65,33 +67,29 @@ namespace Harmony.Notifications
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
-
-            using (IServiceScope scope = _serviceProvider.CreateScope())
-            {
-                var _jobNotificationService =
-                    scope.ServiceProvider.GetRequiredService<IJobNotificationService>();
-
-                BackgroundJob.Enqueue(() => SendNotification());
-            }
-
-
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (ch, ea) =>
+            consumer.Received += async (ch, ea) =>
             {
                 if (ea.BasicProperties.Headers
                      .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
                      Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
                 {
-                    switch (notificationType)
+                    using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
-                        case NotificationType.CardChangedDueDate:
-                            var notification = JsonSerializer
-                                                .Deserialize<BaseNotification>(ea.Body.Span);
+                        var _jobNotificationService = scope.ServiceProvider.GetRequiredService<IJobNotificationService>();
 
-                            BackgroundJob.Enqueue(() => SendNotification());
-                            break;
-                        default:
-                            break;
+                        switch (notificationType)
+                        {
+                            case NotificationType.CardChangedDueDate:
+                                var dateChangedNotification = JsonSerializer
+                                                    .Deserialize<CardDueTimeExpiredNotification>(ea.Body.Span);
+
+                                if (dateChangedNotification != null)
+                                {
+                                    await _jobNotificationService.SendCardDueDateChangedNotification(dateChangedNotification.Id);
+                                }
+                                break;
+                        }
                     }
                 }
             };
@@ -104,15 +102,18 @@ namespace Harmony.Notifications
             _channel.BasicConsume(BrokerConstants.NotificationsQueue, true, consumer);
         }
 
-        public async Task SendNotification()
+        public async Task SendCardDueDateChangedNotification(CardDueTimeExpiredNotification? notification)
         {
+            if (notification == null)
+            {
+                return;
+            }
+
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
-                var _jobNotificationService =
-                    scope.ServiceProvider.GetRequiredService<IJobNotificationService>();
 
-                await _jobNotificationService
-                    .SendCardDueDateChangedNotification(Guid.Parse("8D7FAE06-D1E3-4418-FD89-08DBF00B9F44"));
+
+                
             }
         }
 

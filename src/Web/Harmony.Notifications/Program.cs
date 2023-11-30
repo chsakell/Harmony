@@ -1,8 +1,8 @@
 using Hangfire;
 using Harmony.Application.Configurations;
 using Harmony.Notifications.Contracts;
+using Harmony.Notifications.Extensions;
 using Harmony.Notifications.Services;
-using Harmony.Server.Extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace Harmony.Notifications
@@ -13,8 +13,13 @@ namespace Harmony.Notifications
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add DbContexts
+            builder.Services.AddIdentityServices();
             builder.Services.AddHarmonyDatabase(builder.Configuration);
+            builder.Services.AddNotificationDatabase(builder.Configuration);
+
             builder.Services.AddRepositories();
+            builder.Services.AddApplicationServices();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
             
             builder.Services.Configure<GmailSettings>
@@ -31,7 +36,7 @@ namespace Harmony.Notifications
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();

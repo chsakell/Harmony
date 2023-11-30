@@ -23,7 +23,7 @@ namespace Harmony.Application.Contracts.Services.Identity
 
         Task<IResult<UserRolesResponse>> GetRolesAsync(string id);
 
-        Task<IResult> UpdateRolesAsync(UpdateUserRolesRequest request);
+        Task<IResult> UpdateRolesAsync(UpdateUserRolesRequest request, string userId);
 
         Task<IResult<string>> ConfirmEmailAsync(string userId, string code);
 

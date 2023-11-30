@@ -18,6 +18,14 @@ Update-Database -Context HarmonyContext -StartUpProject Harmony.Server -v
 dotnet ef database update --context HarmonyContext --startup-project "../../Web/Harmony/Server/Harmony.Server.csproj"
 ```
 
+```
+Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Notifications -v
+```
+
+```
+Update-Database -Context NotificationContext -StartUpProject Harmony.Notifications -v
+```
+
 ## Notes
 In case you decide for some reason to clean/remove the migrations folder, make sure to keep the following migrations which add two stored procedures.
 

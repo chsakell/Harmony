@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Contracts.Services.Identity;
+﻿using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace Harmony.Server.Controllers.Identity
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ICurrentUserService currentUserService)
         {
             _userService = userService;
+            _currentUserService = currentUserService;
         }
 
         [HttpGet]
@@ -43,7 +46,7 @@ namespace Harmony.Server.Controllers.Identity
         [HttpPut("roles/{id}")]
         public async Task<IActionResult> UpdateRolesAsync(UpdateUserRolesRequest request)
         {
-            return Ok(await _userService.UpdateRolesAsync(request));
+            return Ok(await _userService.UpdateRolesAsync(request, _currentUserService.UserId));
         }
 
         [AllowAnonymous]
