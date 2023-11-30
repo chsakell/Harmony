@@ -21,14 +21,12 @@ namespace Harmony.Server.Controllers
         [HttpPost]
         public IActionResult SendMessage()
         {
-            var label = new CardDueTimeExpiredNotification()
+            var notification = new CardDueTimeExpiredNotification()
             {
-                Id = Guid.NewGuid(),
-                Title = "Strem provider integration",
-                Message = "Hurry up, issue has expired"
+                Id = Guid.Parse("8D7FAE06-D1E3-4418-FD89-08DBF00B9F44")
             };
 
-            _messageProducer.Publish(label);
+            _messageProducer.Publish(notification);
 
             return Ok();
         }

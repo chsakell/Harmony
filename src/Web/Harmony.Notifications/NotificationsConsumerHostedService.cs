@@ -1,8 +1,9 @@
-﻿using Harmony.Application.Configurations;
+﻿using Hangfire;
+using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Enums;
 using Harmony.Application.Notifications;
-using Harmony.Notifications.Services;
+using Harmony.Notifications.Contracts;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -16,26 +17,26 @@ namespace Harmony.Notifications
     public class NotificationsConsumerHostedService : BackgroundService
     {
         private readonly ILogger _logger;
-        private readonly IEmailNotificationService _emailNotificationService;
+        private readonly IServiceProvider _serviceProvider;
         private IConnection? _connection;
         private IModel? _channel;
         private BrokerConfiguration _brokerConfiguration;
 
         public NotificationsConsumerHostedService(ILoggerFactory loggerFactory,
             IOptions<BrokerConfiguration> brokerConfig,
-            IEmailNotificationService emailNotificationService)
+            IServiceProvider serviceProvider)
         {
             _logger = loggerFactory.CreateLogger<NotificationsConsumerHostedService>();
             _brokerConfiguration = brokerConfig.Value;
 
             InitRabbitMQ();
-            _emailNotificationService = emailNotificationService;
+            _serviceProvider = serviceProvider;
         }
 
         private void InitRabbitMQ()
         {
-            var factory = new ConnectionFactory 
-            { 
+            var factory = new ConnectionFactory
+            {
                 HostName = _brokerConfiguration.Host,
                 Port = _brokerConfiguration.Port,
                 AutomaticRecoveryEnabled = true
@@ -65,21 +66,29 @@ namespace Harmony.Notifications
         {
             stoppingToken.ThrowIfCancellationRequested();
 
-            await _emailNotificationService
-                    .SendEmailAsync("chsakell@gmail.com", "Some subject", "Specify the html content here");
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                var _jobNotificationService =
+                    scope.ServiceProvider.GetRequiredService<IJobNotificationService>();
+
+                BackgroundJob.Enqueue(() => SendNotification());
+            }
+
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (ch, ea) =>
             {
-               if(ea.BasicProperties.Headers
-                    .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) && 
-                    Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
+                if (ea.BasicProperties.Headers
+                     .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
+                     Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
                 {
                     switch (notificationType)
                     {
                         case NotificationType.CardChangedDueDate:
                             var notification = JsonSerializer
                                                 .Deserialize<BaseNotification>(ea.Body.Span);
+
+                            BackgroundJob.Enqueue(() => SendNotification());
                             break;
                         default:
                             break;
@@ -93,6 +102,18 @@ namespace Harmony.Notifications
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             _channel.BasicConsume(BrokerConstants.NotificationsQueue, true, consumer);
+        }
+
+        public async Task SendNotification()
+        {
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                var _jobNotificationService =
+                    scope.ServiceProvider.GetRequiredService<IJobNotificationService>();
+
+                await _jobNotificationService
+                    .SendCardDueDateChangedNotification(Guid.Parse("8D7FAE06-D1E3-4418-FD89-08DBF00B9F44"));
+            }
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }

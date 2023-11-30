@@ -3,6 +3,7 @@ using Harmony.Application.Configurations;
 using MimeKit;
 using MailKit.Net.Smtp;
 using Harmony.Notifications.Models;
+using Harmony.Notifications.Contracts;
 
 namespace Harmony.Notifications.Services
 {

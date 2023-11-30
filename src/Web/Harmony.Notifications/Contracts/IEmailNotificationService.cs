@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Notifications.Services
+namespace Harmony.Notifications.Contracts
 {
     public interface IEmailNotificationService
     {
