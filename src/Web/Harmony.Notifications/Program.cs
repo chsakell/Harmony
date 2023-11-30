@@ -1,5 +1,6 @@
 using Hangfire;
 using Harmony.Application.Configurations;
+using Harmony.Notifications.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace Harmony.Notifications
@@ -11,9 +12,14 @@ namespace Harmony.Notifications
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
+            
+            builder.Services.Configure<GmailSettings>
+                        (options => builder.Configuration
+                        .GetSection("GmailSettings").Bind(options));
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddSingleton<IEmailNotificationService, GmailNotificationService>();
 
             // Add Hangfire services.
             builder.Services.AddHangfire(configuration => configuration

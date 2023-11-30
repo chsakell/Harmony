@@ -2,6 +2,7 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Enums;
 using Harmony.Application.Notifications;
+using Harmony.Notifications.Services;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -15,17 +16,20 @@ namespace Harmony.Notifications
     public class NotificationsConsumerHostedService : BackgroundService
     {
         private readonly ILogger _logger;
+        private readonly IEmailNotificationService _emailNotificationService;
         private IConnection? _connection;
         private IModel? _channel;
         private BrokerConfiguration _brokerConfiguration;
 
         public NotificationsConsumerHostedService(ILoggerFactory loggerFactory,
-            IOptions<BrokerConfiguration> brokerConfig)
+            IOptions<BrokerConfiguration> brokerConfig,
+            IEmailNotificationService emailNotificationService)
         {
             _logger = loggerFactory.CreateLogger<NotificationsConsumerHostedService>();
             _brokerConfiguration = brokerConfig.Value;
 
             InitRabbitMQ();
+            _emailNotificationService = emailNotificationService;
         }
 
         private void InitRabbitMQ()
@@ -57,9 +61,12 @@ namespace Harmony.Notifications
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
+
+            await _emailNotificationService
+                    .SendEmailAsync("chsakell@gmail.com", "Some subject", "Specify the html content here");
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (ch, ea) =>
@@ -86,7 +93,6 @@ namespace Harmony.Notifications
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             _channel.BasicConsume(BrokerConstants.NotificationsQueue, true, consumer);
-            return Task.CompletedTask;
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }
