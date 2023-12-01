@@ -20,7 +20,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public bool UploadingAttachment { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
-        public DateTime? ReminderDate { get; set; }
+        public DueDateReminderType? DueDateReminderType { get; set; }
         public List<CardActivityDto> Activities { get; set; } = new List<CardActivityDto>();
         public List<CardMemberDto> Members { get; set; }
         public List<LabelDto> Labels { get; set; }

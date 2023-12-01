@@ -1,7 +1,10 @@
-﻿using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Client.Infrastructure.Models.Labels;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 using MudBlazor;
 
 namespace Harmony.Client.Shared.Modals
@@ -24,6 +27,12 @@ namespace Harmony.Client.Shared.Modals
 
         [Parameter]
         public DateTime? DueDate { get; set; }
+
+        [Parameter]
+        public TimeSpan? DueTime { get; set; }
+
+        [Parameter]
+        public DueDateReminderType DueDateReminder { get; set; } = DueDateReminderType.None;
 
         private void Cancel()
         {
@@ -55,8 +64,16 @@ namespace Harmony.Client.Shared.Modals
             _processing = true;
 
             var startDate = _dateRange.Start == _dateRange.End ? null : _dateRange.Start;
+
+            var dueDate = _dateRange.End;
+
+            if(dueDate.HasValue && DueTime.HasValue)
+            {
+                dueDate = dueDate.Value.Add(DueTime.Value);
+            }
+
             var result = await _cardManager
-                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, startDate, _dateRange.End));
+                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, startDate, dueDate));
 
             DisplayMessage(result);
 
@@ -79,5 +96,32 @@ namespace Harmony.Client.Shared.Modals
                 _snackBar.Add(message, severity);
             }
         }
+
+        Func<DueDateReminderType, string> converter = type =>
+        {
+            switch (type)
+            {
+                case DueDateReminderType.None:
+                    return "None";
+                case DueDateReminderType.AtDueDate:
+                    return "At time of due date";
+                case DueDateReminderType.FiveMinutesBefore:
+                    return "5 Minutes before";
+                case DueDateReminderType.TenMinutesBefore:
+                    return "10 minutes before";
+                case DueDateReminderType.FifteenMinutesBefore:
+                    return "15 minutes before";
+                case DueDateReminderType.OneHourBefore:
+                    return "1 hour before";
+                case DueDateReminderType.TwoHoursBefore:
+                    return "2 hours before";
+                case DueDateReminderType.OneDateBefore:
+                    return "1 day before";
+                case DueDateReminderType.TwoDaysBefore:
+                    return "2 days before";
+                default:
+                    return "None";
+            }
+        };
     }
 }

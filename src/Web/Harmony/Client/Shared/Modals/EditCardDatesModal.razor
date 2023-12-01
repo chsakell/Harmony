@@ -15,11 +15,21 @@
                             Label="Clearable" @bind-DateRange="_dateRange" Clearable="true" />
     </DialogContent>
     <DialogActions>
+        <MudTimePicker Label="Time" Disabled="!_dateRange.End.HasValue" @bind-Time="DueTime" />
+        <MudSelect T="DueDateReminderType" Disabled="!_dateRange.End.HasValue"
+                   ToStringFunc="converter"
+                   @bind-Value="DueDateReminder" Label="Set due date reminder" AnchorOrigin="Origin.BottomCenter">
+            @foreach (var type in Enum.GetValues<DueDateReminderType>())
+            {
+                <MudSelectItem Value="@type" />
+            }
+        </MudSelect>
+        <MudSpacer />
         <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Close"]</MudButton>
-        <MudButton Variant="Variant.Filled" OnClick="Clear">@_localizer["Clear"]</MudButton>
-        <MudButton Disabled="@(_processing)"
-                   OnClick="SaveDates" Variant="Variant.Filled" Color="Color.Primary">
-            @if (_processing)
+            <MudButton Variant="Variant.Filled" OnClick="Clear">@_localizer["Clear"]</MudButton>
+            <MudButton Disabled="@(_processing)"
+                       OnClick="SaveDates" Variant="Variant.Filled" Color="Color.Primary">
+                @if (_processing)
             {
                 <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                 <MudText Class="ms-2">@_localizer["Processing"]</MudText>

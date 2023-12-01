@@ -391,7 +391,9 @@ namespace Harmony.Client.Shared.Modals
             {
                 { c => c.CardId, CardId },
                 { c => c.StartDate, _card.StartDate },
-                { c => c.DueDate, _card.DueDate }
+                { c => c.DueDate, _card.DueDate.HasValue ? _card.DueDate.Value.Date : null },
+                { c => c.DueTime, _card.DueDate.HasValue ? _card.DueDate.Value.TimeOfDay : new TimeSpan(10, 00, 00) },
+                { c => c.DueDateReminder, _card.DueDateReminderType ?? Domain.Enums.DueDateReminderType.None }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
