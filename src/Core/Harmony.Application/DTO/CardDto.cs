@@ -15,6 +15,7 @@ namespace Harmony.Application.DTO
 		public List<LabelDto> Labels { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? DueDate { get; set; }
+        public DueDateReminderType? DueDateReminderType { get; set; }
         public DateTime? ReminderDate { get; set; }
 		public List<CardMemberDto> Members { get; set; }
         public int SerialNumber { get; set; }

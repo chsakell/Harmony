@@ -39,7 +39,7 @@ namespace Harmony.Notifications.Services
                 return;
             }
 
-            var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromSeconds(10));
+            var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromMinutes(1));
 
             if(string.IsNullOrEmpty(jobId))
             {
