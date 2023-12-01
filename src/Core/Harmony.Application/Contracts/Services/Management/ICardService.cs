@@ -14,5 +14,6 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<List<GetBacklogItemResponse>> SearchBacklog(Guid boardId, string term, int pageNumber, int pageSize);
         Task<IResult<List<Card>>> MoveCardsToSprint(List<Guid> cardsToMove, Guid sprintId, Guid boardListId);
         Task<IResult<List<Card>>> MoveCardsToBacklog(Guid boardId, List<Guid> cardsToMove);
+        Task<bool> CardCompleted(Guid cardId);
     }
 }

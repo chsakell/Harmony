@@ -1,6 +1,6 @@
 ﻿namespace Harmony.Notifications.Contracts
 {
-    public interface IJobNotificationService
+    public interface INotificationService
     {
     }
 }

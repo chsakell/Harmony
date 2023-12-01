@@ -76,11 +76,9 @@ namespace Harmony.Notifications
                 {
                     using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
-                        
-
                         switch (notificationType)
                         {
-                            case NotificationType.CardChangedDueDate:
+                            case NotificationType.CardDueDateUpdated:
                                 var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
                                 var dateChangedNotification = JsonSerializer
                                                     .Deserialize<CardDueTimeExpiredNotification>(ea.Body.Span);
@@ -88,6 +86,16 @@ namespace Harmony.Notifications
                                 if (dateChangedNotification != null)
                                 {
                                     await _cardDueDateNotificationService.SendCardDueDateChangedNotification(dateChangedNotification.Id);
+                                }
+                                break;
+                            case NotificationType.CardCompleted:
+                                var _cardCompletedNotificationService = scope.ServiceProvider.GetRequiredService<ICardCompletedNotificationService>();
+                                var cardCompletedNotification = JsonSerializer
+                                                    .Deserialize<CardCompletedNotification>(ea.Body.Span);
+
+                                if (cardCompletedNotification != null)
+                                {
+                                    await _cardCompletedNotificationService.SendCardCompletedNotification(cardCompletedNotification.Id);
                                 }
                                 break;
                         }

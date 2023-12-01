@@ -133,6 +133,14 @@ namespace Harmony.Infrastructure.Services.Management
             return result;
         }
 
+		public async Task<bool> CardCompleted(Guid cardId)
+		{
+			return (await _cardRepository.Entities.AsNoTracking()
+				.Include(c => c.BoardList)
+				.CountAsync(c => c.Id == cardId && 
+					c.BoardList.CardStatus == BoardListCardStatus.DONE)) > 0;
+		}
+
         private async Task<bool> ReorderOtherCardsAndMove(Card card, Guid newListId, short newPosition)
 		{
 			var currentPosition = card.Position;

@@ -11,6 +11,6 @@ namespace Harmony.Application.Notifications
             Id = id;
         }
 
-        public override NotificationType Type => NotificationType.CardChangedDueDate;
+        public override NotificationType Type => NotificationType.CardDueDateUpdated;
     }
 }

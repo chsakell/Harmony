@@ -8,6 +8,7 @@ namespace Harmony.Application.Enums
 {
     public enum NotificationType
     {
-        CardChangedDueDate
+        CardDueDateUpdated,
+        CardCompleted
     }
 }

@@ -13,6 +13,7 @@ using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
+using Harmony.Notifications.Services;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -37,26 +38,8 @@ namespace Harmony.Notifications.Extensions
 
         internal static IServiceCollection AddNotificationServices(this IServiceCollection services)
         {
-            var managers = typeof(IJobNotificationService);
-
-            var types = managers
-                .Assembly
-                .GetExportedTypes()
-                .Where(t => t.IsClass && !t.IsAbstract)
-                .Select(t => new
-                {
-                    Service = t.GetInterface($"I{t.Name}"),
-                    Implementation = t
-                })
-                .Where(t => t.Service != null);
-
-            foreach (var type in types)
-            {
-                if (managers.IsAssignableFrom(type.Service))
-                {
-                    services.AddScoped(type.Service, type.Implementation);
-                }
-            }
+            services.AddScoped<ICardDueDateNotificationService, CardDueDateNotificationService>();
+            services.AddScoped<ICardCompletedNotificationService, CardCompletedNotificationService>();
 
             return services;
         }
@@ -64,20 +47,7 @@ namespace Harmony.Notifications.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             return services
-                //.AddScoped<IWorkspaceRepository, WorkspaceRepository>()
-                //.AddScoped<IUserWorkspaceRepository, UserWorkspaceRepository>()
-                //.AddScoped<IBoardRepository, BoardRepository>()
-                //.AddScoped<IUserBoardRepository, UserBoardRepository>()
-                //.AddScoped<IBoardListRepository, BoardListRepository>()
                 .AddScoped<ICardRepository, CardRepository>();
-            //.AddScoped<ICheckListRepository, CheckListRepository>()
-            //.AddScoped<ICheckListItemRepository, CheckListItemRepository>()
-            //.AddScoped<IBoardLabelRepository, BoardLabelRepository>()
-            //.AddScoped<ICardLabelRepository, CardLabelRepository>()
-            //.AddScoped<ICardActivityRepository, CardActivityRepository>()
-            //.AddScoped<IUserCardRepository, UserCardRepository>()
-            //.AddScoped<IIssueTypeRepository, IssueTypeRepository>()
-            //.AddScoped<ISprintRepository, SprintRepository>();
         }
 
 

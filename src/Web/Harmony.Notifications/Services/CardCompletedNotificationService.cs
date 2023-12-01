@@ -12,13 +12,13 @@ using Harmony.Application.Helpers;
 
 namespace Harmony.Notifications.Services
 {
-    public class CardDueDateNotificationService : BaseNotificationService, ICardDueDateNotificationService
+    public class CardCompletedNotificationService : BaseNotificationService, ICardCompletedNotificationService
     {
         private readonly IEmailNotificationService _emailNotificationService;
         private readonly IUserService _userService;
         private readonly ICardRepository _cardRepository;
 
-        public CardDueDateNotificationService(IEmailNotificationService emailNotificationService,
+        public CardCompletedNotificationService(IEmailNotificationService emailNotificationService,
             IUserService userService,
             NotificationContext notificationContext,
             ICardRepository cardRepository) : base(notificationContext)
@@ -28,25 +28,18 @@ namespace Harmony.Notifications.Services
             _cardRepository = cardRepository;
         }
 
-        public async Task SendCardDueDateChangedNotification(Guid cardId)
+        public async Task SendCardCompletedNotification(Guid cardId)
         {
-            await RemovePendingJobs(cardId, NotificationType.CardDueDateUpdated);
+            await RemovePendingJobs(cardId, NotificationType.CardCompleted);
 
             var card = await _cardRepository.Get(cardId);
 
-            if (card == null || !card.DueDate.HasValue)
+            if (card == null)
             {
                 return;
             }
 
-            var delay = card.DueDate - DateTime.Now.AddDays(-1);
-
-            if(!delay.HasValue)
-            {
-                return;
-            }
-
-            var jobId = BackgroundJob.Schedule(() => Notify(cardId), delay.Value);
+            var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromSeconds(10));
 
             if(string.IsNullOrEmpty(jobId))
             {
@@ -57,12 +50,13 @@ namespace Harmony.Notifications.Services
             {
                 CardId = cardId,
                 JobId = jobId,
-                Type = NotificationType.CardDueDateUpdated,
+                Type = NotificationType.CardCompleted,
                 DateCreated = DateTime.Now,
             });
 
             await _notificationContext.SaveChangesAsync();
         }
+
 
         public async Task Notify(Guid cardId)
         {
@@ -72,18 +66,18 @@ namespace Harmony.Notifications.Services
                 .Entities.Specify(filter)
                 .FirstOrDefaultAsync();
 
-            if (card == null || !card.DueDate.HasValue || card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
+            if (card == null || card.BoardList.CardStatus != Domain.Enums.BoardListCardStatus.DONE)
             {
                 return;
             }
 
-            var subject = $"{card.Title} in {card.BoardList.Board.Title} is due in a day";
+            var subject = $"{card.Title} in {card.BoardList.Board.Title} completed";
             var cardMembers = (await _userService.GetAllAsync(card.Members.Select(m => m.UserId))).Data;
 
             foreach ( var member in cardMembers )
             {
-                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} is due in a day. " +
-                    $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(card.StartDate, card.DueDate)}";
+                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} has been completed. ";
+
                 await _emailNotificationService.SendEmailAsync(member.Email, subject, content);
             }
             

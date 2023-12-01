@@ -1,6 +1,6 @@
 ﻿namespace Harmony.Notifications.Contracts
 {
-    public interface ICardDueDateNotificationService : IJobNotificationService
+    public interface ICardDueDateNotificationService : INotificationService
     {
         Task SendCardDueDateChangedNotification(Guid cardId);
     }
