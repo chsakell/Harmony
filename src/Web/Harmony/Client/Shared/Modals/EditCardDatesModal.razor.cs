@@ -115,7 +115,7 @@ namespace Harmony.Client.Shared.Modals
                     return "1 hour before";
                 case DueDateReminderType.TwoHoursBefore:
                     return "2 hours before";
-                case DueDateReminderType.OneDateBefore:
+                case DueDateReminderType.OneDayBefore:
                     return "1 day before";
                 case DueDateReminderType.TwoDaysBefore:
                     return "2 days before";

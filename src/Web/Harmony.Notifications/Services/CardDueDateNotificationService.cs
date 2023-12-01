@@ -9,6 +9,8 @@ using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Domain.Entities;
 using Harmony.Application.Enums;
 using Harmony.Application.Helpers;
+using Harmony.Domain.Enums;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Notifications.Services
 {
@@ -34,19 +36,44 @@ namespace Harmony.Notifications.Services
 
             var card = await _cardRepository.Get(cardId);
 
-            if (card == null || !card.DueDate.HasValue)
+            if (card == null || !card.DueDate.HasValue || !card.DueDateReminderType.HasValue
+                || (card.DueDateReminderType.HasValue 
+                && card.DueDateReminderType == DueDateReminderType.None))
             {
                 return;
             }
 
-            var delay = card.DueDate - DateTime.Now.AddDays(-1);
+            // 1/12/2023 10.00
+            var delay = card.DueDate.Value - DateTime.Now;
 
-            if(!delay.HasValue)
+            switch(card.DueDateReminderType)
             {
-                return;
+                case DueDateReminderType.FiveMinutesBefore:
+                    delay = delay.Add(TimeSpan.FromMinutes(-5));
+                    break;
+                case DueDateReminderType.TenMinutesBefore:
+                    delay = delay.Add(TimeSpan.FromMinutes(-10));
+                    break;
+                case DueDateReminderType.FifteenMinutesBefore:
+                    delay = delay.Add(TimeSpan.FromMinutes(-15));
+                    break;
+                case DueDateReminderType.OneHourBefore:
+                    delay = delay.Add(TimeSpan.FromHours(-1));
+                    break;
+                case DueDateReminderType.TwoHoursBefore:
+                    delay = delay.Add(TimeSpan.FromHours(-2));
+                    break;
+                case DueDateReminderType.OneDayBefore:
+                    delay = delay.Add(TimeSpan.FromDays(-1));
+                    break;
+                case DueDateReminderType.TwoDaysBefore:
+                    delay = delay.Add(TimeSpan.FromDays(-2));
+                    break;
+                default:
+                    break;
             }
 
-            var jobId = BackgroundJob.Schedule(() => Notify(cardId), delay.Value);
+            var jobId = BackgroundJob.Schedule(() => Notify(cardId), delay);
 
             if(string.IsNullOrEmpty(jobId))
             {
@@ -72,21 +99,44 @@ namespace Harmony.Notifications.Services
                 .Entities.Specify(filter)
                 .FirstOrDefaultAsync();
 
-            if (card == null || !card.DueDate.HasValue || card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
+            if (card == null || !card.DueDate.HasValue || card.BoardList.CardStatus == BoardListCardStatus.DONE)
             {
                 return;
             }
 
-            var subject = $"{card.Title} in {card.BoardList.Board.Title} is due in a day";
+            var subject = $"{card.Title} in {card.BoardList.Board.Title} is due {GetDueMessage(card.DueDateReminderType.Value)}";
             var cardMembers = (await _userService.GetAllAsync(card.Members.Select(m => m.UserId))).Data;
 
             foreach ( var member in cardMembers )
             {
-                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} is due in a day. " +
+                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} is due {GetDueMessage(card.DueDateReminderType.Value)}. " +
                     $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(card.StartDate, card.DueDate)}";
                 await _emailNotificationService.SendEmailAsync(member.Email, subject, content);
             }
             
+        }
+
+        private string GetDueMessage(DueDateReminderType type)
+        {
+            switch (type)
+            {
+                case DueDateReminderType.FiveMinutesBefore:
+                    return "in 5 minutes";
+                case DueDateReminderType.TenMinutesBefore:
+                    return "in 10 minutes";
+                case DueDateReminderType.FifteenMinutesBefore:
+                    return "in 15 minutes";
+                case DueDateReminderType.OneHourBefore:
+                    return "in an hour";
+                case DueDateReminderType.TwoHoursBefore:
+                    return "in 2 hours";
+                case DueDateReminderType.OneDayBefore:
+                    return "in a day";
+                case DueDateReminderType.TwoDaysBefore:
+                    return "in 2 days";
+                default:
+                    return string.Empty;
+            }
         }
     }
 }

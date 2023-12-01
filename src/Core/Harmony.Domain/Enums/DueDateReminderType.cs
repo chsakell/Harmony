@@ -15,7 +15,7 @@ namespace Harmony.Domain.Enums
         FifteenMinutesBefore,
         OneHourBefore,
         TwoHoursBefore,
-        OneDateBefore,
+        OneDayBefore,
         TwoDaysBefore
     }
 }
