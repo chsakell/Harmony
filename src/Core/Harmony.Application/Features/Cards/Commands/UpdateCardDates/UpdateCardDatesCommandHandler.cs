@@ -55,6 +55,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 
 		card.StartDate = request.StartDate;
 		card.DueDate = request.DueDate;
+		card.DueDateReminderType = request.DueDateReminderType;
 
 		// commit all the changes
 		var updateResult = await _cardRepository.Update(card);

@@ -42,7 +42,7 @@ namespace Harmony.Client.Shared.Modals
         private async Task Clear()
         {
             var result = await _cardManager
-                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, null, null));
+                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, null, null, null));
 
             if(result.Succeeded)
             {
@@ -53,7 +53,7 @@ namespace Harmony.Client.Shared.Modals
             DisplayMessage(result);
         }
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             _dateRange = new DateRange(StartDate, DueDate);
         }
@@ -73,7 +73,7 @@ namespace Harmony.Client.Shared.Modals
             }
 
             var result = await _cardManager
-                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, startDate, dueDate));
+                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, startDate, dueDate, DueDateReminder));
 
             DisplayMessage(result);
 
