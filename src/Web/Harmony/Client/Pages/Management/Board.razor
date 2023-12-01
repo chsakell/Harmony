@@ -24,7 +24,7 @@ else
             @if (KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
             {
                 <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
-                
+
                 <MudTooltip Delay="2000">
                     <ChildContent>
                         <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
@@ -36,7 +36,7 @@ else
                                 <MudListSubheader>
                                     Active sprints
                                 </MudListSubheader>
-                                @foreach(var sprint in KanbanStore.Board.ActiveSprints)
+                                @foreach (var sprint in KanbanStore.Board.ActiveSprints)
                                 {
                                     <MudListItem Class="mud-tertiary-text">@sprint.Name</MudListItem>
                                 }
@@ -136,7 +136,8 @@ else
                                                    aria-label="add" Disabled="AddCardsDisabled"></MudIconButton>
                                     <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
                                              Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-                                        <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
+                                        <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
+                                                   Disabled="item.CardStatus == Domain.Enums.BoardListCardStatus.DONE" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
                                     </MudMenu>
                                 }
                             </MudToolBar>

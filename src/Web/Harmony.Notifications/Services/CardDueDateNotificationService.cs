@@ -92,7 +92,7 @@ namespace Harmony.Notifications.Services
                 .Entities.Specify(filter)
                 .FirstOrDefaultAsync();
 
-            if (card == null || !card.DueDate.HasValue)
+            if (card == null || !card.DueDate.HasValue || card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
             {
                 return;
             }

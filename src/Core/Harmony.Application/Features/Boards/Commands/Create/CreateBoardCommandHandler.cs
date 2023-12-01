@@ -48,7 +48,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             var boardWithSameKeyExists = await _boardRepository.Exists(request.Key);
 
-            if(boardWithSameKeyExists)
+            if (boardWithSameKeyExists)
             {
                 return await Result<BoardDto>.FailAsync(_localizer["A board with the same key already exists. Pick a different key."]);
             }
@@ -96,9 +96,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             board.IssueTypes = issueTypes;
 
-            if(request.BoardType == BoardType.Scrum)
-            {
-                var boardLists = new List<BoardList>
+            var boardLists = new List<BoardList>
                 {
                     new BoardList()
                     {
@@ -123,8 +121,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                     }
                 };
 
-                board.Lists = boardLists;
-            }
+            board.Lists = boardLists;
 
             var dbResult = await _userBoardRepository.CreateAsync(userBoard);
 
