@@ -76,17 +76,18 @@ namespace Harmony.Notifications
                 {
                     using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
-                        var _jobNotificationService = scope.ServiceProvider.GetRequiredService<IJobNotificationService>();
+                        
 
                         switch (notificationType)
                         {
                             case NotificationType.CardChangedDueDate:
+                                var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
                                 var dateChangedNotification = JsonSerializer
                                                     .Deserialize<CardDueTimeExpiredNotification>(ea.Body.Span);
 
                                 if (dateChangedNotification != null)
                                 {
-                                    await _jobNotificationService.SendCardDueDateChangedNotification(dateChangedNotification.Id);
+                                    await _cardDueDateNotificationService.SendCardDueDateChangedNotification(dateChangedNotification.Id);
                                 }
                                 break;
                         }
@@ -102,21 +103,6 @@ namespace Harmony.Notifications
             _channel.BasicConsume(BrokerConstants.NotificationsQueue, true, consumer);
         }
 
-        public async Task SendCardDueDateChangedNotification(CardDueTimeExpiredNotification? notification)
-        {
-            if (notification == null)
-            {
-                return;
-            }
-
-            using (IServiceScope scope = _serviceProvider.CreateScope())
-            {
-
-
-                
-            }
-        }
-
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }
         private void OnConsumerUnregistered(object? sender, ConsumerEventArgs e) { }
         private void OnConsumerRegistered(object? sender, ConsumerEventArgs e) { }
@@ -125,8 +111,8 @@ namespace Harmony.Notifications
 
         public override void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
             base.Dispose();
         }
     }

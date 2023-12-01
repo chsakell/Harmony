@@ -2,6 +2,5 @@
 {
     public interface IJobNotificationService
     {
-        Task SendCardDueDateChangedNotification(Guid cardId);
     }
 }

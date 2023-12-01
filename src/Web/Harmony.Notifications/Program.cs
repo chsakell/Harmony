@@ -29,7 +29,7 @@ namespace Harmony.Notifications
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddSingleton<IEmailNotificationService, GmailNotificationService>();
-            builder.Services.AddScoped<IJobNotificationService, JobNotificationService>();
+            builder.Services.AddNotificationServices();
 
             // Add Hangfire services.
             builder.Services.AddHangfire(configuration => configuration

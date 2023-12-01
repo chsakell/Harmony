@@ -7,9 +7,11 @@ using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Client.Infrastructure.Managers;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Services.Identity;
+using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
@@ -29,6 +31,32 @@ namespace Harmony.Notifications.Extensions
         {
             services.AddScoped<IUserService, UserService>();
             services.AddAutoMapper(typeof(UserProfile).Assembly);
+
+            return services;
+        }
+
+        internal static IServiceCollection AddNotificationServices(this IServiceCollection services)
+        {
+            var managers = typeof(IJobNotificationService);
+
+            var types = managers
+                .Assembly
+                .GetExportedTypes()
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .Select(t => new
+                {
+                    Service = t.GetInterface($"I{t.Name}"),
+                    Implementation = t
+                })
+                .Where(t => t.Service != null);
+
+            foreach (var type in types)
+            {
+                if (managers.IsAssignableFrom(type.Service))
+                {
+                    services.AddScoped(type.Service, type.Implementation);
+                }
+            }
 
             return services;
         }
