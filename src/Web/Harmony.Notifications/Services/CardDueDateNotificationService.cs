@@ -41,9 +41,14 @@ namespace Harmony.Notifications.Services
                 return;
             }
 
-            var delay = card.DueDate - DateTime.Now;
+            var delay = card.DueDate - DateTime.Now.AddDays(-1);
 
-            var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromSeconds(10));
+            if(!delay.HasValue)
+            {
+                return;
+            }
+
+            var jobId = BackgroundJob.Schedule(() => Notify(cardId), delay.Value);
 
             if(string.IsNullOrEmpty(jobId))
             {
