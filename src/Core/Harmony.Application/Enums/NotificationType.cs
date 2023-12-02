@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Harmony.Application.Enums
+﻿namespace Harmony.Application.Enums
 {
     public enum NotificationType
     {
         CardDueDateUpdated,
         CardCompleted,
+        MemberAddedToCard,
+        MemberRemovedFromCard,
+        CommentAddedToCard,
+        AttachmentAddedToCard,
+        CardAddedToBoard,
         MemberAddedToBoard,
+        MemberRemovedFromBoard,
+        MemberAddedToWorkspace,
+        MemberRemovedFromWorkspace
     }
 }
