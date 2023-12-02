@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Harmony.Shared.Constants.Application;
@@ -27,6 +28,7 @@ namespace Harmony.Infrastructure.Seed
         private readonly ICheckListItemRepository _checkListItemRepository;
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICardRepository _cardRepository;
+        private readonly ISprintRepository _sprintRepository;
         private readonly UserManager<HarmonyUser> _userManager;
 
         private HarmonyUser _admin;
@@ -47,6 +49,7 @@ namespace Harmony.Infrastructure.Seed
             ICheckListItemRepository checkListItemRepository,
             IBoardListRepository boardListRepository,
             ICardRepository cardRepository,
+            ISprintRepository sprintRepository,
             UserManager<HarmonyUser> userManager)
         {
             _context = context;
@@ -60,6 +63,7 @@ namespace Harmony.Infrastructure.Seed
             _checkListItemRepository = checkListItemRepository;
             _boardListRepository = boardListRepository;
             _cardRepository = cardRepository;
+            _sprintRepository = sprintRepository;
             _userManager = userManager;
         }
 
@@ -102,10 +106,11 @@ namespace Harmony.Infrastructure.Seed
 
             var dbResult = await _userWorkspaceRepository.CreateAsync(userWorkspace);
 
-            await CreateBoards(engineering.Id);
+            await CreateBoard(engineering.Id, BoardType.Kanban);
+            await CreateBoard(engineering.Id, BoardType.Scrum);
         }
 
-        private async Task CreateBoards(Guid workspaceId)
+        private async Task CreateBoard(Guid workspaceId, BoardType type)
         {
             var labels = new List<Label>();
             foreach (var colour in LabelColorsConstants.GetDefaultColors())
@@ -125,38 +130,38 @@ namespace Harmony.Infrastructure.Seed
                 });
             }
 
-            var harmonyBoard = new Board()
+            var board = new Board()
             {
                 WorkspaceId = workspaceId,
-                Title = "Harmony",
-                Description = "The best project management tool ever",
-                Visibility = Domain.Enums.BoardVisibility.Workspace,
+                Title = type == BoardType.Kanban ? "Harmony" : "HR System",
+                Description = type == BoardType.Kanban ? "The best project management tool ever" : "CMS for HR operations" ,
+                Visibility = BoardVisibility.Workspace,
                 UserId = _admin.Id,
                 Labels = labels,
-                Type = Domain.Enums.BoardType.Kanban,
+                Type = type,
                 IssueTypes = issueTypes,
-                Key = "HARM"
+                Key = type == BoardType.Kanban ? "HARM" : "HRS"
             };
 
-            await _boardRepository.CreateAsync(harmonyBoard);
+            await _boardRepository.CreateAsync(board);
 
-            _issueTypes = harmonyBoard.IssueTypes;
+            _issueTypes = board.IssueTypes;
 
             var userBoard = new UserBoard()
             {
                 UserId = _admin.Id,
-                BoardId = harmonyBoard.Id,
+                BoardId = board.Id,
             };
             
             await _userBoardRepository.CreateAsync(userBoard);
 
-            await AddBoardMembers(workspaceId, harmonyBoard.Id);
 
-            await CreateList(harmonyBoard.Id, "TODO", 0);
-            await CreateList(harmonyBoard.Id, "IN PROGRESS", 1);
-            await CreateList(harmonyBoard.Id, "REVIEW", 2);
-            await CreateList(harmonyBoard.Id, "TESTING", 3);
-            await CreateList(harmonyBoard.Id, "COMPLETE", 4);
+            await AddBoardMembers(workspaceId, board.Id);
+
+            await CreateList(board, "TODO", 0);
+            await CreateList(board, "IN PROGRESS", 1);
+            await CreateList(board, "TESTING", 2);
+            await CreateList(board, "DONE", 3, BoardListCardStatus.DONE);
         }
 
         private async Task AddBoardMembers(Guid workspaceId, Guid boardId)
@@ -173,18 +178,24 @@ namespace Harmony.Infrastructure.Seed
                     BoardId = boardId,
                 };
 
-                var userWorkspace = new UserWorkspace()
+                var userWorkspace = await _userWorkspaceRepository.GetUserWorkspace(workspaceId, user);
+
+                if(userWorkspace == null)
                 {
-                    UserId = user,
-                    WorkspaceId = workspaceId
-                };
+                    userWorkspace = new UserWorkspace()
+                    {
+                        UserId = user,
+                        WorkspaceId = workspaceId
+                    };
+
+                    await _userWorkspaceRepository.CreateAsync(userWorkspace);
+                }
 
                 await _userBoardRepository.CreateAsync(userBoard);
-                await _userWorkspaceRepository.CreateAsync(userWorkspace);
             }
         }
 
-        private async Task CreateList(Guid boardId, string title, short order)
+        private async Task CreateList(Board board, string title, short order, BoardListCardStatus? status = null)
         {
             var faker = new Faker(locale: "en");
 
@@ -192,19 +203,36 @@ namespace Harmony.Infrastructure.Seed
             {
                 Title = title,
                 UserId = faker.PickRandom(_boardUsers),
-                BoardId = boardId,
-                Status = Domain.Enums.BoardListStatus.Active,
-                Position = order
+                BoardId = board.Id,
+                Status = BoardListStatus.Active,
+                Position = order,
+                CardStatus = status
             };
 
             await _boardListRepository.CreateAsync(todoList);
 
-            await GenerateCards(boardId, todoList.Id);
+            await GenerateCards(board, todoList.Id);
         }
 
-        private async Task GenerateCards(Guid boardId, Guid boardListId)
+        private async Task GenerateCards(Board board, Guid boardListId)
         {
-            var labels = await _boardLabelRepository.GetLabels(boardId);
+            var labels = await _boardLabelRepository.GetLabels(board.Id);
+            Sprint sprint = null;
+
+            if (board.Type == BoardType.Scrum)
+            {
+                sprint = new Sprint()
+                {
+                    Name = "Iteration One",
+                    Goal = "Build home screen",
+                    BoardId = board.Id,
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddDays(14),
+                    Status = SprintStatus.Active
+                };
+
+                await _sprintRepository.CreateAsync(sprint);
+            }
 
             for (var i = 0; i< 5; i++ )
             {
@@ -249,7 +277,8 @@ namespace Harmony.Infrastructure.Seed
                     Status = Domain.Enums.CardStatus.Active,
                     Members = members,
                     Labels = cardLabels,
-                    IssueType = issueType
+                    IssueType = issueType,
+                    SprintId = board.Type == BoardType.Kanban ? null : sprint.Id
                 };
 
                 await _cardRepository.CreateAsync(card);
