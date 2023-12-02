@@ -6,6 +6,9 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
 {
@@ -17,19 +20,25 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IBoardRepository _boardRepository;
         private readonly ISender _sender;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<AddUserBoardCommandHandler> _localizer;
 
         public AddUserBoardCommandHandler(IUserBoardRepository userBoardRepository,
             IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
+            IBoardRepository boardRepository,
             ISender sender,
+            INotificationsPublisher notificationsPublisher,
             IStringLocalizer<AddUserBoardCommandHandler> localizer)
         {
             _userBoardRepository = userBoardRepository;
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
+            _boardRepository = boardRepository;
             _sender = sender;
+            _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
         }
         public async Task<Result<UserBoardResponse>> Handle(AddUserBoardCommand request, CancellationToken cancellationToken)
@@ -73,6 +82,15 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
 
             if (dbResult > 0)
             {
+                var board = await _boardRepository.GetAsync(request.BoardId);
+
+                var slug = StringUtilities.SlugifyString(board.Title.ToString());
+
+                var boardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/";
+
+                _notificationsPublisher
+                    .Publish(new MemberAddedToBoardNotification(request.BoardId, request.UserId, boardUrl));
+
                 var user = await _userBoardRepository.GetBoardAccessMember(request.BoardId, request.UserId);
 
                 return await Result<UserBoardResponse>.SuccessAsync(user, _localizer["User added to board"]);

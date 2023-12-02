@@ -32,7 +32,7 @@ namespace Harmony.Notifications.Services
 
         public async Task SendCardDueDateChangedNotification(Guid cardId)
         {
-            await RemovePendingJobs(cardId, NotificationType.CardDueDateUpdated);
+            await RemovePendingCardJobs(cardId, NotificationType.CardDueDateUpdated);
 
             var card = await _cardRepository.Get(cardId);
 
@@ -43,7 +43,6 @@ namespace Harmony.Notifications.Services
                 return;
             }
 
-            // 1/12/2023 10.00
             var delay = card.DueDate.Value - DateTime.Now;
 
             switch(card.DueDateReminderType)

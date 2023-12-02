@@ -13,11 +13,29 @@ namespace Harmony.Notifications.Services
             _notificationContext = notificationContext;
         }
 
-        protected async Task RemovePendingJobs(Guid cardId, NotificationType type)
+        protected async Task RemovePendingCardJobs(Guid cardId, NotificationType type)
         {
-            // check if there are already pending jobs for this
+            // check if there are already pending jobs for this card and type
             var jobs = _notificationContext.Notifications
                 .Where(n => n.CardId == cardId && n.Type == type);
+
+            if (jobs.Any())
+            {
+                foreach (var job in jobs)
+                {
+                    BackgroundJob.Delete(job.JobId); // cancels the job
+                    _notificationContext.Notifications.Remove(job);
+                }
+
+                await _notificationContext.SaveChangesAsync();
+            }
+        }
+
+        protected async Task RemovePendingBoardJobs(Guid boardId, NotificationType type)
+        {
+            // check if there are already pending jobs for this board and type
+            var jobs = _notificationContext.Notifications
+                .Where(n => n.BoardId == boardId && n.Type == type);
 
             if (jobs.Any())
             {

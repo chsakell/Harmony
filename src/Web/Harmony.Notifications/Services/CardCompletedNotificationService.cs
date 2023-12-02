@@ -30,7 +30,7 @@ namespace Harmony.Notifications.Services
 
         public async Task SendCardCompletedNotification(Guid cardId)
         {
-            await RemovePendingJobs(cardId, NotificationType.CardCompleted);
+            await RemovePendingCardJobs(cardId, NotificationType.CardCompleted);
 
             var card = await _cardRepository.Get(cardId);
 

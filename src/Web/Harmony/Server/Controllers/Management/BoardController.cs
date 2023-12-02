@@ -16,6 +16,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Domain.Enums;
+using Harmony.Server.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -52,6 +53,8 @@ namespace Harmony.Server.Controllers.Management
         [HttpPost("{id:guid}/members")]
         public async Task<IActionResult> AddUserToBoard(Guid id, AddUserBoardCommand command)
         {
+            command.HostUrl = Request.BaseUrl();
+
             return Ok(await _mediator.Send(command));
         }
 

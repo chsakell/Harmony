@@ -46,15 +46,15 @@ namespace Harmony.Infrastructure.Services.Management
 
             switch (board.Visibility)
             {
-                case Domain.Enums.BoardVisibility.Private:
+                case BoardVisibility.Private:
                     var userBoard = await _userBoardRepository.GetBoardAccessMember(boardId, userId);
                     hasAccess = userBoard != null;
                     break;
-                case Domain.Enums.BoardVisibility.Workspace:
+                case BoardVisibility.Workspace:
                     var userWorkspace = await _userWorkspaceRepository.GetUserWorkspace(board.WorkspaceId, userId);
                     hasAccess = userWorkspace != null;
                     break;
-                case Domain.Enums.BoardVisibility.Public:
+                case BoardVisibility.Public:
                     hasAccess = true;
                     break;
             }

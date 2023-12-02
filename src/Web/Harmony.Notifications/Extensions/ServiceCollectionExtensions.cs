@@ -11,6 +11,7 @@ using Harmony.Client.Infrastructure.Managers;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Services.Identity;
+using Harmony.Infrastructure.Services.Management;
 using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Notifications.Services;
@@ -31,6 +32,7 @@ namespace Harmony.Notifications.Extensions
         internal static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IBoardService, BoardService>();
             services.AddAutoMapper(typeof(UserProfile).Assembly);
 
             return services;
@@ -40,16 +42,28 @@ namespace Harmony.Notifications.Extensions
         {
             services.AddScoped<ICardDueDateNotificationService, CardDueDateNotificationService>();
             services.AddScoped<ICardCompletedNotificationService, CardCompletedNotificationService>();
-
+            services.AddScoped<IMemberAddedToBoardNotificationService, MemberAddedToBoardNotificationService>();
             return services;
         }
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            return services
-                .AddScoped<ICardRepository, CardRepository>();
+            return services.
+                AddScoped<IWorkspaceRepository, WorkspaceRepository>()
+                .AddScoped<IUserWorkspaceRepository, UserWorkspaceRepository>()
+                .AddScoped<IBoardRepository, BoardRepository>()
+                .AddScoped<IUserBoardRepository, UserBoardRepository>()
+                .AddScoped<IBoardListRepository, BoardListRepository>()
+                .AddScoped<ICardRepository, CardRepository>()
+                .AddScoped<ICheckListRepository, CheckListRepository>()
+                .AddScoped<ICheckListItemRepository, CheckListItemRepository>()
+                .AddScoped<IBoardLabelRepository, BoardLabelRepository>()
+                .AddScoped<ICardLabelRepository, CardLabelRepository>()
+                .AddScoped<ICardActivityRepository, CardActivityRepository>()
+                .AddScoped<IUserCardRepository, UserCardRepository>()
+                .AddScoped<IIssueTypeRepository, IssueTypeRepository>()
+                .AddScoped<ISprintRepository, SprintRepository>(); ;
         }
-
 
         internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {

@@ -98,6 +98,16 @@ namespace Harmony.Notifications
                                     await _cardCompletedNotificationService.SendCardCompletedNotification(cardCompletedNotification.Id);
                                 }
                                 break;
+                            case NotificationType.MemberAddedToBoard:
+                                var memberAddedToBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToBoardNotificationService>();
+                                var memberAddedToBoardNotification = JsonSerializer
+                                                    .Deserialize<MemberAddedToBoardNotification>(ea.Body.Span);
+
+                                if (memberAddedToBoardNotification != null)
+                                {
+                                    await memberAddedToBoardNotificationService.SendMemberAddedToBoardNotification(memberAddedToBoardNotification);
+                                }
+                                break;
                         }
                     }
                 }
