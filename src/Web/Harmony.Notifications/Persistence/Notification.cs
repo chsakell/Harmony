@@ -1,7 +1,4 @@
 ﻿using Harmony.Application.Enums;
-using Harmony.Persistence.DbContext;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace Harmony.Notifications.Persistence
 {

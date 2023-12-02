@@ -1,5 +1,4 @@
-﻿using Harmony.Persistence.DbContext;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Notifications.Persistence
 {

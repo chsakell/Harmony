@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Harmony.Shared.Constants.Role;
 using Harmony.Application.Exceptions;
 using Harmony.Persistence.Identity;
-using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
 using Harmony.Domain.Entities;

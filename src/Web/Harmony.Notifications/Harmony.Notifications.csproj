@@ -21,7 +21,6 @@
     </PackageReference>
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.7.0" />
-    <PackageReference Include="sib_api_v3_sdk" Version="4.0.2" />
   </ItemGroup>
 
   <ItemGroup>

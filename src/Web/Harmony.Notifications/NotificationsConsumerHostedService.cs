@@ -1,18 +1,13 @@
-﻿using Hangfire;
-using Harmony.Application.Configurations;
+﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Enums;
 using Harmony.Application.Notifications;
 using Harmony.Notifications.Contracts;
-using Harmony.Notifications.Persistence;
-using Harmony.Notifications.Services;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Channels;
 
 namespace Harmony.Notifications
 {

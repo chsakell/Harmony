@@ -1,10 +1,8 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
+﻿using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Client.Infrastructure.Models.Labels;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.RenderTree;
 using MudBlazor;
 
 namespace Harmony.Client.Shared.Modals

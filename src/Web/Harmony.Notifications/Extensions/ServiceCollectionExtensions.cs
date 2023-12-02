@@ -1,13 +1,7 @@
 ﻿using Harmony.Application.Configurations;
-using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Account;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
-using Harmony.Client.Infrastructure.Managers;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Services.Identity;
@@ -19,9 +13,6 @@ using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using sib_api_v3_sdk.Client;
-using System.Reflection;
-
 
 namespace Harmony.Notifications.Extensions
 {

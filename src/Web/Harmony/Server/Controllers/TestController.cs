@@ -1,10 +1,5 @@
 ﻿using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.DTO;
-using Harmony.Application.Features.Cards.Commands.UploadCardFile;
-using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Application.Notifications;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers

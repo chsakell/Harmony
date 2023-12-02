@@ -1,18 +1,13 @@
 ﻿using Hangfire;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Specifications.Cards;
 using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Domain.Entities;
 using Harmony.Application.Enums;
-using Harmony.Application.Helpers;
-using Harmony.Application.Responses;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Specifications.Boards;
-using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Notifications;
 
 namespace Harmony.Notifications.Services
