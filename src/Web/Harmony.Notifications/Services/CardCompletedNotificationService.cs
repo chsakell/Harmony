@@ -14,11 +14,11 @@ namespace Harmony.Notifications.Services
 {
     public class CardCompletedNotificationService : BaseNotificationService, ICardCompletedNotificationService
     {
-        private readonly IEmailNotificationService _emailNotificationService;
+        private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
         private readonly ICardRepository _cardRepository;
 
-        public CardCompletedNotificationService(IEmailNotificationService emailNotificationService,
+        public CardCompletedNotificationService(IEmailService emailNotificationService,
             IUserService userService,
             NotificationContext notificationContext,
             ICardRepository cardRepository) : base(notificationContext)
@@ -39,7 +39,7 @@ namespace Harmony.Notifications.Services
                 return;
             }
 
-            var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromMinutes(1));
+            var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromSeconds(10));
 
             if(string.IsNullOrEmpty(jobId))
             {

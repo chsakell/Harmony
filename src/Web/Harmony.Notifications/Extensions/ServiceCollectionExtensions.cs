@@ -19,6 +19,7 @@ using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using sib_api_v3_sdk.Client;
 using System.Reflection;
 
 
@@ -106,5 +107,15 @@ namespace Harmony.Notifications.Extensions
                     options.EnableDetailedErrors(true);
                     options.EnableSensitiveDataLogging(true);
                 });
+
+        internal static IServiceCollection ConfigureBrevo(this IServiceCollection services, IConfiguration configuration)
+        {
+            //var apiKey = configuration["BrevoSettings:ApiKey"];
+            //Configuration.Default.ApiKey.Add("api-key", apiKey);
+
+            services.Configure<BrevoSettings>(configuration.GetSection("BrevoSettings"));
+
+            return services;
+        }
     }
 }

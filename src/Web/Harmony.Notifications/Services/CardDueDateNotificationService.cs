@@ -16,11 +16,11 @@ namespace Harmony.Notifications.Services
 {
     public class CardDueDateNotificationService : BaseNotificationService, ICardDueDateNotificationService
     {
-        private readonly IEmailNotificationService _emailNotificationService;
+        private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
         private readonly ICardRepository _cardRepository;
 
-        public CardDueDateNotificationService(IEmailNotificationService emailNotificationService,
+        public CardDueDateNotificationService(IEmailService emailNotificationService,
             IUserService userService,
             NotificationContext notificationContext,
             ICardRepository cardRepository) : base(notificationContext)

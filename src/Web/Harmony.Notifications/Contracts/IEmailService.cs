@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Harmony.Notifications.Contracts
 {
-    public interface IEmailNotificationService
+    public interface IEmailService
     {
-        Task SendEmailAsync(string recipientAddress, string subject, string htmlMessage);
+        Task SendEmailAsync(string recipientAddress, string subject, string htmlContent);
     }
 }

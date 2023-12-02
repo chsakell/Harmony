@@ -2,8 +2,7 @@ using Hangfire;
 using Harmony.Application.Configurations;
 using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Extensions;
-using Harmony.Notifications.Services;
-using Microsoft.Extensions.Configuration;
+using Harmony.Notifications.Services.EmailProviders;
 
 namespace Harmony.Notifications
 {
@@ -21,14 +20,23 @@ namespace Harmony.Notifications
             builder.Services.AddRepositories();
             builder.Services.AddApplicationServices();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
-            
+
+            // Email service providers
             builder.Services.Configure<GmailSettings>
                         (options => builder.Configuration
                         .GetSection("GmailSettings").Bind(options));
 
+            // Choose below your email provider
+            //builder.Services.AddSingleton<IEmailService, GmailEmailService>();
+            builder.Services.AddSingleton<IEmailService, BrevoEmailService>();
+
+            builder.Services.ConfigureBrevo(builder.Configuration);
+
+            builder.Services.AddHttpClient();
+
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddSingleton<IEmailNotificationService, GmailNotificationService>();
+            
             builder.Services.AddNotificationServices();
 
             // Add Hangfire services.

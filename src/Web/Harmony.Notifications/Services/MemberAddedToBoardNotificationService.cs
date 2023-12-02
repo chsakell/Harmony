@@ -19,13 +19,13 @@ namespace Harmony.Notifications.Services
 {
     public class MemberAddedToBoardNotificationService : BaseNotificationService, IMemberAddedToBoardNotificationService
     {
-        private readonly IEmailNotificationService _emailNotificationService;
+        private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
         private readonly IBoardService _boardService;
         private readonly IBoardRepository _boardRepository;
 
         public MemberAddedToBoardNotificationService(
-            IEmailNotificationService emailNotificationService,
+            IEmailService emailNotificationService,
             IUserService userService,
             IBoardService boardService,
             NotificationContext notificationContext,

@@ -5,14 +5,14 @@ using MailKit.Net.Smtp;
 using Harmony.Notifications.Models;
 using Harmony.Notifications.Contracts;
 
-namespace Harmony.Notifications.Services
+namespace Harmony.Notifications.Services.EmailProviders
 {
-    public class GmailNotificationService : IEmailNotificationService
+    public class GmailEmailService : IEmailService
     {
-        private readonly ILogger<GmailNotificationService> _logger;
+        private readonly ILogger<GmailEmailService> _logger;
         private readonly GmailSettings settings;
-        public GmailNotificationService(IOptions<GmailSettings> options,
-            ILogger<GmailNotificationService> logger)
+        public GmailEmailService(IOptions<GmailSettings> options,
+            ILogger<GmailEmailService> logger)
         {
             _logger = logger;
             settings = options.Value;
