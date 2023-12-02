@@ -33,6 +33,7 @@ namespace Harmony.Notifications.Extensions
         internal static IServiceCollection AddNotificationServices(this IServiceCollection services)
         {
             services.AddScoped<ICardDueDateNotificationService, CardDueDateNotificationService>();
+            services.AddScoped<IMemberAddedToCardNotificationService, MemberAddedToCardNotificationService>();
             services.AddScoped<ICardCompletedNotificationService, CardCompletedNotificationService>();
             services.AddScoped<IMemberAddedToBoardNotificationService, MemberAddedToBoardNotificationService>();
             return services;

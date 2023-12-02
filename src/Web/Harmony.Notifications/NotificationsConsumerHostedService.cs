@@ -73,6 +73,16 @@ namespace Harmony.Notifications
                     {
                         switch (notificationType)
                         {
+                            case NotificationType.MemberAddedToCard:
+                                var memberAddedToCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToCardNotificationService>();
+                                var memberAddedToCardNotification = JsonSerializer
+                                                    .Deserialize<MemberAddedToCardNotification>(ea.Body.Span);
+
+                                if (memberAddedToCardNotification != null)
+                                {
+                                    await memberAddedToCardNotificationService.Notify(memberAddedToCardNotification);
+                                }
+                                break;
                             case NotificationType.CardDueDateUpdated:
                                 var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
                                 var dateChangedNotification = JsonSerializer

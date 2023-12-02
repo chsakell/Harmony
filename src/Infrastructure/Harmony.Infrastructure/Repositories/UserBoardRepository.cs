@@ -123,5 +123,10 @@ namespace Harmony.Infrastructure.Repositories
 
             return query;
         }
+
+        public async Task LoadBoardEntryAsync(UserBoard userBoard)
+        {
+            await _context.Entry(userBoard).Reference(ub => ub.Board).LoadAsync();
+        }
     }
 }

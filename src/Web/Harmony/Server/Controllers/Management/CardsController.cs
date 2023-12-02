@@ -13,6 +13,7 @@ using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Server.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management
@@ -98,6 +99,8 @@ namespace Harmony.Server.Controllers.Management
         [HttpPost("{id:guid}/members")]
         public async Task<IActionResult> GetMembers(AddUserCardCommand command)
         {
+            command.HostUrl = Request.BaseUrl();
+
             return Ok(await _mediator.Send(command));
         }
 

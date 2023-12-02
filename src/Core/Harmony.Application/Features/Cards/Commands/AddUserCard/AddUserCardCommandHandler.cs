@@ -8,6 +8,9 @@ using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using AutoMapper;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
@@ -19,6 +22,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
         private readonly ICardRepository _cardRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IStringLocalizer<AddUserCardCommandHandler> _localizer;
 
@@ -27,6 +31,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             IUserCardRepository userCardRepository,
             ICardRepository cardRepository,
             IUserService userService, IMapper mapper,
+            INotificationsPublisher notificationsPublisher,
             IHubClientNotifierService hubClientNotifierService,
             IStringLocalizer<AddUserCardCommandHandler> localizer)
         {
@@ -36,6 +41,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             _cardRepository = cardRepository;
             _userService = userService;
             _mapper = mapper;
+            _notificationsPublisher = notificationsPublisher;
             _hubClientNotifierService = hubClientNotifierService;
             _localizer = localizer;
         }
@@ -87,6 +93,14 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
                     };
 
                     var member = _mapper.Map<CardMemberDto>(user);
+
+                    await _userBoardRepository.LoadBoardEntryAsync(userBoard);
+
+                    var slug = StringUtilities.SlugifyString(userBoard.Board.Title.ToString());
+
+                    var cardUrl = $"{request.HostUrl}boards/{userBoard.Board.Id}/{slug}/?cardId={request.CardId}";
+                    
+                    _notificationsPublisher.Publish(new MemberAddedToCardNotification(boardId, request.CardId, request.UserId , cardUrl));
 
                     await _hubClientNotifierService.AddCardMember(boardId, request.CardId, member);
 
