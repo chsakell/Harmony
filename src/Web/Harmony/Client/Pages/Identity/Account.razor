@@ -1,112 +1,150 @@
 ﻿@page "/account/"
+@using Harmony.Application.Enums
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Account> localizer
 
 
 <MudContainer Class="mt-16" MaxWidth="MaxWidth.Medium">
-    <MudGrid>
-        <MudItem xs="12" sm="4">
-            <MudCard Elevation="25">
-                <MudCardContent>
-                    <div class="d-flex justify-center mb-4">
-                        @if (!string.IsNullOrEmpty(_user.ProfilePicture))
-                        {
-                            <MudAvatar Image="@_user.ProfilePicture" Style="height:250px; width:250px;"> </MudAvatar>
-                        }
-                        else if (!string.IsNullOrEmpty(_user.FirstName))
-                        {
-                            <MudAvatar Color="Color.Dark" Style="height:250px; width:250px;">@_user.FirstName[0] @_user.LastName[0]</MudAvatar>
-                        }
-                    </div>
-                    <MudText Typo="Typo.h6" Align="Align.Center">@_user.FirstName @_user.LastName</MudText>
-                    <MudText Align="Align.Center">@_user.Email</MudText>
-                </MudCardContent>
-                <MudCardActions Class="d-flex justify-center">
-                    <InputFile id="fileInput" OnChange="UploadFiles" hidden />
-                    <MudButton HtmlTag="label"
-                               Variant="Variant.Text"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               StartIcon="@Icons.Filled.CloudUpload"
-                               for="fileInput">
-                        Upload Image
-                    </MudButton>
-                    @if (!string.IsNullOrEmpty(@_user.ProfilePicture))
-                    {
-                        <MudButton Variant="Variant.Text"
-                                   Color="Color.Error"
-                                   StartIcon="@Icons.Filled.Delete"
-                                   Size="Size.Small"
-                                   OnClick="DeleteAsync">Delete Image</MudButton>
-                    }
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12" sm="8">
-            <MudStack>
-                <MudCard>
-                    <MudCardContent>
-                        <EditForm Model="@_user" OnValidSubmit="Update">
-                            <DataAnnotationsValidator />
-                            <MudGrid>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField @bind-Value="_user.FirstName"
-                                                  For="@(() => _user.FirstName)"
-                                                  Immediate="true"
-                                                  Label="First Name" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField @bind-Value="_user.LastName"
-                                                  For="@(() => _user.LastName)"
-                                                  Immediate="true"
-                                                  Label="Last Name" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField Disabled="true" @bind-Value="_user.UserName"
-                                                  For="@(() => _user.UserName)"
-                                                  Immediate="true"
-                                                  Label="Username" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField @bind-Value="_user.Email"
-                                                  For="@(() => _user.Email)"
-                                                  Immediate="true"
-                                                  Label="Email" />
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
-                                               Disabled="@(!context.IsModified() || !context.Validate() || _updating)"
-                                               FullWidth="true" Color="Color.Primary" Class="ml-auto">Update</MudButton>
-                                </MudItem>
-                            </MudGrid>
-                        </EditForm>
-                    </MudCardContent>
-                </MudCard>
-                <MudDivider Class="my-4" />
-                <MudCard>
-                    <MudCardContent>
-                        <EditForm OnValidSubmit="ChangePassword" Model="_changePassword">
-                            <DataAnnotationsValidator />
-                            <MudGrid>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField For="@(() => _changePassword.NewPassword)" InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
-                                                  OnAdornmentClick="TogglePasswordVisibility" @bind-Value="_changePassword.NewPassword" Label="New Password" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudTextField For="@(() => _changePassword.ConfirmPassword)" InputType="InputType.Password" @bind-Value="_changePassword.ConfirmPassword" Label="Confirm new password" />
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudTextField For="@(() => _changePassword.CurrentPassword)" InputType="InputType.Password" @bind-Value="_changePassword.CurrentPassword" Label="Current password" />
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
-                                               Disabled="@(!context.IsModified() || !context.Validate() || _updatingPassword)" FullWidth="true" Color="Color.Primary" Class="ml-auto">Change Password</MudButton>
-                                </MudItem>
-                            </MudGrid>
-                        </EditForm>
-                    </MudCardContent>
-                </MudCard>
-            </MudStack>
-        </MudItem>
-    </MudGrid>
-
+    <MudTabs Elevation="1" Rounded="true" Centered="true" PanelClass="pa-6">
+        <MudTabPanel Icon="@Icons.Material.Outlined.AccountCircle">
+            <ChildContent>
+                <MudGrid>
+                    <MudItem xs="12" sm="4">
+                        <MudCard Elevation="25">
+                            <MudCardContent>
+                                <div class="d-flex justify-center mb-4">
+                                    @if (!string.IsNullOrEmpty(_user.ProfilePicture))
+                                    {
+                                        <MudAvatar Image="@_user.ProfilePicture" Style="height:250px; width:250px;"> </MudAvatar>
+                                    }
+                                    else if (!string.IsNullOrEmpty(_user.FirstName))
+                                    {
+                                        <MudAvatar Color="Color.Dark" Style="height:250px; width:250px;">@_user.FirstName[0] @_user.LastName[0]</MudAvatar>
+                                    }
+                                </div>
+                                <MudText Typo="Typo.h6" Align="Align.Center">@_user.FirstName @_user.LastName</MudText>
+                                    <MudText Align="Align.Center">@_user.Email</MudText>
+                                </MudCardContent>
+                                <MudCardActions Class="d-flex justify-center">
+                                    <InputFile id="fileInput" OnChange="UploadFiles" hidden />
+                                    <MudButton HtmlTag="label"
+                                               Variant="Variant.Text"
+                                               Color="Color.Primary"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Filled.CloudUpload"
+                                               for="fileInput">
+                                        Upload Image
+                                    </MudButton>
+                                    @if (!string.IsNullOrEmpty(@_user.ProfilePicture))
+                                {
+                                    <MudButton Variant="Variant.Text"
+                                               Color="Color.Error"
+                                               StartIcon="@Icons.Filled.Delete"
+                                               Size="Size.Small"
+                                               OnClick="DeleteAsync">Delete Image</MudButton>
+                                }
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="8">
+                        <MudStack>
+                            <MudCard>
+                                <MudCardContent>
+                                    <EditForm Model="@_user" OnValidSubmit="Update">
+                                        <DataAnnotationsValidator />
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="6">
+                                                <MudTextField @bind-Value="_user.FirstName"
+                                                              For="@(() => _user.FirstName)"
+                                                              Immediate="true"
+                                                              Label="First Name" />
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudTextField @bind-Value="_user.LastName"
+                                                              For="@(() => _user.LastName)"
+                                                              Immediate="true"
+                                                              Label="Last Name" />
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudTextField Disabled="true" @bind-Value="_user.UserName"
+                                                              For="@(() => _user.UserName)"
+                                                              Immediate="true"
+                                                              Label="Username" />
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudTextField @bind-Value="_user.Email"
+                                                              For="@(() => _user.Email)"
+                                                              Immediate="true"
+                                                              Label="Email" />
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                                                           Disabled="@(!context.IsModified() || !context.Validate() || _updating)"
+                                                           FullWidth="true" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                                            </MudItem>
+                                        </MudGrid>
+                                    </EditForm>
+                                </MudCardContent>
+                            </MudCard>
+                            <MudDivider Class="my-4" />
+                            <MudCard>
+                                <MudCardContent>
+                                    <EditForm OnValidSubmit="ChangePassword" Model="_changePassword">
+                                        <DataAnnotationsValidator />
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="6">
+                                                <MudTextField For="@(() => _changePassword.NewPassword)" InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
+                                                              OnAdornmentClick="TogglePasswordVisibility" @bind-Value="_changePassword.NewPassword" Label="New Password" />
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudTextField For="@(() => _changePassword.ConfirmPassword)" InputType="InputType.Password" @bind-Value="_changePassword.ConfirmPassword" Label="Confirm new password" />
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <MudTextField For="@(() => _changePassword.CurrentPassword)" InputType="InputType.Password" @bind-Value="_changePassword.CurrentPassword" Label="Current password" />
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                                                           Disabled="@(!context.IsModified() || !context.Validate() || _updatingPassword)" FullWidth="true" Color="Color.Primary" Class="ml-auto">Change Password</MudButton>
+                                            </MudItem>
+                                        </MudGrid>
+                                    </EditForm>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudStack>
+                    </MudItem>
+                </MudGrid>
+            </ChildContent>
+            <TabContent>
+                Profile
+            </TabContent>
+        </MudTabPanel>
+        <MudTabPanel Icon="@Icons.Material.Outlined.Notifications">
+            <ChildContent>
+                <MudTable T="NotificationType"
+                          FixedHeader="true" Height="calc(100vh - 290px)"
+                          Items="@_notifications"
+                          MultiSelection="true" @bind-SelectedItems="selectedNotifications" Hover="true">
+                          <ToolBarContent>
+                        <MudTextField T="string" Immediate="true" ValueChanged="@(s=>OnSearch(s))"
+                            Clearable="true" Placeholder="Search notifications.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        <MudSpacer/>
+                        <div class="justify-center mud-text-align-center">
+                            <MudButton EndIcon="@Icons.Material.Outlined.Save" ButtonType="ButtonType.Button"
+                                       Variant="Variant.Filled" Color="Color.Default">Update</MudButton>
+                        </div>
+                          </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Notification</MudTh>
+                        <MudTh>Triggered at</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Notification">@(GetPresentation(context))</MudTd>
+                        <MudTd DataLabel="Description">@(GetDescription(context))</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </ChildContent>
+            <TabContent>
+                Notifications
+            </TabContent>
+        </MudTabPanel>
+    </MudTabs>
 </MudContainer>

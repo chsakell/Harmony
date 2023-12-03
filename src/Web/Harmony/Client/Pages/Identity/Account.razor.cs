@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Users.Commands.UpdatePassword;
+﻿using Harmony.Application.Enums;
+using Harmony.Application.Features.Users.Commands.UpdatePassword;
 using Harmony.Application.Features.Users.Commands.UpdateProfile;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Client.Infrastructure.Models.Account;
@@ -7,22 +8,31 @@ using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Pages.Identity
 {
     public partial class Account
     {
+        #region profile
+
         private UserModel _user = new();
         private bool _updating = false;
-
         private ChangePasswordModel _changePassword = new();
         private bool _updatingPassword = false;
-
         private bool _uploadingImage = false;
 
         private bool _passwordVisibility;
         private InputType _passwordInput = InputType.Password;
         private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+        #endregion
+
+        #region notifications
+        private HashSet<NotificationType> selectedNotifications = new HashSet<NotificationType>();
+        private List<NotificationType> _notifications = Enum.GetValues<NotificationType>().ToList();
+        #endregion
 
         protected async override Task OnInitializedAsync()
         {
@@ -129,6 +139,71 @@ namespace Harmony.Client.Pages.Identity
 
                 DisplayMessage(result);
             }
+        }
+
+        private string GetPresentation(NotificationType type)
+        {
+            return ToSentenceCase(type.ToString());
+        }
+
+        private string GetDescription(NotificationType type)
+        {
+            switch (type)
+            {
+                case NotificationType.CardDueDateUpdated:
+                    return "A card's due date has been updated. You must be assigned to that card";
+                case NotificationType.CardCompleted:
+                    return "A card has been moved to a list marked as DONE";
+                case NotificationType.MemberAddedToCard:
+                    return "You are being assigned to a card";
+                case NotificationType.MemberRemovedFromCard:
+                    return "You are no longer assigned to a card";
+                case NotificationType.CommentAddedToCard:
+                    return "Someone added a comment to a card";
+                case NotificationType.AttachmentAddedToCard:
+                    return "Attachement added to a card";
+                case NotificationType.CardAddedToBoard:
+                    return "A new card is added to the board";
+                case NotificationType.MemberAddedToBoard:
+                    return "You are being added to a board";
+                case NotificationType.MemberRemovedFromBoard:
+                    return "You are no longer member of a board";
+                case NotificationType.MemberAddedToWorkspace:
+                    return "You become member of a workspace";
+                case NotificationType.MemberRemovedFromWorkspace:
+                    return "You are no longer member of a workspace";
+
+                default:
+                    return string.Empty;
+            }
+        }
+
+        private void OnSearch(string text)
+        {
+            if(string.IsNullOrEmpty(text.Trim()))
+            {
+                _notifications = Enum.GetValues<NotificationType>().ToList();
+            }
+            else
+            {
+                var filteredNotifications = new List<NotificationType>();
+                foreach(var notification in Enum.GetValues<NotificationType>().AsEnumerable())
+                {
+                    if(ToSentenceCase(notification.ToString().ToLower())
+                        .Contains(text.Trim().ToLower()))
+                    {
+                        filteredNotifications.Add(notification);
+                    }
+                }
+
+                _notifications = filteredNotifications;
+            }
+            //_table.ReloadServerData();
+        }
+
+        public static string ToSentenceCase(string str)
+        {
+            return Regex.Replace(str, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
         }
 
         private void TogglePasswordVisibility()
