@@ -74,6 +74,17 @@ namespace Harmony.Client.Pages.Identity
             DisplayMessage(result);
         }
 
+        private async Task UpdateNotifications()
+        {
+            _updating = true;
+
+            var result = await _userNotificationManager.SetNotificationsAsync(selectedNotifications.ToList());
+
+            _updating = false;
+
+            DisplayMessage(result);
+        }
+
         private async Task ChangePassword()
         {
             _updatingPassword = true;

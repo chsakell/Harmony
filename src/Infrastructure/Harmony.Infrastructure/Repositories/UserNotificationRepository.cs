@@ -3,6 +3,7 @@ using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Harmony.Infrastructure.Repositories
 {
@@ -17,11 +18,28 @@ namespace Harmony.Infrastructure.Repositories
 
         public IQueryable<UserNotification> Entities => _context.Set<UserNotification>();
 
+        public async Task AddEntryAsync(UserNotification notification)
+        {
+            await _context.UserNotifications.AddAsync(notification);
+        }
+
         public async Task<int> CreateAsync(UserNotification activity)
         {
             await _context.UserNotifications.AddAsync(activity);
 
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> DeleteAsync(UserNotification activity)
+        {
+            _context.Remove(activity);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public void DeleteEntry(UserNotification notification)
+        {
+            _context.UserNotifications.Remove(notification);
         }
 
         public async Task<List<UserNotification>> GetAllForUser(string userId)
@@ -35,6 +53,11 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.UserNotifications
                 .Where(n => n.UserId == userId && n.NotificationType == type)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> Commit()
+        {
+            return await _context.SaveChangesAsync();
         }
     }
 }

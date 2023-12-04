@@ -4,6 +4,6 @@
     {
         public static string Index = "api/usernotifications";
 
-        public static string GetAllForUser(string userId) => $"{Index}/{userId}/";
+        public static string User(string userId) => $"{Index}/{userId}/";
     }
 }
