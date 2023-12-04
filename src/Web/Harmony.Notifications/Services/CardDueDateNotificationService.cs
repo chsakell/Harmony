@@ -6,7 +6,6 @@ using Harmony.Notifications.Persistence;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Enums;
 using Harmony.Application.Helpers;
 using Harmony.Domain.Enums;
 

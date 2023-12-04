@@ -29,7 +29,8 @@ namespace Harmony.Infrastructure.Extensions
                 .AddScoped<ICardActivityRepository, CardActivityRepository>()
                 .AddScoped<IUserCardRepository, UserCardRepository>()
                 .AddScoped<IIssueTypeRepository, IssueTypeRepository>()
-                .AddScoped<ISprintRepository, SprintRepository>();
+                .AddScoped<ISprintRepository, SprintRepository>()
+                .AddScoped<IUserNotificationRepository, UserNotificationRepository>();
         }
     }
 }

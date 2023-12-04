@@ -1,4 +1,4 @@
-﻿namespace Harmony.Application.Enums
+﻿namespace Harmony.Domain.Enums
 {
     public enum NotificationType
     {

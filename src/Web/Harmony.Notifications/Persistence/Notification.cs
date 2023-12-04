@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Enums;
+﻿using Harmony.Domain.Enums;
 
 namespace Harmony.Notifications.Persistence
 {

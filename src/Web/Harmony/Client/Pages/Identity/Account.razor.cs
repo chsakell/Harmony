@@ -1,9 +1,9 @@
-﻿using Harmony.Application.Enums;
-using Harmony.Application.Features.Users.Commands.UpdatePassword;
+﻿using Harmony.Application.Features.Users.Commands.UpdatePassword;
 using Harmony.Application.Features.Users.Commands.UpdateProfile;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using Harmony.Client.Infrastructure.Models.Account;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
@@ -30,8 +30,11 @@ namespace Harmony.Client.Pages.Identity
         #endregion
 
         #region notifications
+
         private HashSet<NotificationType> selectedNotifications = new HashSet<NotificationType>();
         private List<NotificationType> _notifications = Enum.GetValues<NotificationType>().ToList();
+        private List<NotificationType> _userNotifications = Enumerable.Empty<NotificationType>().ToList();
+
         #endregion
 
         protected async override Task OnInitializedAsync()
@@ -41,10 +44,17 @@ namespace Harmony.Client.Pages.Identity
                     .FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
 
             var result = await _userManager.GetAsync(userId) ;
-
-            if(result.Succeeded)
+            
+            if (result.Succeeded)
             {
+                var userNotificationsResult = await _userNotificationManager.GetNotificationsAsync(userId);
+
                 _user = _mapper.Map<UserModel>(result.Data);
+
+                if(userNotificationsResult.Succeeded)
+                {
+                    selectedNotifications = userNotificationsResult.Data.ToHashSet();
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using Harmony.Application.Enums;
+using Harmony.Domain.Enums;
 using Harmony.Notifications.Persistence;
 
 namespace Harmony.Notifications.Services
