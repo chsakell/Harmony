@@ -1,26 +1,21 @@
-﻿using AutoMapper;
-using Harmony.Application.Contracts.Repositories;
+﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Features.Users.Commands.UpdateUserNotifications;
-using Harmony.Application.Requests.Identity;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Microsoft.VisualBasic;
 
 namespace Harmony.Application.Features.Users.Commands.UpdatePassword
 {
     /// <summary>
-    /// Handler for updating password
+    /// Handler for updating user notifications
     /// </summary>
     public class UpdateUserNotificationsCommandHandler : IRequestHandler<UpdateUserNotificationsCommand, Result<bool>>
     {
         private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly ICurrentUserService _currentUserService;
 
-        public UpdateUserNotificationsCommandHandler(IAccountService accountService,
-            IUserNotificationRepository userNotificationRepository,
+        public UpdateUserNotificationsCommandHandler(IUserNotificationRepository userNotificationRepository,
             ICurrentUserService currentUserService)
         {
             _userNotificationRepository = userNotificationRepository;
