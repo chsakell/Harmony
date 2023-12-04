@@ -9,6 +9,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Specifications.Boards;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Infrastructure.Repositories;
 
 namespace Harmony.Notifications.Services
 {
@@ -18,6 +19,7 @@ namespace Harmony.Notifications.Services
         private readonly IUserService _userService;
         private readonly ICardRepository _cardRepository;
         private readonly IUserCardRepository _userCardRepository;
+        private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly IBoardRepository _boardRepository;
 
         public MemberAddedToCardNotificationService(
@@ -26,12 +28,14 @@ namespace Harmony.Notifications.Services
             ICardRepository cardRepository,
             IUserCardRepository userCardRepository,
             NotificationContext notificationContext,
+            IUserNotificationRepository userNotificationRepository,
             IBoardRepository boardRepository) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
             _userService = userService;
             _cardRepository = cardRepository;
             _userCardRepository = userCardRepository;
+            _userNotificationRepository = userNotificationRepository;
             _boardRepository = boardRepository;
         }
 
@@ -92,8 +96,15 @@ namespace Harmony.Notifications.Services
             {
                 return;
             }
-
             var user = userResult.Data;
+
+            var notificationRegistration = await _userNotificationRepository
+                .GetForUser(user.Id, NotificationType.MemberAddedToCard);
+
+            if(notificationRegistration == null)
+            {
+                return;
+            }
 
             var subject = $"Assigned to {card.Title} in {board.Title}";
 

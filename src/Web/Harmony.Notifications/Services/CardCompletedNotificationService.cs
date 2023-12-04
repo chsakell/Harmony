@@ -7,6 +7,7 @@ using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Domain.Enums;
+using Harmony.Infrastructure.Repositories;
 
 namespace Harmony.Notifications.Services
 {
@@ -14,15 +15,18 @@ namespace Harmony.Notifications.Services
     {
         private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
+        private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly ICardRepository _cardRepository;
 
         public CardCompletedNotificationService(IEmailService emailNotificationService,
             IUserService userService,
+            IUserNotificationRepository userNotificationRepository,
             NotificationContext notificationContext,
             ICardRepository cardRepository) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
             _userService = userService;
+            _userNotificationRepository = userNotificationRepository;
             _cardRepository = cardRepository;
         }
 
@@ -39,7 +43,7 @@ namespace Harmony.Notifications.Services
 
             var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromSeconds(10));
 
-            if(string.IsNullOrEmpty(jobId))
+            if (string.IsNullOrEmpty(jobId))
             {
                 return;
             }
@@ -72,13 +76,15 @@ namespace Harmony.Notifications.Services
             var subject = $"{card.Title} in {card.BoardList.Board.Title} completed";
             var cardMembers = (await _userService.GetAllAsync(card.Members.Select(m => m.UserId))).Data;
 
-            foreach ( var member in cardMembers )
+            var registeredUsers = await _userNotificationRepository
+                .GetUsersForType(cardMembers.Select(m => m.Id).ToList(), NotificationType.CardCompleted);
+
+            foreach (var member in cardMembers.Where(m => registeredUsers.Contains(m.Id)))
             {
                 var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} has been completed. ";
 
                 await _emailNotificationService.SendEmailAsync(member.Email, subject, content);
             }
-            
         }
     }
 }

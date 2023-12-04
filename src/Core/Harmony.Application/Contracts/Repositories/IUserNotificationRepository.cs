@@ -9,6 +9,8 @@ namespace Harmony.Application.Contracts.Repositories
     public interface IUserNotificationRepository
     {
         IQueryable<UserNotification> Entities { get; }
+        Task<List<UserNotification>> GetAllForType(List<string> userIds, NotificationType type);
+        Task<List<string>> GetUsersForType(List<string> userIds, NotificationType type);
         Task AddEntryAsync(UserNotification notification);
         void DeleteEntry(UserNotification notification);
         Task<List<UserNotification>> GetAllForUser(string userId);

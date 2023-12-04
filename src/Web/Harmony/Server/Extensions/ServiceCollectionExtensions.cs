@@ -6,10 +6,12 @@ using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Contracts.Services.UserNotifications;
 using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
+using Harmony.Infrastructure.Services.UserNotifications;
 using Harmony.Messaging;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
@@ -58,7 +60,7 @@ namespace Harmony.Server.Extensions
             services.AddScoped<IBoardService, BoardService>();
             services.AddScoped<IMemberSearchService, MemberSearchService>();
 
-			return services;
+            return services;
         }
 
         internal static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)

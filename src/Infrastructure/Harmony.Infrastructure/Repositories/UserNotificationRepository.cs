@@ -48,6 +48,21 @@ namespace Harmony.Infrastructure.Repositories
                 .Where(n => n.UserId == userId).ToListAsync();
         }
 
+        public async Task<List<UserNotification>> GetAllForType(List<string> userIds, NotificationType type)
+        {
+            return await _context.UserNotifications
+                .Where(n => userIds.Contains(n.UserId) && n.NotificationType == type)
+                .ToListAsync();
+        }
+
+        public async Task<List<string>> GetUsersForType(List<string> userIds, NotificationType type)
+        {
+            return await _context.UserNotifications
+                .Where(n => userIds.Contains(n.UserId) && n.NotificationType == type)
+                .Select(n => n.UserId)
+                .ToListAsync();
+        }
+
         public async Task<UserNotification?> GetForUser(string userId, NotificationType type)
         {
             return await _context.UserNotifications

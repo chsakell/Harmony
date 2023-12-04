@@ -15,15 +15,18 @@ namespace Harmony.Notifications.Services
     {
         private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
+        private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly ICardRepository _cardRepository;
 
         public CardDueDateNotificationService(IEmailService emailNotificationService,
             IUserService userService,
+            IUserNotificationRepository userNotificationRepository,
             NotificationContext notificationContext,
             ICardRepository cardRepository) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
             _userService = userService;
+            _userNotificationRepository = userNotificationRepository;
             _cardRepository = cardRepository;
         }
 
@@ -103,7 +106,10 @@ namespace Harmony.Notifications.Services
             var subject = $"{card.Title} in {card.BoardList.Board.Title} is due {GetDueMessage(card.DueDateReminderType.Value)}";
             var cardMembers = (await _userService.GetAllAsync(card.Members.Select(m => m.UserId))).Data;
 
-            foreach ( var member in cardMembers )
+            var registeredUsers = await _userNotificationRepository
+                .GetUsersForType(cardMembers.Select(m => m.Id).ToList(), NotificationType.CardDueDateUpdated);
+
+            foreach (var member in cardMembers.Where(m => registeredUsers.Contains(m.Id)))
             {
                 var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} is due {GetDueMessage(card.DueDateReminderType.Value)}. " +
                     $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(card.StartDate, card.DueDate)}";

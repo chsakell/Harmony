@@ -2,10 +2,12 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Contracts.Services.UserNotifications;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
+using Harmony.Infrastructure.Services.UserNotifications;
 using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Notifications.Services;
@@ -55,7 +57,8 @@ namespace Harmony.Notifications.Extensions
                 .AddScoped<ICardActivityRepository, CardActivityRepository>()
                 .AddScoped<IUserCardRepository, UserCardRepository>()
                 .AddScoped<IIssueTypeRepository, IssueTypeRepository>()
-                .AddScoped<ISprintRepository, SprintRepository>(); ;
+                .AddScoped<ISprintRepository, SprintRepository>()
+                .AddScoped<IUserNotificationRepository, UserNotificationRepository>();
         }
 
         internal static IServiceCollection AddIdentityServices(this IServiceCollection services)

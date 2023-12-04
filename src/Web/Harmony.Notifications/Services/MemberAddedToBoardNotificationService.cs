@@ -9,6 +9,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Specifications.Boards;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Infrastructure.Repositories;
 
 namespace Harmony.Notifications.Services
 {
@@ -16,18 +17,21 @@ namespace Harmony.Notifications.Services
     {
         private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
+        private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly IBoardService _boardService;
         private readonly IBoardRepository _boardRepository;
 
         public MemberAddedToBoardNotificationService(
             IEmailService emailNotificationService,
             IUserService userService,
+            IUserNotificationRepository userNotificationRepository,
             IBoardService boardService,
             NotificationContext notificationContext,
             IBoardRepository boardRepository) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
             _userService = userService;
+            _userNotificationRepository = userNotificationRepository;
             _boardService = boardService;
             _boardRepository = boardRepository;
         }
@@ -84,8 +88,15 @@ namespace Harmony.Notifications.Services
             {
                 return;
             }
-
             var user = userResult.Data;
+
+            var notificationRegistration = await _userNotificationRepository
+                .GetForUser(user.Id, NotificationType.MemberAddedToBoard);
+
+            if (notificationRegistration == null)
+            {
+                return;
+            }
 
             var userHasAccessToBoard = await _boardService.HasUserAccessToBoard(userId, boardId);
 
