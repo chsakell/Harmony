@@ -30,8 +30,15 @@ namespace Harmony.Infrastructure.Services.Management
 		{
 			if(card.BoardListId == newListId)
 			{
-				return await SwapCards(card, newPosition, status);
-			}
+				await ReorderCardsInSameList(card.BoardListId.Value, card.Position, newPosition);
+
+                card.Position = newPosition;
+
+                // commit all the changes
+                var dbResult = await _cardRepository.Update(card);
+
+                return dbResult > 0;
+            }
             else
             {
 				return await ReorderOtherCardsAndMove(card, newListId.Value, newPosition);
@@ -164,11 +171,37 @@ namespace Harmony.Infrastructure.Services.Management
 			return dbResult > 0;
 		}
 
-		private async Task ReorderCards(Guid currentListId, short position, bool belongsToSameList)
+        private async Task ReorderCardsInSameList(Guid listId, short previousPosition, short newPosition)
+        {
+			var offSet = newPosition < previousPosition ? 1 : -1;
+
+			List<Card> cardsToReOrder = null;
+
+			if(offSet == 1)
+			{
+                cardsToReOrder = await _cardRepository.Entities
+					.Where(c => c.Position >= newPosition 
+					&& c.Position < previousPosition && c.BoardListId == listId).ToListAsync();
+            }
+			else
+			{
+                cardsToReOrder = await _cardRepository.Entities
+                    .Where(c => c.Position <= newPosition 
+					&& c.Position > previousPosition && c.BoardListId == listId).ToListAsync();
+            }
+
+            foreach (var cardToReorder in cardsToReOrder)
+            {
+                cardToReorder.Position = (short)(cardToReorder.Position + offSet);
+                _cardRepository.UpdateEntry(cardToReorder);
+            }
+        }
+
+        private async Task ReorderCards(Guid currentListId, short position, bool belongsToSameList)
 		{
 			var offset = belongsToSameList ? -1 : 1;
 
-			// Find all items in curerrent list with position > current position and decline by one
+			// Find all items in current list with position > current position and decline by one
 			var cardsInCurrentListToReorder = belongsToSameList ? 
 				await _cardRepository.GetCardsInPositionGreaterThan(currentListId, position) :
 				await _cardRepository.GetCardsInPositionGreaterOrEqualThan(currentListId, position);
@@ -177,35 +210,6 @@ namespace Harmony.Infrastructure.Services.Management
 			{
 				cardToReorder.Position = (short)(cardToReorder.Position + offset);
 				_cardRepository.UpdateEntry(cardToReorder);
-			}
-		}
-
-		private async Task<bool> SwapCards(Card card, short newPosition, CardStatus status)
-		{
-			var currentPosition = card.Position;
-
-			// needs swapping
-			if (currentPosition != newPosition)
-			{
-				var currentCardInNewPosition = await _cardRepository
-						.GetByPosition(card.BoardListId, newPosition, status);
-				
-				if (currentCardInNewPosition != null)
-				{
-					currentCardInNewPosition.Position = currentPosition;
-					_cardRepository.UpdateEntry(currentCardInNewPosition);
-				}
-
-				card.Position = newPosition;
-
-				// commit all the changes
-				var dbResult = await _cardRepository.Update(card);
-
-				return dbResult > 0;
-			}
-			else
-			{
-				return true;
 			}
 		}
 	}

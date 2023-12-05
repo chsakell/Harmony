@@ -22,5 +22,6 @@ namespace Harmony.Application.DTO
         public CardStatus Status { get; set; }
 		public IssueTypeDto IssueType { get; set; }
 		public SprintDto Sprint { get; set; }
+        public bool IsUpdating { get; set; }
     }
 }

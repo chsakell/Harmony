@@ -250,43 +250,64 @@ namespace Harmony.Client.Pages.Management
                 return;
             };
 
-            var moveToListId = Guid.Parse(info.DropzoneIdentifier);
+            var currentPosition = info.Item.Position;
             var currentListId = info.Item.BoardListId;
             var newPosition = (short)info.IndexInZone;
+            var moveToListId = Guid.Parse(info.DropzoneIdentifier);
 
-            if (moveToListId == currentListId && info.Item.Position == newPosition)
+            if (moveToListId == currentListId && currentPosition == newPosition)
             {
                 return;
             }
 
-            var previousPosition = info.Item.Position;
-
-            var result = await _cardManager
-                .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, 
-                        newPosition, Domain.Enums.CardStatus.Active));
-
-            if (result.Succeeded)
+            await Task.Run(() =>
             {
-                var cardDto = result.Data;
-                cardDto.Labels = info.Item.Labels;
-                cardDto.TotalItems = info.Item.TotalItems;
-                cardDto.TotalItemsCompleted = info.Item.TotalItemsCompleted;
-                cardDto.TotalAttachments = info.Item.TotalAttachments;
-                cardDto.Members = info.Item.Members;
-                cardDto.IssueType = info.Item.IssueType;
+                info.Item.BoardListId = moveToListId;
+                info.Item.Position = newPosition;
+                info.Item.IsUpdating = true;
 
-                KanbanStore.MoveCard(cardDto, currentListId, moveToListId, previousPosition, newPosition);
+                var taskResult = _cardManager
+                    .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId,
+                            newPosition, Domain.Enums.CardStatus.Active));
 
-                if (currentListId != moveToListId)
+                taskResult.ContinueWith(res =>
                 {
-                    _dropContainer.Refresh();
-                }
-            }
+                    var result = res.Result;
 
-            if (!result.Succeeded)
-            {
-                DisplayMessage(result);
-            }
+                    if (result.Succeeded)
+                    {
+                        var cardDto = result.Data;
+                        cardDto.Labels = info.Item.Labels;
+                        cardDto.TotalItems = info.Item.TotalItems;
+                        cardDto.TotalItemsCompleted = info.Item.TotalItemsCompleted;
+                        cardDto.TotalAttachments = info.Item.TotalAttachments;
+                        cardDto.Members = info.Item.Members;
+                        cardDto.IssueType = info.Item.IssueType;
+
+                        KanbanStore.MoveCard(cardDto, currentListId, moveToListId, currentPosition, newPosition);
+
+                        info.Item.IsUpdating = false;
+                        var card = KanbanStore.KanbanCards
+                            .FirstOrDefault(cardDto => cardDto.Id == info.Item.Id);
+                        
+                        //if (currentListId != moveToListId)
+                        {
+                            _dropContainer.Refresh();
+                        }
+                    }
+
+                    if (!result.Succeeded)
+                    {
+                        DisplayMessage(result);
+                    }
+                });
+
+                //var previousPosition = info.Item.Position;
+
+
+
+
+            });
         }
 
         private async Task OpenCreateBoardListModal()

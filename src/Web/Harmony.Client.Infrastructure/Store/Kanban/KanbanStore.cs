@@ -78,13 +78,33 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 }
                 else
                 {
-                    // needs swapping
-                    if (currentCard.Position != newPosition)
+                    // needs shifting
+                    if (previousPosition != newPosition)
                     {
-                        var currentCardInIndex = currentList.Cards.FirstOrDefault(c => c.Position == newPosition);
-                        if (currentCardInIndex != null)
+                        var offSet = newPosition < previousPosition ? 1 : -1;
+
+                        List<CardDto> cardsToReOrder = null;
+
+                        if (offSet == 1)
                         {
-                            currentCardInIndex.Position = currentCard.Position;
+                            cardsToReOrder = currentList.Cards
+                                .Where(c => c.Position >= newPosition
+                                && c.Position < previousPosition 
+                                && c.BoardListId == card.BoardListId
+                                && c.Id != currentCard.Id).ToList();
+                        }
+                        else
+                        {
+                            cardsToReOrder = currentList.Cards
+                                .Where(c => c.Position <= newPosition
+                                && c.Position > previousPosition 
+                                && c.BoardListId == card.BoardListId
+                                && c.Id != currentCard.Id).ToList();
+                        }
+
+                        foreach (var cardToReorder in cardsToReOrder)
+                        {
+                            cardToReorder.Position = (short)(cardToReorder.Position + offSet);
                         }
                     }
 
