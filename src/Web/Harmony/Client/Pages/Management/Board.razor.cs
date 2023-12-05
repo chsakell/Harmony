@@ -289,11 +289,8 @@ namespace Harmony.Client.Pages.Management
                         info.Item.IsUpdating = false;
                         var card = KanbanStore.KanbanCards
                             .FirstOrDefault(cardDto => cardDto.Id == info.Item.Id);
-                        
-                        //if (currentListId != moveToListId)
-                        {
-                            _dropContainer.Refresh();
-                        }
+
+                        _dropContainer.Refresh();
                     }
 
                     if (!result.Succeeded)
@@ -301,12 +298,6 @@ namespace Harmony.Client.Pages.Management
                         DisplayMessage(result);
                     }
                 });
-
-                //var previousPosition = info.Item.Position;
-
-
-
-
             });
         }
 
