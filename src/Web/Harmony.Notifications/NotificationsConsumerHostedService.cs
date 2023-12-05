@@ -87,7 +87,7 @@ namespace Harmony.Notifications
                             case NotificationType.CardDueDateUpdated:
                                 var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
                                 var dateChangedNotification = JsonSerializer
-                                                    .Deserialize<CardDueTimeExpiredNotification>(ea.Body.Span);
+                                                    .Deserialize<CardDueTimeUpdatedNotification>(ea.Body.Span);
 
                                 if (dateChangedNotification != null)
                                 {

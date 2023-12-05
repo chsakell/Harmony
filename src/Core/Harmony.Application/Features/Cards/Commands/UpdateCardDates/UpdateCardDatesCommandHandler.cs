@@ -69,7 +69,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
             var boardId = await _cardRepository.GetBoardId(card.Id);
             await _hubClientNotifierService.UpdateCardDates(boardId, card.Id, card.StartDate, card.DueDate);
 
-			_notificationsPublisher.Publish(new CardDueTimeExpiredNotification(card.Id));
+			_notificationsPublisher.Publish(new CardDueTimeUpdatedNotification(card.Id));
 
             return await Result<bool>.SuccessAsync(true, _localizer["Dates updated"]);
 		}

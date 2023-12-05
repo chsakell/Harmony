@@ -2,11 +2,11 @@
 
 namespace Harmony.Application.Notifications
 {
-    public class CardDueTimeExpiredNotification : BaseNotification
+    public class CardDueTimeUpdatedNotification : BaseNotification
     {
         public Guid Id { get; set; }
 
-        public CardDueTimeExpiredNotification(Guid id)
+        public CardDueTimeUpdatedNotification(Guid id)
         {
             Id = id;
         }

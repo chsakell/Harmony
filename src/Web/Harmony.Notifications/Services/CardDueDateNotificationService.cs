@@ -31,7 +31,7 @@ namespace Harmony.Notifications.Services
             _cardRepository = cardRepository;
         }
 
-        public async Task Notify(CardDueTimeExpiredNotification notification)
+        public async Task Notify(CardDueTimeUpdatedNotification notification)
         {
             var cardId = notification.Id;
 

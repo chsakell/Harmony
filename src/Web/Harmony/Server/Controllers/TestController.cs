@@ -16,7 +16,7 @@ namespace Harmony.Server.Controllers
         [HttpPost]
         public IActionResult SendMessage()
         {
-            var notification = new CardDueTimeExpiredNotification(Guid.Parse("8D7FAE06-D1E3-4418-FD89-08DBF00B9F44"));
+            var notification = new CardDueTimeUpdatedNotification(Guid.Parse("8D7FAE06-D1E3-4418-FD89-08DBF00B9F44"));
 
             _messageProducer.Publish(notification);
 

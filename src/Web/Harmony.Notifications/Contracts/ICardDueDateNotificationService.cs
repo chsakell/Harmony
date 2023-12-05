@@ -4,6 +4,6 @@ namespace Harmony.Notifications.Contracts
 {
     public interface ICardDueDateNotificationService : INotificationService
     {
-        Task Notify(CardDueTimeExpiredNotification notification);
+        Task Notify(CardDueTimeUpdatedNotification notification);
     }
 }
