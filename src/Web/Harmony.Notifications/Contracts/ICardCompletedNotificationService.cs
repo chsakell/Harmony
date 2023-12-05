@@ -1,7 +1,9 @@
-﻿namespace Harmony.Notifications.Contracts
+﻿using Harmony.Application.Notifications;
+
+namespace Harmony.Notifications.Contracts
 {
     public interface ICardCompletedNotificationService : INotificationService
     {
-        Task SendCardCompletedNotification(Guid cardId);
+        Task Notify(CardCompletedNotification notification);
     }
 }

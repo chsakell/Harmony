@@ -36,7 +36,7 @@ namespace Harmony.Notifications.Services
             _boardRepository = boardRepository;
         }
 
-        public async Task SendMemberAddedToBoardNotification(MemberAddedToBoardNotification notification)
+        public async Task Notify(MemberAddedToBoardNotification notification)
         {
             await RemovePendingCardJobs(notification.BoardId, NotificationType.MemberAddedToBoard);
 

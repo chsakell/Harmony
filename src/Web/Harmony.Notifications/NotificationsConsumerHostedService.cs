@@ -91,7 +91,7 @@ namespace Harmony.Notifications
 
                                 if (dateChangedNotification != null)
                                 {
-                                    await _cardDueDateNotificationService.SendCardDueDateChangedNotification(dateChangedNotification.Id);
+                                    await _cardDueDateNotificationService.Notify(dateChangedNotification);
                                 }
                                 break;
                             case NotificationType.CardCompleted:
@@ -101,7 +101,7 @@ namespace Harmony.Notifications
 
                                 if (cardCompletedNotification != null)
                                 {
-                                    await _cardCompletedNotificationService.SendCardCompletedNotification(cardCompletedNotification.Id);
+                                    await _cardCompletedNotificationService.Notify(cardCompletedNotification);
                                 }
                                 break;
                             case NotificationType.MemberAddedToBoard:
@@ -111,7 +111,7 @@ namespace Harmony.Notifications
 
                                 if (memberAddedToBoardNotification != null)
                                 {
-                                    await memberAddedToBoardNotificationService.SendMemberAddedToBoardNotification(memberAddedToBoardNotification);
+                                    await memberAddedToBoardNotificationService.Notify(memberAddedToBoardNotification);
                                 }
                                 break;
                             case NotificationType.MemberRemovedFromBoard:

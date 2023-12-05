@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Helpers;
 using Harmony.Domain.Enums;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Notifications.Services
 {
@@ -30,8 +31,10 @@ namespace Harmony.Notifications.Services
             _cardRepository = cardRepository;
         }
 
-        public async Task SendCardDueDateChangedNotification(Guid cardId)
+        public async Task Notify(CardDueTimeExpiredNotification notification)
         {
+            var cardId = notification.Id;
+
             await RemovePendingCardJobs(cardId, NotificationType.CardDueDateUpdated);
 
             var card = await _cardRepository.Get(cardId);
@@ -90,7 +93,7 @@ namespace Harmony.Notifications.Services
             await _notificationContext.SaveChangesAsync();
         }
 
-        public async Task Notify(Guid cardId)
+        private async Task Notify(Guid cardId)
         {
             var filter = new CardNotificationSpecification(cardId);
 

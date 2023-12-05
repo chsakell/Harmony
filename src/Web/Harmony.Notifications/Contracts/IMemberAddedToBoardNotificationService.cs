@@ -4,6 +4,6 @@ namespace Harmony.Notifications.Contracts
 {
     public interface IMemberAddedToBoardNotificationService : INotificationService
     {
-        Task SendMemberAddedToBoardNotification(MemberAddedToBoardNotification notification);
+        Task Notify(MemberAddedToBoardNotification notification);
     }
 }
