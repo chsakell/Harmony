@@ -16,7 +16,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 		void LoadBoard(GetBoardResponse board);
 		void AddListToBoard(BoardListDto list);
 		void AddCardToList(CardDto card, BoardListDto list);
-		void MoveCard(CardDto card, Guid previousListId, Guid nextListId, byte newPosition);
+		void MoveCard(CardDto card, Guid previousListId, Guid nextListId, short previousPosition, short newPosition);
 		void UpdateBoardListTitle(Guid listId, string title);
 		void ArchiveList(BoardListDto list);
 		void ArchiveListAndReorder(Guid listId, List<BoardListOrder> listPositions);

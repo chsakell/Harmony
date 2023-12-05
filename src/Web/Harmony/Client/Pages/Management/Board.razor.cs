@@ -252,12 +252,14 @@ namespace Harmony.Client.Pages.Management
 
             var moveToListId = Guid.Parse(info.DropzoneIdentifier);
             var currentListId = info.Item.BoardListId;
-            var newPosition = (byte)info.IndexInZone;
+            var newPosition = (short)info.IndexInZone;
 
             if (moveToListId == currentListId && info.Item.Position == newPosition)
             {
                 return;
             }
+
+            var previousPosition = info.Item.Position;
 
             var result = await _cardManager
                 .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId, 
@@ -272,7 +274,7 @@ namespace Harmony.Client.Pages.Management
                 cardDto.TotalAttachments = info.Item.TotalAttachments;
                 cardDto.Members = info.Item.Members;
 
-                KanbanStore.MoveCard(cardDto, currentListId, moveToListId, newPosition);
+                KanbanStore.MoveCard(cardDto, currentListId, moveToListId, previousPosition, newPosition);
 
                 if (currentListId != moveToListId)
                 {

@@ -46,7 +46,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             boardList.Cards.Add(card);
         }
 
-        public void MoveCard(CardDto card, Guid previousListId, Guid nextListId, byte newPosition)
+        public void MoveCard(CardDto card, Guid previousListId, Guid nextListId, short previousPosition, short newPosition)
         {
             var currentList = _board.Lists.FirstOrDefault(l => l.Id == previousListId);
             var currentCard = currentList?.Cards.FirstOrDefault(c => c.Id == card.Id);
@@ -64,6 +64,14 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                     foreach (var cardInNewBoardList in cardsInNewBoardListGreaterOrEqualThanIndex)
                     {
                         cardInNewBoardList.Position += 1;
+                    }
+
+                    var cardsInPreviousBoardListGreaterOrEqualThanIndex = currentList.Cards.Where(c => c.Position > previousPosition);
+
+                    // needs decreasing by 1
+                    foreach (var cardInPreviousBoardList in cardsInPreviousBoardListGreaterOrEqualThanIndex)
+                    {
+                        cardInPreviousBoardList.Position -= 1;
                     }
 
                     newBoardList.Cards.Add(card);
