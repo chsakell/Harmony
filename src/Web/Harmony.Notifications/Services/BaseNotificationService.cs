@@ -49,11 +49,11 @@ namespace Harmony.Notifications.Services
             }
         }
 
-        protected async Task RemovePendingBoardJobs(Guid boardId, NotificationType type)
+        protected async Task RemovePendingBoardJobs(Guid boardId, string userId, NotificationType type)
         {
             // check if there are already pending jobs for this board and type
             var jobs = _notificationContext.Notifications
-                .Where(n => n.BoardId == boardId && n.Type == type);
+                .Where(n => n.BoardId == boardId && n.Type == type && n.UserId == userId);
 
             if (jobs.Any())
             {

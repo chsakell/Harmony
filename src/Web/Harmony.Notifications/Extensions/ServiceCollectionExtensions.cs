@@ -38,6 +38,8 @@ namespace Harmony.Notifications.Extensions
             services.AddScoped<IMemberAddedToCardNotificationService, MemberAddedToCardNotificationService>();
             services.AddScoped<ICardCompletedNotificationService, CardCompletedNotificationService>();
             services.AddScoped<IMemberAddedToBoardNotificationService, MemberAddedToBoardNotificationService>();
+            services.AddScoped<IMemberRemovedFromBoardNotificationService, MemberRemovedFromBoardNotificationService>();
+
             return services;
         }
 

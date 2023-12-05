@@ -3,6 +3,7 @@ using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts;
+using Harmony.Notifications.Services;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -111,6 +112,16 @@ namespace Harmony.Notifications
                                 if (memberAddedToBoardNotification != null)
                                 {
                                     await memberAddedToBoardNotificationService.SendMemberAddedToBoardNotification(memberAddedToBoardNotification);
+                                }
+                                break;
+                            case NotificationType.MemberRemovedFromBoard:
+                                var memberRemovedFromBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromBoardNotificationService>();
+                                var memberRemovedFromBoardNotification = JsonSerializer
+                                                    .Deserialize<MemberRemovedFromBoardNotification>(ea.Body.Span);
+
+                                if (memberRemovedFromBoardNotification != null)
+                                {
+                                    await memberRemovedFromBoardNotificationService.Notify(memberRemovedFromBoardNotification);
                                 }
                                 break;
                         }

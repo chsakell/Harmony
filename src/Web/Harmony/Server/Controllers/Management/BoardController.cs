@@ -18,6 +18,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Domain.Enums;
 using Harmony.Server.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Server.Controllers.Management
 {
@@ -61,7 +62,12 @@ namespace Harmony.Server.Controllers.Management
         [HttpDelete("{id:guid}/members/{userId}")]
         public async Task<IActionResult> RemoveMember(Guid id, string userId)
         {
-            return Ok(await _mediator.Send(new RemoveUserBoardCommand(id, userId)));
+            var command = new RemoveUserBoardCommand(id, userId)
+            {
+                HostUrl = Request.BaseUrl()
+            };
+
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpPut("{id:guid}/members/{userId}/status")]
