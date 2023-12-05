@@ -43,9 +43,17 @@ namespace Harmony.Infrastructure.Seed
         {
             _db.Database.EnsureCreated();
 
-            await AddAdministrator();
-            await AddBasicUser();
-            await _db.SaveChangesAsync();
+            try
+            {
+                await AddAdministrator();
+                await AddBasicUser();
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
         }
 
         private async Task AddAdministrator()

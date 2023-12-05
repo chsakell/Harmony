@@ -3,6 +3,9 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Workspaces.Commands.RemoveMember
 {
@@ -13,14 +16,20 @@ namespace Harmony.Application.Features.Workspaces.Commands.RemoveMember
     {
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IWorkspaceRepository _workspaceRepository;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<RemoveWorkspaceMemberCommandHandler> _localizer;
 
         public RemoveWorkspaceMemberCommandHandler(IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
+            IWorkspaceRepository workspaceRepository,
+            INotificationsPublisher notificationsPublisher,
             IStringLocalizer<RemoveWorkspaceMemberCommandHandler> localizer)
         {
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
+            _workspaceRepository = workspaceRepository;
+            _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
         }
         public async Task<Result<bool>> Handle(RemoveWorkspaceMemberCommand request, CancellationToken cancellationToken)
@@ -40,6 +49,14 @@ namespace Harmony.Application.Features.Workspaces.Commands.RemoveMember
 
                 if (dbResult > 0)
                 {
+                    var workspace = await _workspaceRepository.GetAsync(request.WorkspaceId);
+
+                    var slug = StringUtilities.SlugifyString(workspace.Name);
+                    var workspaceUrl = $"/workspaces/{workspace.Id}/{slug}";
+
+                    _notificationsPublisher
+                        .Publish(new MemberRemovedFromWorkspaceNotification(request.WorkspaceId, request.UserId, workspaceUrl));
+
                     return await Result<bool>.SuccessAsync(true, _localizer["User Removed from workspace"]);
                 }
             }

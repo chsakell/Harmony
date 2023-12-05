@@ -66,5 +66,23 @@ namespace Harmony.Notifications.Services
                 await _notificationContext.SaveChangesAsync();
             }
         }
+
+        protected async Task RemovePendingWorkspaceJobs(Guid workspaceId, string userId, NotificationType type)
+        {
+            // check if there are already pending jobs for this board and type
+            var jobs = _notificationContext.Notifications
+                .Where(n => n.WorkspaceId == workspaceId && n.Type == type && n.UserId == userId);
+
+            if (jobs.Any())
+            {
+                foreach (var job in jobs)
+                {
+                    BackgroundJob.Delete(job.JobId); // cancels the job
+                    _notificationContext.Notifications.Remove(job);
+                }
+
+                await _notificationContext.SaveChangesAsync();
+            }
+        }
     }
 }

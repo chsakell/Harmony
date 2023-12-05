@@ -7,6 +7,7 @@ namespace Harmony.Application.Contracts.Repositories
     /// </summary>
     public interface IWorkspaceRepository
     {
+        Task<Workspace> GetAsync(Guid workspaceId);
         Task AddAsync(Workspace workspace);
         /// <summary>
         /// Create a workspace

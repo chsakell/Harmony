@@ -7,6 +7,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
+using Harmony.Server.Extensions;
 
 namespace Harmony.Server.Controllers.Management
 {
@@ -57,12 +58,16 @@ namespace Harmony.Server.Controllers.Management
         [HttpPost("{id:guid}/members/add")]
         public async Task<IActionResult> AddMember(AddWorkspaceMemberCommand request)
         {
+            request.HostUrl = Request.BaseUrl();
+
             return Ok(await _mediator.Send(request));
         }
 
         [HttpPost("{id:guid}/members/remove")]
         public async Task<IActionResult> DeleteMember(RemoveWorkspaceMemberCommand request)
         {
+            request.HostUrl = Request.BaseUrl();
+
             return Ok(await _mediator.Send(request));
         }
     }

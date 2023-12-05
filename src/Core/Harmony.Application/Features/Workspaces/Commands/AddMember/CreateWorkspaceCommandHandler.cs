@@ -4,6 +4,9 @@ using MediatR;
 using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Workspaces.Commands.AddMember
 {
@@ -14,14 +17,20 @@ namespace Harmony.Application.Features.Workspaces.Commands.AddMember
     {
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IStringLocalizer<AddWorkspaceMemberCommandHandler> _localizer;
 
         public AddWorkspaceMemberCommandHandler(IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
+            INotificationsPublisher notificationsPublisher,
+            IWorkspaceRepository workspaceRepository,
             IStringLocalizer<AddWorkspaceMemberCommandHandler> localizer)
         {
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
+            _notificationsPublisher = notificationsPublisher;
+            _workspaceRepository = workspaceRepository;
             _localizer = localizer;
         }
         public async Task<Result<bool>> Handle(AddWorkspaceMemberCommand request, CancellationToken cancellationToken)
@@ -43,6 +52,14 @@ namespace Harmony.Application.Features.Workspaces.Commands.AddMember
 
             if (dbResult > 0)
             {
+                var workspace = await _workspaceRepository.GetAsync(request.WorkspaceId);
+
+                var slug = StringUtilities.SlugifyString(workspace.Name);
+                var workspaceUrl = $"{request.HostUrl}workspaces/{workspace.Id}/{slug}";
+
+                _notificationsPublisher
+                    .Publish(new MemberAddedToWorkspaceNotification(request.WorkspaceId, request.UserId, workspaceUrl));
+
                 return await Result<bool>.SuccessAsync(true, _localizer["User added to workspace"]);
             }
 

@@ -124,6 +124,26 @@ namespace Harmony.Notifications
                                     await memberRemovedFromBoardNotificationService.Notify(memberRemovedFromBoardNotification);
                                 }
                                 break;
+                            case NotificationType.MemberAddedToWorkspace:
+                                var memberAddedToWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToWorkspaceNotificationService>();
+                                var memberAddedToWorkspaceNotification = JsonSerializer
+                                                    .Deserialize<MemberAddedToWorkspaceNotification>(ea.Body.Span);
+
+                                if (memberAddedToWorkspaceNotification != null)
+                                {
+                                    await memberAddedToWorkspaceNotificationService.Notify(memberAddedToWorkspaceNotification);
+                                }
+                                break;
+                            case NotificationType.MemberRemovedFromWorkspace:
+                                var memberRemovedFromWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromWorkspaceNotificationService>();
+                                var memberRemovedFromWorkspaceNotification = JsonSerializer
+                                                    .Deserialize<MemberRemovedFromWorkspaceNotification>(ea.Body.Span);
+
+                                if (memberRemovedFromWorkspaceNotification != null)
+                                {
+                                    await memberRemovedFromWorkspaceNotificationService.Notify(memberRemovedFromWorkspaceNotification);
+                                }
+                                break;
                         }
                     }
                 }
