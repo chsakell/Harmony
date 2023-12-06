@@ -156,6 +156,7 @@ namespace Harmony.Client.Shared.Modals
         {
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
@@ -165,6 +166,7 @@ namespace Harmony.Client.Shared.Modals
         {
             _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
             _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
@@ -200,6 +202,17 @@ namespace Harmony.Client.Shared.Modals
         private void OnCardMemberAdded(object? sender, CardMemberAddedEvent e)
         {
             _card.Members.Add(e.Member);
+            StateHasChanged();
+        }
+
+        private void OnCardMemberRemoved(object? sender, CardMemberRemovedEvent e)
+        {
+            var memberToRemove = _card.Members.FirstOrDefault(x => x.Id == e.Member.Id);
+            if (memberToRemove != null)
+            {
+                _card.Members.Remove(memberToRemove);
+            }
+
             StateHasChanged();
         }
 
