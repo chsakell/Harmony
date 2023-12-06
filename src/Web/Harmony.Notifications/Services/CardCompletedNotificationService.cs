@@ -63,7 +63,7 @@ namespace Harmony.Notifications.Services
         }
 
 
-        private async Task Notify(Guid cardId)
+        public async Task Notify(Guid cardId)
         {
             var filter = new CardNotificationSpecification(cardId);
 

@@ -93,7 +93,7 @@ namespace Harmony.Notifications.Services
             await _notificationContext.SaveChangesAsync();
         }
 
-        private async Task Notify(Guid cardId)
+        public async Task Notify(Guid cardId)
         {
             var filter = new CardNotificationSpecification(cardId);
 
