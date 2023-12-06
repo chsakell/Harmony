@@ -30,8 +30,15 @@ namespace Harmony.Infrastructure.Services.Management
 		{
 			if(card.BoardListId == newListId)
 			{
-				await ReorderCardsInSameList(card.BoardListId.Value, card.Position, newPosition);
-
+				if(card.BoardList == null && card.Status == CardStatus.Backlog)
+				{
+                    await ReorderCardsInBacklog(card.Id, card.Position, newPosition);
+                }
+				else if (card.BoardListId.HasValue)
+				{
+                    await ReorderCardsInSameList(card.BoardListId.Value, card.Position, newPosition);
+                }
+				
                 card.Position = newPosition;
 
                 // commit all the changes
@@ -115,7 +122,7 @@ namespace Harmony.Infrastructure.Services.Management
 					join board in _boardRepository.Entities
 						on issueType.BoardId equals board.Id
 					where (board.Id == boardId
-						&& card.Status == Domain.Enums.CardStatus.Backlog &&
+						&& card.Status == CardStatus.Backlog &&
 						(string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)))
 					orderby card.Position
 					select new GetBacklogItemResponse()
@@ -188,6 +195,48 @@ namespace Harmony.Infrastructure.Services.Management
                 cardsToReOrder = await _cardRepository.Entities
                     .Where(c => c.Position <= newPosition 
 					&& c.Position > previousPosition && c.BoardListId == listId).ToListAsync();
+            }
+
+            foreach (var cardToReorder in cardsToReOrder)
+            {
+                cardToReorder.Position = (short)(cardToReorder.Position + offSet);
+                _cardRepository.UpdateEntry(cardToReorder);
+            }
+        }
+
+        private async Task ReorderCardsInBacklog(Guid cardId, short previousPosition, short newPosition)
+        {
+            var offSet = newPosition < previousPosition ? 1 : -1;
+
+            List<Card>? cardsToReOrder = null;
+
+            if (offSet == 1)
+            {
+                cardsToReOrder = await (from card in _cardRepository.Entities
+                                 join issueType in _issueTypeRepository.Entities
+                                     on card.IssueTypeId equals issueType.Id
+                                 join board in _boardRepository.Entities
+                                     on issueType.BoardId equals board.Id
+                                 where (board.Id == issueType.BoardId 
+                                        && card.Status == CardStatus.Backlog
+                                        && card.Position >= newPosition
+                                        && card.Position < previousPosition)
+                                 orderby card.Position
+                                 select card).ToListAsync();
+            }
+            else
+            {
+                cardsToReOrder = await (from card in _cardRepository.Entities
+                       join issueType in _issueTypeRepository.Entities
+                           on card.IssueTypeId equals issueType.Id
+                       join board in _boardRepository.Entities
+                           on issueType.BoardId equals board.Id
+                       where (board.Id == issueType.BoardId
+                              && card.Status == CardStatus.Backlog
+                              && card.Position <= newPosition
+                              && card.Position > previousPosition)
+                       orderby card.Position
+                       select card).ToListAsync();
             }
 
             foreach (var cardToReorder in cardsToReOrder)
