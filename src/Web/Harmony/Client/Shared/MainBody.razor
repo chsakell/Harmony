@@ -22,13 +22,8 @@
         <MudMenu Icon="@Icons.Filled.Settings" Color="Color.Inherit" Dense="true">
             <div class="px-2">
                     <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
-                    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/chsakell/harmony" Target="_blank" />
+                    @* <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/chsakell/harmony" Target="_blank" /> *@
             </div>
-            <MudText Typo="Typo.body2" Class="px-4 py-2"><b>Community</b></MudText>
-            <MudMenuItem Link="https://www.facebook.com/codewithmukesh" Target="_blank">Facebook Page</MudMenuItem>
-            <MudMenuItem Link="https://www.linkedin.com/in/iammukeshm/" Target="_blank">LinkedIn</MudMenuItem>
-            <MudText Typo="Typo.body2" Class="px-4 py-2"><b>Resources</b></MudText>
-            <MudMenuItem Link="https://mudblazor.com/getting-started/installation" Target="_blank">MudBlazor Documentation</MudMenuItem>
         </MudMenu>
     </MudHidden>
      <MudMenu Dense="true" Class="mt-1 ml-4" @ref="_menu">
