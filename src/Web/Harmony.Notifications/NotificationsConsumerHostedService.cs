@@ -3,7 +3,6 @@ using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts;
-using Harmony.Notifications.Services;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -27,7 +26,15 @@ namespace Harmony.Notifications
             _logger = loggerFactory.CreateLogger<NotificationsConsumerHostedService>();
             _brokerConfiguration = brokerConfig.Value;
 
-            InitRabbitMQ();
+            try
+            {
+                InitRabbitMQ();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to connect to RabbitMQ {ex}");
+            }
+            
             _serviceProvider = serviceProvider;
         }
 
@@ -46,7 +53,6 @@ namespace Harmony.Notifications
             // create channel  
             _channel = _connection.CreateModel();
 
-            //_channel.ExchangeDeclare("demo.exchange", ExchangeType.Topic);
             _channel.QueueDeclare(
                 queue: BrokerConstants.NotificationsQueue,
                 durable: true,
@@ -54,7 +60,6 @@ namespace Harmony.Notifications
                 autoDelete: false,
                 arguments: null);
 
-            //_channel.QueueBind("notifications", "", "notifications", null);
             _channel.BasicQos(0, 1, false);
 
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
@@ -62,6 +67,11 @@ namespace Harmony.Notifications
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            if(_channel == null)
+            {
+                return;
+            }
+
             stoppingToken.ThrowIfCancellationRequested();
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (ch, ea) =>

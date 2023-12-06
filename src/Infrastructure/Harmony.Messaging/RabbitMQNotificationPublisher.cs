@@ -2,6 +2,7 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -11,10 +12,13 @@ namespace Harmony.Messaging
 {
     public class RabbitMQNotificationPublisher : INotificationsPublisher
     {
+        private readonly ILogger<RabbitMQNotificationPublisher> _logger;
         IConnection connection;
-        public RabbitMQNotificationPublisher(IOptions<BrokerConfiguration> brokerConfig)
+        public RabbitMQNotificationPublisher(IOptions<BrokerConfiguration> brokerConfig,
+            ILogger<RabbitMQNotificationPublisher> logger)
         {
             var config = brokerConfig.Value;
+            _logger = logger;
 
             var factory = new ConnectionFactory
             {
@@ -22,20 +26,32 @@ namespace Harmony.Messaging
                 Port = config.Port
             };
 
-            connection = factory.CreateConnection();
+            try
+            {
+                connection = factory.CreateConnection();
 
-            using var channel = connection.CreateModel();
+                using var channel = connection.CreateModel();
 
-            channel.QueueDeclare(
-                queue: BrokerConstants.NotificationsQueue,
-                durable: true,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
+                channel.QueueDeclare(
+                    queue: BrokerConstants.NotificationsQueue,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to connect to RabbitMQ {ex}");
+            }
         }
 
         public void Publish<T>(T notification) where T : BaseNotification
         {
+            if(connection == null || !connection.IsOpen)
+            {
+                return;
+            }
+
             using var channel = connection.CreateModel();
 
             var json = JsonConvert.SerializeObject(notification);
