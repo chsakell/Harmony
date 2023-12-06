@@ -11,6 +11,8 @@ using Harmony.Persistence.Identity;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
 using Harmony.Domain.Entities;
+using Harmony.Application.Contracts.Repositories;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Infrastructure.Services.Identity
 {
@@ -19,15 +21,18 @@ namespace Harmony.Infrastructure.Services.Identity
         private readonly UserManager<HarmonyUser> _userManager;
         private readonly RoleManager<HarmonyRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IUserNotificationRepository _userNotificationRepository;
 
         public UserService(
             UserManager<HarmonyUser> userManager,
             IMapper mapper,
+            IUserNotificationRepository userNotificationRepository,
             RoleManager<HarmonyRole> roleManager
             )
         {
             _userManager = userManager;
             _mapper = mapper;
+            _userNotificationRepository = userNotificationRepository;
             _roleManager = roleManager;
         }
 
@@ -121,6 +126,18 @@ namespace Harmony.Infrastructure.Services.Identity
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, RoleConstants.BasicRole);
+
+                    foreach(var notificationType in Enum.GetValues<NotificationType>())
+                    {
+                        await _userNotificationRepository.AddEntryAsync(new UserNotification()
+                        {
+                            UserId = user.Id,
+                            NotificationType = notificationType
+                        });
+                    }
+
+                    await _userNotificationRepository.Commit();
+
                     return await Result<string>.SuccessAsync(user.Id, string.Format("User {0} Registered.", user.UserName));
                 }
                 else
