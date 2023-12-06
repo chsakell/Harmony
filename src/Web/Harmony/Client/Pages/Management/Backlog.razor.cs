@@ -52,7 +52,7 @@ namespace Harmony.Client.Pages.Management
 
             var result = await _cardManager
                 .MoveCardAsync(new MoveCardCommand(card.Id, null,
-                        (short)(currentCardPosition + offset), Domain.Enums.CardStatus.Backlog));
+                        (short)(currentCardPosition + offset), Domain.Enums.CardStatus.Backlog, Guid.NewGuid()));
 
             if (result.Succeeded)
             {

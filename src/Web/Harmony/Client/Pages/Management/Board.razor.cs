@@ -36,6 +36,7 @@ namespace Harmony.Client.Pages.Management
         public bool CardDescriptionVisibility { get; set; }
         private bool _unauthorisedAccess = false;
         private int _listCardsSize = 10;
+        private Guid _moveUpdateId = Guid.NewGuid();
 
         private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum && 
             KanbanStore.Board.ActiveSprints.Count == 0;
@@ -77,6 +78,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
+            _hubSubscriptionManager.OnCardItemPositionChanged += OnCardItemPositionChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
@@ -99,6 +101,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentAdded -= OnCardAttachmentAdded;
+            _hubSubscriptionManager.OnCardItemPositionChanged -= OnCardItemPositionChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
             _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
@@ -161,6 +164,26 @@ namespace Harmony.Client.Pages.Management
             KanbanStore.ChangeTotalCardAttachments(e.CardId, true);
 
             _dropContainer.Refresh();
+        }
+
+        private void OnCardItemPositionChanged(object? sender, CardItemPositionChangedEvent e)
+        {
+            if(_moveUpdateId == e.UpdateId)
+            {
+                return;
+            }
+
+            var cardToMove = KanbanStore.KanbanCards.FirstOrDefault(x => x.Id == e.CardId);
+
+            if(cardToMove != null)
+            {
+                cardToMove.Position = e.NewPosition;
+                cardToMove.BoardListId = e.NewBoardListId;
+
+                KanbanStore.MoveCard(cardToMove, e.PreviousBoardListId, e.NewBoardListId, e.PreviousPosition, e.NewPosition);
+
+                _dropContainer.Refresh();
+            }
         }
 
         private void OnCardAttachmentRemoved(object? sender, AttachmentRemovedEvent e)
@@ -265,10 +288,11 @@ namespace Harmony.Client.Pages.Management
                 info.Item.BoardListId = moveToListId;
                 info.Item.Position = newPosition;
                 info.Item.IsUpdating = true;
+                _moveUpdateId = Guid.NewGuid();
 
                 var taskResult = _cardManager
                     .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId,
-                            newPosition, Domain.Enums.CardStatus.Active));
+                            newPosition, Domain.Enums.CardStatus.Active, _moveUpdateId));
 
                 taskResult.ContinueWith(res =>
                 {

@@ -128,5 +128,14 @@ namespace Harmony.Server.Services
                 .SendAsync(ApplicationConstants.SignalR.OnCheckListRemoved,
                     new CheckListRemovedEvent(checkListId, cardId, totalItems, totalItemsCompleted));
         }
+
+        public async Task UpdateCardPosition(Guid boardId, Guid cardId, Guid previousBoardListId, Guid newBoardListId,
+            short previousPosition, short newPosition, Guid updateId)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardItemPositionChanged,
+                    new CardItemPositionChangedEvent(boardId, cardId, previousBoardListId,
+                    newBoardListId, previousPosition, newPosition, updateId));
+        }
     }
 }

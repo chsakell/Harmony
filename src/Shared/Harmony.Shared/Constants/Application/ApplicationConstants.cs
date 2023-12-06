@@ -19,6 +19,7 @@
             public const string OnBoardListArchived = "OnBoardListArchived";
             public const string OnCardTitleChanged = "OnCardTitleChanged";
             public const string OnCardDescriptionChanged = "OnCardDescriptionChanged";
+            public const string OnCardItemPositionChanged = "OnCardItemPositionChanged";
             public const string OnCardDatesChanged = "OnCardDatesChanged";
             public const string OnCardLabelToggled = "OnCardLabelToggled";
             public const string OnCardMemberAdded = "OnCardMemberAdded";

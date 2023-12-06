@@ -8,6 +8,8 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using MediatR;
+using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 
@@ -18,21 +20,24 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly ICurrentUserService _currentUserService;
 	private readonly IStringLocalizer<MoveCardCommandHandler> _localizer;
-	private readonly IMapper _mapper;
+    private readonly IHubClientNotifierService _hubClientNotifierService;
+    private readonly IMapper _mapper;
 
 	public MoveCardCommandHandler(ICardService cardService,
 		ICardRepository cardRepository,
 		INotificationsPublisher notificationsPublisher,
 		ICurrentUserService currentUserService,
 		IStringLocalizer<MoveCardCommandHandler> localizer,
-		IMapper mapper)
+        IHubClientNotifierService hubClientNotifierService,
+        IMapper mapper)
 	{
 		_cardService = cardService;
 		_cardRepository = cardRepository;
         _notificationsPublisher = notificationsPublisher;
         _currentUserService = currentUserService;
 		_localizer = localizer;
-		_mapper = mapper;
+        _hubClientNotifierService = hubClientNotifierService;
+        _mapper = mapper;
 	}
 	public async Task<Result<CardDto>> Handle(MoveCardCommand request, CancellationToken cancellationToken)
 	{
@@ -43,10 +48,15 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 			return await Result<CardDto>.FailAsync(_localizer["Login required to complete this operator"]);
 		}
 
-		var card = await _cardRepository.Get(request.CardId);
+        var card = await _cardRepository.GetWithBoardList(request.CardId);
 
-		// commit all the changes
-		var operationCompleted = await _cardService
+		var previousBoardListId = card.BoardListId;
+		var previousPosition = card.Position;
+
+        var boardId = card.BoardList?.BoardId;
+
+        // commit all the changes
+        var operationCompleted = await _cardService
 			.PositionCard(card, request.ListId, request.Position, request.Status);
 
         if (operationCompleted)
@@ -58,7 +68,16 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
             }
 
             var result = _mapper.Map<CardDto>(card);
-			return await Result<CardDto>.SuccessAsync(result);
+
+            if (request.ListId.HasValue && boardId.HasValue)
+            {
+                await _hubClientNotifierService
+                        .UpdateCardPosition(boardId.Value, request.CardId, 
+						previousBoardListId.Value,request.ListId.Value, 
+						previousPosition, request.Position, request.UpdateId);
+            }
+
+            return await Result<CardDto>.SuccessAsync(result);
 		}
 
 		return await Result<CardDto>.FailAsync(_localizer["Operation failed"]);
