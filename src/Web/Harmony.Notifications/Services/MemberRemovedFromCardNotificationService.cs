@@ -46,7 +46,7 @@ namespace Harmony.Notifications.Services
             var userCard = await _userCardRepository
                 .GetUserCard(notification.CardId, notification.UserId);
 
-            if (userCard == null)
+            if (userCard != null)
             {
                 return;
             }

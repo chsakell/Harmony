@@ -84,6 +84,16 @@ namespace Harmony.Notifications
                                     await memberAddedToCardNotificationService.Notify(memberAddedToCardNotification);
                                 }
                                 break;
+                            case NotificationType.MemberRemovedFromCard:
+                                var memberRemovedFromCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromCardNotificationService>();
+                                var memberRemovedFromCardNotification = JsonSerializer
+                                                    .Deserialize<MemberRemovedFromCardNotification>(ea.Body.Span);
+
+                                if (memberRemovedFromCardNotification != null)
+                                {
+                                    await memberRemovedFromCardNotificationService.Notify(memberRemovedFromCardNotification);
+                                }
+                                break;
                             case NotificationType.CardDueDateUpdated:
                                 var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
                                 var dateChangedNotification = JsonSerializer

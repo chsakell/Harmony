@@ -107,7 +107,12 @@ namespace Harmony.Server.Controllers.Management
         [HttpDelete("{id:guid}/members/{userId}")]
         public async Task<IActionResult> RemoveMember(Guid id, string userId)
         {
-            return Ok(await _mediator.Send(new RemoveUserCardCommand(id, userId)));
+            var command = new RemoveUserCardCommand(id, userId)
+            {
+                HostUrl = Request.BaseUrl()
+            };
+
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpDelete("{id:guid}/attachments/{attachmentId:guid}")]

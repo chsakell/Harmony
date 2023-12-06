@@ -7,6 +7,10 @@ using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using AutoMapper;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Entities;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 {
@@ -14,7 +18,9 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IHubClientNotifierService _hubClientNotifierService;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IUserCardRepository _userCardRepository;
+        private readonly IBoardRepository _boardRepository;
         private readonly ICardRepository _cardRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
@@ -22,7 +28,9 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
         public RemoveUserCardCommandHandler(ICurrentUserService currentUserService,
             IHubClientNotifierService hubClientNotifierService,
+            INotificationsPublisher notificationsPublisher,
             IUserCardRepository userCardRepository,
+            IBoardRepository boardRepository,
             ICardRepository cardRepository,
             IUserService userService,
             IMapper mapper,
@@ -30,7 +38,9 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
         {
             _currentUserService = currentUserService;
             _hubClientNotifierService = hubClientNotifierService;
+            _notificationsPublisher = notificationsPublisher;
             _userCardRepository = userCardRepository;
+            _boardRepository = boardRepository;
             _cardRepository = cardRepository;
             _userService = userService;
             _mapper = mapper;
@@ -66,6 +76,14 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
                     var member = _mapper.Map<CardMemberDto>(user);
 
                     await _hubClientNotifierService.RemoveCardMember(boardId, request.CardId, member);
+
+                    var board = await _boardRepository.GetAsync(boardId);
+
+                    var slug = StringUtilities.SlugifyString(board.Title.ToString());
+
+                    var cardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/?cardId={request.CardId}";
+
+                    _notificationsPublisher.Publish(new MemberRemovedFromCardNotification(boardId, request.CardId, request.UserId, cardUrl));
 
                     return await Result<RemoveUserCardResponse>.SuccessAsync(result, _localizer["User removed from card"]);
                 }

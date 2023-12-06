@@ -36,6 +36,7 @@ namespace Harmony.Notifications.Extensions
         {
             services.AddScoped<ICardDueDateNotificationService, CardDueDateNotificationService>();
             services.AddScoped<IMemberAddedToCardNotificationService, MemberAddedToCardNotificationService>();
+            services.AddScoped<IMemberRemovedFromCardNotificationService, MemberRemovedFromCardNotificationService>();
             services.AddScoped<ICardCompletedNotificationService, CardCompletedNotificationService>();
             services.AddScoped<IMemberAddedToBoardNotificationService, MemberAddedToBoardNotificationService>();
             services.AddScoped<IMemberRemovedFromBoardNotificationService, MemberRemovedFromBoardNotificationService>();
