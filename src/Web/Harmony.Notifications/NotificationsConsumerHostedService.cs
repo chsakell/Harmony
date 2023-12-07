@@ -44,7 +44,13 @@ namespace Harmony.Notifications
             {
                 HostName = _brokerConfiguration.Host,
                 Port = _brokerConfiguration.Port,
-                AutomaticRecoveryEnabled = true
+                AutomaticRecoveryEnabled = true,
+                UserName = string.IsNullOrEmpty(_brokerConfiguration.Username) 
+                    ? ConnectionFactory.DefaultUser : _brokerConfiguration.Username,
+                Password = string.IsNullOrEmpty(_brokerConfiguration.Password) 
+                    ? ConnectionFactory.DefaultPass : _brokerConfiguration.Password,
+                VirtualHost = string.IsNullOrEmpty(_brokerConfiguration.VirtualHost) ?
+                    ConnectionFactory.DefaultVHost : _brokerConfiguration.VirtualHost,
             };
 
             // create connection  

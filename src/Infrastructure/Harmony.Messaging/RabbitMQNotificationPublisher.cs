@@ -23,7 +23,13 @@ namespace Harmony.Messaging
             var factory = new ConnectionFactory
             {
                 HostName = config.Host,
-                Port = config.Port
+                Port = config.Port,
+                UserName = string.IsNullOrEmpty(config.Username)
+                    ? ConnectionFactory.DefaultUser : config.Username,
+                Password = string.IsNullOrEmpty(config.Password)
+                    ? ConnectionFactory.DefaultPass : config.Password,
+                VirtualHost = string.IsNullOrEmpty(config.VirtualHost) ?
+                    ConnectionFactory.DefaultVHost : config.VirtualHost,
             };
 
             try
