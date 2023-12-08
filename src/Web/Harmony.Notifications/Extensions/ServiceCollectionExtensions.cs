@@ -46,26 +46,6 @@ namespace Harmony.Notifications.Extensions
             return services;
         }
 
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
-        {
-            return services.
-                AddScoped<IWorkspaceRepository, WorkspaceRepository>()
-                .AddScoped<IUserWorkspaceRepository, UserWorkspaceRepository>()
-                .AddScoped<IBoardRepository, BoardRepository>()
-                .AddScoped<IUserBoardRepository, UserBoardRepository>()
-                .AddScoped<IBoardListRepository, BoardListRepository>()
-                .AddScoped<ICardRepository, CardRepository>()
-                .AddScoped<ICheckListRepository, CheckListRepository>()
-                .AddScoped<ICheckListItemRepository, CheckListItemRepository>()
-                .AddScoped<IBoardLabelRepository, BoardLabelRepository>()
-                .AddScoped<ICardLabelRepository, CardLabelRepository>()
-                .AddScoped<ICardActivityRepository, CardActivityRepository>()
-                .AddScoped<IUserCardRepository, UserCardRepository>()
-                .AddScoped<IIssueTypeRepository, IssueTypeRepository>()
-                .AddScoped<ISprintRepository, SprintRepository>()
-                .AddScoped<IUserNotificationRepository, UserNotificationRepository>();
-        }
-
         internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
             services

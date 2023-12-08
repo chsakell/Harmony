@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Requests.Identity;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
@@ -18,6 +19,7 @@ namespace Harmony.Application.Contracts.Services.Identity
         Task<int> GetCountAsync();
 
         Task<IResult<UserResponse>> GetAsync(string userId);
+        Task<IResult<UserPublicInfo>> GetPublicInfoAsync(string userId);
 
         Task<IResult> RegisterAsync(RegisterRequest request, string origin);
 

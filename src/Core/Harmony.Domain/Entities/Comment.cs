@@ -1,7 +1,7 @@
 ﻿namespace Harmony.Domain.Entities
 {
     /// <summary>
-    /// Class to represent a card's entity
+    /// Class to represent a card's comment
     /// </summary>
     public class Comment : AuditableEntity<Guid>
     {

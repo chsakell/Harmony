@@ -13,6 +13,7 @@ using Harmony.Application.Requests.Identity;
 using Harmony.Domain.Entities;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Domain.Enums;
+using Harmony.Application.DTO;
 
 namespace Harmony.Infrastructure.Services.Identity
 {
@@ -167,6 +168,13 @@ namespace Harmony.Infrastructure.Services.Identity
             var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
             var result = _mapper.Map<UserResponse>(user);
             return await Result<UserResponse>.SuccessAsync(result);
+        }
+
+        public async Task<IResult<UserPublicInfo>> GetPublicInfoAsync(string userId)
+        {
+            var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            var result = _mapper.Map<UserPublicInfo>(user);
+            return await Result<UserPublicInfo>.SuccessAsync(result);
         }
 
         public async Task<IResult<List<Workspace>>> GetAccessWorkspacesAsync(string userId)

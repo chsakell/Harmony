@@ -24,6 +24,7 @@ namespace Harmony.Persistence.DbContext
         public DbSet<IssueType> IssueTypes { get; set; }
         public DbSet<Sprint> Sprints { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {

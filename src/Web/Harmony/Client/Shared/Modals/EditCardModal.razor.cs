@@ -9,6 +9,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Commands.UploadCardFile;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Comments.Commands.CreateComment;
 using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
@@ -27,7 +28,7 @@ namespace Harmony.Client.Shared.Modals
     {
         private EditableCardModel _card = new();
         private bool _loading = true;
-
+        private CreateCommentCommand CreateCommentCommandModel = new CreateCommentCommand();
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         [Parameter] public Guid CardId { get; set; }
@@ -145,6 +146,7 @@ namespace Harmony.Client.Shared.Modals
             if (loadCardResult.Succeeded)
             {
                 _card = _mapper.Map<EditableCardModel>(loadCardResult.Data);
+                CreateCommentCommandModel.CardId = CardId;
             }
 
             _loading = false;
@@ -431,18 +433,35 @@ namespace Harmony.Client.Shared.Modals
         }
 
 
-        private async Task LoadCardActivity(bool newVal)
+        private async Task LoadCardActivity()
         {
-            if (newVal)
-            {
-                var activityResult = await _cardManager.GetCardActivityAsync(new GetCardActivityQuery(CardId));
+            var activityResult = await _cardManager.GetCardActivityAsync(new GetCardActivityQuery(CardId));
 
-                if (activityResult.Succeeded)
-                {
-                    _card.Activities.Clear();
-                    _card.Activities.AddRange(activityResult.Data);
-                }
+            if (activityResult.Succeeded)
+            {
+                _card.Activities.Clear();
+                _card.Activities.AddRange(activityResult.Data);
             }
+        }
+
+        private async Task AddComment(string comment)
+        {
+            if (comment.Equals("<p> </p>") || comment.Equals("<p><br></p>"))
+            {
+                _snackBar.Add($"Comment cannot be empty", Severity.Warning);
+            }
+
+            CreateCommentCommandModel.Text = comment;
+
+            var createCommentResult = await _commentManager
+                .CreateCommentAsync(CreateCommentCommandModel);
+
+            if(!createCommentResult.Succeeded)
+            {
+                DisplayMessage(createCommentResult);
+            }
+
+            CreateCommentCommandModel.Text = string.Empty;
         }
 
         public void Dispose()
