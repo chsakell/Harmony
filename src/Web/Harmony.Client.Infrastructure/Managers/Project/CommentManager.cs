@@ -6,6 +6,7 @@ using Harmony.Application.Features.Lists.Commands.ArchiveList;
 using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Comments.Commands.CreateComment;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
@@ -28,5 +29,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
 			return await response.ToResult<CreateCommentResponse>();
 		}
+
+        public async Task<IResult<List<CommentDto>>> GetCardComments(Guid cardId)
+        {
+            var response = await _httpClient
+                .GetAsync(Routes.CommentEndpoints.GetCard(cardId));
+
+            return await response.ToResult<List<CommentDto>>();
+        }
     }
 }

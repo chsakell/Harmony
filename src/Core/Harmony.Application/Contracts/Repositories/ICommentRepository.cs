@@ -7,6 +7,7 @@ namespace Harmony.Application.Contracts.Repositories
     /// </summary>
     public interface ICommentRepository
     {
+        IQueryable<Comment> Entities { get; }
         Task<Comment?> GetComment(Guid commentId);
         Task<List<Comment>> GetComments(Guid cardId);
         Task AddAsync(Comment comment);

@@ -25,6 +25,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public List<CardMemberDto> Members { get; set; }
         public List<LabelDto> Labels { get; set; }
         public SprintDto Sprint { get; set; }
+        public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

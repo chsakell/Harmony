@@ -444,6 +444,16 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
+        private async Task LoadComments()
+        {
+            var getCommentsResult = await _commentManager.GetCardComments(CardId);
+
+            if(getCommentsResult.Succeeded)
+            {
+                _card.Comments = getCommentsResult.Data;
+            }
+        }
+
         private async Task AddComment(string comment)
         {
             if (comment.Equals("<p> </p>") || comment.Equals("<p><br></p>"))
@@ -460,6 +470,16 @@ namespace Harmony.Client.Shared.Modals
             {
                 DisplayMessage(createCommentResult);
             }
+
+            var commentAdded = createCommentResult.Data;
+
+            _card.Comments.Add(new CommentDto()
+            {
+                Id = commentAdded.Id,
+                Text = comment,
+                User = commentAdded.User,
+                DateCreated = commentAdded.DateCreated,
+            });
 
             CreateCommentCommandModel.Text = string.Empty;
         }

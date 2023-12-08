@@ -17,7 +17,7 @@ else
                                    Text="@_card.Title" Label="@_localizer["Title"]" />
                 <MudStack Row="true">
                     <MudChip Label="true" Color="Color.Warning">@SerialKey</MudChip>
-                    @if(_card.Sprint != null)
+                        @if (_card.Sprint != null)
                     {
                         <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
                     }
@@ -231,12 +231,38 @@ else
                                                 </MudCard>
                                             }
                                         </MudTabPanel>
-                                        <MudTabPanel Text="Comments">
+                                        <MudTabPanel Text="Comments" OnClick="LoadComments">
                                             <EditableTextEditorField Text=""
                                                                      OnSave="(html) => AddComment(html)" />
+                                            @foreach (var comment in _card.Comments)
+                                            {
+                                                <MudStack>
+                                                    <MudPaper Class="pa-4">
+                                                        <MudStack Row="true">
+                                                            @if (string.IsNullOrEmpty(comment.User.ProfilePicture))
+                                                            {
+                                                                <MudAvatar Size="Size.Large" Color="Color.Default">@comment.User.FirstName[0]@comment.User.LastName[0]</MudAvatar>
+                                                            }
+                                                            else
+                                                            {
+                                                                <MudAvatar Size="Size.Large" Color="Color.Default">
+                                                                    <MudImage Src="@comment.User.ProfilePicture" title="@comment.User.FullName" />
+                                                                </MudAvatar>
+                                                            }
+                                                            <MudStack Justify="Justify.Center" Spacing="0">
+                                                                <MudText Typo="Typo.body1">@comment.User.FullName</MudText>
+                                                                    <strong><MudText Typo="Typo.body2">@@@comment.User.UserName</MudText></strong>
+                                                                </MudStack>
+                                                            </MudStack>
+                                                            <MudPaper Class="ma-4">
+                                                                @((MarkupString)comment.Text)
+                                                            </MudPaper>
+                                                        </MudPaper>
+                                                    </MudStack>
+                                            }
                                         </MudTabPanel>
                                     </MudTabs>
-                                    
+
                                 </MudItem>
                             </MudGrid>
 

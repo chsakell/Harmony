@@ -14,6 +14,8 @@ namespace Harmony.Infrastructure.Repositories
             _context = context;
         }
 
+        public IQueryable<Comment> Entities => _context.Set<Comment>();
+
         public async Task<Comment?> GetComment(Guid commentId)
         {
             return await _context.Comments
