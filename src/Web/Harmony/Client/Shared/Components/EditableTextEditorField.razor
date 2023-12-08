@@ -3,8 +3,8 @@
     <MudForm @ref="_form" IsValidChanged="FormValidChanged">
         <PostTextEditor Contents="@Text" @ref="_textEditor" EditorCssStyle="@EditorCssStyle"></PostTextEditor>
         <MudPaper Class="d-flex pa-2 flex-row-reverse">
-            <MudButton Variant="Variant.Filled" OnClick="SaveValue" 
-            StartIcon="@Icons.Material.Filled.Save" Size="Size.Small">Save</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="SaveValue"
+                   StartIcon="@SaveIcon" Size="Size.Small">@SaveText</MudButton>
         </MudPaper>
     </MudForm>
 
@@ -21,6 +21,12 @@
 
     [Parameter]
     public object? Validator { get; set; }
+
+    [Parameter]
+    public string SaveIcon { get; set; } = Icons.Material.Filled.Save;
+
+    [Parameter]
+    public string SaveText { get; set; } = "Save";
 
     [Parameter]
     public EventCallback<string> OnSave { get; set; }

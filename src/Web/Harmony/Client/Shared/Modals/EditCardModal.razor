@@ -187,7 +187,7 @@ else
                                 </MudItem>
                                 <MudItem xs="12">
                                     <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                                        <MudTabPanel Text="Activity" OnClick="LoadCardActivity">
+                                        <MudTabPanel Text="Activity" OnClick="LoadCardActivity" Icon="@Icons.Material.Filled.History">
                                             @foreach (var activity in _card.Activities)
                                             {
                                                 <MudCard>
@@ -237,8 +237,10 @@ else
                                                 </MudCard>
                                             }
                                         </MudTabPanel>
-                                        <MudTabPanel Text="Comments" OnClick="LoadComments">
+                                        <MudTabPanel Text="Comments" OnClick="LoadComments" Icon="@Icons.Material.Filled.Comment">
                                             <EditableTextEditorField @ref="_commentsTextEditor"
+                                                                     SaveIcon="@Icons.Material.Filled.AddComment"
+                                                                     SaveText="Add comment"
                                                                      Text="" EditorCssStyle="@string.Empty"
                                                                      OnSave="(html) => AddComment(html)" />
                                             @foreach (var comment in _card.Comments)
