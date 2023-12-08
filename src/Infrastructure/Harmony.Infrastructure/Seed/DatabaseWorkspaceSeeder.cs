@@ -35,7 +35,7 @@ namespace Harmony.Infrastructure.Seed
         private List<string> _boardUsers = new List<string>();
         private List<IssueType> _issueTypes;
         public int Order => 3;
-
+        private static int SerialNumber;
         private bool _active = false;
 
         public DatabaseWorkspaceSeeder(HarmonyContext context,
@@ -278,8 +278,11 @@ namespace Harmony.Infrastructure.Seed
                     Members = members,
                     Labels = cardLabels,
                     IssueType = issueType,
-                    SprintId = board.Type == BoardType.Kanban ? null : sprint.Id
+                    SprintId = board.Type == BoardType.Kanban ? null : sprint.Id,
+                    SerialNumber = SerialNumber
                 };
+
+                SerialNumber += 1;
 
                 await _cardRepository.CreateAsync(card);
 
