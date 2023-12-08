@@ -247,22 +247,26 @@ else
                                             {
                                                 <MudStack>
                                                     <MudPaper Class="pa-4 comments">
-                                                        <MudStack Row="true" Class="pb-4">
-                                                            @if (string.IsNullOrEmpty(comment.User.ProfilePicture))
-                                                            {
-                                                                <MudAvatar Size="Size.Large" Color="Color.Default">@comment.User.FirstName[0]@comment.User.LastName[0]</MudAvatar>
-                                                            }
-                                                            else
-                                                            {
-                                                                <MudAvatar Size="Size.Large" Color="Color.Default">
-                                                                    <MudImage Src="@comment.User.ProfilePicture" title="@comment.User.FullName" />
-                                                                </MudAvatar>
-                                                            }
-                                                            <MudStack Justify="Justify.Center" Spacing="0">
-                                                                <MudText Typo="Typo.body1">@comment.User.FullName</MudText>
-                                                                    <strong><MudText Typo="Typo.body2">@@@comment.User.UserName</MudText></strong>
+                                                        <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-4">
+                                                            <MudStack Row="true">
+                                                                @if (string.IsNullOrEmpty(comment.User.ProfilePicture))
+                                                                {
+                                                                    <MudAvatar Size="Size.Medium" Color="Color.Default">@comment.User.FirstName[0]@comment.User.LastName[0]</MudAvatar>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <MudAvatar Size="Size.Medium" Color="Color.Default">
+                                                                        <MudImage Src="@comment.User.ProfilePicture" title="@comment.User.FullName" />
+                                                                    </MudAvatar>
+                                                                }
+                                                                <MudStack Justify="Justify.Center" Spacing="0">
+                                                                    <MudText Typo="Typo.body1">@comment.User.FullName</MudText>
+                                                                        <MudText Typo="Typo.body2"><strong>@@@comment.User.UserName</strong></MudText>
+                                                                    </MudStack>
                                                                 </MudStack>
-                                                            </MudStack>
+                                                                <MudText>@comment.DateCreated.ToShortDateString()</MudText>
+                                                        </MudStack>
+                                                        
                                                             <MudPaper Class="pa-4">
                                                                 @((MarkupString)comment.Text)
                                                             </MudPaper>
