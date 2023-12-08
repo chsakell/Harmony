@@ -30,7 +30,7 @@ namespace Harmony.Infrastructure.Services.Management
             return await (from comment in _commentRepository.Entities
                           join user in _userManager.Users on comment.UserId equals user.Id
                           where comment.CardId == cardId
-                          orderby comment.DateCreated descending
+                          orderby comment.DateCreated ascending
                           select new CommentDto
                           {
                               Id = comment.Id,

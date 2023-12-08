@@ -4,7 +4,7 @@
 
 <style>
     p img {
-        max-width:100%;
+        max-width: 100%;
     }
 </style>
 
@@ -238,7 +238,8 @@ else
                                             }
                                         </MudTabPanel>
                                         <MudTabPanel Text="Comments" OnClick="LoadComments">
-                                            <EditableTextEditorField @ref="_commentsTextEditor" Text=""
+                                            <EditableTextEditorField @ref="_commentsTextEditor"
+                                                                     Text="" EditorCssStyle="@string.Empty"
                                                                      OnSave="(html) => AddComment(html)" />
                                             @foreach (var comment in _card.Comments)
                                             {

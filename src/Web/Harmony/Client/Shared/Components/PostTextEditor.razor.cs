@@ -15,6 +15,8 @@ namespace Harmony.Client.Shared.Components
             return await _editor.GetHTML();
         }
 
+        [Parameter] public string EditorCssStyle { get; set; }
+
         public async Task LoadHtml(string html)
         {
             await _editor.LoadHTMLContent(html);
