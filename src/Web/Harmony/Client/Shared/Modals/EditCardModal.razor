@@ -2,6 +2,12 @@
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardModal> _localizer
 
+<style>
+    p img {
+        max-width:100%;
+    }
+</style>
+
 @if (_loading)
 {
     <ModalLoader />
@@ -232,13 +238,13 @@ else
                                             }
                                         </MudTabPanel>
                                         <MudTabPanel Text="Comments" OnClick="LoadComments">
-                                            <EditableTextEditorField Text=""
+                                            <EditableTextEditorField @ref="_commentsTextEditor" Text=""
                                                                      OnSave="(html) => AddComment(html)" />
                                             @foreach (var comment in _card.Comments)
                                             {
                                                 <MudStack>
-                                                    <MudPaper Class="pa-4">
-                                                        <MudStack Row="true">
+                                                    <MudPaper Class="pa-4 comments">
+                                                        <MudStack Row="true" Class="pb-4">
                                                             @if (string.IsNullOrEmpty(comment.User.ProfilePicture))
                                                             {
                                                                 <MudAvatar Size="Size.Large" Color="Color.Default">@comment.User.FirstName[0]@comment.User.LastName[0]</MudAvatar>
@@ -254,7 +260,7 @@ else
                                                                     <strong><MudText Typo="Typo.body2">@@@comment.User.UserName</MudText></strong>
                                                                 </MudStack>
                                                             </MudStack>
-                                                            <MudPaper Class="ma-4">
+                                                            <MudPaper Class="pa-4">
                                                                 @((MarkupString)comment.Text)
                                                             </MudPaper>
                                                         </MudPaper>

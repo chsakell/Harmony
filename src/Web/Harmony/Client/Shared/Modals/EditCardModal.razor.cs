@@ -16,6 +16,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
+using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -30,6 +31,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _loading = true;
         private CreateCommentCommand CreateCommentCommandModel = new CreateCommentCommand();
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        public EditableTextEditorField _commentsTextEditor;
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
@@ -482,6 +484,8 @@ namespace Harmony.Client.Shared.Modals
             });
 
             CreateCommentCommandModel.Text = string.Empty;
+
+            await _commentsTextEditor.Reset();
         }
 
         public void Dispose()

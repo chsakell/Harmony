@@ -41,7 +41,12 @@
         {
             Console.WriteLine(ex);
         }
-        
+
+    }
+
+    public async Task Reset()
+    {
+        await _textEditor.LoadHtml(string.Empty);
     }
 
     [Parameter]
