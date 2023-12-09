@@ -187,10 +187,52 @@ else
                                 </MudItem>
                                 <MudItem xs="12">
                                     <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                                        <MudTabPanel Text="Activity" OnClick="LoadCardActivity" Icon="@Icons.Material.Filled.History">
+                                        <MudTabPanel Text="Comments" Icon="@Icons.Material.Filled.Comment">
+                                            <EditableTextEditorField @ref="_commentsTextEditor"
+                                                                     SaveIcon="@Icons.Material.Filled.AddComment"
+                                                                     SaveText="Add comment"
+                                                                     Text="" EditorCssStyle="@string.Empty"
+                                                                     OnSave="(html) => AddComment(html)" />
+                                            @foreach (var comment in _card.Comments)
+                                            {
+                                                <MudPaper Class="px-2 pt-4 pb-0 mb-2">
+                                                    <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-4">
+                                                        <MudStack Row="true">
+                                                            @if (string.IsNullOrEmpty(comment.User.ProfilePicture))
+                                                            {
+                                                                <MudAvatar Size="Size.Medium" Color="Color.Default">@comment.User.FirstName[0]@comment.User.LastName[0]</MudAvatar>
+                                                            }
+                                                            else
+                                                            {
+                                                                <MudAvatar Size="Size.Medium" Color="Color.Default">
+                                                                    <MudImage Src="@comment.User.ProfilePicture" title="@comment.User.FullName" />
+                                                                </MudAvatar>
+                                                            }
+                                                            <MudStack Justify="Justify.Center" Spacing="0">
+                                                                <MudText Typo="Typo.body1">@comment.User.FullName</MudText>
+                                                                    <MudText Typo="Typo.body2"><strong>@@@comment.User.UserName</strong></MudText>
+                                                            </MudStack>
+                                                        </MudStack>
+                                                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                            @if (comment.Editable)
+                                                            {
+                                                                <MudIconButton OnClick="@(() => EditComment(comment.Id))" Size="Size.Medium" Icon="@Icons.Material.Filled.Edit"></MudIconButton>
+                                                            }
+                                                            <MudText>@String.Format("{0:g}", comment.DateCreated)</MudText>
+                                                            </MudStack>
+
+                                                        </MudStack>
+
+                                                        <MudText Class="pa-2">
+                                                            @((MarkupString)comment.Text)
+                                                        </MudText>
+                                                    </MudPaper>
+                                            }
+                                        </MudTabPanel>
+                                        <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">
                                             @foreach (var activity in _card.Activities)
                                             {
-                                                <MudCard>
+                                                <MudCard Class="mb-2">
                                                     <MudCardHeader Class="pb-0">
                                                         <CardHeaderAvatar>
                                                             <MudAvatar Color="Color.Secondary">@(activity.Actor[0])</MudAvatar>
@@ -235,48 +277,6 @@ else
                                                         </MudStack>
                                                     </MudCardContent>
                                                 </MudCard>
-                                            }
-                                        </MudTabPanel>
-                                        <MudTabPanel Text="Comments" OnClick="LoadComments" Icon="@Icons.Material.Filled.Comment">
-                                            <EditableTextEditorField @ref="_commentsTextEditor"
-                                                                     SaveIcon="@Icons.Material.Filled.AddComment"
-                                                                     SaveText="Add comment"
-                                                                     Text="" EditorCssStyle="@string.Empty"
-                                                                     OnSave="(html) => AddComment(html)" />
-                                            @foreach (var comment in _card.Comments)
-                                            {
-                                                <MudPaper Class="px-2 pt-4 pb-0 mb-2 comments">
-                                                    <MudStack Justify="Justify.SpaceBetween" Row="true" Class="pb-4">
-                                                        <MudStack Row="true">
-                                                            @if (string.IsNullOrEmpty(comment.User.ProfilePicture))
-                                                            {
-                                                                <MudAvatar Size="Size.Medium" Color="Color.Default">@comment.User.FirstName[0]@comment.User.LastName[0]</MudAvatar>
-                                                            }
-                                                            else
-                                                            {
-                                                                <MudAvatar Size="Size.Medium" Color="Color.Default">
-                                                                    <MudImage Src="@comment.User.ProfilePicture" title="@comment.User.FullName" />
-                                                                </MudAvatar>
-                                                            }
-                                                            <MudStack Justify="Justify.Center" Spacing="0">
-                                                                <MudText Typo="Typo.body1">@comment.User.FullName</MudText>
-                                                                    <MudText Typo="Typo.body2"><strong>@@@comment.User.UserName</strong></MudText>
-                                                            </MudStack>
-                                                        </MudStack>
-                                                        <MudStack Row="true" AlignItems="AlignItems.Center">
-                                                            @if(comment.Editable)
-                                                            {
-                                                                <MudIconButton OnClick="@(() => EditComment(comment.Id))" Size="Size.Medium" Icon="@Icons.Material.Filled.Edit"></MudIconButton>
-                                                            }
-                                                            <MudText>@String.Format("{0:g}", comment.DateCreated)</MudText>
-                                                        </MudStack>
-                                                        
-                                                        </MudStack>
-
-                                                        <MudText Class="pa-2">
-                                                            @((MarkupString)comment.Text)
-                                                        </MudText>
-                                                    </MudPaper>
                                             }
                                         </MudTabPanel>
                                     </MudTabs>

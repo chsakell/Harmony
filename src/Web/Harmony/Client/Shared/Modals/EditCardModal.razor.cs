@@ -34,6 +34,7 @@ namespace Harmony.Client.Shared.Modals
         private CreateCommentCommand CreateCommentCommandModel = new CreateCommentCommand();
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
         public EditableTextEditorField _commentsTextEditor;
+        private bool _historyLoaded = false;
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
@@ -156,6 +157,23 @@ namespace Harmony.Client.Shared.Modals
             _loading = false;
 
             RegisterEvents();
+
+            await Task.Run(() =>
+            {
+                var commentsTask = LoadCommentsTask();
+
+                commentsTask.ContinueWith(res =>
+                {
+                    var result = res.Result;
+
+                    if (result.Succeeded)
+                    {
+                        _card.Comments = result.Data;
+
+                        StateHasChanged();
+                    }
+                });
+            });
         }
 
         private void RegisterEvents()
@@ -436,9 +454,13 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
-
-        private async Task LoadCardActivity()
+        private async Task LoadCardHistory()
         {
+            if(_historyLoaded)
+            {
+                return;
+            }
+
             var activityResult = await _cardManager.GetCardActivityAsync(new GetCardActivityQuery(CardId));
 
             if (activityResult.Succeeded)
@@ -446,16 +468,13 @@ namespace Harmony.Client.Shared.Modals
                 _card.Activities.Clear();
                 _card.Activities.AddRange(activityResult.Data);
             }
+
+            _historyLoaded = true;
         }
 
-        private async Task LoadComments()
+        private Task<IResult<List<CommentDto>>> LoadCommentsTask()
         {
-            var getCommentsResult = await _commentManager.GetCardComments(CardId);
-
-            if (getCommentsResult.Succeeded)
-            {
-                _card.Comments = getCommentsResult.Data;
-            }
+            return _commentManager.GetCardComments(CardId);
         }
 
         private async Task AddComment(string comment)
