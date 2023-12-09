@@ -5,5 +5,6 @@
         public static string Index = "api/comments";
 
         public static string GetCard(Guid cardId) => $"{Index}/{cardId}/";
+        public static string GetComment(Guid commentId) => $"{Index}/{commentId}/";
     }
 }

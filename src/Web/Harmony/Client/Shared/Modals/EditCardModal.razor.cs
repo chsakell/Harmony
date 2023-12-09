@@ -10,6 +10,7 @@ using Harmony.Application.Features.Cards.Commands.UploadCardFile;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Comments.Commands.CreateComment;
+using Harmony.Application.Features.Comments.Commands.UpdateComment;
 using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
@@ -22,6 +23,7 @@ using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using System.ComponentModel.Design;
 
 namespace Harmony.Client.Shared.Modals
 {
@@ -450,7 +452,7 @@ namespace Harmony.Client.Shared.Modals
         {
             var getCommentsResult = await _commentManager.GetCardComments(CardId);
 
-            if(getCommentsResult.Succeeded)
+            if (getCommentsResult.Succeeded)
             {
                 _card.Comments = getCommentsResult.Data;
             }
@@ -468,7 +470,7 @@ namespace Harmony.Client.Shared.Modals
             var createCommentResult = await _commentManager
                 .CreateCommentAsync(CreateCommentCommandModel);
 
-            if(!createCommentResult.Succeeded)
+            if (!createCommentResult.Succeeded)
             {
                 DisplayMessage(createCommentResult);
             }
@@ -502,7 +504,7 @@ namespace Harmony.Client.Shared.Modals
                 { c => c.SaveIcon, Icons.Material.Filled.InsertComment },
                 { c => c.Title, "Edit comment" },
                 { c => c.TitleIcon, Icons.Material.Filled.Edit },
-                { c => c.OnSave, async (html) => await UpdateComment(comment.Id, html, dialog) },
+                { c => c.OnSave, async (html) => await UpdateComment(comment, html, dialog) },
                 { c => c.DisplayCancelButton, false },
             };
 
@@ -512,8 +514,17 @@ namespace Harmony.Client.Shared.Modals
             var result = await dialog.Result;
         }
 
-        private async Task UpdateComment(Guid commentId, string text, IDialogReference dialog)
+        private async Task UpdateComment(CommentDto comment, string text, IDialogReference dialog)
         {
+            var updateResult = await _commentManager.UpdateCommentAsync(new UpdateCommentCommand(comment.Id, text));
+
+            if (updateResult.Succeeded && updateResult.Data)
+            {
+                comment.Text = text;
+            }
+
+            DisplayMessage(updateResult);
+
             dialog.Close();
         }
 

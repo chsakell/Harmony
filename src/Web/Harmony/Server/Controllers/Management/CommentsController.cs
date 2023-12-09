@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Comments.Commands.CreateComment;
+using Harmony.Application.Features.Comments.Commands.UpdateComment;
 using Harmony.Application.Features.Comments.Queries.GetCardComments;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPost]
         public async Task<IActionResult> Post(CreateCommentCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpPut("{commentId:guid}")]
+        public async Task<IActionResult> Update(Guid commentId, UpdateCommentCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
