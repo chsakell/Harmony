@@ -14,10 +14,11 @@
 }
 else
 {
-    <MudDialog>
+    <MudDialog Class="editCardModal">
         <TitleContent>
-            <MudStack>
-                <EditableTextField Style="width:50%" For="@(() => _card.Title)"
+            <MudStack Row="true" Justify="Justify.SpaceBetween">
+                <MudStack Style="width:50%">
+                <EditableTextField  For="@(() => _card.Title)"
                                    AdornmentIcon="@Icons.Material.Filled.Edit"
                                    OnSave="(newTitle) => SaveTitle(newTitle)"
                                    Text="@_card.Title" Label="@_localizer["Title"]" />
@@ -68,7 +69,10 @@ else
                 </MudStack>
 
             </MudStack>
-
+                <MudToggleIconButton Style="height: 40px; margin-right: 30px; margin-top: -3px;" ToggledChanged="ToggleFullScreen" Icon="@Icons.Material.Filled.Fullscreen"
+                                 Color="@Color.Primary" ToggledIcon="@Icons.Material.Filled.FullscreenExit"
+                                 ToggledColor="@Color.Secondary" />
+            </MudStack>
         </TitleContent>
         <DialogContent>
             <MudGrid>

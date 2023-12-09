@@ -22,6 +22,8 @@ using Harmony.Client.Shared.Dialogs;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Options;
+using Microsoft.JSInterop;
 using MudBlazor;
 using System.ComponentModel.Design;
 
@@ -32,10 +34,13 @@ namespace Harmony.Client.Shared.Modals
         private EditableCardModel _card = new();
         private bool _loading = true;
         private CreateCommentCommand CreateCommentCommandModel = new CreateCommentCommand();
+
+        [Inject] private IJSRuntime JSRuntime { get; set; }
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
         public EditableTextEditorField _commentsTextEditor;
         private bool _historyLoaded = false;
-
+        private string _mudDialogClass = string.Empty;
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
         [Parameter] public string SerialKey { get; set; }
@@ -482,6 +487,8 @@ namespace Harmony.Client.Shared.Modals
             if (comment.Equals("<p> </p>") || comment.Equals("<p><br></p>"))
             {
                 _snackBar.Add($"Comment cannot be empty", Severity.Warning);
+
+                return;
             }
 
             CreateCommentCommandModel.Text = comment;
@@ -527,7 +534,7 @@ namespace Harmony.Client.Shared.Modals
                 { c => c.DisplayCancelButton, false },
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, DisableBackdropClick = false };
             dialog = _dialogService.Show<EditableTextEditorFieldModal>(_localizer["Edit comment"], parameters, options);
 
             var result = await dialog.Result;
@@ -547,6 +554,10 @@ namespace Harmony.Client.Shared.Modals
             dialog.Close();
         }
 
+        private async Task ToggleFullScreen(bool fullScreen)
+        {
+            await JSRuntime.InvokeVoidAsync("toggleFullScreenModal", "editCardModal", fullScreen);
+        }
         public void Dispose()
         {
             UnRegisterEvents();
