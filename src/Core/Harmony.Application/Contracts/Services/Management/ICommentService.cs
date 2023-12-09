@@ -11,6 +11,6 @@ namespace Harmony.Application.Contracts.Services.Management
     /// </summary>
     public interface ICommentService
 	{
-        Task<List<CommentDto>> GetCommentsForCard(Guid cardId);
+        Task<List<CommentDto>> GetCommentsForCard(Guid cardId, string userId);
     }
 }

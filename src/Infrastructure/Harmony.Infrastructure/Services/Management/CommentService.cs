@@ -25,7 +25,7 @@ namespace Harmony.Infrastructure.Services.Management
             _commentRepository = commentRepository;
         }
 
-        public async Task<List<CommentDto>> GetCommentsForCard(Guid cardId)
+        public async Task<List<CommentDto>> GetCommentsForCard(Guid cardId, string userId)
         {
             return await (from comment in _commentRepository.Entities
                           join user in _userManager.Users on comment.UserId equals user.Id
@@ -42,7 +42,8 @@ namespace Harmony.Infrastructure.Services.Management
                                   LastName = user.LastName,
                                   UserName = user.UserName,
                                   ProfilePicture = user.ProfilePicture
-                              }
+                              },
+                              Editable = user.Id == userId
                           }).ToListAsync();
         }
     }

@@ -40,7 +40,7 @@ namespace Harmony.Application.Features.Comments.Queries.GetCardComments
                 return await Result<List<CommentDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var comments = await _commentService.GetCommentsForCard(request.CardId);
+            var comments = await _commentService.GetCommentsForCard(request.CardId, userId);
 
             return await Result<List<CommentDto>>.SuccessAsync(comments);
         }

@@ -6,5 +6,6 @@
         public string Text { get; set; }
         public UserPublicInfo User { get; set; }
         public DateTime DateCreated { get; set; }
+        public bool Editable { get; set; }
     }
 }

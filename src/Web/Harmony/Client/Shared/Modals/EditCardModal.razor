@@ -263,7 +263,14 @@ else
                                                                     <MudText Typo="Typo.body2"><strong>@@@comment.User.UserName</strong></MudText>
                                                             </MudStack>
                                                         </MudStack>
-                                                        <MudText>@String.Format("{0:g}", comment.DateCreated)</MudText>
+                                                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                            @if(comment.Editable)
+                                                            {
+                                                                <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Filled.Edit"></MudIconButton>
+                                                            }
+                                                            <MudText>@String.Format("{0:g}", comment.DateCreated)</MudText>
+                                                        </MudStack>
+                                                        
                                                         </MudStack>
 
                                                         <MudText Class="pa-2">
