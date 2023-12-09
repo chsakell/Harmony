@@ -488,6 +488,35 @@ namespace Harmony.Client.Shared.Modals
             await _commentsTextEditor.Reset();
         }
 
+        private async Task EditComment(Guid commentId)
+        {
+            var comment = _card.Comments.FirstOrDefault(c => c.Id == commentId);
+
+            IDialogReference dialog = null;
+
+            var parameters = new DialogParameters<EditableTextEditorFieldModal>
+            {
+                { c => c.EditorCssStyle, string.Empty },
+                { c => c.Text, comment.Text },
+                { c => c.SaveText, "Update comment" },
+                { c => c.SaveIcon, Icons.Material.Filled.InsertComment },
+                { c => c.Title, "Edit comment" },
+                { c => c.TitleIcon, Icons.Material.Filled.Edit },
+                { c => c.OnSave, async (html) => await UpdateComment(comment.Id, html, dialog) },
+                { c => c.DisplayCancelButton, false },
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            dialog = _dialogService.Show<EditableTextEditorFieldModal>(_localizer["Edit comment"], parameters, options);
+
+            var result = await dialog.Result;
+        }
+
+        private async Task UpdateComment(Guid commentId, string text, IDialogReference dialog)
+        {
+            dialog.Close();
+        }
+
         public void Dispose()
         {
             UnRegisterEvents();

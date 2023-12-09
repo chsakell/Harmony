@@ -266,7 +266,7 @@ else
                                                         <MudStack Row="true" AlignItems="AlignItems.Center">
                                                             @if(comment.Editable)
                                                             {
-                                                                <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Filled.Edit"></MudIconButton>
+                                                                <MudIconButton OnClick="@(() => EditComment(comment.Id))" Size="Size.Medium" Icon="@Icons.Material.Filled.Edit"></MudIconButton>
                                                             }
                                                             <MudText>@String.Format("{0:g}", comment.DateCreated)</MudText>
                                                         </MudStack>

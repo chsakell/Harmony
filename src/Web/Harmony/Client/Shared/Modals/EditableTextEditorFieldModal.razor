@@ -1,0 +1,26 @@
+﻿@using Harmony.Application.DTO;
+@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<EditableTextEditorFieldModal> _localizer
+
+<MudDialog>
+    <TitleContent>
+        @{
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@TitleIcon" Class="mr-3 mb-n1" />
+                @Title
+            </MudText>
+        }
+    </TitleContent>
+    <DialogContent>
+        <EditableTextEditorField SaveIcon="@SaveIcon"
+                                 SaveText="@SaveText"
+                                 Text="@Text" EditorCssStyle="@EditorCssStyle"
+                                 OnSave="(html) => OnSave(html)" />
+    </DialogContent>
+    <DialogActions>
+        @if (DisplayCancelButton)
+        {
+            <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
