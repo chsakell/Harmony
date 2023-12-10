@@ -22,6 +22,7 @@ function toggleFullScreenModal(modalClass, showFullScreen) {
         var element = elements[0];
         if (showFullScreen) {
             element.classList.add("mud-dialog-fullscreen");
+            element.style.overflowY = "auto";
         }
         else {
             element.classList.remove("mud-dialog-fullscreen");

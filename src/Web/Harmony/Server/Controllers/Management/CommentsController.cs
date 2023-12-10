@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Comments.Commands.CreateComment;
+using Harmony.Application.Features.Comments.Commands.DeleteComment;
 using Harmony.Application.Features.Comments.Commands.UpdateComment;
 using Harmony.Application.Features.Comments.Queries.GetCardComments;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,12 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> Get(Guid cardId)
         {
             return Ok(await _mediator.Send(new GetCardCommentsCommandQuery(cardId)));
+        }
+
+        [HttpDelete("{commentId:guid}")]
+        public async Task<IActionResult> Update(Guid commentId)
+        {
+            return Ok(await _mediator.Send(new DeleteCommentCommand(commentId)));
         }
     }
 }

@@ -540,6 +540,36 @@ namespace Harmony.Client.Shared.Modals
             var result = await dialog.Result;
         }
 
+        private async Task RemoveComment(Guid commentId)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to delete this comment?"},
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var result = await _commentManager.DeleteComment(commentId);
+
+                if (result.Succeeded)
+                {
+                    var comment = _card.Comments.FirstOrDefault(x => x.Id == commentId);
+
+                    if (comment != null)
+                    {
+                        _card.Comments.Remove(comment);
+                    }
+                }
+
+                DisplayMessage(result);
+            }
+        }
+
         private async Task UpdateComment(CommentDto comment, string text, IDialogReference dialog)
         {
             var updateResult = await _commentManager.UpdateCommentAsync(new UpdateCommentCommand(comment.Id, text));

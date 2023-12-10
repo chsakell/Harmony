@@ -46,5 +46,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
             return await response.ToResult<List<CommentDto>>();
         }
+
+        public async Task<IResult<bool>> DeleteComment(Guid commentId)
+        {
+            var response = await _httpClient
+                .DeleteAsync(Routes.CommentEndpoints.GetComment(commentId));
+
+            return await response.ToResult<bool>();
+        }
     }
 }
