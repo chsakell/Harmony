@@ -486,7 +486,7 @@ namespace Harmony.Client.Shared.Modals
         {
             if (comment.Equals("<p> </p>") || comment.Equals("<p><br></p>"))
             {
-                _snackBar.Add($"Comment cannot be empty", Severity.Warning);
+                _snackBar.Add($"Comment cannot be empty", Severity.Error);
 
                 return;
             }
@@ -572,6 +572,13 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task UpdateComment(CommentDto comment, string text, IDialogReference dialog)
         {
+            if (text.Equals("<p> </p>") || comment.Equals("<p><br></p>"))
+            {
+                _snackBar.Add($"Comment cannot be empty", Severity.Error);
+
+                return;
+            }
+
             var updateResult = await _commentManager.UpdateCommentAsync(new UpdateCommentCommand(comment.Id, text));
 
             if (updateResult.Succeeded && updateResult.Data)

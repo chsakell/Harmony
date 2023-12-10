@@ -2,7 +2,7 @@
 
     <MudForm @ref="_form" IsValidChanged="FormValidChanged">
         <PostTextEditor Contents="@Text" @ref="_textEditor" EditorCssStyle="@EditorCssStyle"></PostTextEditor>
-        <MudPaper Class="d-flex pa-2 flex-row-reverse">
+        <MudPaper Class="d-flex pa-2 flex-row-reverse" Elevation="0">
             <MudButton Variant="Variant.Filled" OnClick="SaveValue"
                    StartIcon="@SaveIcon" Size="Size.Small">@SaveText</MudButton>
         </MudPaper>
