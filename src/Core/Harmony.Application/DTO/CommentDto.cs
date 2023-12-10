@@ -7,5 +7,6 @@
         public UserPublicInfo User { get; set; }
         public DateTime DateCreated { get; set; }
         public bool Editable { get; set; }
+        public bool Editing { get; set; }
     }
 }

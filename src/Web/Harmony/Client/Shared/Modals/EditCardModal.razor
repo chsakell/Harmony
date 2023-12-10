@@ -231,7 +231,10 @@ else
                                                 <MudText Class="pa-2">
                                                     @((MarkupString)comment.Text)
                                                 </MudText>
-                                            </MudPaper>
+                                                <MudOverlay Visible="comment.Editing" DarkBackground="true" Absolute="true">
+                                                    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                                                </MudOverlay>
+                                        </MudPaper>
                                     }
                                 </MudTabPanel>
                                 <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">

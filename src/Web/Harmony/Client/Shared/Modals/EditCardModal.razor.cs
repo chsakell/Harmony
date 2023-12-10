@@ -19,6 +19,7 @@ using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -461,7 +462,7 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task LoadCardHistory()
         {
-            if(_historyLoaded)
+            if (_historyLoaded)
             {
                 return;
             }
@@ -509,6 +510,7 @@ namespace Harmony.Client.Shared.Modals
                 Text = comment,
                 User = commentAdded.User,
                 DateCreated = commentAdded.DateCreated,
+                Editable = true
             });
 
             CreateCommentCommandModel.Text = string.Empty;
@@ -554,16 +556,21 @@ namespace Harmony.Client.Shared.Modals
 
             if (!dialogResult.Canceled)
             {
+                var comment = _card.Comments.FirstOrDefault(c => c.Id == commentId);
+                if (comment == null)
+                {
+                    return;
+                }
+
+                comment.Editing = true;
+
+                StateHasChanged();
+
                 var result = await _commentManager.DeleteComment(commentId);
 
                 if (result.Succeeded)
                 {
-                    var comment = _card.Comments.FirstOrDefault(x => x.Id == commentId);
-
-                    if (comment != null)
-                    {
-                        _card.Comments.Remove(comment);
-                    }
+                    _card.Comments.Remove(comment);
                 }
 
                 DisplayMessage(result);
@@ -579,6 +586,9 @@ namespace Harmony.Client.Shared.Modals
                 return;
             }
 
+            comment.Editing = true;
+            StateHasChanged();
+
             var updateResult = await _commentManager.UpdateCommentAsync(new UpdateCommentCommand(comment.Id, text));
 
             if (updateResult.Succeeded && updateResult.Data)
@@ -586,6 +596,7 @@ namespace Harmony.Client.Shared.Modals
                 comment.Text = text;
             }
 
+            comment.Editing = false;
             DisplayMessage(updateResult);
 
             dialog.Close();
