@@ -44,7 +44,9 @@ namespace Harmony.Application.Mappings.Management
                     {
                         Id = c.IssueType.Id,
                         Summary = c.IssueType.Summary,
-                    }));
+                    }))
+                .ForMember(dto => dto.TotalComments, opt =>
+                    opt.MapFrom(c => c.Comments != null ? c.Comments.Count : 0));
 
             CreateMap<Card, GetBacklogItemResponse>();
 

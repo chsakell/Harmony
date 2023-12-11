@@ -23,5 +23,6 @@ namespace Harmony.Application.DTO
 		public IssueTypeDto IssueType { get; set; }
 		public SprintDto Sprint { get; set; }
         public bool IsUpdating { get; set; }
+		public int TotalComments { get; set; }
     }
 }
