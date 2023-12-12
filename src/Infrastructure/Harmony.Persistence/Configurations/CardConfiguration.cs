@@ -24,6 +24,8 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(c => c.DueDateReminderType).IsRequired(false).HasDefaultValue(DueDateReminderType.None);
 
+            builder.Property(c => c.StoryPoints).IsRequired(false);
+
             builder.HasMany(c => c.Comments)
                 .WithOne(c => c.Card)
                 .HasForeignKey(c => c.CardId)

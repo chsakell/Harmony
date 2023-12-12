@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20231211064829_LoadBoardSp_V3")]
-    partial class LoadBoardSp_V3
+    [Migration("20231212073013_LoadBoardListCardsSp_V3")]
+    partial class LoadBoardListCardsSp_V3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -204,6 +204,9 @@ namespace Harmony.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<short?>("StoryPoints")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("Title")
                         .IsRequired()
