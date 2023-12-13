@@ -2,6 +2,9 @@
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
+using Harmony.Application.Requests.Identity;
+using Harmony.Application.Responses;
+using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -19,6 +22,7 @@ namespace Harmony.Client.Pages.Management
         private List<GetBacklogItemResponse> _cards;
         private MudTable<GetBacklogItemResponse> _table;
         private HashSet<GetBacklogItemResponse> _selectedCards = new HashSet<GetBacklogItemResponse>();
+        private GetBacklogItemResponse _itemBeforeEdit;
         protected override Task OnInitializedAsync()
         {
             return base.OnInitializedAsync();
@@ -134,6 +138,60 @@ namespace Harmony.Client.Pages.Management
             _searchString = string.IsNullOrEmpty(text) ? null : text;
             _table.ReloadServerData();
         }
+
+        #region Row Editing
+
+        private async void UpdateItem(object element)
+        {
+            var item = element as GetBacklogItemResponse;
+
+            //var response = await RoleManager.SaveAsync(new RoleRequest()
+            //{
+            //    Id = role.Id,
+            //    Name = role.Name,
+            //});
+
+            //if (response.Succeeded)
+            //{
+            //    _snackBar.Add(response.Messages[0], Severity.Success);
+            //}
+            //else
+            //{
+            //    foreach (var message in response.Messages)
+            //    {
+            //        _snackBar.Add(message, Severity.Error);
+            //    }
+            //}
+        }
+
+        private void BackupItem(object element)
+        {
+            _itemBeforeEdit = new()
+            {
+                Id = ((GetBacklogItemResponse)element).Id,
+                Title = ((GetBacklogItemResponse)element).Title,
+                DueDate = ((GetBacklogItemResponse)element).DueDate,
+                IssueType = ((GetBacklogItemResponse)element).IssueType,
+                SerialKey = ((GetBacklogItemResponse)element).SerialKey,
+                StoryPoints = ((GetBacklogItemResponse)element).StoryPoints,
+                Position = ((GetBacklogItemResponse)element).Position,
+                StartDate = ((GetBacklogItemResponse)element).StartDate
+            };
+        }
+
+        private void CancelEdit(object element)
+        {
+            ((GetBacklogItemResponse)element).Id = _itemBeforeEdit.Id;
+            ((GetBacklogItemResponse)element).Title = _itemBeforeEdit.Title;
+            ((GetBacklogItemResponse)element).DueDate = _itemBeforeEdit.DueDate;
+            ((GetBacklogItemResponse)element).StartDate = _itemBeforeEdit.StartDate;
+            ((GetBacklogItemResponse)element).Position = _itemBeforeEdit.Position;
+            ((GetBacklogItemResponse)element).IssueType = _itemBeforeEdit.IssueType;
+            ((GetBacklogItemResponse)element).StoryPoints = _itemBeforeEdit.StoryPoints;
+            ((GetBacklogItemResponse)element).SerialKey = _itemBeforeEdit.SerialKey;
+        }
+
+        #endregion
 
         private void DisplayMessage(IResult result)
         {

@@ -5,6 +5,13 @@
 
 <MudPaper Style="height:calc(100vh - 100px);overflow:auto">
     <MudTable Hover="true" Elevation="25"
+              CommitEditTooltip="Update item"
+              CanCancelEdit="true"
+              RowEditCommit="UpdateItem"
+              RowEditCancel="CancelEdit"
+              RowEditPreview="BackupItem"
+              EditButtonPosition="TableEditButtonPosition.End"
+              EditTrigger="TableEditTrigger.EditButton"
               T="GetBacklogItemResponse"
               MultiSelection="true"
               @bind-SelectedItems="_selectedCards"
@@ -29,6 +36,7 @@
             <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
             <MudTh>Type</MudTh>
+            <MudTh>Story Points</MudTh>
             <MudTh Style="text-align:right"></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -45,6 +53,9 @@
                     <MudText>@context.IssueType.Summary</MudText>
                     </MudStack>
                 </MudTd>
+                <MudTd DataLabel="StoryPoints">
+                <MudText>@context.StoryPoints?.ToString()</MudText>
+                </MudTd>
                 <MudTd Style="text-align:right">
                     <MudStack Row="true">
                         <MudTooltip Text="Move down" Delay="3000">
@@ -60,6 +71,22 @@
                     </MudStack>
                 </MudTd>
             </RowTemplate>
+            <RowEditingTemplate>
+                <MudTd DataLabel="SerialKey">@context.SerialKey</MudTd>
+                <MudTd DataLabel="Title">
+                    <MudTextField T="string" For="@(() => context.Title)" @bind-Value="context.Title" Label="Title"></MudTextField>
+                </MudTd>
+                <MudTd DataLabel="Type">
+                    <MudStack Row="true">
+                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                 Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                        <MudText>@context.IssueType.Summary</MudText>
+                    </MudStack>
+                </MudTd>
+                <MudTd DataLabel="StoryPoints">
+                    <MudNumericField T="short?" @bind-Value="@context.StoryPoints" Min="0" />
+                </MudTd>
+            </RowEditingTemplate>
             <PagerContent>
                 <MudTablePager />
             </PagerContent>
