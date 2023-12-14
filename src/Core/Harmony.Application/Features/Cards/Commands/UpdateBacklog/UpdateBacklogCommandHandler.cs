@@ -44,7 +44,7 @@ namespace Harmony.Application.Features.Cards.Commands.UpdateBacklog
 
             card.IssueTypeId = request.IssueType.Id;
             card.Title = request.Title;
-
+            card.StoryPoints = request.StoryPoints;
 
             var dbResult = await _cardRepository.Update(card);
 

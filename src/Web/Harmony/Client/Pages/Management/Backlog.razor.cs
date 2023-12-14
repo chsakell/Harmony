@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetBacklog;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
@@ -7,6 +8,7 @@ using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -24,6 +26,8 @@ namespace Harmony.Client.Pages.Management
         private MudTable<GetBacklogItemResponse> _table;
         private HashSet<GetBacklogItemResponse> _selectedCards = new HashSet<GetBacklogItemResponse>();
         private GetBacklogItemResponse _itemBeforeEdit;
+        private List<IssueTypeDto> _issueTypes;
+
         protected override Task OnInitializedAsync()
         {
             return base.OnInitializedAsync();
@@ -102,6 +106,16 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private Func<IssueTypeDto, string> convertFunc = type =>
+        {
+            if (type == null || type.Id == Guid.Empty)
+            {
+                return "Select issue type";
+            }
+
+            return type.Summary;
+        };
+
         private async Task LoadData(int pageNumber, int pageSize, TableState state)
         {
             string[] orderings = null;
@@ -140,15 +154,44 @@ namespace Harmony.Client.Pages.Management
             _table.ReloadServerData();
         }
 
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await LoadIssueTypes();
+            }
+        }
+
+        private async Task LoadIssueTypes()
+        {
+            if(_issueTypes != null)
+            {
+                return;
+            }
+
+            var issueTypesResult = await _boardManager.GetIssueTypesAsync(Id);
+
+            if (issueTypesResult.Succeeded)
+            {
+                _issueTypes = issueTypesResult.Data;
+            }
+        }
+
         #region Row Editing
 
         private async void UpdateItem(object element)
         {
             var item = element as GetBacklogItemResponse;
 
+            if (item== null)
+            {
+                return;
+            }
+
             var result = await _cardManager
                 .UpdateBacklogItemAsync(new 
-                UpdateBacklogCommand(item.Id, Guid.Parse(Id), item.Title, item.IssueType));
+                UpdateBacklogCommand(item.Id, Guid.Parse(Id), item.Title, item.IssueType, item.StoryPoints));
 
             DisplayMessage(result);
         }
