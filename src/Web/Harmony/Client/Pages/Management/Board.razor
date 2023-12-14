@@ -220,6 +220,12 @@ else
                                             </MudTooltip>
                                         </MudStack>
                                     }
+                                    @if(KanbanStore.IsScrum)
+                                    {
+                                        <MudChip Variant="Variant.Text" Color="Color.Primary">
+                                            @(context.StoryPoints?.ToString() ?? "-")
+                                        </MudChip>
+                                    }
                                     @if (context.Members.Any())
                                     {
                                         <MudAvatarGroup Max="2" Spacing="2" MaxColor="Color.Primary" MaxSize="Size.Small">

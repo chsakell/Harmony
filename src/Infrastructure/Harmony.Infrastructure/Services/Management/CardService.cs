@@ -137,7 +137,8 @@ namespace Harmony.Infrastructure.Services.Management
 						{
 							Id = issueType.Id,
 							Summary = issueType.Summary
-						}
+						},
+                        StoryPoints = card.StoryPoints
 					};
 
 

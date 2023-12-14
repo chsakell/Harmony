@@ -24,5 +24,6 @@ namespace Harmony.Application.DTO
 		public SprintDto Sprint { get; set; }
         public bool IsUpdating { get; set; }
 		public int TotalComments { get; set; }
+		public short? StoryPoints { get; set; }
     }
 }
