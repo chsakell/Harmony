@@ -19,7 +19,7 @@
                 <MudItem xs="12">
                     <MudTextField For="@(() => CreateCardCommandModel.Title)" @bind-Value="CreateCardCommandModel.Title" Label="@_localizer["Name"]" />
                 </MudItem>
-                <MudItem xs="12">
+                <MudItem xs="12" sm="@(BoardType == BoardType.Scrum ? 6 : 12)">
                     <MudSelect T="IssueTypeDto" @bind-Value="CreateCardCommandModel.IssueType"
                                Placeholder="Select issue type"
                                Label="Type" AnchorOrigin="Origin.BottomCenter"
@@ -39,7 +39,7 @@
                 </MudItem>
                 @if (ActiveSprints != null && ActiveSprints.Any())
                 {
-                    <MudItem xs="12">
+                    <MudItem xs="12" sm="6">
                         <MudSelect T="SprintDto" @bind-Value="_selectedSprint"
                                    Placeholder="Select sprint"
                                    Label="Sprint" AnchorOrigin="Origin.BottomCenter"

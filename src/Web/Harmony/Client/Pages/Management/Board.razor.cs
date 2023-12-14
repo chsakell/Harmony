@@ -425,6 +425,9 @@ namespace Harmony.Client.Pages.Management
                 },
                 {
                     modal => modal.ListTitle, list.Title
+                },
+                {
+                    modal => modal.BoardType, KanbanStore.Board.Type
                 }
             };
 

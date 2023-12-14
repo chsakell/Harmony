@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -13,6 +14,9 @@ namespace Harmony.Client.Shared.Modals
 
         [Parameter]
         public CreateCardCommand CreateCardCommandModel { get; set; }
+
+        [Parameter]
+        public BoardType BoardType { get; set; }
 
         [Parameter]
         public List<SprintDto>? ActiveSprints { get; set; }
