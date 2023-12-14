@@ -9,6 +9,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
@@ -57,6 +58,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("{id:guid}/description")]
         public async Task<IActionResult> UpdateDescription(Guid id, UpdateCardDescriptionCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpPut("{id:guid}/storypoints")]
+        public async Task<IActionResult> UpdateStoryPoints(Guid id, UpdateCardStoryPointsCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

@@ -7,10 +7,13 @@ namespace Harmony.Client.Infrastructure.Models.Board
 {
     public class EditableCardModel
     {
+        public Guid Id { get; set; }
+        public Guid BoardId { get; set; }
+        public BoardType BoardType { get; set; }
+
         [Required]
         [MaxLength(300)]
         public string Title { get; set; }
-
         public string Description { get; set; }
         public string UserId { get; set; } // User created the card
         public EditableBoardListModel BoardList { get; set; }
@@ -26,6 +29,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public List<LabelDto> Labels { get; set; }
         public SprintDto Sprint { get; set; }
         public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
+        public short? StoryPoints { get; set; }
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

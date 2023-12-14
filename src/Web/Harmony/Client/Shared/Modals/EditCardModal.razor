@@ -22,11 +22,21 @@ else
                                        AdornmentIcon="@Icons.Material.Filled.Edit"
                                        OnSave="(newTitle) => SaveTitle(newTitle)"
                                        Text="@_card.Title" Label="@_localizer["Title"]" />
-                    <MudStack Row="true">
+                    <MudStack Row="true" Class="align-end">
                         <MudChip Label="true" Color="Color.Warning">@SerialKey</MudChip>
                             @if (_card.Sprint != null)
                         {
                             <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
+                        }
+                        @if (_card.BoardType == BoardType.Scrum)
+                        {
+                            <MudNumericField Style="width:90px" T="short?" HideSpinButtons="true"
+                                             AdornmentIcon="@Icons.Material.Filled.Iso"
+                                             Adornment="Adornment.Start"
+                            Clearable="true" Disabled="_updatingStoryPoints"
+                                             Label="Story Points"
+                                             DebounceInterval="1000" OnDebounceIntervalElapsed="UpdateStoryPoints"
+                                             @bind-Value:get="@_card.StoryPoints" Min="0" />
                         }
                         @if (_card.StartDate != null || _card.DueDate != null)
                         {
@@ -191,11 +201,11 @@ else
                             <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
                                 <MudTabPanel Text="Comments" Icon="@Icons.Material.Filled.Comment">
                                     <div class="mb-4">
-                                    <EditableTextEditorField @ref="_commentsTextEditor"
-                                                             SaveIcon="@Icons.Material.Filled.AddComment"
-                                                             SaveText="Add comment"
-                                                             Text="" EditorCssStyle="@string.Empty"
-                                                             OnSave="(html) => AddComment(html)" />
+                                        <EditableTextEditorField @ref="_commentsTextEditor"
+                                                                 SaveIcon="@Icons.Material.Filled.AddComment"
+                                                                 SaveText="Add comment"
+                                                                 Text="" EditorCssStyle="@string.Empty"
+                                                                 OnSave="(html) => AddComment(html)" />
                                     </div>
                                     @foreach (var comment in _card.Comments)
                                     {
@@ -234,7 +244,7 @@ else
                                                 <MudOverlay Visible="comment.Editing" DarkBackground="true" Absolute="true">
                                                     <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
                                                 </MudOverlay>
-                                        </MudPaper>
+                                            </MudPaper>
                                     }
                                 </MudTabPanel>
                                 <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">

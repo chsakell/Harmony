@@ -41,6 +41,7 @@ namespace Harmony.Infrastructure.Repositories
         {
             return await _context.Cards
 				.Include(card => card.BoardList)
+					.ThenInclude(bl => bl.Board)
 				.Include(card => card.CheckLists)
 					.ThenInclude(list => list.Items)
 				.Include(card => card.Comments)

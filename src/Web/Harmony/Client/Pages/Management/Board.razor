@@ -208,7 +208,7 @@ else
                                                  Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalComments</MudChip>
                                     }
                                 </div>
-                                <MudStack Row="true" Justify="Justify.FlexEnd">
+                                <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
 
                                     <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
                                     @if (context.IssueType != null)

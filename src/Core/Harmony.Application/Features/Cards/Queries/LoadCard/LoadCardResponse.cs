@@ -8,6 +8,9 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
     /// </summary>
     public class LoadCardResponse
     {
+        public Guid Id { get; set; }
+        public Guid BoardId { get; set; }
+        public BoardType BoardType { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string UserId { get; set; } // User created the card
@@ -22,5 +25,6 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public List<CardMemberDto> Members { get; set; }
         public List<LabelDto> Labels { get; set; }
         public SprintDto Sprint { get; set; }
+        public short? StoryPoints { get; set; }
     }
 }

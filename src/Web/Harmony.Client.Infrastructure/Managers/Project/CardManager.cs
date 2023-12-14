@@ -11,6 +11,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
@@ -74,6 +75,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public async Task<IResult<bool>> UpdateDescriptionAsync(UpdateCardDescriptionCommand request)
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.Description(request.CardId), request);
+
+            return await response.ToResult<bool>();
+        }
+
+        public async Task<IResult<bool>> UpdateStoryPointsAsync(UpdateCardStoryPointsCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.CardEndpoints.StoryPoints(request.CardId), request);
 
             return await response.ToResult<bool>();
         }

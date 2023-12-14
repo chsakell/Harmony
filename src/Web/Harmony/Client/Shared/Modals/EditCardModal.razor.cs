@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 using Harmony.Application.Features.Cards.Commands.UploadCardFile;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
@@ -42,6 +43,10 @@ namespace Harmony.Client.Shared.Modals
         public EditableTextEditorField _commentsTextEditor;
         private bool _historyLoaded = false;
         private string _mudDialogClass = string.Empty;
+
+        private bool _editingStoryPoints;
+        private bool _updatingStoryPoints;
+
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
         [Parameter] public string SerialKey { get; set; }
@@ -275,6 +280,25 @@ namespace Harmony.Client.Shared.Modals
                 .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription));
 
             DisplayMessage(response);
+        }
+
+        async void UpdateStoryPoints(string debouncedText)
+        {
+           _updatingStoryPoints = true;
+            short? storyPoints = string.IsNullOrEmpty(debouncedText) ? null : short.Parse(debouncedText);
+
+            var result = await _cardManager
+                .UpdateStoryPointsAsync(new UpdateCardStoryPointsCommand(BoardId, CardId, storyPoints));
+
+            if(result.Succeeded && result.Data)
+            {
+                _card.StoryPoints = storyPoints;
+            }
+
+            DisplayMessage(result);
+
+            _updatingStoryPoints = false;
+            _editingStoryPoints = false;
         }
 
         private async Task SaveCheckListTitle(Guid checkListId, string title)
