@@ -7,6 +7,7 @@ using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
+using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -53,6 +54,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             var response = await _httpClient.PostAsJsonAsync(Routes.CardEndpoints.Backlog, request);
 
             return await response.ToResult<CardDto>();
+        }
+
+        public async Task<IResult<bool>> UpdateBacklogItemAsync(UpdateBacklogCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes
+                .CardEndpoints.BacklogItem(request.CardId), request);
+
+            return await response.ToResult<bool>();
         }
 
         public async Task<IResult<CardDto>> MoveCardAsync(MoveCardCommand request)

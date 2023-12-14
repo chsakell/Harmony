@@ -7,6 +7,7 @@ using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
+using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -24,6 +25,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<LoadCardResponse>> LoadCardAsync(LoadCardQuery request);
         Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request);
         Task<IResult<CardDto>> CreateBacklogItemAsync(CreateBacklogCommand request);
+        Task<IResult<bool>> UpdateBacklogItemAsync(UpdateBacklogCommand request);
         Task<IResult<CardDto>> MoveCardAsync(MoveCardCommand request);
         Task<IResult<bool>> UpdateDescriptionAsync(UpdateCardDescriptionCommand request);
         Task<IResult<bool>> UpdateTitleAsync(UpdateCardTitleCommand request);

@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
+using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
@@ -145,23 +146,11 @@ namespace Harmony.Client.Pages.Management
         {
             var item = element as GetBacklogItemResponse;
 
-            //var response = await RoleManager.SaveAsync(new RoleRequest()
-            //{
-            //    Id = role.Id,
-            //    Name = role.Name,
-            //});
+            var result = await _cardManager
+                .UpdateBacklogItemAsync(new 
+                UpdateBacklogCommand(item.Id, Guid.Parse(Id), item.Title, item.IssueType));
 
-            //if (response.Succeeded)
-            //{
-            //    _snackBar.Add(response.Messages[0], Severity.Success);
-            //}
-            //else
-            //{
-            //    foreach (var message in response.Messages)
-            //    {
-            //        _snackBar.Add(message, Severity.Error);
-            //    }
-            //}
+            DisplayMessage(result);
         }
 
         private void BackupItem(object element)
