@@ -7,6 +7,7 @@ using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 
@@ -54,6 +55,7 @@ public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardSto
 
         if (updateResult > 0)
         {
+            await _hubClientNotifierService.UpdateCardStoryPoints(request.BoardId, card.Id, card.StoryPoints);
             return await Result<bool>.SuccessAsync(true, _localizer["Story points updated"]);
 		}
 

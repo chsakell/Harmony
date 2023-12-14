@@ -195,6 +195,16 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
+        public void UpdateCardStoryPoints(Guid cardId, short? storyPoints)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.StoryPoints = storyPoints;
+            }
+        }
+
         public void UpdateCardTitle(Guid cardId, string title)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);

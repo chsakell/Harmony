@@ -12,6 +12,7 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task UpdateBoardListTitle(Guid boardId, Guid boardListId, string title);
         Task UpdateCardTitle(Guid boardId, Guid cardId, string title);
         Task UpdateCardDescription(Guid boardId, Guid cardId, string description);
+        Task UpdateCardStoryPoints(Guid boardId, Guid cardId, short? storyPoints);
         Task UpdateCardDates(Guid boardId, Guid cardId, DateTime? startDate, DateTime? dueDate);
         Task ToggleCardLabel(Guid boardId, Guid cardId, LabelDto label);
         Task AddCardAttachment(Guid boardId, Guid cardId, AttachmentDto attachment);

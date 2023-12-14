@@ -38,6 +38,13 @@ namespace Harmony.Server.Services
                     new CardDescriptionChangedEvent(cardId, description));
         }
 
+        public async Task UpdateCardStoryPoints(Guid boardId, Guid cardId, short? storyPoints)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardStoryPointsChanged,
+                    new CardStoryPointsChangedEvent(cardId, storyPoints));
+        }
+
         public async Task UpdateCardDates(Guid boardId, Guid cardId, DateTime? startDate, DateTime? dueDate)
         {
             await _hubContext.Clients.Group(boardId.ToString())
