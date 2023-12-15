@@ -34,6 +34,9 @@ AS
 BEGIN
 	SELECT * FROM Boards WHERE Id = @BoardId
 
+	DECLARE @BoardType int
+    SELECT @BoardType = Type FROM Boards WHERE Id = @BoardId
+
 	SELECT * FROM BoardLists where BoardId = @BoardId AND Status = 0
 
 	declare @boardListIds TABLE(Id uniqueidentifier)
@@ -60,14 +63,29 @@ BEGIN
 
 	WHILE @@FETCH_STATUS = 0
 		BEGIN
-			INSERT INTO @cards 
-			Select * from Cards
-			where BoardListId = @boardListId AND Status = 0 
-			order by Position
-			OFFSET 0 ROWS 
-			FETCH FIRST @cardsPerList ROWS ONLY;
-			FETCH NEXT FROM cursor_boardLists INTO 
-				@boardListId;
+			IF @BoardType = 0
+				BEGIN
+					INSERT INTO @cards 
+					Select * from Cards
+					where BoardListId = @boardListId AND Status = 0 
+					order by Position
+					OFFSET 0 ROWS 
+					FETCH FIRST @cardsPerList ROWS ONLY;
+					FETCH NEXT FROM cursor_boardLists INTO 
+						@boardListId;
+				END
+				ELSE
+				BEGIN
+					INSERT INTO @cards 
+					Select c.* from Cards c
+					JOIN Sprints s on s.Id = c.SprintId
+					where BoardListId = @boardListId AND c.Status = 0 AND s.Status = 1
+					order by c.Position
+					OFFSET 0 ROWS 
+					FETCH FIRST @cardsPerList ROWS ONLY;
+					FETCH NEXT FROM cursor_boardLists INTO 
+						@boardListId;
+				END
 		END;
 
 	CLOSE cursor_boardLists;

@@ -39,12 +39,28 @@ BEGIN
 	SerialNumber int, IssueTypeId uniqueidentifier, SprintId uniqueidentifier, DateCreated datetime2, DateUpdated datetime2, 
 	DueDateReminderType int null, StoryPoints smallint null, DateCompleted datetime2 null);
 
-	INSERT INTO @cards 
-	Select * from Cards
-	where BoardListId = @boardListId AND Status = 0 
-	order by Position
-	OFFSET (@page - 1) * @cardsPerList ROWS 
-	FETCH FIRST @cardsPerList ROWS ONLY;
+	DECLARE @BoardType int
+    SELECT @BoardType = Type FROM Boards WHERE Id = @BoardId
+
+	IF @BoardType = 0
+	BEGIN
+		INSERT INTO @cards 
+		Select * from Cards
+		where BoardListId = @boardListId AND Status = 0 
+		order by Position
+		OFFSET (@page - 1) * @cardsPerList ROWS 
+		FETCH FIRST @cardsPerList ROWS ONLY;
+	END
+	ELSE
+	BEGIN
+		INSERT INTO @cards 
+		Select c.* from Cards c
+		JOIN Sprints s on s.Id = c.SprintId
+		where BoardListId = @boardListId AND c.Status = 0  AND s.Status = 1
+		order by Position
+		OFFSET (@page - 1) * @cardsPerList ROWS 
+		FETCH FIRST @cardsPerList ROWS ONLY;
+	END
 
 	select * from @cards Order by BoardListId, Position
 
