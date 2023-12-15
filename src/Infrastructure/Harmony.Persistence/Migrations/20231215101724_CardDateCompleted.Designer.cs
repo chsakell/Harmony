@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20231212072928_LoadBoardSp_V3")]
-    partial class LoadBoardSp_V3
+    [Migration("20231215101724_CardDateCompleted")]
+    partial class CardDateCompleted
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,6 +164,9 @@ namespace Harmony.Persistence.Migrations
 
                     b.Property<Guid?>("BoardListId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DateCompleted")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");

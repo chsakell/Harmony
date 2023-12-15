@@ -26,6 +26,8 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(c => c.StoryPoints).IsRequired(false);
 
+            builder.Property(c => c.DateCompleted).IsRequired(false);
+
             builder.HasMany(c => c.Comments)
                 .WithOne(c => c.Card)
                 .HasForeignKey(c => c.CardId)

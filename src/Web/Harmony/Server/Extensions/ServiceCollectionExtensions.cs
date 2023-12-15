@@ -60,6 +60,7 @@ namespace Harmony.Server.Extensions
             services.AddScoped<IBoardService, BoardService>();
             services.AddScoped<IMemberSearchService, MemberSearchService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ISprintService, SprintService>();
 
             return services;
         }

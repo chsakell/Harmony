@@ -30,5 +30,6 @@ namespace Harmony.Domain.Entities
         public Guid? SprintId { get; set; }
         public Sprint Sprint { get; set; }
         public short? StoryPoints { get; set; }
+        public DateTime? DateCompleted { get; set; }
     }
 }
