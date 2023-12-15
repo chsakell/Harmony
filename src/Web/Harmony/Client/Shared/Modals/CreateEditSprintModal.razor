@@ -29,10 +29,14 @@
                     <MudTextField For="@(() => CreateEditSprintCommandModel.Goal)" @bind-Value="CreateEditSprintCommandModel.Goal" Label="@_localizer["Goal"]" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudDatePicker Label="Start date" @bind-Date="CreateEditSprintCommandModel.StartDate" />
+                    <MudDatePicker Label="Start date"
+                                   For="@(() => CreateEditSprintCommandModel.StartDate)"
+                                   @bind-Date="CreateEditSprintCommandModel.StartDate" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudDatePicker Label="End date" @bind-Date="CreateEditSprintCommandModel.EndDate" />
+                    <MudDatePicker Label="End date"
+                                   For="@(() => CreateEditSprintCommandModel.EndDate)"
+                                   @bind-Date="CreateEditSprintCommandModel.EndDate" />
                 </MudItem>
             </MudGrid>
             

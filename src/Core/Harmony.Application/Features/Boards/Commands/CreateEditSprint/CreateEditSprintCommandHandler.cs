@@ -39,6 +39,12 @@ namespace Harmony.Application.Features.Boards.Commands.CreateSprint
                 return await Result<SprintDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
+            if(request.StartDate.HasValue && request.EndDate.HasValue
+                && request.StartDate > request.EndDate)
+            {
+                return await Result<SprintDto>.FailAsync(_localizer["Due date must be greater than start date"]);
+            }
+
             Sprint sprint = null;
             int dbResult;
 

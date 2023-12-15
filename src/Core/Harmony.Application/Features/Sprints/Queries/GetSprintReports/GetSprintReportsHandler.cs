@@ -37,7 +37,6 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintReports
 
         public async Task<IResult<GetSprintReportsResponse>> Handle(GetSprintReportsQuery request, CancellationToken cancellationToken)
         {
-
             var sprintReports = await _sprintService.GetSprintReports(request.SprintId);
 
             return Result<GetSprintReportsResponse>.Success(sprintReports);
