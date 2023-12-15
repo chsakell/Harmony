@@ -40,7 +40,13 @@ namespace Harmony.Client.Shared.Modals
                 {
                     BurnDownSeries.Add(new ChartSeries()
                     {
-                        Name = SprintReports.BurnDownReport.Name,
+                        Name = "Guide Line",
+                        Data = SprintReports.BurnDownReport.GuideLineStoryPoints.ToArray()
+                    });
+
+                    BurnDownSeries.Add(new ChartSeries()
+                    {
+                        Name = "Remaining Story Points",
                         Data = SprintReports.BurnDownReport.RemainingStoryPoints.ToArray()
                     });
 

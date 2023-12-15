@@ -38,8 +38,15 @@ namespace Harmony.Infrastructure.Services.Management
 
             var totalStoryPoints = sprintCards.Sum(c => c.StoryPoints) ?? 0;
             var remainingStoryPoints = totalStoryPoints;
+            var guideLineRemainingStoryPoints = totalStoryPoints;
             var burnDownReportDates = new List<string>();
             var remainingStoryPointsSeries = new List<double>();
+            var guideLineStoryPointsSeries = new List<double>();
+            var totalWorkDays = EachDay(sprint.StartDate.Value, sprint.EndDate.Value)
+                .Where(date => date.DayOfWeek != DayOfWeek.Saturday
+                && date.DayOfWeek != DayOfWeek.Sunday).Count();
+
+            var averageStoryPointsPerDay = totalStoryPoints / totalWorkDays;
 
             foreach (var day in EachDay(sprint.StartDate.Value, sprint.EndDate.Value))
             {
@@ -52,13 +59,21 @@ namespace Harmony.Infrastructure.Services.Management
                 }
 
                 remainingStoryPointsSeries.Add(remainingStoryPoints);
+
+                if(day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    guideLineRemainingStoryPoints -= averageStoryPointsPerDay;
+                }
+
+                guideLineStoryPointsSeries.Add(guideLineRemainingStoryPoints);
             }
 
             var burnDownReport = new BurnDownReportDto()
             {
                 Name = "BurnDown chart",
                 Dates = burnDownReportDates,
-                RemainingStoryPoints = remainingStoryPointsSeries
+                RemainingStoryPoints = remainingStoryPointsSeries,
+                GuideLineStoryPoints = guideLineStoryPointsSeries
             };
 
             result.BurnDownReport = burnDownReport;
