@@ -105,6 +105,11 @@ namespace Harmony.Infrastructure.Repositories
             await _context.Entry(Card).Reference(card => card.IssueType).LoadAsync();
         }
 
+        public async Task LoadBoardListEntryAsync(Card Card)
+        {
+            await _context.Entry(Card).Reference(card => card.BoardList).LoadAsync();
+        }
+
         public async Task<int> CreateAsync(Card Card)
 		{
 			_context.Cards.Add(Card);

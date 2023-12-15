@@ -131,9 +131,12 @@ else
                                 <MudSpacer />
                                 @if (!item.TitleEditing)
                                 {
-                                    <MudIconButton Style="margin-bottom:10px" Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
-                                                   OnClick="@(() => AddCard(item))"
-                                                   aria-label="add" Disabled="AddCardsDisabled"></MudIconButton>
+                                    @if (item.CardStatus != Domain.Enums.BoardListCardStatus.DONE)
+                                    {
+                                        <MudIconButton Style="margin-bottom:10px" Size="Size.Small" Class="align-self-end" Icon="@Icons.Material.Filled.Add"
+                                                       OnClick="@(() => AddCard(item))"
+                                                       aria-label="add" Disabled="AddCardsDisabled"></MudIconButton>
+                                    }
                                     <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
                                              Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
                                         <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
@@ -220,7 +223,7 @@ else
                                             </MudTooltip>
                                         </MudStack>
                                     }
-                                    @if(KanbanStore.IsScrum)
+                                    @if (KanbanStore.IsScrum)
                                     {
                                         <MudChip Variant="Variant.Text" Color="Color.Primary">
                                             @(context.StoryPoints?.ToString() ?? "-")

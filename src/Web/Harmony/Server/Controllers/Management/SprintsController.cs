@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
+using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,12 @@ namespace Harmony.Server.Controllers.Management
         public SprintsController(ISender sender)
         {
             _sender = sender;
+        }
+
+        [HttpGet("{id:guid}/reports")]
+        public async Task<IActionResult> GetReports(Guid id)
+        {
+            return Ok(await _sender.Send(new GetSprintReportsQuery(id)));
         }
 
         [HttpPut("{id:guid}/start")]

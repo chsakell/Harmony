@@ -7,13 +7,10 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintReports
 {
     public class GetSprintReportsQuery : IRequest<IResult<GetSprintReportsResponse>>
     {
-        public GetSprintReportsQuery(Guid boardId, Guid sprintId)
+        public GetSprintReportsQuery(Guid sprintId)
         {
-            BoardId = boardId;
             SprintId = sprintId;
         }
-
-        public Guid BoardId { get; set; }
         public Guid SprintId { get; set; }
     }
 }

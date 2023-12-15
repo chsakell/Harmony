@@ -61,10 +61,19 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
         if (operationCompleted)
 		{
-			var cardIsCompleted = await _cardService.CardCompleted(card.Id);
-			if (cardIsCompleted)
+			await _cardRepository.LoadBoardListEntryAsync(card);
+
+			if (card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
 			{
+				card.DateCompleted = DateTime.Now;
+				await _cardRepository.Update(card);
+
                 _notificationsPublisher.Publish(new CardCompletedNotification(card.Id));
+            }
+			else if(card.DateCompleted.HasValue)
+			{
+				card.DateCompleted = null;
+                await _cardRepository.Update(card);
             }
 
             var result = _mapper.Map<CardDto>(card);

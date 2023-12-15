@@ -159,7 +159,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = true, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = false, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<SprintReportsModal>(_localizer["Sprint reports"], parameters, options);
             var result = await dialog.Result;
         }

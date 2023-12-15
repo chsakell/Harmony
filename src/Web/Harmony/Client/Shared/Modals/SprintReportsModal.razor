@@ -15,8 +15,13 @@
         }
     </TitleContent>
     <DialogContent>
-        <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" 
-        XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+        @if (SprintReports?.BurnDownReport != null)
+        {
+            <MudChart ChartType
+            ="ChartType.Line" ChartSeries
+            ="@BurnDownSeries" @bind-SelectedIndex="Index"
+                      XAxisLabels="@XAxisBurnDownLabels" Width="100%" Height="100%"></MudChart>
+        }
     </DialogContent>
     <DialogActions>
     </DialogActions>

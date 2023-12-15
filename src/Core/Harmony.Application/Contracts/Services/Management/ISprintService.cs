@@ -9,6 +9,6 @@ namespace Harmony.Application.Contracts.Services.Management
 {
     public interface ISprintService
     {
-        Task<GetSprintReportsResponse> GetSprintReports(Guid boardId, Guid sprintId);
+        Task<GetSprintReportsResponse> GetSprintReports(Guid sprintId);
     }
 }

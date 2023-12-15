@@ -16,18 +16,21 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintReports
         private readonly ISprintRepository _sprintRepository;
         private readonly IBoardService _boardService;
         private readonly ICardRepository _cardRepository;
+        private readonly ISprintService _sprintService;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<GetSprintReportsHandler> _localizer;
 
         public GetSprintReportsHandler(ISprintRepository sprintRepository,
             IBoardService boardService,
             ICardRepository cardRepository,
+            ISprintService sprintService,
             IMapper mapper,
             IStringLocalizer<GetSprintReportsHandler> localizer)
         {
             _sprintRepository = sprintRepository;
             _boardService = boardService;
             _cardRepository = cardRepository;
+            _sprintService = sprintService;
             _mapper = mapper;
             _localizer = localizer;
         }
@@ -35,14 +38,9 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintReports
         public async Task<IResult<GetSprintReportsResponse>> Handle(GetSprintReportsQuery request, CancellationToken cancellationToken)
         {
 
-            var nonCompletedSprints = await _sprintRepository.GetNonCompletedSprints(request.BoardId);
+            var sprintReports = await _sprintService.GetSprintReports(request.SprintId);
 
-            var result = new GetSprintReportsResponse()
-            {
-                
-            };
-
-            return Result<GetSprintReportsResponse>.Success(result);
+            return Result<GetSprintReportsResponse>.Success(sprintReports);
         }
     }
 }

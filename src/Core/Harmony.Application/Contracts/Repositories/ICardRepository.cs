@@ -21,6 +21,8 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CreateAsync(Card card);
 		Task<int> Update(Card card);
         Task<int> UpdateRange(List<Card> cards);
+
+        Task LoadBoardListEntryAsync(Card Card);
         Task LoadIssueEntryAsync(Card Card);
         void UpdateEntry(Card Card);
         Task<int> GetNextSerialNumber(Guid boardId);
