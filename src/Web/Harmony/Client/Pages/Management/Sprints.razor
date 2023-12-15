@@ -117,7 +117,8 @@
                                            Variant="Variant.Filled" Color="Color.Default" OnClick="() => CompleteSprint(firstItem.SprintId, firstItem.Sprint)">Complete sprint</MudButton>
                                 break;
                         }
-
+                        <MudButton EndIcon="@Icons.Material.Outlined.MultilineChart" ButtonType="ButtonType.Button"
+                                   Variant="Variant.Filled" Color="Color.Default" OnClick="() => ViewReports(firstItem.SprintId)">Reports</MudButton>
                         <MudIconButton Icon="@Icons.Material.Outlined.Edit" ButtonType="ButtonType.Button"
                                    Variant="Variant.Filled" Color="Color.Default" OnClick="() => EditSprint(firstItem)"></MudIconButton>
                     }

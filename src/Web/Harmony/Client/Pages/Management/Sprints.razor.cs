@@ -147,6 +147,23 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private async Task ViewReports(Guid sprintId)
+        {
+            var parameters = new DialogParameters<SprintReportsModal>
+            {
+                {
+                    modal => modal.BoardId, Guid.Parse(Id)
+                },
+                {
+                    modal => modal.SprintId, sprintId
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = true, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<SprintReportsModal>(_localizer["Sprint reports"], parameters, options);
+            var result = await dialog.Result;
+        }
+
         private async Task CreateSprint()
         {
             var parameters = new DialogParameters<CreateEditSprintModal>

@@ -1,0 +1,23 @@
+﻿@using Harmony.Application.DTO
+@using Harmony.Application.Features.Lists.Queries.GetBoardLists
+@using Harmony.Client.Infrastructure.Helper
+@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SprintReportsModal> _localizer
+
+
+<MudDialog>
+    <TitleContent>
+        @{
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.MultilineChart" Class="mr-3 mb-n1" />
+                @_localizer["Sprint reports"]
+            </MudText>
+        }
+    </TitleContent>
+    <DialogContent>
+        <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" 
+        XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+    </DialogContent>
+    <DialogActions>
+    </DialogActions>
+</MudDialog>
