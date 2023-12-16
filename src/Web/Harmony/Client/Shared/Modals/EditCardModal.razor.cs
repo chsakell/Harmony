@@ -51,6 +51,7 @@ namespace Harmony.Client.Shared.Modals
         [Parameter] public Guid BoardId { get; set; }
         [Parameter] public string SerialKey { get; set; }
 
+        public event EventHandler<EditableCardModel> OnCardUpdated;
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
         {
             const long maxAllowedImageSize = 10000000;
@@ -293,6 +294,8 @@ namespace Harmony.Client.Shared.Modals
             if(result.Succeeded && result.Data)
             {
                 _card.StoryPoints = storyPoints;
+
+                OnCardUpdated?.Invoke(this, _card);
             }
 
             DisplayMessage(result);
@@ -332,6 +335,8 @@ namespace Harmony.Client.Shared.Modals
             if (result.Succeeded)
             {
                 _card.Title = newTitle;
+
+                OnCardUpdated?.Invoke(this, _card);
             }
 
             DisplayMessage(result);

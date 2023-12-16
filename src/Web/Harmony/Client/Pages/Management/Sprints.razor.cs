@@ -1,8 +1,13 @@
 ﻿using Harmony.Application.Features.Boards.Commands.CreateSprint;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
+using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
+using Harmony.Client.Infrastructure.Models.Board;
+using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
@@ -12,7 +17,7 @@ using MudBlazor;
 
 namespace Harmony.Client.Pages.Management
 {
-    public partial class Sprints
+    public partial class Sprints : IAsyncDisposable
     {
         [Parameter]
         public string Id { get; set; }
@@ -33,9 +38,9 @@ namespace Harmony.Client.Pages.Management
             Selector = (e) => e.Sprint + $" [{e.SprintStatus}]"
         };
 
-        protected override Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            return base.OnInitializedAsync();
+            _hubSubscriptionManager.ListenForBoardEvents(Id);
         }
 
         private async Task<TableData<GetSprintCardResponse>> ReloadData(TableState state)
@@ -81,6 +86,39 @@ namespace Harmony.Client.Pages.Management
 
                 DisplayMessage(result);
             }
+        }
+
+        private async Task EditCard(GetSprintCardResponse item)
+        {
+            var loadCardResult = await _cardManager.LoadCardAsync(new LoadCardQuery(item.CardId.Value));
+
+            if (loadCardResult.Succeeded)
+            {
+                var parameters = new DialogParameters<EditCardModal>
+                {
+                    { c => c.CardId, item.CardId.Value },
+                    { c => c.BoardId, Guid.Parse(Id) },
+                    { c => c.SerialKey, item.CardSerialKey }
+                };
+
+                var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+                var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
+
+                var editCardModal = dialog.Dialog as EditCardModal;
+
+                editCardModal.OnCardUpdated += (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, item);
+
+                var result = await dialog.Result;
+
+                editCardModal.OnCardUpdated -= (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, item); ;
+            }
+        }
+
+        private void EditCardModal_OnCardUpdated(object? sender, EditableCardModel e, GetSprintCardResponse item)
+        {
+            item.CardTitle = e.Title;
+            item.StoryPoints = e.StoryPoints;
+            item.CardDueDate = e.DueDate;
         }
 
         private async Task FilterSprintStatus(int status)
@@ -264,6 +302,11 @@ namespace Harmony.Client.Pages.Management
             {
                 _snackBar.Add(message, severity);
             }
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
         }
     }
 }
