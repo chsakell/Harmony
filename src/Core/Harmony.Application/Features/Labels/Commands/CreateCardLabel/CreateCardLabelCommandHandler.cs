@@ -66,7 +66,11 @@ namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
 
                 if(request.CardId.HasValue)
                 {
-                    var createCardLabelResult = await _sender.Send(new ToggleCardLabelCommand(request.CardId.Value, label.Id));
+                    var createCardLabelResult = await _sender
+                        .Send(new ToggleCardLabelCommand(request.CardId.Value, label.Id)
+                        {
+                            BoardId = request.BoardId
+                        });
 
                     response.CardId = request.CardId.Value;
                 }

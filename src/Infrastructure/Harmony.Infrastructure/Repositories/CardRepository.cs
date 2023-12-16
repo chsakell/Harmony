@@ -34,6 +34,13 @@ namespace Harmony.Infrastructure.Repositories
 					.Include(c => c.BoardList)
 				.FirstOrDefaultAsync(c => c.Id == cardId));
 
+            if(card.BoardList == null && card.Status == CardStatus.Backlog)
+            {
+                await LoadIssueEntryAsync(card);
+
+                return card.IssueType.BoardId;
+            }
+
 			return card.BoardList.BoardId;
         }
 

@@ -42,9 +42,8 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
             var dbResult = await _checkListItemRepository.Update(listItem);
             if (dbResult > 0)
             {
-                var boardId = await _cardRepository.GetBoardId(request.CardId);
                 await _hubClientNotifierService
-                    .ToggleCardListItemChecked(boardId, request.CardId, listItem.Id, listItem.IsChecked);
+                    .ToggleCardListItemChecked(request.BoardId, request.CardId, listItem.Id, listItem.IsChecked);
 
                 return await Result<bool>.SuccessAsync(true, _localizer["List item Checked updated"]);
             }

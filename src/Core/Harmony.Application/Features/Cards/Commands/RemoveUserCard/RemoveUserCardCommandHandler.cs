@@ -61,8 +61,6 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
             if (userCard != null)
             {
-                var boardId = await _cardRepository.GetBoardId(request.CardId);
-
                 var dbResult = await _userCardRepository.Delete(userCard);
 
                 if (dbResult > 0)
@@ -75,15 +73,15 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                     var member = _mapper.Map<CardMemberDto>(user);
 
-                    await _hubClientNotifierService.RemoveCardMember(boardId, request.CardId, member);
+                    await _hubClientNotifierService.RemoveCardMember(request.BoardId, request.CardId, member);
 
-                    var board = await _boardRepository.GetAsync(boardId);
+                    var board = await _boardRepository.GetAsync(request.BoardId);
 
                     var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
                     var cardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/?cardId={request.CardId}";
 
-                    _notificationsPublisher.Publish(new MemberRemovedFromCardNotification(boardId, request.CardId, request.UserId, cardUrl));
+                    _notificationsPublisher.Publish(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
 
                     return await Result<RemoveUserCardResponse>.SuccessAsync(result, _localizer["User removed from card"]);
                 }

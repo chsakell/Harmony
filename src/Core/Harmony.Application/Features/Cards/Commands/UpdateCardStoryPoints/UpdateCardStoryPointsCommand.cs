@@ -1,9 +1,10 @@
-﻿using Harmony.Shared.Wrapper;
+﻿using Harmony.Application.Models;
+using Harmony.Shared.Wrapper;
 using MediatR;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 
-public class UpdateCardStoryPointsCommand : IRequest<Result<bool>>
+public class UpdateCardStoryPointsCommand : BaseBoardCommand, IRequest<Result<bool>>
 {
     public UpdateCardStoryPointsCommand(Guid boardId, Guid cardId, short? storyPoints)
     {
@@ -12,7 +13,6 @@ public class UpdateCardStoryPointsCommand : IRequest<Result<bool>>
         StoryPoints = storyPoints;
     }
 
-    public Guid BoardId { get; set; }
     public Guid CardId { get; set; }
     public short? StoryPoints { get; set; }
 }

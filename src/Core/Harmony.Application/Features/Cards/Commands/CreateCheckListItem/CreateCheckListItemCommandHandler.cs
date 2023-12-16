@@ -72,9 +72,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 
                 var result = _mapper.Map<CheckListItemDto>(newItem);
 
-                var boardId = await _cardRepository.GetBoardId(request.CardId);
                 await _hubClientNotifierService
-                    .CreateCheckListItem(boardId, request.CardId);
+                    .CreateCheckListItem(request.BoardId, request.CardId);
 
                 return await Result<CheckListItemDto>.SuccessAsync(result, _localizer["Item Created"]);
             }

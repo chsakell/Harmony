@@ -74,8 +74,7 @@ public class ToggleCardLabelCommandHandler : IRequestHandler<ToggleCardLabelComm
 
         if (dbResult > 0)
 		{
-            var boardId = await _cardRepository.GetBoardId(request.CardId);
-			await _hubClientNotifierService.ToggleCardLabel(boardId, request.CardId, labelDto);
+			await _hubClientNotifierService.ToggleCardLabel(request.BoardId, request.CardId, labelDto);
 
             return await Result<LabelDto>.SuccessAsync(labelDto, _localizer["Card label updated"]);
 		}

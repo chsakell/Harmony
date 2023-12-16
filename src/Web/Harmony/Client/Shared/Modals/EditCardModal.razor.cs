@@ -70,7 +70,8 @@ namespace Harmony.Client.Shared.Modals
                     FileName = fileName,
                     Extension = extension,
                     CardId = CardId,
-                    Type = FileHelper.GetAttachmentType(extension)
+                    Type = FileHelper.GetAttachmentType(extension),
+                    BoardId = BoardId
                 };
 
                 var result = await _fileManager.UploadFile(request);
@@ -100,7 +101,11 @@ namespace Harmony.Client.Shared.Modals
 
             if (!dialogResult.Canceled)
             {
-                var command = new RemoveCardAttachmentCommand(CardId, attachmentId);
+                var command = new RemoveCardAttachmentCommand(CardId, attachmentId)
+                {
+                    BoardId = BoardId
+                };
+
                 var result = await _cardManager.RemoveCardAttachmentAsync(command);
 
                 if (result.Succeeded)
@@ -164,6 +169,7 @@ namespace Harmony.Client.Shared.Modals
             {
                 _card = _mapper.Map<EditableCardModel>(loadCardResult.Data);
                 CreateCommentCommandModel.CardId = CardId;
+                CreateCommentCommandModel.BoardId = BoardId;
             }
 
             _loading = false;
@@ -278,7 +284,10 @@ namespace Harmony.Client.Shared.Modals
             }
 
             var response = await _cardManager
-                .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription));
+                .UpdateDescriptionAsync(new UpdateCardDescriptionCommand(CardId, cardDescription)
+                {
+                    BoardId = BoardId
+                });
 
             DisplayMessage(response);
         }
@@ -307,7 +316,10 @@ namespace Harmony.Client.Shared.Modals
         private async Task SaveCheckListTitle(Guid checkListId, string title)
         {
             var response = await _checkListManager
-                .UpdateTitleAsync(new UpdateCheckListTitleCommand(checkListId, title));
+                .UpdateTitleAsync(new UpdateCheckListTitleCommand(checkListId, title)
+                {
+                    BoardId = BoardId
+                });
 
             var checkList = _card.CheckLists.FirstOrDefault(x => x.Id == checkListId);
             checkList.Title = title;
@@ -318,7 +330,10 @@ namespace Harmony.Client.Shared.Modals
         private async Task SaveCheckListItemDescription(Guid checkListItemId, string description)
         {
             var response = await _checkListItemManager
-                .UpdateListItemDescriptionAsync(new UpdateListItemDescriptionCommand(checkListItemId, description));
+                .UpdateListItemDescriptionAsync(new UpdateListItemDescriptionCommand(checkListItemId, description)
+                {
+                    BoardId = BoardId
+                });
 
             var checkListItem = _card.CheckLists.SelectMany(list => list.Items)
                 .FirstOrDefault(x => x.Id == checkListItemId);
@@ -330,7 +345,10 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task SaveTitle(string newTitle)
         {
-            var result = await _cardManager.UpdateTitleAsync(new UpdateCardTitleCommand(CardId, newTitle));
+            var result = await _cardManager.UpdateTitleAsync(new UpdateCardTitleCommand(CardId, newTitle)
+            {
+                BoardId = BoardId
+            });
 
             if (result.Succeeded)
             {
@@ -365,7 +383,8 @@ namespace Harmony.Client.Shared.Modals
         {
             var parameters = new DialogParameters<CardMembersModal>
             {
-                { c => c.CardId, CardId }
+                { c => c.CardId, CardId },
+                { c => c.BoardId, BoardId }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
@@ -378,7 +397,10 @@ namespace Harmony.Client.Shared.Modals
         {
             var response = await _checkListManager
                 .CreateCheckListItemAsync(new CreateCheckListItemCommand(checkListItem.CheckListId,
-                checkListItem.Description, checkListItem.DueDate, CardId));
+                checkListItem.Description, checkListItem.DueDate, CardId)
+                {
+                    BoardId = BoardId
+                });
 
             var list = _card.CheckLists.FirstOrDefault(list => list.Id == checkListItem.CheckListId);
             if (list != null)
@@ -399,7 +421,10 @@ namespace Harmony.Client.Shared.Modals
         {
             var response = await _checkListItemManager
                 .UpdateListItemCheckedAsync(new
-                UpdateListItemCheckedCommand(item.Id, !item.IsChecked, CardId));
+                UpdateListItemCheckedCommand(item.Id, !item.IsChecked, CardId)
+                {
+                    BoardId = BoardId
+                });
 
             DisplayMessage(response);
         }
@@ -410,7 +435,10 @@ namespace Harmony.Client.Shared.Modals
 
             var response = await _checkListItemManager
                 .UpdateListItemDueDateAsync(new
-                UpdateListItemDueDateCommand(item.Id, item.DueDate));
+                UpdateListItemDueDateCommand(item.Id, item.DueDate)
+                {
+                    BoardId = BoardId
+                });
 
 
             DisplayMessage(response);
@@ -430,7 +458,11 @@ namespace Harmony.Client.Shared.Modals
 
             if (!dialogResult.Canceled)
             {
-                var command = new UpdateCardStatusCommand(CardId, Domain.Enums.CardStatus.Archived);
+                var command = new UpdateCardStatusCommand(CardId, Domain.Enums.CardStatus.Archived)
+                {
+                    BoardId = BoardId
+                };
+
                 var result = await _cardManager
                     .UpdateStatusAsync(command);
 
@@ -461,6 +493,7 @@ namespace Harmony.Client.Shared.Modals
         {
             var parameters = new DialogParameters<EditCardDatesModal>
             {
+                { c => c.BoardId, BoardId },
                 { c => c.CardId, CardId },
                 { c => c.StartDate, _card.StartDate },
                 { c => c.DueDate, _card.DueDate.HasValue ? _card.DueDate.Value.Date : null },

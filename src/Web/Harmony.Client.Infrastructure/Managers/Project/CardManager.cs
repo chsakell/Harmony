@@ -146,7 +146,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public async Task<IResult<RemoveUserCardResponse>> RemoveCardMemberAsync(RemoveUserCardCommand command)
         {
             var response = await _httpClient.DeleteAsync(Routes.CardEndpoints
-                .GetCardMember(command.CardId.ToString(), command.UserId));
+                .GetCardMember(command.CardId.ToString(), command.UserId, command.BoardId));
 
             return await response.ToResult<RemoveUserCardResponse>();
         }

@@ -23,9 +23,9 @@
             return $"{Index}/{cardId}/members/";
         }
 
-        public static string GetCardMember(string cardId, string userId)
+        public static string GetCardMember(string cardId, string userId, Guid boardId)
         {
-            return $"{Index}/{cardId}/members/{userId}/";
+            return $"{Index}/{cardId}/members/{userId}/?boardId={boardId}";
         }
 
         public static string GetCardAttachment(Guid cardId, Guid attachmentId)

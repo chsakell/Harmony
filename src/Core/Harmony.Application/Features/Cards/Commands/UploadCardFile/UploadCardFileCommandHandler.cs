@@ -82,9 +82,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 
             var attachmentDto = _mapper.Map<AttachmentDto>(attachment);
 
-            var boardId = await _cardRepository.GetBoardId(card.Id);
-
-            await _hubClientNotifierService.AddCardAttachment(boardId, card.Id, attachmentDto);
+            await _hubClientNotifierService.AddCardAttachment(command.BoardId, card.Id, attachmentDto);
 
             var result = new UploadCardFileResponse(command.CardId, attachmentDto);
 

@@ -1,21 +1,26 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
+using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
+using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Managers.Identity.Roles;
+using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using MudBlazor;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Pages.Management
 {
-    public partial class Backlog
+    public partial class Backlog : IDisposable
     {
         [Parameter]
         public string Id { get; set; }
@@ -27,10 +32,27 @@ namespace Harmony.Client.Pages.Management
         private HashSet<GetBacklogItemResponse> _selectedCards = new HashSet<GetBacklogItemResponse>();
         private GetBacklogItemResponse _itemBeforeEdit;
         private List<IssueTypeDto> _issueTypes;
+        private IDisposable registration;
 
-        protected override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
-            return base.OnInitializedAsync();
+            await _hubSubscriptionManager.ListenForBoardEvents(Id);
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                registration = _navigationManager.RegisterLocationChangingHandler(LocationChangingHandler);
+            }
+        }
+
+        private async ValueTask LocationChangingHandler(LocationChangingContext arg)
+        {
+            if (!arg.TargetLocation.Contains(Id))
+            {
+                await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
+            }
         }
 
         private async Task MoveToSprint()
@@ -84,6 +106,34 @@ namespace Harmony.Client.Pages.Management
                 TotalItems = _totalItems,
                 Items = _cards
             };
+        }
+
+        private async Task EditCard(GetBacklogItemResponse card)
+        {
+            var parameters = new DialogParameters<EditCardModal>
+                {
+                    { c => c.CardId, card.Id },
+                    { c => c.BoardId, Guid.Parse(Id) },
+                    { c => c.SerialKey, card.SerialKey }
+                };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var dialog = await _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
+
+            var editCardModal = dialog.Dialog as EditCardModal;
+
+            editCardModal.OnCardUpdated += (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, card);
+
+            var result = await dialog.Result;
+
+            editCardModal.OnCardUpdated -= (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, card); ;
+        }
+
+        private void EditCardModal_OnCardUpdated(object? sender, EditableCardModel e, GetBacklogItemResponse item)
+        {
+            item.Title = e.Title;
+            item.StoryPoints = e.StoryPoints;
+            item.DueDate = e.DueDate;
         }
 
         private async Task CreateIssue()
@@ -165,7 +215,7 @@ namespace Harmony.Client.Pages.Management
 
         private async Task LoadIssueTypes()
         {
-            if(_issueTypes != null)
+            if (_issueTypes != null)
             {
                 return;
             }
@@ -184,13 +234,13 @@ namespace Harmony.Client.Pages.Management
         {
             var item = element as GetBacklogItemResponse;
 
-            if (item== null)
+            if (item == null)
             {
                 return;
             }
 
             var result = await _cardManager
-                .UpdateBacklogItemAsync(new 
+                .UpdateBacklogItemAsync(new
                 UpdateBacklogCommand(item.Id, Guid.Parse(Id), item.Title, item.IssueType, item.StoryPoints));
 
             DisplayMessage(result);
@@ -238,6 +288,11 @@ namespace Harmony.Client.Pages.Management
             {
                 _snackBar.Add(message, severity);
             }
+        }
+
+        void IDisposable.Dispose()
+        {
+            registration?.Dispose();
         }
     }
 }

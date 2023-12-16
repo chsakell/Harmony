@@ -67,7 +67,7 @@
         <RowTemplate>
             <MudTd DataLabel="Serial Key">
                 <MudStack Row="true">
-                    <MudText>@context.CardSerialKey</MudText>
+                    <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@context.CardSerialKey</MudChip>
                         @if (context.IsCompleted)
                     {
                         <MudTooltip Text="Completed" Delay="2000">

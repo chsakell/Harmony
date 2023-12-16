@@ -13,11 +13,12 @@ using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using MudBlazor;
 
 namespace Harmony.Client.Pages.Management
 {
-    public partial class Sprints : IAsyncDisposable
+    public partial class Sprints : IDisposable
     {
         [Parameter]
         public string Id { get; set; }
@@ -28,6 +29,7 @@ namespace Harmony.Client.Pages.Management
         private MudTable<GetSprintCardResponse> _table;
         private HashSet<GetSprintCardResponse> _selectedCards = new HashSet<GetSprintCardResponse>();
         private int _filterSprintStatus = -1;
+        private IDisposable registration;
 
         private TableGroupDefinition<GetSprintCardResponse> _groupDefinition = new()
         {
@@ -38,9 +40,25 @@ namespace Harmony.Client.Pages.Management
             Selector = (e) => e.Sprint + $" [{e.SprintStatus}]"
         };
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            _hubSubscriptionManager.ListenForBoardEvents(Id);
+            await _hubSubscriptionManager.ListenForBoardEvents(Id);
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                registration = _navigationManager.RegisterLocationChangingHandler(LocationChangingHandler);
+            }
+        }
+
+        private async ValueTask LocationChangingHandler(LocationChangingContext arg)
+        {
+            if (!arg.TargetLocation.Contains(Id))
+            {
+                await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
+            }
         }
 
         private async Task<TableData<GetSprintCardResponse>> ReloadData(TableState state)
@@ -90,28 +108,23 @@ namespace Harmony.Client.Pages.Management
 
         private async Task EditCard(GetSprintCardResponse item)
         {
-            var loadCardResult = await _cardManager.LoadCardAsync(new LoadCardQuery(item.CardId.Value));
-
-            if (loadCardResult.Succeeded)
-            {
-                var parameters = new DialogParameters<EditCardModal>
+            var parameters = new DialogParameters<EditCardModal>
                 {
                     { c => c.CardId, item.CardId.Value },
                     { c => c.BoardId, Guid.Parse(Id) },
                     { c => c.SerialKey, item.CardSerialKey }
                 };
 
-                var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
-                var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var dialog = await _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
 
-                var editCardModal = dialog.Dialog as EditCardModal;
+            var editCardModal = dialog.Dialog as EditCardModal;
 
-                editCardModal.OnCardUpdated += (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, item);
+            editCardModal.OnCardUpdated += (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, item);
 
-                var result = await dialog.Result;
+            var result = await dialog.Result;
 
-                editCardModal.OnCardUpdated -= (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, item); ;
-            }
+            editCardModal.OnCardUpdated -= (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, item); ;
         }
 
         private void EditCardModal_OnCardUpdated(object? sender, EditableCardModel e, GetSprintCardResponse item)
@@ -304,9 +317,9 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        void IDisposable.Dispose()
         {
-            await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
+            registration?.Dispose();
         }
     }
 }

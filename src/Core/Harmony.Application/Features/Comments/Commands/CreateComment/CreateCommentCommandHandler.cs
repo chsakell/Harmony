@@ -60,8 +60,6 @@ namespace Harmony.Application.Features.Comments.Commands.CreateComment
 
             if (dbResult > 0)
             {
-                var board = await _cardRepository.GetBoardId(request.CardId);
-
                 var user = (await _userService.GetPublicInfoAsync(userId)).Data;
 
                 var result2 = new CommentDto()

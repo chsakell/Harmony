@@ -26,6 +26,9 @@ namespace Harmony.Client.Shared.Modals
         [Parameter]
         public Guid CardId { get; set; }
 
+        [Parameter]
+        public Guid BoardId { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             _loading = true;
@@ -99,7 +102,10 @@ namespace Harmony.Client.Shared.Modals
                 _processingMember = true;
 
                 var removeMemberResult = await _cardManager
-                    .RemoveCardMemberAsync(new RemoveUserCardCommand(CardId, user.Id));
+                    .RemoveCardMemberAsync(new RemoveUserCardCommand(CardId, user.Id)
+                    {
+                        BoardId = BoardId
+                    });
 
                 if (removeMemberResult.Succeeded)
                 {
@@ -130,7 +136,10 @@ namespace Harmony.Client.Shared.Modals
                 _processingMember = true;
 
                 var removeMemberResult = await _cardManager
-                    .AddCardMemberAsync(new AddUserCardCommand(CardId, user.Id));
+                    .AddCardMemberAsync(new AddUserCardCommand(CardId, user.Id)
+                    {
+                        BoardId = BoardId
+                    });
 
                 if (removeMemberResult.Succeeded)
                 {

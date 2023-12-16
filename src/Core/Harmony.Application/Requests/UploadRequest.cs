@@ -1,8 +1,9 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Application.Models;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Requests
 {
-    public class UploadRequest
+    public class UploadRequest : BaseBoardCommand
     {
         public string FileName { get; set; }
         public string Extension { get; set; }

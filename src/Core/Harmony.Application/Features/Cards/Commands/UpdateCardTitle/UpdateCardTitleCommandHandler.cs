@@ -50,9 +50,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 			await _cardActivityService.CreateActivity(card.Id, userId,
 				CardActivityType.CardTitleUpdated, card.DateUpdated.Value, card.Title);
 
-			var boardId = await _cardRepository.GetBoardId(card.Id);
-
-			await _hubClientNotifierService.UpdateCardTitle(boardId, card.Id, card.Title);
+			await _hubClientNotifierService.UpdateCardTitle(request.BoardId, card.Id, card.Title);
 
 			return await Result<bool>.SuccessAsync(true, _localizer["Title updated"]);
 		}

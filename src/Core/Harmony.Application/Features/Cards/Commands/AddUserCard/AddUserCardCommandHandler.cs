@@ -54,8 +54,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
                 return await Result<AddUserCardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var boardId = await _cardRepository.GetBoardId(request.CardId);
-            var userBoard = await _userBoardRepository.GetUserBoard(boardId, request.UserId);
+            var userBoard = await _userBoardRepository.GetUserBoard(request.BoardId, request.UserId);
             var user = (await _userService.GetAsync(request.UserId)).Data;
 
             var userAlreadyBelongsToBoard = userBoard != null;
@@ -75,7 +74,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
                     userBoard = new UserBoard()
                     {
                         UserId = request.UserId,
-                        BoardId = boardId,
+                        BoardId = request.BoardId,
                         Access = Domain.Enums.UserBoardAccess.Member
                     };
 
@@ -100,9 +99,9 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 
                     var cardUrl = $"{request.HostUrl}boards/{userBoard.Board.Id}/{slug}/?cardId={request.CardId}";
                     
-                    _notificationsPublisher.Publish(new MemberAddedToCardNotification(boardId, request.CardId, request.UserId , cardUrl));
+                    _notificationsPublisher.Publish(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
 
-                    await _hubClientNotifierService.AddCardMember(boardId, request.CardId, member);
+                    await _hubClientNotifierService.AddCardMember(request.BoardId, request.CardId, member);
 
                     return await Result<AddUserCardResponse>.SuccessAsync(result, _localizer["User added to card"]);
                 }

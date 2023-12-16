@@ -119,11 +119,12 @@ namespace Harmony.Server.Controllers.Management
         }
 
         [HttpDelete("{id:guid}/members/{userId}")]
-        public async Task<IActionResult> RemoveMember(Guid id, string userId)
+        public async Task<IActionResult> RemoveMember(Guid id, string userId, [FromQuery] Guid boardId)
         {
             var command = new RemoveUserCardCommand(id, userId)
             {
-                HostUrl = Request.BaseUrl()
+                HostUrl = Request.BaseUrl(),
+                BoardId = boardId
             };
 
             return Ok(await _mediator.Send(command));

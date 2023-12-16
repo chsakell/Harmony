@@ -1,9 +1,10 @@
-﻿using Harmony.Shared.Wrapper;
+﻿using Harmony.Application.Models;
+using Harmony.Shared.Wrapper;
 using MediatR;
 
 namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 {
-    public class RemoveCardAttachmentCommand : IRequest<Result<RemoveCardAttachmentResponse>>
+    public class RemoveCardAttachmentCommand : BaseBoardCommand, IRequest<Result<RemoveCardAttachmentResponse>>
     {
         public RemoveCardAttachmentCommand(Guid cardId, Guid attachmentId)
         {

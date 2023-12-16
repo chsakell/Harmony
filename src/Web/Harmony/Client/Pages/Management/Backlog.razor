@@ -37,24 +37,26 @@
             <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<GetBacklogItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
             <MudTh>Type</MudTh>
-            <MudTh>Story Points</MudTh>
+            <MudTh Style="width:160px">Story Points</MudTh>
             <MudTh Style="text-align:right"></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="SerialKey">
-                <MudHighlighter Text="@context.SerialKey" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="Title">
-                <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
-            </MudTd>
-            <MudTd DataLabel="Type">
-                <MudStack Row="true">
-                    <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
-                             Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
-                    <MudText>@context.IssueType.Summary</MudText>
+                <MudTooltip Text="Click for full editint" Delay="2500">
+                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@context.SerialKey</MudChip>
+                    </MudTooltip>
+                </MudTd>
+                <MudTd DataLabel="Title">
+                    <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="Type">
+                    <MudStack Row="true">
+                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                 Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                        <MudText>@context.IssueType.Summary</MudText>
                     </MudStack>
                 </MudTd>
-                <MudTd DataLabel="StoryPoints">
+                <MudTd Style="width:160px" DataLabel="StoryPoints">
                     <MudChip Variant="Variant.Text" Color="Color.Primary">
                         @(context.StoryPoints?.ToString() ?? "-")
                     </MudChip>
@@ -105,6 +107,8 @@
             </MudTd>
             <MudTd DataLabel="StoryPoints">
                 <MudNumericField T="short?" Clearable="true" @bind-Value="@context.StoryPoints" Min="0" />
+            </MudTd>
+            <MudTd Style="text-align:right">
             </MudTd>
         </RowEditingTemplate>
         <PagerContent>

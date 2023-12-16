@@ -1,9 +1,10 @@
-﻿using Harmony.Shared.Wrapper;
+﻿using Harmony.Application.Models;
+using Harmony.Shared.Wrapper;
 using MediatR;
 
 namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
-    public class AddUserCardCommand : IRequest<Result<AddUserCardResponse>>
+    public class AddUserCardCommand : BaseBoardCommand, IRequest<Result<AddUserCardResponse>>
     {
         public AddUserCardCommand(Guid cardId, string userId)
         {

@@ -116,7 +116,10 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task ToggleCardLabel(LabelDto label, bool isChecked)
         {
-            var result = await _cardManager.ToggleCardLabel(new ToggleCardLabelCommand(CardId, label.Id));
+            var result = await _cardManager.ToggleCardLabel(new ToggleCardLabelCommand(CardId, label.Id)
+            {
+                BoardId = BoardId
+            });
 
             if(result.Succeeded)
             {

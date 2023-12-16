@@ -21,6 +21,9 @@ namespace Harmony.Client.Shared.Modals
         public Guid CardId { get; set; }
 
         [Parameter]
+        public Guid BoardId { get; set; }
+
+        [Parameter]
         public DateTime? StartDate { get; set; }
 
         [Parameter]
@@ -40,7 +43,10 @@ namespace Harmony.Client.Shared.Modals
         private async Task Clear()
         {
             var result = await _cardManager
-                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, null, null, null));
+                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, null, null, null)
+                {
+                    BoardId = BoardId
+                });
 
             if(result.Succeeded)
             {
@@ -71,7 +77,10 @@ namespace Harmony.Client.Shared.Modals
             }
 
             var result = await _cardManager
-                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, startDate, dueDate, DueDateReminder));
+                .UpdateDatesAsync(new UpdateCardDatesCommand(CardId, startDate, dueDate, DueDateReminder)
+                {
+                    BoardId= BoardId
+                });
 
             DisplayMessage(result);
 

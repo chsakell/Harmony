@@ -14,6 +14,7 @@ using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using MudBlazor;
 
@@ -37,9 +38,27 @@ namespace Harmony.Client.Pages.Management
         private bool _unauthorisedAccess = false;
         private int _listCardsSize = 10;
         private Guid _moveUpdateId = Guid.NewGuid();
+        private string _stopListeningBoardId = string.Empty;
+        private IDisposable registration;
 
         private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum && 
             KanbanStore.Board.ActiveSprints.Count == 0;
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                registration = _navigationManager.RegisterLocationChangingHandler(LocationChangingHandler);
+            }
+        }
+
+        private async ValueTask LocationChangingHandler(LocationChangingContext arg)
+        {
+            if (!arg.TargetLocation.Contains(Id))
+            {
+                await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
+            }
+        }
 
         protected async override Task OnParametersSetAsync()
         {
@@ -47,6 +66,8 @@ namespace Harmony.Client.Pages.Management
             {
                 await CleanBoard();
             }
+
+            _stopListeningBoardId = Id;
 
             var result = await _boardManager.GetBoardAsync(Id, _listCardsSize);
 
@@ -89,7 +110,7 @@ namespace Harmony.Client.Pages.Management
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
         }
 
-        private async Task UnRegisterBoardEvents()
+        private async Task UnRegisterBoardEvents(bool stopListening = true)
         {
             _hubSubscriptionManager.OnBoardListAdded -= OnBoardListAdded;
             _hubSubscriptionManager.OnBoardListTitleChanged -= OnBoardListTitleChanged;
@@ -110,7 +131,10 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
             _hubSubscriptionManager.OnCheckListRemoved -= OnCheckListRemoved;
 
-            await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
+            if (stopListening)
+            {
+                await _hubSubscriptionManager.StopListeningForBoardEvents(_stopListeningBoardId);
+            }
         }
 
         private void OnCheckListRemoved(object? sender, CheckListRemovedEvent e)
@@ -510,15 +534,16 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async ValueTask CleanBoard()
+        private async ValueTask CleanBoard(bool stopListening = true)
         {
             KanbanStore.Dispose();
-            await UnRegisterBoardEvents();
+            await UnRegisterBoardEvents(stopListening);
         }
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
-            await CleanBoard();
+            await CleanBoard(stopListening: false);
+            registration?.Dispose();
         }
     }
 }

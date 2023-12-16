@@ -56,8 +56,7 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
             await _cardActivityService.CreateActivity(card.Id, userId,
                 CardActivityType.CardDescriptionUpdated, card.DateUpdated.Value);
 
-            var boardId = await _cardRepository.GetBoardId(card.Id);
-            await _hubClientNotifierService.UpdateCardDescription(boardId, card.Id, card.Description);
+            await _hubClientNotifierService.UpdateCardDescription(request.BoardId, card.Id, card.Description);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Description updated"]);
 		}

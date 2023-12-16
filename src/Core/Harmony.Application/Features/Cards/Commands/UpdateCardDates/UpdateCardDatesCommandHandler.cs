@@ -66,8 +66,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
                 CardActivityType.CardDatesUpdated, card.DateUpdated.Value,
                 CardHelper.DisplayDates(card.StartDate, card.DueDate));
 
-            var boardId = await _cardRepository.GetBoardId(card.Id);
-            await _hubClientNotifierService.UpdateCardDates(boardId, card.Id, card.StartDate, card.DueDate);
+            await _hubClientNotifierService.UpdateCardDates(request.BoardId, card.Id, card.StartDate, card.DueDate);
 
 			_notificationsPublisher.Publish(new CardDueTimeUpdatedNotification(card.Id));
 
