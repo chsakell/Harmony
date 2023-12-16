@@ -28,13 +28,15 @@
             @if (SprintReports?.BurnDownReport != null)
             {
                 <MudChart ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
-                          XAxisLabels="@XAxisBurnDownLabels" Width="100%" Height="400px"></MudChart>
+                          ChartOptions="@_options" XAxisLabels="@XAxisBurnDownLabels" 
+                          Width="100%" Height="400px"></MudChart>
             }
             else
             {
                 <MudContainer Class="mt-16">
                     <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Reports not available yet :(</MudText>
-                    <MudText Align="Align.Center">It looks like the sprint is missing some basic requirements to generate reports..
+                    <MudText Align="Align.Center">
+                        It looks like the sprint is missing some basic requirements to generate reports..
                         Here's a few suggestions to help you start with.
                     </MudText>
                     <MudGrid Class="mt-8 d-flex justify-center">

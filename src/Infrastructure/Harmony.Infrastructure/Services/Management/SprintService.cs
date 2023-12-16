@@ -41,21 +41,22 @@ namespace Harmony.Infrastructure.Services.Management
 
             var totalStoryPoints = sprintCards.Sum(c => c.StoryPoints) ?? 0;
             var remainingStoryPoints = totalStoryPoints;
-            var guideLineRemainingStoryPoints = totalStoryPoints;
+            double guideLineRemainingStoryPoints = totalStoryPoints;
             var burnDownReportDates = new List<string>();
             var remainingStoryPointsSeries = new List<double>();
             var guideLineStoryPointsSeries = new List<double>();
             var totalWorkDays = EachDay(sprint.StartDate.Value, sprint.EndDate.Value)
                 .Where(date => date.DayOfWeek != DayOfWeek.Saturday
-                && date.DayOfWeek != DayOfWeek.Sunday).Count();
+                && date.DayOfWeek != DayOfWeek.Sunday).Count() - 1;
 
-            var averageStoryPointsPerDay = totalStoryPoints / totalWorkDays;
+            var averageStoryPointsPerDay = (double)totalStoryPoints / (double)totalWorkDays;
 
             if(totalStoryPoints == 0)
             {
                 return null;
             }
 
+            var firstDay = true;
             foreach (var day in EachDay(sprint.StartDate.Value, sprint.EndDate.Value))
             {
                 burnDownReportDates.Add(day.Date.ToString("MMM dd"));
@@ -67,6 +68,13 @@ namespace Harmony.Infrastructure.Services.Management
                 }
 
                 remainingStoryPointsSeries.Add(remainingStoryPoints);
+
+                if(firstDay)
+                {
+                    guideLineStoryPointsSeries.Add(guideLineRemainingStoryPoints);
+                    firstDay = false;
+                    continue;
+                }
 
                 if(day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday)
                 {

@@ -12,6 +12,7 @@ namespace Harmony.Client.Shared.Modals
     {
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
         private bool _loading = true;
+        private readonly ChartOptions _options = new();
 
         [Parameter]
         public Guid BoardId { get; set; }
@@ -34,8 +35,9 @@ namespace Harmony.Client.Shared.Modals
             if(sprintReportsResult.Succeeded)
             {
                 SprintReports = sprintReportsResult.Data;
-
-                if(SprintReports?.BurnDownReport != null)
+                _options.YAxisTicks = 10;
+                
+                if (SprintReports?.BurnDownReport != null)
                 {
                     BurnDownSeries.Add(new ChartSeries()
                     {
