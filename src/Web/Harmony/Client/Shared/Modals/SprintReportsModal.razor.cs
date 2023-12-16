@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
+using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -10,6 +11,7 @@ namespace Harmony.Client.Shared.Modals
     public partial class SprintReportsModal
     {
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        private bool _loading = true;
 
         [Parameter]
         public Guid BoardId { get; set; }
@@ -20,10 +22,7 @@ namespace Harmony.Client.Shared.Modals
         private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
 
         public List<ChartSeries> BurnDownSeries = new List<ChartSeries>();
-        //{
-        //    new ChartSeries() { Name = "Series 1", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70 } },
-        //    new ChartSeries() { Name = "Series 2", Data = new double[] { 10, 41, 35, 51, 49, 62, 69, 91, 148 } },
-        //};
+
         public string[] XAxisBurnDownLabels;
 
         private GetSprintReportsResponse SprintReports { get; set; }
@@ -36,7 +35,7 @@ namespace Harmony.Client.Shared.Modals
             {
                 SprintReports = sprintReportsResult.Data;
 
-                if(SprintReports.BurnDownReport != null)
+                if(SprintReports?.BurnDownReport != null)
                 {
                     BurnDownSeries.Add(new ChartSeries()
                     {
@@ -53,12 +52,33 @@ namespace Harmony.Client.Shared.Modals
                     XAxisBurnDownLabels = SprintReports.BurnDownReport.Dates.ToArray();
                 }
             }
+
+            _loading = false;
         }
 
-        private void Cancel()
+        private void ViewBacklog()
         {
             MudDialog.Cancel();
+
+            _navigationManager.NavigateTo($"/projects/{BoardId}/backlog");
         }
+
+        private void ViewBoard()
+        {
+            MudDialog.Cancel();
+
+            var board = _workspaceManager?.UserWorkspaces?.SelectMany(w => w.Boards)?.FirstOrDefault(b => b.Id == BoardId);
+
+            if(board == null)
+            {
+                return;
+            }
+
+            var slug = StringUtilities.SlugifyString(board.Title.ToString());
+
+            _navigationManager.NavigateTo($"boards/{BoardId}/{slug}");
+        }
+
         private void DisplayMessage(IResult result)
         {
             if (result == null)

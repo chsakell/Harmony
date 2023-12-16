@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Contracts.Repositories;
+﻿using AutoMapper;
+using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
@@ -15,16 +16,18 @@ namespace Harmony.Infrastructure.Services.Management
     public class SprintService : ISprintService
     {
         private readonly ISprintRepository _sprintRepository;
+        private readonly IMapper _mapper;
         private readonly ICardRepository _cardRepository;
 
-        public SprintService(ISprintRepository sprintRepository,
+        public SprintService(ISprintRepository sprintRepository, IMapper mapper,
                                 ICardRepository cardRepository)
         {
             _sprintRepository = sprintRepository;
+            _mapper = mapper;
             _cardRepository = cardRepository;
         }
 
-        public async Task<GetSprintReportsResponse> GetSprintReports(Guid sprintId)
+        public async Task<GetSprintReportsResponse?> GetSprintReports(Guid sprintId)
         {
             var sprint = await _sprintRepository.GetSprint(sprintId);
 
@@ -47,6 +50,11 @@ namespace Harmony.Infrastructure.Services.Management
                 && date.DayOfWeek != DayOfWeek.Sunday).Count();
 
             var averageStoryPointsPerDay = totalStoryPoints / totalWorkDays;
+
+            if(totalStoryPoints == 0)
+            {
+                return null;
+            }
 
             foreach (var day in EachDay(sprint.StartDate.Value, sprint.EndDate.Value))
             {
@@ -77,6 +85,8 @@ namespace Harmony.Infrastructure.Services.Management
             };
 
             result.BurnDownReport = burnDownReport;
+            result.TotalStoryPoints = totalStoryPoints;
+            result.Sprint = _mapper.Map<SprintDto>(sprint);
 
             return result;
         }

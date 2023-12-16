@@ -98,7 +98,8 @@ namespace Harmony.Infrastructure.Services.Management
                     card.BoardListId = null;
                     card.Position = (short)nextPosition++;
                     card.SprintId = null;
-                    card.Status = Domain.Enums.CardStatus.Backlog;
+                    card.Status = CardStatus.Backlog;
+                    card.DateCompleted = null;
                 }
 
                 var result = await _cardRepository.UpdateRange(cards);

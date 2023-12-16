@@ -4,6 +4,8 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintReports
 {
     public class GetSprintReportsResponse
     {
+        public int TotalStoryPoints { get; set; }
+        public SprintDto Sprint { get; set; }
         public BurnDownReportDto BurnDownReport { get; set; }
     }
 }

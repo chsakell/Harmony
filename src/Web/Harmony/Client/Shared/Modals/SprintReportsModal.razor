@@ -15,12 +15,59 @@
         }
     </TitleContent>
     <DialogContent>
-        @if (SprintReports?.BurnDownReport != null)
+        @if (_loading)
         {
-            <MudChart ChartType
-            ="ChartType.Line" ChartSeries
-            ="@BurnDownSeries" @bind-SelectedIndex="Index"
-                      XAxisLabels="@XAxisBurnDownLabels" Width="100%" Height="400px"></MudChart>
+            <MudPaper MinHeight="400px">
+                <MudOverlay Visible="true" DarkBackground="true" Absolute="true" Style="height:400px">
+                    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                </MudOverlay>
+            </MudPaper>
+        }
+        else
+        {
+            @if (SprintReports?.BurnDownReport != null)
+            {
+                <MudChart ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
+                          XAxisLabels="@XAxisBurnDownLabels" Width="100%" Height="400px"></MudChart>
+            }
+            else
+            {
+                <MudContainer Class="mt-16">
+                    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Reports not available yet :(</MudText>
+                    <MudText Align="Align.Center">It looks like the sprint is missing some basic requirements to generate reports..
+                        Here's a few suggestions to help you start with.
+                    </MudText>
+                    <MudGrid Class="mt-8 d-flex justify-center">
+                        <MudItem xs="12" sm="8">
+                            <MudCard Elevation="25" Class="rounded-lg pb-4">
+                                <MudCardContent>
+                                    <div class="d-flex justify-center">
+                                        <MudText Typo="Typo.h5" Color="Color.Secondary"><b>Story Points</b> are the report's core</MudText>
+                                    </div>
+                                    <MudList Class="mx-auto mt-4">
+                                        <MudListItem Icon="@Icons.Material.Filled.Iso">
+                                            Make sure you <b>score</b> your sprint's items using <b>story points</b>
+                                        </MudListItem>
+                                        <MudListItem Icon="@Icons.Material.Filled.Score">
+                                            You can add a <b>score</b> to an item either from the <b>Backlog</b> or the card's view itself
+                                        </MudListItem>
+                                        <MudListItem Icon="@Icons.Material.Filled.Update">
+                                            Ensure that you have configured a <b>start</b> and <b>end</b> date for your sprint!
+                                        </MudListItem>
+                                        <MudListItem Icon="@Icons.Material.Filled.MultilineChart">
+                                            The report will be available as soon as there's an item with story points
+                                        </MudListItem>
+                                    </MudList>
+                                </MudCardContent>
+                                <MudCardActions Class="d-flex justify-center">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-4" OnClick="ViewBacklog" Size="Size.Large" Style="width:50%;">Backlog</MudButton>
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-4" OnClick="ViewBoard" Size="Size.Large" Style="width:50%;">Board</MudButton>
+                                </MudCardActions>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                </MudContainer>
+            }
         }
     </DialogContent>
     <DialogActions>

@@ -66,6 +66,7 @@
             <MudTh>Serial Key</MudTh>
             <MudTh>Title</MudTh>
             <MudTh>Type</MudTh>
+            <MudTh>Story Points</MudTh>
         </HeaderContent>
         <GroupHeaderTemplate>
             <MudTh Class="mud-table-cell-custom-group" colspan="5">@($"{context.GroupName}: {context.Key}") </MudTh>
@@ -92,6 +93,11 @@
                         <MudText>@context?.CardIssueType?.Summary</MudText>
                     }
                 </MudStack>
+            </MudTd>
+            <MudTd DataLabel="StoryPoints">
+                <MudChip Variant="Variant.Text" Color="Color.Primary">
+                    @(context.StoryPoints?.ToString() ?? "-")
+                </MudChip>
             </MudTd>
         </RowTemplate>
         <GroupFooterTemplate>

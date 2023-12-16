@@ -315,7 +315,8 @@ namespace Harmony.Infrastructure.Services.Management
                         {
                             Id = issue != null ? issue.Id : Guid.Empty,
                             Summary = issue != null ? issue.Summary : null
-                        }
+                        },
+                        StoryPoints = p.StoryPoints
                     };
 
             var result = await query.Skip((pageNumber - 1) * pageSize)
