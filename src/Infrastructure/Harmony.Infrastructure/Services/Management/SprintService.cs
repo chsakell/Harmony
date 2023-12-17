@@ -31,6 +31,11 @@ namespace Harmony.Infrastructure.Services.Management
         {
             var sprint = await _sprintRepository.GetSprint(sprintId);
 
+            if(sprint == null || !sprint.StartDate.HasValue || !sprint.EndDate.HasValue)
+            {
+                return null;
+            }
+
             var sprintCards = await (from card in _cardRepository.Entities
                                      where card.SprintId == sprintId
                                      select card).ToListAsync();
@@ -47,7 +52,7 @@ namespace Harmony.Infrastructure.Services.Management
             var guideLineStoryPointsSeries = new List<double>();
             var totalWorkDays = EachDay(sprint.StartDate.Value, sprint.EndDate.Value)
                 .Where(date => date.DayOfWeek != DayOfWeek.Saturday
-                && date.DayOfWeek != DayOfWeek.Sunday).Count() - 1;
+                && date.DayOfWeek != DayOfWeek.Sunday).Count();
 
             var averageStoryPointsPerDay = (double)totalStoryPoints / (double)totalWorkDays;
 
