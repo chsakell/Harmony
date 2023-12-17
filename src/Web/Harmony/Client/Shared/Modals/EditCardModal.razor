@@ -19,7 +19,7 @@ else
     <MudDialog Class="editCardModal">
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
-                <MudStack Style="width:50%">
+                <MudStack>
                     <EditableTextField For="@(() => _card.Title)"
                                        AdornmentIcon="@Icons.Material.Filled.Edit"
                                        OnSave="(newTitle) => SaveTitle(newTitle)"
@@ -30,22 +30,24 @@ else
                         {
                             <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
                         }
-                        <MudSelect @bind-Value:get="_card.IssueType.Summary"
-                                   @bind-Value:set="SaveIssueType"
-                                   For="@(() => _card.IssueType.Summary)"
-                                   Label="Type" AnchorOrigin="Origin.BottomCenter"
-                                   Variant="Variant.Outlined">
-                            @foreach (var type in IssueTypes)
-                            {
-                                <MudSelectItem Value="type.Summary">
-                                    <MudStack Row="true">
-                                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
-                                                 Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
-                                        <MudText>@type.Summary</MudText>
-                                    </MudStack>
-                                </MudSelectItem>
-                            }
-                        </MudSelect>
+                        <div>
+                            <MudSelect @bind-Value:get="_card.IssueType.Summary"
+                                       @bind-Value:set="SaveIssueType"
+                                       For="@(() => _card.IssueType.Summary)"
+                                       Label="Type" AnchorOrigin="Origin.BottomCenter"
+                                       Variant="Variant.Outlined">
+                                @foreach (var type in IssueTypes)
+                                {
+                                    <MudSelectItem Value="type.Summary">
+                                        <MudStack Row="true">
+                                            <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
+                                                     Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
+                                            <MudText>@type.Summary</MudText>
+                                        </MudStack>
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
                         @if (_card.BoardType == BoardType.Scrum)
                         {
                             <MudNumericField Style="width:110px" T="short?" HideSpinButtons="true"
@@ -84,7 +86,7 @@ else
                         }
                         @if (_card.Labels.Any())
                         {
-                            <MudPaper Class="d-flex flex-wrap" Elevation="0">
+                            <MudPaper Class="d-flex flex-wrap" Elevation="0" Style="height: 32px;">
                                 @foreach (var label in _card.Labels)
                                 {
                                     <MudTooltip Text="@label.Title">
