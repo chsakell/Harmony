@@ -99,6 +99,7 @@ namespace Harmony.Infrastructure.Services.Management
 
             result.BurnDownReport = burnDownReport;
             result.TotalStoryPoints = totalStoryPoints;
+            result.RemainingStoryPoints = remainingStoryPoints;
             result.Sprint = _mapper.Map<SprintDto>(sprint);
 
             return result;

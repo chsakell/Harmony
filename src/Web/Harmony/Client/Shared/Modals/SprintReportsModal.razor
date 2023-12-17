@@ -1,5 +1,6 @@
 ﻿@using Harmony.Application.DTO
 @using Harmony.Application.Features.Lists.Queries.GetBoardLists
+@using Harmony.Application.Helpers
 @using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<SprintReportsModal> _localizer
@@ -27,9 +28,28 @@
         {
             @if (SprintReports?.BurnDownReport != null)
             {
-                <MudChart ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
-                          ChartOptions="@_options" XAxisLabels="@XAxisBurnDownLabels" 
-                          Width="100%" Height="400px"></MudChart>
+                <MudStack>
+                    <MudPaper>
+                        <MudStack Row="true" Class="justify-start align-center pa-4">
+                            <MudText>@SprintReports.Sprint.Name</MudText>
+                                <MudChip Icon="@Icons.Material.Filled.DateRange" Label="true">@CardHelper.DisplayDates(SprintReports.Sprint.StartDate, SprintReports.Sprint.EndDate)</MudChip>
+                                <b><MudText>Story Points: </MudText></b>
+                                <MudChip Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Tertiary">
+                                    Total: &nbsp;<b>@SprintReports.TotalStoryPoints</b>
+                            </MudChip>
+                            @if (SprintReports.RemainingStoryPoints > 0)
+                            {
+                                <MudChip Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Warning">
+                                    Remaining: &nbsp;<b>@SprintReports.RemainingStoryPoints</b>
+                                </MudChip>
+                            }
+                        </MudStack>
+
+                    </MudPaper>
+                    <MudChart ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
+                              ChartOptions="@_options" XAxisLabels="@XAxisBurnDownLabels"
+                              Width="100%" Height="400px"></MudChart>
+                </MudStack>
             }
             else
             {
