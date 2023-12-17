@@ -26,29 +26,45 @@
         }
         else
         {
-            @if (SprintReports?.BurnDownReport != null)
+            @if (Reports?.BurnDownReport != null)
             {
                 <MudStack>
                     <MudPaper>
                         <MudStack Row="true" Class="justify-start align-center pa-4">
-                            <MudText>@SprintReports.Sprint.Name</MudText>
-                                <MudChip Icon="@Icons.Material.Filled.DateRange" Label="true">@CardHelper.DisplayDates(SprintReports.Sprint.StartDate, SprintReports.Sprint.EndDate)</MudChip>
+                            <MudText>@Reports.Sprint.Name</MudText>
+                                <MudChip Icon="@Icons.Material.Filled.DateRange" Label="true">@CardHelper.DisplayDates(Reports.Sprint.StartDate, Reports.Sprint.EndDate)</MudChip>
                                 <b><MudText>Story Points: </MudText></b>
                                 <MudChip Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Tertiary">
-                                    Total: &nbsp;<b>@SprintReports.TotalStoryPoints</b>
+                                    Total: &nbsp;<b>@Reports.TotalStoryPoints</b>
                             </MudChip>
-                            @if (SprintReports.RemainingStoryPoints > 0)
+                            @if (Reports.RemainingStoryPoints > 0)
                             {
                                 <MudChip Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Warning">
-                                    Remaining: &nbsp;<b>@SprintReports.RemainingStoryPoints</b>
+                                    Remaining: &nbsp;<b>@Reports.RemainingStoryPoints</b>
                                 </MudChip>
                             }
                         </MudStack>
 
                     </MudPaper>
-                    <MudChart ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
-                              ChartOptions="@_options" XAxisLabels="@XAxisBurnDownLabels"
-                              Width="100%" Height="400px"></MudChart>
+                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                        <MudTabPanel Text="BurnDown Chart">
+                            <MudChart ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
+                                      ChartOptions="@_options" XAxisLabels="@XAxisBurnDownLabels"
+                                      Width="100%" Height="400px"></MudChart>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Issues Overview">
+                            <MudChart ChartType="ChartType.Donut"
+                                      Width="100%" Height="400px" 
+                                      InputData="@Reports.IssuesOverviewReport.TotalIssuesPerType.ToArray()"
+                                      InputLabels="@Reports.IssuesOverviewReport.IssueTypes.ToArray()">
+                                <CustomGraphics>
+                                    <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total Issues</text>
+                                    <text class="donut-inner-text" x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@Reports.IssuesOverviewReport.TotalIssues</text>
+                                </CustomGraphics>
+                            </MudChart>
+                        </MudTabPanel>
+                    </MudTabs>
+                    
                 </MudStack>
             }
             else

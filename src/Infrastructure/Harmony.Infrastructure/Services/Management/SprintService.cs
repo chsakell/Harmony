@@ -36,9 +36,11 @@ namespace Harmony.Infrastructure.Services.Management
                 return null;
             }
 
-            var sprintCards = await (from card in _cardRepository.Entities
+            var sprintCards = await (from card in _cardRepository.Entities.Include(c => c.IssueType)
                                      where card.SprintId == sprintId
                                      select card).ToListAsync();
+
+
 
             var completedCards = sprintCards.Where(c => c.DateCompleted.HasValue);
 
@@ -89,6 +91,7 @@ namespace Harmony.Infrastructure.Services.Management
                 guideLineStoryPointsSeries.Add(guideLineRemainingStoryPoints);
             }
 
+            
             var burnDownReport = new BurnDownReportDto()
             {
                 Name = "BurnDown chart",
@@ -97,7 +100,20 @@ namespace Harmony.Infrastructure.Services.Management
                 GuideLineStoryPoints = guideLineStoryPointsSeries
             };
 
+            var issuesOverviewReport = new IssuesOverviewReportDto()
+            {
+                TotalIssues = sprintCards.Count
+            };
+
+            foreach (var issueType in sprintCards.Select(c => c.IssueType).Distinct())
+            {
+                var cardsInIssue = sprintCards.Count(c => c.IssueType == issueType);
+                issuesOverviewReport.TotalIssuesPerType.Add(cardsInIssue);
+                issuesOverviewReport.IssueTypes.Add(issueType.Summary);
+            }
+
             result.BurnDownReport = burnDownReport;
+            result.IssuesOverviewReport = issuesOverviewReport;
             result.TotalStoryPoints = totalStoryPoints;
             result.RemainingStoryPoints = remainingStoryPoints;
             result.Sprint = _mapper.Map<SprintDto>(sprint);

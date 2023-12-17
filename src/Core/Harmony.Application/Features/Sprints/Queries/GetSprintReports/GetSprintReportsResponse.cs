@@ -8,5 +8,6 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintReports
         public int RemainingStoryPoints { get; set; }
         public SprintDto Sprint { get; set; }
         public BurnDownReportDto BurnDownReport { get; set; }
+        public IssuesOverviewReportDto IssuesOverviewReport { get; set; }
     }
 }

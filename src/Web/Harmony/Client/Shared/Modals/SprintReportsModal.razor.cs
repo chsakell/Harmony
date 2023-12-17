@@ -26,7 +26,10 @@ namespace Harmony.Client.Shared.Modals
 
         public string[] XAxisBurnDownLabels;
 
-        private GetSprintReportsResponse SprintReports { get; set; }
+        private GetSprintReportsResponse Reports { get; set; }
+
+        public double[] data = { 25, 45, 65 };
+        public string[] labels = { "Oil", "Gas", "Water" };
 
         protected override async Task OnInitializedAsync()
         {
@@ -34,24 +37,24 @@ namespace Harmony.Client.Shared.Modals
 
             if(sprintReportsResult.Succeeded)
             {
-                SprintReports = sprintReportsResult.Data;
+                Reports = sprintReportsResult.Data;
                 _options.YAxisTicks = 10;
                 
-                if (SprintReports?.BurnDownReport != null)
+                if (Reports?.BurnDownReport != null)
                 {
                     BurnDownSeries.Add(new ChartSeries()
                     {
                         Name = "Guide Line",
-                        Data = SprintReports.BurnDownReport.GuideLineStoryPoints.ToArray()
+                        Data = Reports.BurnDownReport.GuideLineStoryPoints.ToArray()
                     });
 
                     BurnDownSeries.Add(new ChartSeries()
                     {
                         Name = "Remaining Story Points",
-                        Data = SprintReports.BurnDownReport.RemainingStoryPoints.ToArray()
+                        Data = Reports.BurnDownReport.RemainingStoryPoints.ToArray()
                     });
 
-                    XAxisBurnDownLabels = SprintReports.BurnDownReport.Dates.ToArray();
+                    XAxisBurnDownLabels = Reports.BurnDownReport.Dates.ToArray();
                 }
             }
 
