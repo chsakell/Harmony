@@ -4,6 +4,7 @@ using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
+using Harmony.Application.Features.Cards.Commands.UpdateCardIssueType;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
@@ -41,15 +42,14 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         public EditableTextEditorField _commentsTextEditor;
+        private MudSelect<string> _issueTypeMudSelect;
         private bool _historyLoaded = false;
-        private string _mudDialogClass = string.Empty;
-
-        private bool _editingStoryPoints;
         private bool _updatingStoryPoints;
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
         [Parameter] public string SerialKey { get; set; }
+        [Parameter] public List<IssueTypeDto> IssueTypes { get; set; }
 
         public event EventHandler<EditableCardModel> OnCardUpdated;
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
@@ -292,15 +292,49 @@ namespace Harmony.Client.Shared.Modals
             DisplayMessage(response);
         }
 
+        private async Task SaveIssueType(string summary)
+        {
+            if (_card.IssueType.Summary == summary)
+            {
+                return;
+            }
+
+            var issueType = IssueTypes.FirstOrDefault(t => t.Summary.Equals(summary));
+
+            if ((issueType == null))
+            {
+                return;
+            }
+
+            _card.IssueType = issueType;
+            _card.IssueType.Summary = summary;
+
+            var command = new UpdateCardIssueTypeCommand(CardId, issueType.Id)
+            {
+                BoardId = BoardId
+            };
+
+            var result = await _cardManager
+                .UpdateIssueTypeAsync(command);
+
+            if (result.Succeeded && result.Data)
+            {
+                _card.IssueType = issueType;
+                _card.IssueType.Summary = summary;
+            }
+
+            DisplayMessage(result);
+        }
+
         async void UpdateStoryPoints(string debouncedText)
         {
-           _updatingStoryPoints = true;
+            _updatingStoryPoints = true;
             short? storyPoints = string.IsNullOrEmpty(debouncedText) ? null : short.Parse(debouncedText);
 
             var result = await _cardManager
                 .UpdateStoryPointsAsync(new UpdateCardStoryPointsCommand(BoardId, CardId, storyPoints));
 
-            if(result.Succeeded && result.Data)
+            if (result.Succeeded && result.Data)
             {
                 _card.StoryPoints = storyPoints;
 
@@ -310,7 +344,6 @@ namespace Harmony.Client.Shared.Modals
             DisplayMessage(result);
 
             _updatingStoryPoints = false;
-            _editingStoryPoints = false;
         }
 
         private async Task SaveCheckListTitle(Guid checkListId, string title)
@@ -668,6 +701,16 @@ namespace Harmony.Client.Shared.Modals
         {
             await JSRuntime.InvokeVoidAsync("toggleFullScreenModal", "editCardModal", fullScreen);
         }
+
+        private Func<IssueTypeDto, string> convertFunc = type =>
+        {
+            if (type == null || type.Id == Guid.Empty)
+            {
+                return "Select issue type";
+            }
+
+            return type.Summary;
+        };
         public void Dispose()
         {
             UnRegisterEvents();

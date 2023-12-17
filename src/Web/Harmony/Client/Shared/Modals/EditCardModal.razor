@@ -1,4 +1,6 @@
-﻿@using Harmony.Application.Helpers;
+﻿@using Harmony.Application.DTO
+@using Harmony.Application.Helpers;
+@using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardModal> _localizer
 
@@ -30,10 +32,26 @@ else
                         }
                         @if (_card.BoardType == BoardType.Scrum)
                         {
+                            <MudSelect @ref="_issueTypeMudSelect" @bind-Value:get="_card.IssueType.Summary"
+                                       @bind-Value:set="SaveIssueType"
+                                       For="@(() => _card.IssueType.Summary)"
+                                       Label="Type" AnchorOrigin="Origin.BottomCenter"
+                                       Variant="Variant.Outlined">
+                                @foreach (var type in IssueTypes)
+                                {
+                                    <MudSelectItem Value="type.Summary">
+                                        <MudStack Row="true">
+                                            <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
+                                                     Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
+                                            <MudText>@type.Summary</MudText>
+                                        </MudStack>
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
                             <MudNumericField Style="width:110px" T="short?" HideSpinButtons="true"
                                              AdornmentIcon="@Icons.Material.Filled.Iso"
                                              Adornment="Adornment.Start"
-                            Clearable="true" Disabled="_updatingStoryPoints"
+                                             Clearable="true" Disabled="_updatingStoryPoints"
                                              Label="Story Points"
                                              DebounceInterval="1000" OnDebounceIntervalElapsed="UpdateStoryPoints"
                                              @bind-Value:get="@_card.StoryPoints" Min="0" />

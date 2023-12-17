@@ -8,6 +8,7 @@ using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
+using Harmony.Application.Features.Cards.Commands.UpdateCardIssueType;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 using Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
@@ -64,6 +65,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("{id:guid}/storypoints")]
         public async Task<IActionResult> UpdateStoryPoints(Guid id, UpdateCardStoryPointsCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpPut("{id:guid}/issuetype")]
+        public async Task<IActionResult> UpdateIssueType(Guid id, UpdateCardIssueTypeCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

@@ -46,6 +46,8 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
 
             var result = _mapper.Map<LoadCardResponse>(card);
 
+            var boardId = card?.BoardList?.Board.Id ?? card.IssueType?.BoardId;
+
             var cardUserIds = card.Members.Select(m => m.UserId).Distinct();
 
             var cardUsers = (await _userService.GetAllAsync(cardUserIds)).Data;

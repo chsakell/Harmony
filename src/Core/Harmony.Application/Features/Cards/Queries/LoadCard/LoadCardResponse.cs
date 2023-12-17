@@ -26,5 +26,6 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public List<LabelDto> Labels { get; set; }
         public SprintDto Sprint { get; set; }
         public short? StoryPoints { get; set; }
+        public IssueTypeDto IssueType { get; set; }
     }
 }

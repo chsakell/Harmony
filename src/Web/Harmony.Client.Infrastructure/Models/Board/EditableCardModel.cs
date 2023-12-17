@@ -30,6 +30,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public SprintDto Sprint { get; set; }
         public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
         public short? StoryPoints { get; set; }
+        public IssueTypeDto IssueType { get; set; }
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

@@ -16,5 +16,6 @@ namespace Harmony.Application.Features.Boards.Queries.Get
 		public List<BoardListDto> Lists { get; set; }
         public BoardType Type { get; set; }
         public List<SprintDto> ActiveSprints { get; set; } = new List<SprintDto>();
+        public List<IssueTypeDto> IssueTypes { get; set; }
     }
 }
