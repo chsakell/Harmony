@@ -10,6 +10,7 @@ using Harmony.Application.Requests.Identity;
 using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 using Harmony.Client.Infrastructure.Models.Board;
+using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
@@ -110,11 +111,14 @@ namespace Harmony.Client.Pages.Management
 
         private async Task EditCard(GetBacklogItemResponse card)
         {
+            await LoadIssueTypes();
+
             var parameters = new DialogParameters<EditCardModal>
                 {
                     { c => c.CardId, card.Id },
                     { c => c.BoardId, Guid.Parse(Id) },
-                    { c => c.SerialKey, card.SerialKey }
+                    { c => c.SerialKey, card.SerialKey },
+                    { c => c.IssueTypes, _issueTypes },
                 };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
@@ -134,6 +138,7 @@ namespace Harmony.Client.Pages.Management
             item.Title = e.Title;
             item.StoryPoints = e.StoryPoints;
             item.DueDate = e.DueDate;
+            item.IssueType = e.IssueType;
         }
 
         private async Task CreateIssue()

@@ -42,7 +42,6 @@ namespace Harmony.Client.Shared.Modals
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
         public EditableTextEditorField _commentsTextEditor;
-        private MudSelect<string> _issueTypeMudSelect;
         private bool _historyLoaded = false;
         private bool _updatingStoryPoints;
 
@@ -307,7 +306,6 @@ namespace Harmony.Client.Shared.Modals
             }
 
             _card.IssueType = issueType;
-            _card.IssueType.Summary = summary;
 
             var command = new UpdateCardIssueTypeCommand(CardId, issueType.Id)
             {
@@ -320,7 +318,7 @@ namespace Harmony.Client.Shared.Modals
             if (result.Succeeded && result.Data)
             {
                 _card.IssueType = issueType;
-                _card.IssueType.Summary = summary;
+                OnCardUpdated?.Invoke(this, _card);
             }
 
             DisplayMessage(result);

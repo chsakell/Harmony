@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Commands.CreateSprint;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
@@ -10,6 +11,7 @@ using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -30,6 +32,7 @@ namespace Harmony.Client.Pages.Management
         private HashSet<GetSprintCardResponse> _selectedCards = new HashSet<GetSprintCardResponse>();
         private int _filterSprintStatus = -1;
         private IDisposable registration;
+        private List<IssueTypeDto> _issueTypes;
 
         private TableGroupDefinition<GetSprintCardResponse> _groupDefinition = new()
         {
@@ -43,6 +46,14 @@ namespace Harmony.Client.Pages.Management
         protected override async Task OnInitializedAsync()
         {
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await LoadIssueTypes();
+            }
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -112,7 +123,8 @@ namespace Harmony.Client.Pages.Management
                 {
                     { c => c.CardId, item.CardId.Value },
                     { c => c.BoardId, Guid.Parse(Id) },
-                    { c => c.SerialKey, item.CardSerialKey }
+                    { c => c.SerialKey, item.CardSerialKey },
+                    { c => c.IssueTypes, _issueTypes },
                 };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
@@ -132,6 +144,7 @@ namespace Harmony.Client.Pages.Management
             item.CardTitle = e.Title;
             item.StoryPoints = e.StoryPoints;
             item.CardDueDate = e.DueDate;
+            item.CardIssueType = e.IssueType;
         }
 
         private async Task FilterSprintStatus(int status)
@@ -314,6 +327,21 @@ namespace Harmony.Client.Pages.Management
             foreach (var message in result.Messages)
             {
                 _snackBar.Add(message, severity);
+            }
+        }
+
+        private async Task LoadIssueTypes()
+        {
+            if (_issueTypes != null)
+            {
+                return;
+            }
+
+            var issueTypesResult = await _boardManager.GetIssueTypesAsync(Id);
+
+            if (issueTypesResult.Succeeded)
+            {
+                _issueTypes = issueTypesResult.Data;
             }
         }
 

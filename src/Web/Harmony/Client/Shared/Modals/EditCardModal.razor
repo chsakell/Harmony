@@ -30,24 +30,24 @@ else
                         {
                             <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
                         }
+                        <MudSelect @bind-Value:get="_card.IssueType.Summary"
+                                   @bind-Value:set="SaveIssueType"
+                                   For="@(() => _card.IssueType.Summary)"
+                                   Label="Type" AnchorOrigin="Origin.BottomCenter"
+                                   Variant="Variant.Outlined">
+                            @foreach (var type in IssueTypes)
+                            {
+                                <MudSelectItem Value="type.Summary">
+                                    <MudStack Row="true">
+                                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
+                                                 Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
+                                        <MudText>@type.Summary</MudText>
+                                    </MudStack>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
                         @if (_card.BoardType == BoardType.Scrum)
                         {
-                            <MudSelect @ref="_issueTypeMudSelect" @bind-Value:get="_card.IssueType.Summary"
-                                       @bind-Value:set="SaveIssueType"
-                                       For="@(() => _card.IssueType.Summary)"
-                                       Label="Type" AnchorOrigin="Origin.BottomCenter"
-                                       Variant="Variant.Outlined">
-                                @foreach (var type in IssueTypes)
-                                {
-                                    <MudSelectItem Value="type.Summary">
-                                        <MudStack Row="true">
-                                            <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
-                                                     Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
-                                            <MudText>@type.Summary</MudText>
-                                        </MudStack>
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
                             <MudNumericField Style="width:110px" T="short?" HideSpinButtons="true"
                                              AdornmentIcon="@Icons.Material.Filled.Iso"
                                              Adornment="Adornment.Start"
