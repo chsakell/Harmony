@@ -12,7 +12,10 @@ namespace Harmony.Client.Shared.Modals
     {
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
         private bool _loading = true;
-        private readonly ChartOptions _options = new();
+        private readonly ChartOptions _options = new()
+        {
+            ChartPalette = new[] { "#5F9DF7", "#C21292", "#711DB0", "#EF4040", "FFA732"}
+        };
 
         [Parameter]
         public Guid BoardId { get; set; }

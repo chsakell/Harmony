@@ -54,7 +54,8 @@
                         </MudTabPanel>
                         <MudTabPanel Text="Issues Overview">
                             <MudChart ChartType="ChartType.Donut"
-                                      Width="100%" Height="400px" 
+                                      Width="100%" Height="400px"
+                                      ChartOptions="@_options"
                                       InputData="@Reports.IssuesOverviewReport.TotalIssuesPerType.ToArray()"
                                       InputLabels="@Reports.IssuesOverviewReport.IssueTypes.ToArray()">
                                 <CustomGraphics>

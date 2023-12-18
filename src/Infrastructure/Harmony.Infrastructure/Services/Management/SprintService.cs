@@ -40,8 +40,6 @@ namespace Harmony.Infrastructure.Services.Management
                                      where card.SprintId == sprintId
                                      select card).ToListAsync();
 
-
-
             var completedCards = sprintCards.Where(c => c.DateCompleted.HasValue);
 
             var result = new GetSprintReportsResponse();
