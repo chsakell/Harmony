@@ -20,33 +20,40 @@
         }
     </TitleContent>
     <DialogContent>
-        <MudExpansionPanels Class="mb-4">
-            <MudExpansionPanel Text="Pending cards" MaxHeight="450">
-                <MudTable Items="@PendingCards" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
-                    <HeaderContent>
-                        <MudTh>Title</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Title">@context.Title</MudTd>
-                     </RowTemplate>
-                    </MudTable>
-                </MudExpansionPanel>
-            </MudExpansionPanels>
+        @if (PendingCards.Any())
+        {
+            <MudExpansionPanels Class="mb-4">
+                <MudExpansionPanel Text="Pending cards" MaxHeight="450" Disabled="!PendingCards.Any()">
+                    <MudTable Items="@PendingCards" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+                        <HeaderContent>
+                            <MudTh>Title</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Title">@context.Title</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
             <MudSelect T="SprintDto" @bind-Value="_moveToSprint"
                        ToStringFunc="converter"
                        AnchorOrigin="Origin.BottomCenter">
                 @foreach (var sprint in AvailableSprints)
-            {
-                <MudSelectItem Value="@sprint" />
-            }
-            <MudSelectItem Value="@_backLogSprint" />
-            <MudSelectItem Value="@_newSprint" />
-        </MudSelect>
+                {
+                    <MudSelectItem Value="@sprint" />
+                }
+                <MudSelectItem Value="@_backLogSprint" />
+                <MudSelectItem Value="@_newSprint" />
+            </MudSelect>
+        }
+        else
+        {
+            <MudAlert Class="mud-alert-text-tertiary">Well done!! No pending issues for this sprint!</MudAlert>
+        }
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-            <MudButton OnClick="CompleteSprint" Disabled="_moveToSprint == null || _processing"
-                       ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary">
+            <MudButton OnClick="CompleteSprint" Disabled="(PendingCards.Any() && (_moveToSprint == null || _processing))"
+                       ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Success">
                 @if (_processing)
             {
                 <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
