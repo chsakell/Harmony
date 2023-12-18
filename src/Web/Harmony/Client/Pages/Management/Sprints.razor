@@ -35,7 +35,7 @@
             </div>
             <div class="justify-center mud-text-align-center ml-2">
                 <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
-                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
+                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any() || !_selectedCards.All(card => card.CardId.HasValue)" IconColor="Color.Secondary"
                          AnchorOrigin="Origin.BottomLeft">
                     <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
                                  OnClick="MoveToBacklog" Icon="@Icons.Material.Filled.ArrowRight">Move to backlog</MudMenuItem>
@@ -101,7 +101,7 @@
             </MudTd>
         </RowTemplate>
         <GroupFooterTemplate>
-            <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="3">
+            <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="5">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexEnd">
                     <MudText>Total cards: @context.Items.Count(item => item.CardId.HasValue)</MudText>
                         @if (context.Items.FirstOrDefault() != null)

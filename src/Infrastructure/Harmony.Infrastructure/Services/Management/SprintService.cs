@@ -56,15 +56,17 @@ namespace Harmony.Infrastructure.Services.Management
                 .Where(date => date.DayOfWeek != DayOfWeek.Saturday
                 && date.DayOfWeek != DayOfWeek.Sunday).Count();
 
-            var averageStoryPointsPerDay = (double)totalStoryPoints / (double)totalWorkDays;
+            var averageStoryPointsPerDay = (double)totalStoryPoints / (double)(totalWorkDays - 1);
 
             if(totalStoryPoints == 0)
             {
                 return null;
             }
 
+            var sprintDays = EachDay(sprint.StartDate.Value, sprint.EndDate.Value).ToList();
             var firstDay = true;
-            foreach (var day in EachDay(sprint.StartDate.Value, sprint.EndDate.Value))
+
+            foreach (var day in sprintDays.OrderBy(date => date))
             {
                 burnDownReportDates.Add(day.Date.ToString("MMM dd"));
 
