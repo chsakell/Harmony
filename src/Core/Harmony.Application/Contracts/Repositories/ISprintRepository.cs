@@ -1,4 +1,5 @@
 ﻿using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Contracts.Repositories
 {
@@ -15,7 +16,8 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> Update(Sprint sprint);
         Task<int> Delete(Sprint sprint);
         Task<int> CountSprints(Guid boardId);
-        Task<List<Sprint>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize);
+        Task<List<Sprint>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize,
+            List<SprintStatus> statuses);
         Task<List<Sprint>> GetActiveSprints(Guid boardId);
         Task<List<Sprint>> GetNonCompletedSprints(Guid boardId);
     }

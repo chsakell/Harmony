@@ -153,7 +153,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints
                 .Sprints(request.BoardId.ToString(), request.PageNumber, request.PageSize,
-                     request.SearchTerm, request.OrderBy));
+                     request.SearchTerm, request.OrderBy, request.Statuses));
 
             return await response.ToPaginatedResult<SprintDto>();
         }

@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -75,10 +76,11 @@ namespace Harmony.Infrastructure.Repositories
                 .Where(sprint => sprint.BoardId == boardId).CountAsync();
         }
 
-        public async Task<List<Sprint>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize)
+        public async Task<List<Sprint>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize,
+            List<SprintStatus> statuses)
         {
             return await _context.Sprints
-                .Where(s => s.BoardId == boardId && 
+                .Where(s => s.BoardId == boardId && statuses.Contains(s.Status) &&
                     (string.IsNullOrEmpty(term) ? true : s.Name.Contains(term)))
                 .Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 

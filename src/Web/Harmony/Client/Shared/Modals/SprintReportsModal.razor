@@ -59,8 +59,8 @@
                                       InputData="@Reports.IssuesOverviewReport.TotalIssuesPerType.ToArray()"
                                       InputLabels="@Reports.IssuesOverviewReport.IssueTypes.ToArray()">
                                 <CustomGraphics>
-                                    <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total Issues</text>
-                                    <text class="donut-inner-text" x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@Reports.IssuesOverviewReport.TotalIssues</text>
+                                    <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="var(--mud-palette-primary)" font-family="Helvetica" font-size="2">Total Issues</text>
+                                    <text class="donut-inner-text" x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="var(--mud-palette-primary)" font-family="Helvetica" font-size="5">@Reports.IssuesOverviewReport.TotalIssues</text>
                                 </CustomGraphics>
                             </MudChart>
                         </MudTabPanel>

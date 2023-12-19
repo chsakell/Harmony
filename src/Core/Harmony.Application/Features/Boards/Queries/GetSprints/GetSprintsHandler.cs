@@ -28,7 +28,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
                 await _sprintRepository.CountSprints(request.BoardId);
 
             var sprints = await _sprintRepository.SearchSprints(request.BoardId,
-                 request.SearchTerm, request.PageNumber, request.PageSize);
+                 request.SearchTerm, request.PageNumber, request.PageSize, request.Statuses);
 
             var result = _mapper.Map<List<SprintDto>>(sprints);
 

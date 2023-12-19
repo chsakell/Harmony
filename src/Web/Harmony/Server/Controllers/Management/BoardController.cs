@@ -18,6 +18,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Domain.Enums;
 using Harmony.Server.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Server.Controllers.Management
@@ -118,10 +119,30 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpGet("{id:guid}/sprints")]
         public async Task<IActionResult> GetSprints(Guid id, int pageNumber, int pageSize,
-            string searchTerm = null, string orderBy = null)
+            string searchTerm = null, string orderBy = null,
+            bool idle = true, bool active = true, bool completed = true)
         {
-            return Ok(await _mediator.Send(new
-                GetSprintsQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+            var sprintQuery = new
+                GetSprintsQuery(id, pageNumber, pageSize, searchTerm, orderBy);
+
+            var statuses = new List<SprintStatus>();
+
+            if(idle)
+            {
+                statuses.Add(SprintStatus.Idle);
+            }
+            if(active)
+            {
+                statuses.Add(SprintStatus.Active);
+            }
+            if(completed) 
+            {
+                statuses.Add(SprintStatus.Completed);
+            }
+
+            sprintQuery.Statuses = statuses;
+
+            return Ok(await _mediator.Send(sprintQuery));
         }
 
         [HttpPost("{id:guid}/sprints")]

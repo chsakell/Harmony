@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Requests;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 
@@ -15,6 +16,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
         }
 
         public string SearchTerm { get; set; }
+        public List<SprintStatus> Statuses { get; set; }
 
         public GetSprintsQuery(Guid workspaceId, int pageNumber, int pageSize,
             string searchTerm, string orderBy)

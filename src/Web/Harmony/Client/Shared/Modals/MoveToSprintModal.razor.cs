@@ -3,6 +3,7 @@ using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -53,7 +54,7 @@ namespace Harmony.Client.Shared.Modals
         {
             var selectedSprint = _table.SelectedItem;
 
-            if(selectedSprint == null)
+            if (selectedSprint == null)
             {
                 _snackBar.Add("Please select a sprint first.", Severity.Warning);
 
@@ -63,7 +64,7 @@ namespace Harmony.Client.Shared.Modals
             _processing = true;
 
             var result = await _boardManager
-                .MoveCardsToSprint(new MoveToSprintCommand(BoardId, selectedSprint.Id, 
+                .MoveCardsToSprint(new MoveToSprintCommand(BoardId, selectedSprint.Id,
                 _selectedBoardList.Id, Items.Select(i => i.Id).ToList()));
 
             DisplayMessage(result);
@@ -111,6 +112,7 @@ namespace Harmony.Client.Shared.Modals
                 PageNumber = pageNumber + 1,
                 SearchTerm = _searchString,
                 OrderBy = orderings,
+                Statuses = new List<SprintStatus> { SprintStatus.Idle, SprintStatus.Active }
             };
 
             var response = await _boardManager.GetSprints(request);
@@ -131,7 +133,7 @@ namespace Harmony.Client.Shared.Modals
 
         private void RowClickEvent(TableRowClickEventArgs<SprintDto> tableRowClickEventArgs)
         {
-            
+
         }
 
         private string SelectedRowClassFunc(SprintDto sprint, int rowNumber)

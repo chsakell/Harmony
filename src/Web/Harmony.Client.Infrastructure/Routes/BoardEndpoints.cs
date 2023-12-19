@@ -103,9 +103,23 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Index}{boardId}/sprints/{sprintId}/cards/pending/";
         }
 
-        public static string Sprints(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy)
+        public static string Sprints(string boardId, int pageNumber, int pageSize, string searchTerm, string[] orderBy, List<SprintStatus> statuses = null)
         {
-            var url = $"{Index}{boardId}/sprints/?pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={searchTerm}&orderBy=";
+            var idle = true;
+            var active = true;
+            var completed = true;
+
+            if(statuses != null)
+            {
+                idle = statuses.Contains(SprintStatus.Idle);
+                active = statuses.Contains(SprintStatus.Active);
+                completed = statuses.Contains(SprintStatus.Completed);
+            }
+
+            var statusesQueryParams = $"&idle={idle}&active={active}&completed={completed}";
+
+            var url = $"{Index}{boardId}/sprints/?pageNumber={pageNumber}&pageSize={pageSize}" +
+                $"&searchTerm={searchTerm}{statusesQueryParams}&orderBy=";
 
             if (orderBy?.Any() == true)
             {
