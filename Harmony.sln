@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Client.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Messaging", "src\Infrastructure\Harmony.Messaging\Harmony.Messaging.csproj", "{C2BF9160-C787-4B1F-A771-1A66FCD3E3D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Notifications", "src\Web\Harmony.Notifications\Harmony.Notifications.csproj", "{A36C8DCB-8DB6-4DE0-800F-9E08BE02C2AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Notifications", "src\Web\Harmony.Notifications\Harmony.Notifications.csproj", "{A36C8DCB-8DB6-4DE0-800F-9E08BE02C2AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

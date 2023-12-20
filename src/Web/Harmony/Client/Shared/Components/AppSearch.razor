@@ -1,0 +1,11 @@
+﻿<MudStack Class="SearchStack">
+    <MudAutocomplete T="string"  @bind-Value="_searchText" Margin="Margin.Dense"
+                     Clearable="true" Placeholder="Search.."
+                     SearchFuncWithCancel="@Search" Variant="Variant.Outlined" ShowProgressIndicator="true" />
+    @* <MudTextField DebounceInterval="1000" @bind-Value="_searchText" Clearable="true"
+    Class="SearchText" Margin="Margin.Dense"
+    IconSize="Size.Small" Style="width:200px;"
+    OnDebounceIntervalElapsed="Search" Placeholder="Search.."
+    Variant="Variant.Outlined" Adornment="Adornment.Start"
+    AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" /> *@
+</MudStack>
