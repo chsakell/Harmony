@@ -24,6 +24,7 @@ builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
 builder.Services.AddMessaging(builder.Configuration);
+builder.Services.AddSearching(builder.Configuration);
 
 var app = builder.Build();
 

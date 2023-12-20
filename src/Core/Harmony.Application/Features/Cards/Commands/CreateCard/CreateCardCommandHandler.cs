@@ -6,6 +6,8 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
+using Harmony.Application.Contracts.Services.Search;
+using Harmony.Application.DTO.Search;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateCard
 {
@@ -13,16 +15,19 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
     {
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ISearchService _searchService;
         private readonly IStringLocalizer<CreateCardCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public CreateCardCommandHandler(ICardRepository cardRepository,
             ICurrentUserService currentUserService,
+            ISearchService searchService,
             IStringLocalizer<CreateCardCommandHandler> localizer,
             IMapper mapper)
         {
             _cardRepository = cardRepository;
             _currentUserService = currentUserService;
+            _searchService = searchService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -54,6 +59,11 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             if (dbResult > 0)
             {
                 await _cardRepository.LoadIssueEntryAsync(card);
+
+                await _searchService.AddCardToIndex(request.BoardId, new SearchableCard(card.Id)
+                {
+                    Title = card.Title
+                });
 
                 var result = _mapper.Map<CardDto>(card);
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Card Created"]);

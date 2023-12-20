@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Configurations;
+﻿using Algolia.Search.Clients;
+using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services;
@@ -6,11 +7,13 @@ using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.Contracts.Services.UserNotifications;
 using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
+using Harmony.Infrastructure.Services.Search;
 using Harmony.Infrastructure.Services.UserNotifications;
 using Harmony.Messaging;
 using Harmony.Persistence.DbContext;
@@ -61,7 +64,7 @@ namespace Harmony.Server.Extensions
             services.AddScoped<IMemberSearchService, MemberSearchService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ISprintService, SprintService>();
-
+            
             return services;
         }
 
@@ -74,7 +77,24 @@ namespace Harmony.Server.Extensions
             return services;
         }
 
-        internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
+        internal static IServiceCollection AddSearching(this IServiceCollection services, IConfiguration configuration)
+        {
+            if (configuration.GetSection("AngoliaConfiguration") != null)
+            {
+                //SearchClient client = new SearchClient("L8N0CY980C", "70c53a5ecff2f9aa366dd80d77dc9939");
+                //SearchIndex index = client.InitIndex("your_index_name");
+
+                var applicationId = configuration["AngoliaConfiguration:ApplicationId"];
+                var apiKey = configuration["AngoliaConfiguration:ApiKey"];
+                //services.AddSingleton<ISearchClient, SearchClient>();
+                services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
+
+                services.AddSingleton<ISearchService, AngoliaSearchService>();
+            }
+            return services;
+        }
+
+    internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
             services
                 .AddIdentity<HarmonyUser, HarmonyRole>(options =>
