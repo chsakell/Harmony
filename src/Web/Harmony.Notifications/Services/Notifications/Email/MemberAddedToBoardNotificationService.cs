@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Specifications.Boards;
-using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Notifications.Contracts.Notifications.Email;
+using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -38,7 +38,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(MemberAddedToBoardNotification notification)
         {
-            await RemovePendingCardJobs(notification.BoardId, NotificationType.MemberAddedToBoard);
+            await RemovePendingCardJobs(notification.BoardId, EmailNotificationType.MemberAddedToBoard);
 
             var board = await _boardRepository.GetAsync(notification.BoardId);
 
@@ -58,7 +58,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             {
                 BoardId = notification.BoardId,
                 JobId = jobId,
-                Type = NotificationType.MemberAddedToBoard,
+                Type = EmailNotificationType.MemberAddedToBoard,
                 DateCreated = DateTime.Now,
             });
 
@@ -91,7 +91,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var user = userResult.Data;
 
             var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, NotificationType.MemberAddedToBoard);
+                .GetForUser(user.Id, EmailNotificationType.MemberAddedToBoard);
 
             if (notificationRegistration == null)
             {

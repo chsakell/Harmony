@@ -1,7 +1,7 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Notifications;
+using Harmony.Application.Notifications.Email;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -51,7 +51,7 @@ namespace Harmony.Messaging
             }
         }
 
-        public void Publish<T>(T notification) where T : BaseNotification
+        public void Publish<T>(T notification) where T : BaseEmailNotification
         {
             if(connection == null || !connection.IsOpen)
             {

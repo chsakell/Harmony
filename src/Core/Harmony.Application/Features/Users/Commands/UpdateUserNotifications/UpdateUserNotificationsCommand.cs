@@ -10,10 +10,10 @@ namespace Harmony.Application.Features.Users.Commands.UpdateUserNotifications;
 /// </summary>
 public class UpdateUserNotificationsCommand : IRequest<Result<bool>>
 {
-    public UpdateUserNotificationsCommand(List<NotificationType> notifications)
+    public UpdateUserNotificationsCommand(List<EmailNotificationType> notifications)
     {
         Notifications = notifications;
     }
 
-    public List<NotificationType> Notifications { get; set; }
+    public List<EmailNotificationType> Notifications { get; set; }
 }

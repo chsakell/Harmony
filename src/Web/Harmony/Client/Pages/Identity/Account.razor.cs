@@ -31,9 +31,9 @@ namespace Harmony.Client.Pages.Identity
 
         #region notifications
 
-        private HashSet<NotificationType> selectedNotifications = new HashSet<NotificationType>();
-        private List<NotificationType> _notifications = Enum.GetValues<NotificationType>().ToList();
-        private List<NotificationType> _userNotifications = Enumerable.Empty<NotificationType>().ToList();
+        private HashSet<EmailNotificationType> selectedNotifications = new HashSet<EmailNotificationType>();
+        private List<EmailNotificationType> _notifications = Enum.GetValues<EmailNotificationType>().ToList();
+        private List<EmailNotificationType> _userNotifications = Enumerable.Empty<EmailNotificationType>().ToList();
 
         #endregion
 
@@ -162,36 +162,36 @@ namespace Harmony.Client.Pages.Identity
             }
         }
 
-        private string GetPresentation(NotificationType type)
+        private string GetPresentation(EmailNotificationType type)
         {
             return ToSentenceCase(type.ToString());
         }
 
-        private string GetDescription(NotificationType type)
+        private string GetDescription(EmailNotificationType type)
         {
             switch (type)
             {
-                case NotificationType.CardDueDateUpdated:
+                case EmailNotificationType.CardDueDateUpdated:
                     return "A card's due date has been updated. You must be assigned to that card";
-                case NotificationType.CardCompleted:
+                case EmailNotificationType.CardCompleted:
                     return "A card has been moved to a list marked as DONE";
-                case NotificationType.MemberAddedToCard:
+                case EmailNotificationType.MemberAddedToCard:
                     return "You are being assigned to a card";
-                case NotificationType.MemberRemovedFromCard:
+                case EmailNotificationType.MemberRemovedFromCard:
                     return "You are no longer assigned to a card";
-                case NotificationType.CommentAddedToCard:
+                case EmailNotificationType.CommentAddedToCard:
                     return "Someone added a comment to a card";
-                case NotificationType.AttachmentAddedToCard:
+                case EmailNotificationType.AttachmentAddedToCard:
                     return "Attachement added to a card";
-                case NotificationType.CardAddedToBoard:
+                case EmailNotificationType.CardAddedToBoard:
                     return "A new card is added to the board";
-                case NotificationType.MemberAddedToBoard:
+                case EmailNotificationType.MemberAddedToBoard:
                     return "You are being added to a board";
-                case NotificationType.MemberRemovedFromBoard:
+                case EmailNotificationType.MemberRemovedFromBoard:
                     return "You are no longer member of a board";
-                case NotificationType.MemberAddedToWorkspace:
+                case EmailNotificationType.MemberAddedToWorkspace:
                     return "You become member of a workspace";
-                case NotificationType.MemberRemovedFromWorkspace:
+                case EmailNotificationType.MemberRemovedFromWorkspace:
                     return "You are no longer member of a workspace";
 
                 default:
@@ -203,12 +203,12 @@ namespace Harmony.Client.Pages.Identity
         {
             if(string.IsNullOrEmpty(text.Trim()))
             {
-                _notifications = Enum.GetValues<NotificationType>().ToList();
+                _notifications = Enum.GetValues<EmailNotificationType>().ToList();
             }
             else
             {
-                var filteredNotifications = new List<NotificationType>();
-                foreach(var notification in Enum.GetValues<NotificationType>().AsEnumerable())
+                var filteredNotifications = new List<EmailNotificationType>();
+                foreach(var notification in Enum.GetValues<EmailNotificationType>().AsEnumerable())
                 {
                     if(ToSentenceCase(notification.ToString().ToLower())
                         .Contains(text.Trim().ToLower()))

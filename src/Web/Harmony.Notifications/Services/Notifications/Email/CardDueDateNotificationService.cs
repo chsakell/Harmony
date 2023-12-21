@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Helpers;
 using Harmony.Domain.Enums;
-using Harmony.Application.Notifications;
 using Harmony.Notifications.Contracts.Notifications.Email;
+using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -35,7 +35,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
         {
             var cardId = notification.Id;
 
-            await RemovePendingCardJobs(cardId, NotificationType.CardDueDateUpdated);
+            await RemovePendingCardJobs(cardId, EmailNotificationType.CardDueDateUpdated);
 
             var card = await _cardRepository.Get(cardId);
 
@@ -86,7 +86,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             {
                 CardId = cardId,
                 JobId = jobId,
-                Type = NotificationType.CardDueDateUpdated,
+                Type = EmailNotificationType.CardDueDateUpdated,
                 DateCreated = DateTime.Now,
             });
 
@@ -110,7 +110,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var cardMembers = (await _userService.GetAllAsync(card.Members.Select(m => m.UserId))).Data;
 
             var registeredUsers = await _userNotificationRepository
-                .GetUsersForType(cardMembers.Select(m => m.Id).ToList(), NotificationType.CardDueDateUpdated);
+                .GetUsersForType(cardMembers.Select(m => m.Id).ToList(), EmailNotificationType.CardDueDateUpdated);
 
             foreach (var member in cardMembers.Where(m => registeredUsers.Contains(m.Id)))
             {

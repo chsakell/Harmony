@@ -10,7 +10,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Users.Queries.GetUser
 {
-    public class GetUserNotificationsHandler : IRequestHandler<GetUserNotificationsQuery, IResult<List<NotificationType>>>
+    public class GetUserNotificationsHandler : IRequestHandler<GetUserNotificationsQuery, IResult<List<EmailNotificationType>>>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<GetUserHandler> _localizer;
@@ -25,19 +25,19 @@ namespace Harmony.Application.Features.Users.Queries.GetUser
             _userNotificationRepository = userNotificationRepository;
         }
 
-        public async Task<IResult<List<NotificationType>>> Handle(GetUserNotificationsQuery request, CancellationToken cancellationToken)
+        public async Task<IResult<List<EmailNotificationType>>> Handle(GetUserNotificationsQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
 
-                return await Result<List<NotificationType>>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<List<EmailNotificationType>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var userNotifications = await _userNotificationRepository.GetAllForUser(userId);
 
-            return await Result<List<NotificationType>>.SuccessAsync(userNotifications
+            return await Result<List<EmailNotificationType>>.SuccessAsync(userNotifications
                 .Select(un => un.NotificationType).ToList());
         }
     }

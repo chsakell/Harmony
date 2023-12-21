@@ -10,6 +10,7 @@ using Harmony.Application.Helpers;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
+using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 

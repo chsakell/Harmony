@@ -10,6 +10,6 @@ namespace Harmony.Domain.Entities
     public class UserNotification : AuditableEntity<Guid>
     {
         public string UserId { get; set; }
-        public NotificationType NotificationType { get; set; }
+        public EmailNotificationType NotificationType { get; set; }
     }
 }

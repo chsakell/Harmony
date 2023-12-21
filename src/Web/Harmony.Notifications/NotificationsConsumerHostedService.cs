@@ -1,6 +1,6 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
-using Harmony.Application.Notifications;
+using Harmony.Application.Notifications.Email;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Microsoft.Extensions.Options;
@@ -84,13 +84,13 @@ namespace Harmony.Notifications
             {
                 if (ea.BasicProperties.Headers
                      .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
-                     Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
+                     Enum.TryParse<EmailNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
                 {
                     using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
                         switch (notificationType)
                         {
-                            case NotificationType.MemberAddedToCard:
+                            case EmailNotificationType.MemberAddedToCard:
                                 var memberAddedToCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToCardNotificationService>();
                                 var memberAddedToCardNotification = JsonSerializer
                                                     .Deserialize<MemberAddedToCardNotification>(ea.Body.Span);
@@ -100,7 +100,7 @@ namespace Harmony.Notifications
                                     await memberAddedToCardNotificationService.Notify(memberAddedToCardNotification);
                                 }
                                 break;
-                            case NotificationType.MemberRemovedFromCard:
+                            case EmailNotificationType.MemberRemovedFromCard:
                                 var memberRemovedFromCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromCardNotificationService>();
                                 var memberRemovedFromCardNotification = JsonSerializer
                                                     .Deserialize<MemberRemovedFromCardNotification>(ea.Body.Span);
@@ -110,7 +110,7 @@ namespace Harmony.Notifications
                                     await memberRemovedFromCardNotificationService.Notify(memberRemovedFromCardNotification);
                                 }
                                 break;
-                            case NotificationType.CardDueDateUpdated:
+                            case EmailNotificationType.CardDueDateUpdated:
                                 var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
                                 var dateChangedNotification = JsonSerializer
                                                     .Deserialize<CardDueTimeUpdatedNotification>(ea.Body.Span);
@@ -120,7 +120,7 @@ namespace Harmony.Notifications
                                     await _cardDueDateNotificationService.Notify(dateChangedNotification);
                                 }
                                 break;
-                            case NotificationType.CardCompleted:
+                            case EmailNotificationType.CardCompleted:
                                 var _cardCompletedNotificationService = scope.ServiceProvider.GetRequiredService<ICardCompletedNotificationService>();
                                 var cardCompletedNotification = JsonSerializer
                                                     .Deserialize<CardCompletedNotification>(ea.Body.Span);
@@ -130,7 +130,7 @@ namespace Harmony.Notifications
                                     await _cardCompletedNotificationService.Notify(cardCompletedNotification);
                                 }
                                 break;
-                            case NotificationType.MemberAddedToBoard:
+                            case EmailNotificationType.MemberAddedToBoard:
                                 var memberAddedToBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToBoardNotificationService>();
                                 var memberAddedToBoardNotification = JsonSerializer
                                                     .Deserialize<MemberAddedToBoardNotification>(ea.Body.Span);
@@ -140,7 +140,7 @@ namespace Harmony.Notifications
                                     await memberAddedToBoardNotificationService.Notify(memberAddedToBoardNotification);
                                 }
                                 break;
-                            case NotificationType.MemberRemovedFromBoard:
+                            case EmailNotificationType.MemberRemovedFromBoard:
                                 var memberRemovedFromBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromBoardNotificationService>();
                                 var memberRemovedFromBoardNotification = JsonSerializer
                                                     .Deserialize<MemberRemovedFromBoardNotification>(ea.Body.Span);
@@ -150,7 +150,7 @@ namespace Harmony.Notifications
                                     await memberRemovedFromBoardNotificationService.Notify(memberRemovedFromBoardNotification);
                                 }
                                 break;
-                            case NotificationType.MemberAddedToWorkspace:
+                            case EmailNotificationType.MemberAddedToWorkspace:
                                 var memberAddedToWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToWorkspaceNotificationService>();
                                 var memberAddedToWorkspaceNotification = JsonSerializer
                                                     .Deserialize<MemberAddedToWorkspaceNotification>(ea.Body.Span);
@@ -160,7 +160,7 @@ namespace Harmony.Notifications
                                     await memberAddedToWorkspaceNotificationService.Notify(memberAddedToWorkspaceNotification);
                                 }
                                 break;
-                            case NotificationType.MemberRemovedFromWorkspace:
+                            case EmailNotificationType.MemberRemovedFromWorkspace:
                                 var memberRemovedFromWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromWorkspaceNotificationService>();
                                 var memberRemovedFromWorkspaceNotification = JsonSerializer
                                                     .Deserialize<MemberRemovedFromWorkspaceNotification>(ea.Body.Span);

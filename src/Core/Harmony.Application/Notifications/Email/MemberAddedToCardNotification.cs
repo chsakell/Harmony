@@ -1,10 +1,10 @@
 ﻿using Harmony.Domain.Enums;
 
-namespace Harmony.Application.Notifications
+namespace Harmony.Application.Notifications.Email
 {
-    public class MemberRemovedFromCardNotification : BaseNotification
+    public class MemberAddedToCardNotification : BaseEmailNotification
     {
-        public MemberRemovedFromCardNotification(Guid boardId, Guid cardId, string userId, string cardUrl)
+        public MemberAddedToCardNotification(Guid boardId, Guid cardId, string userId, string cardUrl)
         {
             BoardId = boardId;
             CardId = cardId;
@@ -12,7 +12,7 @@ namespace Harmony.Application.Notifications
             CardUrl = cardUrl;
         }
 
-        public override NotificationType Type => NotificationType.MemberRemovedFromCard;
+        public override EmailNotificationType Type => EmailNotificationType.MemberAddedToCard;
 
         public Guid BoardId { get; set; }
         public Guid CardId { get; set; }

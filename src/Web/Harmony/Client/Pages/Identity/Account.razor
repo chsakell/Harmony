@@ -119,7 +119,7 @@
         </MudTabPanel>
         <MudTabPanel Icon="@Icons.Material.Outlined.Notifications">
             <ChildContent>
-                <MudTable T="NotificationType"
+                <MudTable T="EmailNotificationType"
                           FixedHeader="true" Height="calc(100vh - 290px)"
                           Items="@_notifications"
                           MultiSelection="true" @bind-SelectedItems="selectedNotifications" Hover="true">

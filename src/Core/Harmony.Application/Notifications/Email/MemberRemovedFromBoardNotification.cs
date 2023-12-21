@@ -1,8 +1,8 @@
 ﻿using Harmony.Domain.Enums;
 
-namespace Harmony.Application.Notifications
+namespace Harmony.Application.Notifications.Email
 {
-    public class MemberRemovedFromBoardNotification : BaseNotification
+    public class MemberRemovedFromBoardNotification : BaseEmailNotification
     {
         public MemberRemovedFromBoardNotification(Guid boardId, string userId, string boardUrl)
         {
@@ -11,7 +11,7 @@ namespace Harmony.Application.Notifications
             BoardUrl = boardUrl;
         }
 
-        public override NotificationType Type => NotificationType.MemberRemovedFromBoard;
+        public override EmailNotificationType Type => EmailNotificationType.MemberRemovedFromBoard;
 
         public Guid BoardId { get; set; }
         public string UserId { get; set; }

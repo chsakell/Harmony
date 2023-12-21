@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Specifications.Boards;
-using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Notifications.Contracts.Notifications.Email;
+using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -41,7 +41,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(MemberRemovedFromCardNotification notification)
         {
-            await RemovePendingCardJobs(notification.CardId, notification.UserId, NotificationType.MemberRemovedFromCard);
+            await RemovePendingCardJobs(notification.CardId, notification.UserId, EmailNotificationType.MemberRemovedFromCard);
 
             var userCard = await _userCardRepository
                 .GetUserCard(notification.CardId, notification.UserId);
@@ -62,7 +62,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             {
                 BoardId = notification.BoardId,
                 JobId = jobId,
-                Type = NotificationType.MemberRemovedFromCard,
+                Type = EmailNotificationType.MemberRemovedFromCard,
                 DateCreated = DateTime.Now,
             });
 
@@ -99,7 +99,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var user = userResult.Data;
 
             var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, NotificationType.MemberRemovedFromCard);
+                .GetForUser(user.Id, EmailNotificationType.MemberRemovedFromCard);
 
             if (notificationRegistration == null)
             {

@@ -29,6 +29,7 @@
     
   <ItemGroup>
     <Folder Include="Enums\" />
+    <Folder Include="Notifications\SearchIndex\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace Harmony.Domain.Enums
 {
-    public enum NotificationType
+    public enum EmailNotificationType
     {
         CardDueDateUpdated,
         CardCompleted,

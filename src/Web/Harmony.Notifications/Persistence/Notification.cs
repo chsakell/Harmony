@@ -9,7 +9,7 @@ namespace Harmony.Notifications.Persistence
         public string? UserId { get; set; }
         public Guid? BoardId { get; set; }
         public Guid? WorkspaceId { get; set; }
-        public NotificationType Type { get; set; }
+        public EmailNotificationType Type { get; set; }
         public string JobId { get; set; }
         public DateTime DateCreated { get; set; }
     }

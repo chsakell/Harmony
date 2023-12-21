@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
+using Harmony.Application.Notifications.Email;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers

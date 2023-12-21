@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Notifications;
+﻿using Harmony.Application.Notifications.Email;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace Harmony.Application.Contracts.Services.UserNotifications
 {
     public interface IUserNotificationService
     {
-        Task HandleNotification<T>(string userId, T notification) where T : BaseNotification;
+        Task HandleNotification<T>(string userId, T notification) where T : BaseEmailNotification;
     }
 }

@@ -13,7 +13,7 @@ namespace Harmony.Notifications.Services
             _notificationContext = notificationContext;
         }
 
-        protected async Task RemovePendingCardJobs(Guid cardId, NotificationType type)
+        protected async Task RemovePendingCardJobs(Guid cardId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this card and type
             var jobs = _notificationContext.Notifications
@@ -31,7 +31,7 @@ namespace Harmony.Notifications.Services
             }
         }
 
-        protected async Task RemovePendingCardJobs(Guid cardId, string userId, NotificationType type)
+        protected async Task RemovePendingCardJobs(Guid cardId, string userId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this card and type
             var jobs = _notificationContext.Notifications
@@ -49,7 +49,7 @@ namespace Harmony.Notifications.Services
             }
         }
 
-        protected async Task RemovePendingBoardJobs(Guid boardId, string userId, NotificationType type)
+        protected async Task RemovePendingBoardJobs(Guid boardId, string userId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this board and type
             var jobs = _notificationContext.Notifications
@@ -67,7 +67,7 @@ namespace Harmony.Notifications.Services
             }
         }
 
-        protected async Task RemovePendingWorkspaceJobs(Guid workspaceId, string userId, NotificationType type)
+        protected async Task RemovePendingWorkspaceJobs(Guid workspaceId, string userId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this board and type
             var jobs = _notificationContext.Notifications

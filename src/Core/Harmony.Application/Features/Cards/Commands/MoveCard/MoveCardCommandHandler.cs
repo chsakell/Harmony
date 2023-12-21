@@ -10,6 +10,7 @@ using Harmony.Application.Notifications;
 using MediatR;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Domain.Entities;
+using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 

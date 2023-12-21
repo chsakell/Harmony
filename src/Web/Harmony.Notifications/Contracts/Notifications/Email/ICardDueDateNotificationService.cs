@@ -1,4 +1,4 @@
-﻿using Harmony.Application.Notifications;
+﻿using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Notifications.Contracts.Notifications.Email
 {

@@ -11,6 +11,7 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Utilities;
+using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 {

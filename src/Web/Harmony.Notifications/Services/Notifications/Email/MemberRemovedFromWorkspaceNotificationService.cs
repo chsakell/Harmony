@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Specifications.Boards;
-using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Notifications.Contracts.Notifications.Email;
+using Harmony.Application.Notifications.Email;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -41,7 +41,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(MemberRemovedFromWorkspaceNotification notification)
         {
-            await RemovePendingWorkspaceJobs(notification.WorkspaceId, notification.UserId, NotificationType.MemberRemovedFromWorkspace);
+            await RemovePendingWorkspaceJobs(notification.WorkspaceId, notification.UserId, EmailNotificationType.MemberRemovedFromWorkspace);
 
             var workspace = await _workspaceRepository.GetAsync(notification.WorkspaceId);
 
@@ -62,7 +62,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             {
                 WorkspaceId = notification.WorkspaceId,
                 JobId = jobId,
-                Type = NotificationType.MemberRemovedFromWorkspace,
+                Type = EmailNotificationType.MemberRemovedFromWorkspace,
                 DateCreated = DateTime.Now,
             });
 
@@ -89,7 +89,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var user = userResult.Data;
 
             var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, NotificationType.MemberRemovedFromWorkspace);
+                .GetForUser(user.Id, EmailNotificationType.MemberRemovedFromWorkspace);
 
             if (notificationRegistration == null)
             {

@@ -1,7 +1,7 @@
 ﻿using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.UserNotifications;
-using Harmony.Application.Notifications;
+using Harmony.Application.Notifications.Email;
 using Harmony.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace Harmony.Infrastructure.Services.UserNotifications
             _userNotificationRepository = userNotificationRepository;
         }
 
-        public async Task HandleNotification<T>(string userId, T notification) where T : BaseNotification
+        public async Task HandleNotification<T>(string userId, T notification) where T : BaseEmailNotification
         {
             var subscribedToNotification = (await _userNotificationRepository
                 .GetForUser(userId, notification.Type) != null);

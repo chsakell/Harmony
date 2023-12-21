@@ -128,7 +128,7 @@ namespace Harmony.Infrastructure.Services.Identity
                 {
                     await _userManager.AddToRoleAsync(user, RoleConstants.BasicRole);
 
-                    foreach(var notificationType in Enum.GetValues<NotificationType>())
+                    foreach(var notificationType in Enum.GetValues<EmailNotificationType>())
                     {
                         await _userNotificationRepository.AddEntryAsync(new UserNotification()
                         {

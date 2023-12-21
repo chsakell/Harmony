@@ -1,8 +1,8 @@
 ﻿using Harmony.Domain.Enums;
 
-namespace Harmony.Application.Notifications
+namespace Harmony.Application.Notifications.Email
 {
-    public class MemberAddedToWorkspaceNotification : BaseNotification
+    public class MemberAddedToWorkspaceNotification : BaseEmailNotification
     {
         public MemberAddedToWorkspaceNotification(Guid workspaceId, string userId, string workspaceUrl)
         {
@@ -11,7 +11,7 @@ namespace Harmony.Application.Notifications
             WorkspaceUrl = workspaceUrl;
         }
 
-        public override NotificationType Type => NotificationType.MemberAddedToWorkspace;
+        public override EmailNotificationType Type => EmailNotificationType.MemberAddedToWorkspace;
 
         public Guid WorkspaceId { get; set; }
         public string UserId { get; set; }

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Harmony.Application.Features.Users.Queries.GetUserNotifications
 {
-    public class GetUserNotificationsQuery : IRequest<IResult<List<NotificationType>>>
+    public class GetUserNotificationsQuery : IRequest<IResult<List<EmailNotificationType>>>
     {
         public string UserId { get; set; }
 
