@@ -1,7 +1,6 @@
 ﻿using Hangfire;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Specifications.Cards;
-using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +8,9 @@ using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Domain.Enums;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Application.Notifications;
+using Harmony.Notifications.Contracts.Notifications.Email;
 
-namespace Harmony.Notifications.Services
+namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class CardCompletedNotificationService : BaseNotificationService, ICardCompletedNotificationService
     {
@@ -71,7 +71,7 @@ namespace Harmony.Notifications.Services
                 .Entities.Specify(filter)
                 .FirstOrDefaultAsync();
 
-            if (card == null || card.BoardList.CardStatus != Domain.Enums.BoardListCardStatus.DONE)
+            if (card == null || card.BoardList.CardStatus != BoardListCardStatus.DONE)
             {
                 return;
             }

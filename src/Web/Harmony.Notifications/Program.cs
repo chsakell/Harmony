@@ -1,7 +1,7 @@
 using Hangfire;
 using Harmony.Application.Configurations;
 using Harmony.Infrastructure.Extensions;
-using Harmony.Notifications.Contracts;
+using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Extensions;
 using Harmony.Notifications.Services.EmailProviders;
 

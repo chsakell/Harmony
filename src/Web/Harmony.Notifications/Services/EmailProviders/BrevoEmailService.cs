@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 using Harmony.Application.Configurations;
-using Harmony.Notifications.Contracts;
 using Microsoft.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Harmony.Notifications.Contracts.Notifications.Email;
 
 namespace Harmony.Notifications.Services.EmailProviders
 {

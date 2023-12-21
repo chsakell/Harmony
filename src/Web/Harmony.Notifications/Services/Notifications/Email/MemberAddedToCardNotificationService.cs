@@ -1,6 +1,5 @@
 ﻿using Hangfire;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +9,9 @@ using Harmony.Application.Specifications.Boards;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using Harmony.Infrastructure.Repositories;
+using Harmony.Notifications.Contracts.Notifications.Email;
 
-namespace Harmony.Notifications.Services
+namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class MemberAddedToCardNotificationService : BaseNotificationService, IMemberAddedToCardNotificationService
     {
@@ -101,7 +101,7 @@ namespace Harmony.Notifications.Services
             var notificationRegistration = await _userNotificationRepository
                 .GetForUser(user.Id, NotificationType.MemberAddedToCard);
 
-            if(notificationRegistration == null)
+            if (notificationRegistration == null)
             {
                 return;
             }

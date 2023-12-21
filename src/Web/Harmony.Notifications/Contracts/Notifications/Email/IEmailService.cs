@@ -1,4 +1,4 @@
-﻿namespace Harmony.Notifications.Contracts
+﻿namespace Harmony.Notifications.Contracts.Notifications.Email
 {
     public interface IEmailService
     {

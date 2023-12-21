@@ -1,6 +1,5 @@
 ﻿using Hangfire;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -10,48 +9,49 @@ using Harmony.Application.Specifications.Boards;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using Harmony.Infrastructure.Repositories;
+using Harmony.Notifications.Contracts.Notifications.Email;
 
-namespace Harmony.Notifications.Services
+namespace Harmony.Notifications.Services.Notifications.Email
 {
-    public class MemberRemovedFromCardNotificationService : BaseNotificationService, IMemberRemovedFromCardNotificationService
+    public class MemberAddedToWorkspaceNotificationService : BaseNotificationService, IMemberAddedToWorkspaceNotificationService
     {
         private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
-        private readonly ICardRepository _cardRepository;
-        private readonly IUserCardRepository _userCardRepository;
+        private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IUserNotificationRepository _userNotificationRepository;
+        private readonly IBoardService _boardService;
         private readonly IBoardRepository _boardRepository;
 
-        public MemberRemovedFromCardNotificationService(
+        public MemberAddedToWorkspaceNotificationService(
             IEmailService emailNotificationService,
             IUserService userService,
-            ICardRepository cardRepository,
-            IUserCardRepository userCardRepository,
-            NotificationContext notificationContext,
+            IWorkspaceRepository workspaceRepository,
             IUserNotificationRepository userNotificationRepository,
+            IBoardService boardService,
+            NotificationContext notificationContext,
             IBoardRepository boardRepository) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
             _userService = userService;
-            _cardRepository = cardRepository;
-            _userCardRepository = userCardRepository;
+            _workspaceRepository = workspaceRepository;
             _userNotificationRepository = userNotificationRepository;
+            _boardService = boardService;
             _boardRepository = boardRepository;
         }
 
-        public async Task Notify(MemberRemovedFromCardNotification notification)
+        public async Task Notify(MemberAddedToWorkspaceNotification notification)
         {
-            await RemovePendingCardJobs(notification.CardId, notification.UserId, NotificationType.MemberRemovedFromCard);
+            await RemovePendingWorkspaceJobs(notification.WorkspaceId, notification.UserId, NotificationType.MemberRemovedFromWorkspace);
 
-            var userCard = await _userCardRepository
-                .GetUserCard(notification.CardId, notification.UserId);
+            var workspace = await _workspaceRepository.GetAsync(notification.WorkspaceId);
 
-            if (userCard != null)
+            if (workspace == null)
             {
                 return;
             }
 
-            var jobId = BackgroundJob.Enqueue(() => SendEmail(notification));
+            var jobId = BackgroundJob.Enqueue(() =>
+                Notify(notification.WorkspaceId, notification.UserId, notification.WorkspaceUrl));
 
             if (string.IsNullOrEmpty(jobId))
             {
@@ -60,9 +60,9 @@ namespace Harmony.Notifications.Services
 
             _notificationContext.Notifications.Add(new Notification()
             {
-                BoardId = notification.BoardId,
+                WorkspaceId = notification.WorkspaceId,
                 JobId = jobId,
-                Type = NotificationType.MemberRemovedFromCard,
+                Type = NotificationType.MemberAddedToWorkspace,
                 DateCreated = DateTime.Now,
             });
 
@@ -70,46 +70,36 @@ namespace Harmony.Notifications.Services
         }
 
 
-        public async Task SendEmail(MemberRemovedFromCardNotification notification)
+        public async Task Notify(Guid workspaceId, string userId, string workspaceUrl)
         {
-            var filter = new BoardFilterSpecification(notification.BoardId, new BoardIncludes());
+            var workspace = await _workspaceRepository.GetAsync(workspaceId);
 
-            var board = await _boardRepository
-                .Entities.Specify(filter)
-                .FirstOrDefaultAsync();
-
-            if (board == null)
+            if (workspace == null)
             {
                 return;
             }
 
-            var card = await _cardRepository.Get(notification.CardId);
-
-            if (card == null)
-            {
-                return;
-            }
-
-            var userResult = await _userService.GetAsync(notification.UserId);
+            var userResult = await _userService.GetAsync(userId);
 
             if (!userResult.Succeeded || !userResult.Data.IsActive)
             {
                 return;
             }
+
             var user = userResult.Data;
 
             var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, NotificationType.MemberRemovedFromCard);
+                .GetForUser(user.Id, NotificationType.MemberAddedToWorkspace);
 
-            if(notificationRegistration == null)
+            if (notificationRegistration == null)
             {
                 return;
             }
 
-            var subject = $"No logner assigned to {card.Title} in {board.Title}";
+            var subject = $"Access {workspace.Name}";
 
             var content = $"Dear {user.FirstName} {user.LastName},<br/><br/>" +
-                $"You are no longer assigned to <a href='{notification.CardUrl}' target='_blank'>{card.Title}</a> on {board.Title}.";
+                $"You can now access <a href='{workspaceUrl}' target='_blank'>{workspace.Name}</a> workspace.";
 
             await _emailNotificationService.SendEmailAsync(user.Email, subject, content);
         }

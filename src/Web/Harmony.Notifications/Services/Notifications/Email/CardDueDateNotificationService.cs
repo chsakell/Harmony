@@ -1,7 +1,6 @@
 ﻿using Hangfire;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Specifications.Cards;
-using Harmony.Notifications.Contracts;
 using Harmony.Notifications.Persistence;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +8,9 @@ using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Helpers;
 using Harmony.Domain.Enums;
 using Harmony.Application.Notifications;
+using Harmony.Notifications.Contracts.Notifications.Email;
 
-namespace Harmony.Notifications.Services
+namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class CardDueDateNotificationService : BaseNotificationService, ICardDueDateNotificationService
     {
@@ -40,15 +40,15 @@ namespace Harmony.Notifications.Services
             var card = await _cardRepository.Get(cardId);
 
             if (card == null || !card.DueDate.HasValue || !card.DueDateReminderType.HasValue
-                || (card.DueDateReminderType.HasValue 
-                && card.DueDateReminderType == DueDateReminderType.None))
+                || card.DueDateReminderType.HasValue
+                && card.DueDateReminderType == DueDateReminderType.None)
             {
                 return;
             }
 
             var delay = card.DueDate.Value - DateTime.Now;
 
-            switch(card.DueDateReminderType)
+            switch (card.DueDateReminderType)
             {
                 case DueDateReminderType.FiveMinutesBefore:
                     delay = delay.Add(TimeSpan.FromMinutes(-5));
@@ -77,7 +77,7 @@ namespace Harmony.Notifications.Services
 
             var jobId = BackgroundJob.Schedule(() => Notify(cardId), delay);
 
-            if(string.IsNullOrEmpty(jobId))
+            if (string.IsNullOrEmpty(jobId))
             {
                 return;
             }
@@ -118,7 +118,7 @@ namespace Harmony.Notifications.Services
                     $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(card.StartDate, card.DueDate)}";
                 await _emailNotificationService.SendEmailAsync(member.Email, subject, content);
             }
-            
+
         }
 
         private string GetDueMessage(DueDateReminderType type)

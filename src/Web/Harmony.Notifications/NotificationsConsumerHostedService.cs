@@ -2,7 +2,7 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
-using Harmony.Notifications.Contracts;
+using Harmony.Notifications.Contracts.Notifications.Email;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
