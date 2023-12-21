@@ -19,6 +19,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<List<UserWorkspaceResponse>> SearchWorkspaceUsers(Guid workspaceId, string term, int pageNumber, int pageSize);
         Task<List<UserWorkspaceResponse>> SearchWorkspaceUsers(Guid workspaceId, string term);
         Task<int> CountWorkspaceUsers(Guid workspaceId, string term, int pageNumber, int pageSize);
-        IQueryable<Board> GetUserWorkspaceBoardsQuery(Guid workspaceId, string userId);
+        IQueryable<Board> GetUserWorkspaceBoardsQuery(Guid? workspaceId, string userId);
     }
 }

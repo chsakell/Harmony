@@ -62,7 +62,7 @@ namespace Harmony.Infrastructure.Services.Management
             return hasAccess;
         }
 
-        public async Task<List<Board>> GetUserBoards(Guid workspaceId, string userId)
+        public async Task<List<Board>> GetUserBoards(Guid? workspaceId, string userId)
         {
             var userWorkspaceBoardsQuery = _userWorkspaceRepository
                     .GetUserWorkspaceBoardsQuery(workspaceId, userId);

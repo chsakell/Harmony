@@ -142,7 +142,7 @@ namespace Harmony.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public IQueryable<Board> GetUserWorkspaceBoardsQuery(Guid workspaceId, string userId)
+        public IQueryable<Board> GetUserWorkspaceBoardsQuery(Guid? workspaceId, string userId)
         {
             var query = from UserWorkspace userWorkspace in _context.UserWorkspaces
                         join workspace in _context.Workspaces
@@ -150,7 +150,7 @@ namespace Harmony.Infrastructure.Repositories
                         join board in _context.Boards
                             on workspace.Id equals board.WorkspaceId
                         where userWorkspace.UserId == userId
-                            && userWorkspace.WorkspaceId == workspaceId && 
+                            && (userWorkspace.WorkspaceId == (workspaceId.HasValue ? workspaceId : userWorkspace.WorkspaceId)) && 
                             (board.Visibility == Domain.Enums.BoardVisibility.Workspace || board.Visibility == Domain.Enums.BoardVisibility.Public)
                         select board;
 

@@ -1,18 +1,27 @@
-﻿namespace Harmony.Client.Shared.Components
+﻿using Harmony.Application.DTO.Search;
+
+namespace Harmony.Client.Shared.Components
 {
     public partial class AppSearch
     {
-        private string _searchText { get; set; }
+        private SearchableCard _selectedCard { get; set; }
 
-        private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
+        private async Task<IEnumerable<SearchableCard>> Search(string value, CancellationToken token)
         {
-            //the http endpoint does not return immediately. There is an artifical delay built-in
-            return new List<string>() {  "item 1", "item 2"};
+            if(string.IsNullOrEmpty(value))
+            {
+                return new List<SearchableCard>() { };
+            }
+            var searchResult = await _searchManager.SearchCards(value);
+
+            if(searchResult.Succeeded)
+            {
+                return searchResult.Data;
+            }
+
+            return Enumerable.Empty<SearchableCard>();
         }
 
-        //private async Task Search(string searchText)
-        //{
 
-        //}
     }
 }

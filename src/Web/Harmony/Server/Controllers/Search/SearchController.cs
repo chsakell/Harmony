@@ -9,9 +9,9 @@ namespace Harmony.Server.Controllers.Search
     public class SearchController : BaseApiController<SearchController>
     {
         [HttpGet]
-        public async Task<IActionResult> Get(Guid boardId, string term)
+        public async Task<IActionResult> Get(string text)
         {
-            return Ok(await _mediator.Send(new GlobalSearchQuery(boardId, term)));
+            return Ok(await _mediator.Send(new GlobalSearchQuery(text)));
         }
     }
 }

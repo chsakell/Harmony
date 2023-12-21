@@ -17,7 +17,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<UserBoardResponse?> GetBoardAccessMember(Guid boardId, string userId);
         Task<Workspace?> GetWorkspace(Guid boardId);
         Task<int> Update(UserBoard userBoard);
-        IQueryable<Board> GetUserBoardsQuery(Guid workspaceId, string userId);
+        IQueryable<Board> GetUserBoardsQuery(Guid? workspaceId, string userId);
         Task LoadBoardEntryAsync(UserBoard userBoard);
     }
 }

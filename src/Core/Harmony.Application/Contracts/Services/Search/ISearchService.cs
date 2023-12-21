@@ -13,6 +13,6 @@ namespace Harmony.Application.Contracts.Services.Search
         bool CreateIndex(string name);
         Task AddCardToIndex(Guid boardId, SearchableCard card);
         Task UpdateCard(Guid boardId, SearchableCard card);
-        Task<List<SearchableCard>> SearchBoard(Guid boardId, string term);
+        Task<List<SearchableCard>> Search(List<Guid> boards, string term);
     }
 }

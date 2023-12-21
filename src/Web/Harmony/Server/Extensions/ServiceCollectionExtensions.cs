@@ -79,14 +79,10 @@ namespace Harmony.Server.Extensions
 
         internal static IServiceCollection AddSearching(this IServiceCollection services, IConfiguration configuration)
         {
-            if (configuration.GetSection("AngoliaConfiguration") != null)
+            if (configuration["AngoliaConfiguration:ApplicationId"] != null)
             {
-                //SearchClient client = new SearchClient("L8N0CY980C", "70c53a5ecff2f9aa366dd80d77dc9939");
-                //SearchIndex index = client.InitIndex("your_index_name");
-
                 var applicationId = configuration["AngoliaConfiguration:ApplicationId"];
                 var apiKey = configuration["AngoliaConfiguration:ApiKey"];
-                //services.AddSingleton<ISearchClient, SearchClient>();
                 services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
 
                 services.AddSingleton<ISearchService, AngoliaSearchService>();
