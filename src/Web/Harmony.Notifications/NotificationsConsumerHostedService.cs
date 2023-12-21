@@ -60,7 +60,7 @@ namespace Harmony.Notifications
             _channel = _connection.CreateModel();
 
             _channel.QueueDeclare(
-                queue: BrokerConstants.NotificationsQueue,
+                queue: BrokerConstants.EmailNotificationsQueue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
@@ -180,7 +180,7 @@ namespace Harmony.Notifications
             consumer.Unregistered += OnConsumerUnregistered;
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
-            _channel.BasicConsume(BrokerConstants.NotificationsQueue, true, consumer);
+            _channel.BasicConsume(BrokerConstants.EmailNotificationsQueue, true, consumer);
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }

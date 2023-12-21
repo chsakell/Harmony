@@ -56,7 +56,7 @@ namespace Harmony.Application.Features.Workspaces.Commands.RemoveMember
                     var workspaceUrl = $"/workspaces/{workspace.Id}/{slug}";
 
                     _notificationsPublisher
-                        .Publish(new MemberRemovedFromWorkspaceNotification(request.WorkspaceId, request.UserId, workspaceUrl));
+                        .PublishEmailNotification(new MemberRemovedFromWorkspaceNotification(request.WorkspaceId, request.UserId, workspaceUrl));
 
                     return await Result<bool>.SuccessAsync(true, _localizer["User Removed from workspace"]);
                 }

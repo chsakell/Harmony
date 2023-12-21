@@ -69,7 +69,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 				card.DateCompleted = DateTime.Now;
 				await _cardRepository.Update(card);
 
-                _notificationsPublisher.Publish(new CardCompletedNotification(card.Id));
+                _notificationsPublisher.PublishEmailNotification(new CardCompletedNotification(card.Id));
             }
 			else if(card.DateCompleted.HasValue)
 			{

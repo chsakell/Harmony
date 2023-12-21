@@ -60,7 +60,7 @@ namespace Harmony.Application.Features.Boards.Commands.RemoveUserBoard
                 var boardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/";
 
                 _notificationsPublisher
-                    .Publish(new MemberRemovedFromBoardNotification(request.BoardId, request.UserId, boardUrl));
+                    .PublishEmailNotification(new MemberRemovedFromBoardNotification(request.BoardId, request.UserId, boardUrl));
 
                 var result = new RemoveUserBoardResponse(request.BoardId, userBoard.UserId);
 

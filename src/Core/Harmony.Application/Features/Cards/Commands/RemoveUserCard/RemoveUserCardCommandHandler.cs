@@ -82,7 +82,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                     var cardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/?cardId={request.CardId}";
 
-                    _notificationsPublisher.Publish(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
+                    _notificationsPublisher.PublishEmailNotification(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
 
                     return await Result<RemoveUserCardResponse>.SuccessAsync(result, _localizer["User removed from card"]);
                 }

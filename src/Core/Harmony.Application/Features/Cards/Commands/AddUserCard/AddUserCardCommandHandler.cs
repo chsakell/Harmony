@@ -100,7 +100,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 
                     var cardUrl = $"{request.HostUrl}boards/{userBoard.Board.Id}/{slug}/?cardId={request.CardId}";
                     
-                    _notificationsPublisher.Publish(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
+                    _notificationsPublisher.PublishEmailNotification(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
 
                     await _hubClientNotifierService.AddCardMember(request.BoardId, request.CardId, member);
 

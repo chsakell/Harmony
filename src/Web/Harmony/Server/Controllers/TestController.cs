@@ -19,7 +19,7 @@ namespace Harmony.Server.Controllers
         {
             var notification = new CardDueTimeUpdatedNotification(Guid.Parse("8D7FAE06-D1E3-4418-FD89-08DBF00B9F44"));
 
-            _messageProducer.Publish(notification);
+            _messageProducer.PublishEmailNotification(notification);
 
             return Ok();
         }

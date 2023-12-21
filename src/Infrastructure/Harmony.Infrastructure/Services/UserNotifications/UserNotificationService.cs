@@ -30,7 +30,7 @@ namespace Harmony.Infrastructure.Services.UserNotifications
 
             if (subscribedToNotification)
             {
-                _notificationsPublisher.Publish(notification);
+                _notificationsPublisher.PublishEmailNotification(notification);
             }
         }
     }
