@@ -40,7 +40,7 @@ namespace Harmony.Infrastructure.Services.Search
         {
             var index = _searchClient.InitIndex($"board-{boardId}");
 
-            var result = await index.PartialUpdateObjectAsync(card);
+            var result = await index.PartialUpdateObjectAsync(card, createIfNotExists: true);
         }
 
         public bool CreateIndex(string name)

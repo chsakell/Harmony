@@ -85,7 +85,13 @@ namespace Harmony.Application.Mappings.Management
 
             CreateMap<Card, SearchableCard>()
                .ForMember(dto => dto.ObjectID, opt =>
-                   opt.MapFrom(c => c.Id.ToString()));
+                   opt.MapFrom(c => c.Id.ToString()))
+               .ForMember(dto => dto.List, opt =>
+                   opt.MapFrom(c => c.BoardList.Title.ToString()))
+               .ForMember(dto => dto.IssueType, opt =>
+                   opt.MapFrom(c => c.IssueType.Summary))
+               .ForMember(dto => dto.Status, opt =>
+                   opt.MapFrom(c => c.Status.ToString()));
         }
     }
 }
