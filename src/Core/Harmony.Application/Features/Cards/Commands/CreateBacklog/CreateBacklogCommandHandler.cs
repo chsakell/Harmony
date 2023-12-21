@@ -6,6 +6,8 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
+using Harmony.Application.Contracts.Services.Search;
+using Harmony.Application.DTO.Search;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
 {
@@ -13,16 +15,19 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
     {
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ISearchService _searchService;
         private readonly IStringLocalizer<CreateBacklogCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public CreateBacklogCommandHandler(ICardRepository cardRepository,
             ICurrentUserService currentUserService,
+            ISearchService searchService,
             IStringLocalizer<CreateBacklogCommandHandler> localizer,
             IMapper mapper)
         {
             _cardRepository = cardRepository;
             _currentUserService = currentUserService;
+            _searchService = searchService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -50,9 +55,11 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
             };
 
             var dbResult = await _cardRepository.CreateAsync(card);
-
             if (dbResult > 0)
             {
+                var searchableCard = _mapper.Map<SearchableCard>(card);
+                await _searchService.AddCardToIndex(request.BoardId, searchableCard);
+
                 var result = _mapper.Map<CardDto>(card);
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Issue Created"]);
             }
