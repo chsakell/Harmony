@@ -36,6 +36,13 @@ namespace Harmony.Infrastructure.Services.Search
             var result = await index.SaveObjectAsync(card);
         }
 
+        public async Task UpdateCard(Guid boardId, SearchableCard card)
+        {
+            var index = _searchClient.InitIndex($"board-{boardId}");
+
+            var result = await index.PartialUpdateObjectAsync(card);
+        }
+
         public bool CreateIndex(string name)
         {
             var index = _searchClient.InitIndex(name);

@@ -60,10 +60,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             {
                 await _cardRepository.LoadIssueEntryAsync(card);
 
-                await _searchService.AddCardToIndex(request.BoardId, new SearchableCard(card.Id)
-                {
-                    Title = card.Title
-                });
+                var searchableCard = _mapper.Map<SearchableCard>(card);
+                await _searchService.AddCardToIndex(request.BoardId, searchableCard);
 
                 var result = _mapper.Map<CardDto>(card);
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Card Created"]);

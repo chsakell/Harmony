@@ -10,10 +10,5 @@ namespace Harmony.Application.DTO.Search
     {
         public string ObjectID { get; set; }
         public string Title { get; set; }
-
-        public SearchableCard(Guid cardId)
-        {
-            ObjectID = cardId.ToString();
-        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Harmony.Application.DTO;
+using Harmony.Application.DTO.Search;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
@@ -81,6 +82,10 @@ namespace Harmony.Application.Mappings.Management
 
             CreateMap<IssueType, IssueTypeDto>();
             CreateMap<Sprint, SprintDto>();
+
+            CreateMap<Card, SearchableCard>()
+               .ForMember(dto => dto.ObjectID, opt =>
+                   opt.MapFrom(c => c.Id.ToString()));
         }
     }
 }
