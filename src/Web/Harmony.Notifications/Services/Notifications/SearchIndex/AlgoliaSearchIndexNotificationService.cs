@@ -28,6 +28,13 @@ namespace Harmony.Notifications.Services.Notifications.SearchIndex
             var result = await index.PartialUpdateObjectAsync(notification, createIfNotExists: true);
         }
 
+        public async Task UpdateCardStatus(CardStatusUpdatedIndexNotification notification)
+        {
+            var index = _searchClient.InitIndex($"board-{notification.BoardId}");
+
+            var result = await index.PartialUpdateObjectAsync(notification, createIfNotExists: true);
+        }
+
         public async Task UpdateCard(Guid boardId, SearchableCard card)
         {
             var index = _searchClient.InitIndex($"board-{boardId}");

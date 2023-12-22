@@ -113,6 +113,17 @@ namespace Harmony.Notifications.Services.Hosted
                                     await searchIndexNotificationService.UpdateCardTitle(cardTitleUpdatedNotification);
                                 }
                                 break;
+
+                            case SearchIndexNotificationType.CardStatusUpdated:
+
+                                var cardStatusUpdatedNotification = JsonSerializer
+                                                    .Deserialize<CardStatusUpdatedIndexNotification>(ea.Body.Span);
+
+                                if (cardStatusUpdatedNotification != null)
+                                {
+                                    await searchIndexNotificationService.UpdateCardStatus(cardStatusUpdatedNotification);
+                                }
+                                break;
                         }
                     }
                 }

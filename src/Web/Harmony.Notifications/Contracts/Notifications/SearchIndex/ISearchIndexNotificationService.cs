@@ -8,6 +8,7 @@ namespace Harmony.Notifications.Contracts.Notifications.SearchIndex
         bool CreateIndex(string name);
         Task AddCardToIndex(CardAddedIndexNotification notification);
         Task UpdateCardTitle(CardTitleUpdatedIndexNotification notification);
+        Task UpdateCardStatus(CardStatusUpdatedIndexNotification notification);
         Task UpdateCard(Guid boardId, SearchableCard card);
     }
 }

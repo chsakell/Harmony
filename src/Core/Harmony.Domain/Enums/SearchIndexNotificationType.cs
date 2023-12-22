@@ -5,6 +5,8 @@
         BoardCreated,
         CardAddedToBoard,
         CardTitleUpdated,
+        CardStatusUpdated,
+        CardListUpdated,
         CardUpdated
     }
 }
