@@ -9,6 +9,8 @@ using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Search;
 using AutoMapper;
 using Harmony.Application.DTO.Search;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 
@@ -19,6 +21,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
     private readonly ICardActivityService _cardActivityService;
     private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly ISearchService _searchService;
+    private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IMapper _mapper;
     private readonly IStringLocalizer<UpdateCardTitleCommandHandler> _localizer;
 
@@ -27,6 +30,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
         ICardActivityService cardActivityService,
         IHubClientNotifierService hubClientNotifierService,
 		ISearchService searchService,
+		INotificationsPublisher notificationsPublisher,
 		IMapper mapper,
         IStringLocalizer<UpdateCardTitleCommandHandler> localizer)
 	{
@@ -35,6 +39,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
         _cardActivityService = cardActivityService;
         _hubClientNotifierService = hubClientNotifierService;
         _searchService = searchService;
+        _notificationsPublisher = notificationsPublisher;
         _mapper = mapper;
         _localizer = localizer;
 	}
@@ -59,10 +64,15 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 			await _cardActivityService.CreateActivity(card.Id, userId,
 				CardActivityType.CardTitleUpdated, card.DateUpdated.Value, card.Title);
 
-			var searchableCard = _mapper.Map<SearchableCard>(card);
+            _notificationsPublisher
+                    .PublishSearchIndexNotification(new CardTitleUpdatedIndexNotification()
+                    {
+                        ObjectID = card.Id.ToString(),
+                        BoardId = request.BoardId,
+                        Title = card.Title
+                    });
 
-			//await _searchService.UpdateCard(request.BoardId, searchableCard);
-			await _hubClientNotifierService.UpdateCardTitle(request.BoardId, card.Id, card.Title);
+            await _hubClientNotifierService.UpdateCardTitle(request.BoardId, card.Id, card.Title);
 
 			return await Result<bool>.SuccessAsync(true, _localizer["Title updated"]);
 		}

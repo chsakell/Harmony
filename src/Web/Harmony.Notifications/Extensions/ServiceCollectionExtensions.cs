@@ -53,14 +53,17 @@ namespace Harmony.Notifications.Extensions
 
         internal static IServiceCollection AddSearchIndexNotificationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            if (configuration["AngoliaConfiguration:ApplicationId"] != null)
-            {
-                var applicationId = configuration["AngoliaConfiguration:ApplicationId"];
-                var apiKey = configuration["AngoliaConfiguration:ApiKey"];
-                services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
+            var applicationId = configuration["AlgoliaConfiguration:ApplicationId"];
+            var apiKey = configuration["AlgoliaConfiguration:ApiKey"];
 
-                services.AddScoped<ISearchIndexNotificationService, AlgoliaSearchIndexNotificationService>();
+            if (applicationId == null || apiKey == null)
+            {
+                return services;
             }
+
+            services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
+
+            services.AddScoped<ISearchIndexNotificationService, AlgoliaSearchIndexNotificationService>();
             return services;
         }
 

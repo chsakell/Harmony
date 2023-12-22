@@ -88,16 +88,29 @@ namespace Harmony.Notifications.Services.Hosted
                 {
                     using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
+                        var searchIndexNotificationService = scope.ServiceProvider.GetRequiredService<ISearchIndexNotificationService>();
+
                         switch (notificationType)
                         {
                             case SearchIndexNotificationType.CardAddedToBoard:
-                                var searchIndexNotificationService = scope.ServiceProvider.GetRequiredService<ISearchIndexNotificationService>();
+                                
                                 var cardAddedToCardNotification = JsonSerializer
                                                     .Deserialize<CardAddedIndexNotification>(ea.Body.Span);
 
                                 if (cardAddedToCardNotification != null)
                                 {
                                     await searchIndexNotificationService.AddCardToIndex(cardAddedToCardNotification);
+                                }
+                                break;
+
+                            case SearchIndexNotificationType.CardTitleUpdated:
+
+                                var cardTitleUpdatedNotification = JsonSerializer
+                                                    .Deserialize<CardTitleUpdatedIndexNotification>(ea.Body.Span);
+
+                                if (cardTitleUpdatedNotification != null)
+                                {
+                                    await searchIndexNotificationService.UpdateCardTitle(cardTitleUpdatedNotification);
                                 }
                                 break;
                         }

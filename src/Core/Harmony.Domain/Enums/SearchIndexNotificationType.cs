@@ -4,6 +4,7 @@
     {
         BoardCreated,
         CardAddedToBoard,
+        CardTitleUpdated,
         CardUpdated
     }
 }

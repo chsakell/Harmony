@@ -57,14 +57,14 @@ namespace Harmony.Server.Extensions
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUploadService, UploadService>();
-			services.AddScoped<ICardService, CardService>();
+            services.AddScoped<ICardService, CardService>();
             services.AddScoped<IListService, ListService>();
             services.AddScoped<ICardActivityService, CardActivityService>();
             services.AddScoped<IBoardService, BoardService>();
             services.AddScoped<IMemberSearchService, MemberSearchService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ISprintService, SprintService>();
-            
+
             return services;
         }
 
@@ -79,18 +79,22 @@ namespace Harmony.Server.Extensions
 
         internal static IServiceCollection AddSearching(this IServiceCollection services, IConfiguration configuration)
         {
-            if (configuration["AngoliaConfiguration:ApplicationId"] != null)
-            {
-                var applicationId = configuration["AngoliaConfiguration:ApplicationId"];
-                var apiKey = configuration["AngoliaConfiguration:ApiKey"];
-                services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
+            var applicationId = configuration["AlgoliaConfiguration:ApplicationId"];
+            var apiKey = configuration["AlgoliaConfiguration:ApiKey"];
 
-                services.AddSingleton<ISearchService, AlgoliaSearchService>();
+            if (applicationId == null || apiKey == null)
+            {
+                return services;
             }
+
+            services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
+
+            services.AddSingleton<ISearchService, AlgoliaSearchService>();
+
             return services;
         }
 
-    internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
+        internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
             services
                 .AddIdentity<HarmonyUser, HarmonyRole>(options =>
