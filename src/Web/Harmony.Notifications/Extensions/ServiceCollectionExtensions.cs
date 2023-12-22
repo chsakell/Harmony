@@ -1,16 +1,21 @@
-﻿using Harmony.Application.Configurations;
+﻿using Algolia.Search.Clients;
+using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.Contracts.Services.UserNotifications;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
+using Harmony.Infrastructure.Services.Search;
 using Harmony.Infrastructure.Services.UserNotifications;
 using Harmony.Notifications.Contracts.Notifications.Email;
+using Harmony.Notifications.Contracts.Notifications.SearchIndex;
 using Harmony.Notifications.Persistence;
 using Harmony.Notifications.Services.Notifications.Email;
+using Harmony.Notifications.Services.Notifications.SearchIndex;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +37,7 @@ namespace Harmony.Notifications.Extensions
             return services;
         }
 
-        internal static IServiceCollection AddNotificationServices(this IServiceCollection services)
+        internal static IServiceCollection AddEmailNotificationServices(this IServiceCollection services)
         {
             services.AddScoped<ICardDueDateNotificationService, CardDueDateNotificationService>();
             services.AddScoped<IMemberAddedToCardNotificationService, MemberAddedToCardNotificationService>();
@@ -43,6 +48,19 @@ namespace Harmony.Notifications.Extensions
             services.AddScoped<IMemberAddedToWorkspaceNotificationService, MemberAddedToWorkspaceNotificationService>();
             services.AddScoped<IMemberRemovedFromWorkspaceNotificationService, MemberRemovedFromWorkspaceNotificationService>();
 
+            return services;
+        }
+
+        internal static IServiceCollection AddSearchIndexNotificationServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            if (configuration["AngoliaConfiguration:ApplicationId"] != null)
+            {
+                var applicationId = configuration["AngoliaConfiguration:ApplicationId"];
+                var apiKey = configuration["AngoliaConfiguration:ApiKey"];
+                services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
+
+                services.AddScoped<ISearchIndexNotificationService, AlgoliaSearchIndexNotificationService>();
+            }
             return services;
         }
 

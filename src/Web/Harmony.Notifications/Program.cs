@@ -4,6 +4,7 @@ using Harmony.Infrastructure.Extensions;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Extensions;
 using Harmony.Notifications.Services.EmailProviders;
+using Harmony.Notifications.Services.Hosted;
 
 namespace Harmony.Notifications
 {
@@ -38,7 +39,8 @@ namespace Harmony.Notifications
             // Add services to the container.
             builder.Services.AddRazorPages();
             
-            builder.Services.AddNotificationServices();
+            builder.Services.AddEmailNotificationServices();
+            builder.Services.AddSearchIndexNotificationServices(builder.Configuration);
 
             // Add Hangfire services.
             builder.Services.AddHangfire(configuration => configuration
@@ -49,8 +51,8 @@ namespace Harmony.Notifications
 
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();
-            builder.Services.AddHostedService<NotificationsConsumerHostedService>();
-
+            builder.Services.AddHostedService<EmailNotificationsConsumerHostedService>();
+            builder.Services.AddHostedService<SearchIndexNotificationsConsumerHostedService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

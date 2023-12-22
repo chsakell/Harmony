@@ -67,9 +67,6 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             {
                 await _cardRepository.LoadIssueEntryAsync(card);
 
-                //var searchableCard = _mapper.Map<SearchableCard>(card);
-                //await _searchService.AddCardToIndex(request.BoardId, searchableCard);
-
                 _notificationsPublisher
                     .PublishSearchIndexNotification(new CardAddedIndexNotification()
                     {

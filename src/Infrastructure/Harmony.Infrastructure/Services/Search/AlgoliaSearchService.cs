@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Services.Search
 {
-    public class AngoliaSearchService : ISearchService
+    public class AlgoliaSearchService : ISearchService
     {
         private readonly ISearchClient _searchClient;
 
-        public AngoliaSearchService(ISearchClient searchClient)
+        public AlgoliaSearchService(ISearchClient searchClient)
         {
             _searchClient = searchClient;
         }
@@ -48,26 +48,7 @@ namespace Harmony.Infrastructure.Services.Search
             return res.Results.SelectMany(r => r.Hits).ToList();
         }
 
-        public async Task AddCardToIndex(Guid boardId, SearchableCard card)
-        {
-            var index = _searchClient.InitIndex($"board-{boardId}");
-
-            var result = await index.SaveObjectAsync(card);
-        }
-
-        public async Task UpdateCard(Guid boardId, SearchableCard card)
-        {
-            var index = _searchClient.InitIndex($"board-{boardId}");
-
-            var result = await index.PartialUpdateObjectAsync(card, createIfNotExists: true);
-        }
-
-        public bool CreateIndex(string name)
-        {
-            var index = _searchClient.InitIndex(name);
-
-            return index != null;
-        }
+        
 
         private async Task<List<string>> GetIndexedBoards(List<Guid> boards)
         {

@@ -30,8 +30,4 @@
     <ProjectReference Include="..\Harmony.Client.Infrastructure\Harmony.Client.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contracts\Notifications\SearchIndex\" />
-  </ItemGroup>
-
 </Project>

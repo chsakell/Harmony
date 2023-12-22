@@ -9,9 +9,9 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
-namespace Harmony.Notifications
+namespace Harmony.Notifications.Services.Hosted
 {
-    public class NotificationsConsumerHostedService : BackgroundService
+    public class EmailNotificationsConsumerHostedService : BackgroundService
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -19,11 +19,11 @@ namespace Harmony.Notifications
         private IModel? _channel;
         private BrokerConfiguration _brokerConfiguration;
 
-        public NotificationsConsumerHostedService(ILoggerFactory loggerFactory,
+        public EmailNotificationsConsumerHostedService(ILoggerFactory loggerFactory,
             IOptions<BrokerConfiguration> brokerConfig,
             IServiceProvider serviceProvider)
         {
-            _logger = loggerFactory.CreateLogger<NotificationsConsumerHostedService>();
+            _logger = loggerFactory.CreateLogger<EmailNotificationsConsumerHostedService>();
             _brokerConfiguration = brokerConfig.Value;
 
             try
@@ -34,7 +34,7 @@ namespace Harmony.Notifications
             {
                 _logger.LogError($"Failed to connect to RabbitMQ {ex}");
             }
-            
+
             _serviceProvider = serviceProvider;
         }
 
@@ -45,9 +45,9 @@ namespace Harmony.Notifications
                 HostName = _brokerConfiguration.Host,
                 Port = _brokerConfiguration.Port,
                 AutomaticRecoveryEnabled = true,
-                UserName = string.IsNullOrEmpty(_brokerConfiguration.Username) 
+                UserName = string.IsNullOrEmpty(_brokerConfiguration.Username)
                     ? ConnectionFactory.DefaultUser : _brokerConfiguration.Username,
-                Password = string.IsNullOrEmpty(_brokerConfiguration.Password) 
+                Password = string.IsNullOrEmpty(_brokerConfiguration.Password)
                     ? ConnectionFactory.DefaultPass : _brokerConfiguration.Password,
                 VirtualHost = string.IsNullOrEmpty(_brokerConfiguration.VirtualHost) ?
                     ConnectionFactory.DefaultVHost : _brokerConfiguration.VirtualHost,
@@ -73,7 +73,7 @@ namespace Harmony.Notifications
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            if(_channel == null)
+            if (_channel == null)
             {
                 return;
             }

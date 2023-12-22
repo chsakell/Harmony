@@ -61,7 +61,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 
 			var searchableCard = _mapper.Map<SearchableCard>(card);
 
-			await _searchService.UpdateCard(request.BoardId, searchableCard);
+			//await _searchService.UpdateCard(request.BoardId, searchableCard);
 			await _hubClientNotifierService.UpdateCardTitle(request.BoardId, card.Id, card.Title);
 
 			return await Result<bool>.SuccessAsync(true, _localizer["Title updated"]);

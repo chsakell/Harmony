@@ -85,7 +85,7 @@ namespace Harmony.Server.Extensions
                 var apiKey = configuration["AngoliaConfiguration:ApiKey"];
                 services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
 
-                services.AddSingleton<ISearchService, AngoliaSearchService>();
+                services.AddSingleton<ISearchService, AlgoliaSearchService>();
             }
             return services;
         }
