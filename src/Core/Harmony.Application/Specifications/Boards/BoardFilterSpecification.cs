@@ -12,7 +12,12 @@ namespace Harmony.Application.Specifications.Boards
                 Includes.Add(Board => Board.Workspace);
             }
 
-            if(boardId.HasValue)
+            if (includes.Lists)
+            {
+                Includes.Add(Board => Board.Lists);
+            }
+
+            if (boardId.HasValue)
             {
                 Criteria = Board => Board.Id == boardId;
             }

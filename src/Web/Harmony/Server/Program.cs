@@ -25,6 +25,7 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
 builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddSearching(builder.Configuration);
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

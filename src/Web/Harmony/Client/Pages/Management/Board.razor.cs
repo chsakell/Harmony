@@ -325,7 +325,10 @@ namespace Harmony.Client.Pages.Management
 
                 var taskResult = _cardManager
                     .MoveCardAsync(new MoveCardCommand(info.Item.Id, moveToListId,
-                            newPosition, Domain.Enums.CardStatus.Active, _moveUpdateId));
+                            newPosition, Domain.Enums.CardStatus.Active, _moveUpdateId)
+                    {
+                        BoardId = Guid.Parse(Id)
+                    });
 
                 taskResult.ContinueWith(res =>
                 {

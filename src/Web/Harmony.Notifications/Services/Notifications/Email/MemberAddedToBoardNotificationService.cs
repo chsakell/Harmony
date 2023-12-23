@@ -65,7 +65,6 @@ namespace Harmony.Notifications.Services.Notifications.Email
             await _notificationContext.SaveChangesAsync();
         }
 
-
         public async Task Notify(Guid boardId, string userId, string boardUrl)
         {
             var filter = new BoardFilterSpecification(boardId, new BoardIncludes()

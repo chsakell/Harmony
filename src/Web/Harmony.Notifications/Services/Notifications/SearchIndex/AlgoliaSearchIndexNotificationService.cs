@@ -14,32 +14,18 @@ namespace Harmony.Notifications.Services.Notifications.SearchIndex
             _searchClient = searchClient;
         }
 
-        public async Task AddCardToIndex(CardAddedIndexNotification notification)
+        public async Task AddToIndex<T>(T notification) where T : class, ISearchIndexNotification
         {
             var index = _searchClient.InitIndex($"board-{notification.BoardId}");
 
             var result = await index.SaveObjectAsync(notification);
         }
 
-        public async Task UpdateCardTitle(CardTitleUpdatedIndexNotification notification)
+        public async Task UpdateCard<T>(T notification) where T : class, ISearchIndexNotification
         {
             var index = _searchClient.InitIndex($"board-{notification.BoardId}");
 
             var result = await index.PartialUpdateObjectAsync(notification, createIfNotExists: true);
-        }
-
-        public async Task UpdateCardStatus(CardStatusUpdatedIndexNotification notification)
-        {
-            var index = _searchClient.InitIndex($"board-{notification.BoardId}");
-
-            var result = await index.PartialUpdateObjectAsync(notification, createIfNotExists: true);
-        }
-
-        public async Task UpdateCard(Guid boardId, SearchableCard card)
-        {
-            var index = _searchClient.InitIndex($"board-{boardId}");
-
-            var result = await index.PartialUpdateObjectAsync(card, createIfNotExists: true);
         }
 
         public bool CreateIndex(string name)

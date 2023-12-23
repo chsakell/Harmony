@@ -6,7 +6,6 @@ namespace Harmony.Application.Notifications.SearchIndex
     {
         public override SearchIndexNotificationType Type =>  SearchIndexNotificationType.CardTitleUpdated;
 
-        public Guid BoardId { get; set; }
         public string ObjectID { get; set; }  // Card Id
         public string Title { get; set; }
     }

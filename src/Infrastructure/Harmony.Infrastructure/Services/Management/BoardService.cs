@@ -3,12 +3,17 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
+using Harmony.Application.Models;
+using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using Harmony.Application.Extensions;
+using Microsoft.Extensions.Caching.Memory;
+using Harmony.Application.Constants;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -18,25 +23,26 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ISprintRepository _sprintRepository;
-        private readonly IBoardListRepository _boardListRepository;
         private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly ICardRepository _cardRepository;
+        private readonly IMemoryCache _memoryCache;
         private readonly string _connectionString;
 
         public BoardService(IConfiguration configuration, IBoardRepository boardRepository,
             IUserBoardRepository userBoardRepository, IUserWorkspaceRepository userWorkspaceRepository,
-            ISprintRepository sprintRepository, IBoardListRepository boardListRepository,
+            ISprintRepository sprintRepository,
             IIssueTypeRepository issueTypeRepository,
-            ICardRepository cardRepository)
+            ICardRepository cardRepository,
+            IMemoryCache memoryCache)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _boardRepository = boardRepository;
             _userBoardRepository = userBoardRepository;
             _userWorkspaceRepository = userWorkspaceRepository;
             _sprintRepository = sprintRepository;
-            _boardListRepository = boardListRepository;
             _issueTypeRepository = issueTypeRepository;
             _cardRepository = cardRepository;
+            _memoryCache = memoryCache;
         }
 
         public async Task<bool> HasUserAccessToBoard(string userId, Guid boardId)
@@ -72,6 +78,38 @@ namespace Harmony.Infrastructure.Services.Management
             var result = await userWorkspaceBoardsQuery.Union(userBoardsQuery).Distinct().ToListAsync();
 
             return result;
+        }
+
+        public async Task<BoardInfo?> GetBoardInfo(Guid boardId)
+        {
+            return await _memoryCache.GetOrCreateAsync(CacheKeys.BoardInfo(boardId),
+            async cacheEntry =>
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+
+                var filter = new BoardFilterSpecification(boardId, new BoardIncludes()
+                {
+                    Workspace = true,
+                    Lists = true
+                });
+
+                var board = await _boardRepository
+                    .Entities.Specify(filter)
+                    .FirstOrDefaultAsync();
+
+                if (board == null)
+                {
+                    return null;
+                }
+
+                var result = new BoardInfo()
+                {
+                    Title = board.Title,
+                    Lists = board.Lists?.ToDictionary(l => l.Id, l => l.Title)
+                };
+
+                return result;
+            });
         }
 
         public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList)

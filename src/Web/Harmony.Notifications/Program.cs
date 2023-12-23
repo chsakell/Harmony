@@ -53,6 +53,8 @@ namespace Harmony.Notifications
             builder.Services.AddHangfireServer();
             builder.Services.AddHostedService<EmailNotificationsConsumerHostedService>();
             builder.Services.AddHostedService<SearchIndexNotificationsConsumerHostedService>();
+            builder.Services.AddMemoryCache();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

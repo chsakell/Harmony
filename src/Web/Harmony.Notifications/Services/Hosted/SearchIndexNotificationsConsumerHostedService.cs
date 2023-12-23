@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
+using Harmony.Application.Enums;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.SearchIndex;
@@ -86,45 +87,23 @@ namespace Harmony.Notifications.Services.Hosted
                      .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
                      Enum.TryParse<SearchIndexNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
                 {
-                    using (IServiceScope scope = _serviceProvider.CreateScope())
+                    switch (notificationType)
                     {
-                        var searchIndexNotificationService = scope.ServiceProvider.GetRequiredService<ISearchIndexNotificationService>();
+                        case SearchIndexNotificationType.CardAddedToBoard:
+                            await Index<CardAddedIndexNotification>(ea, SearchIndexOperation.AddToIndex);
+                            break;
 
-                        switch (notificationType)
-                        {
-                            case SearchIndexNotificationType.CardAddedToBoard:
-                                
-                                var cardAddedToCardNotification = JsonSerializer
-                                                    .Deserialize<CardAddedIndexNotification>(ea.Body.Span);
+                        case SearchIndexNotificationType.CardTitleUpdated:
+                            await Index<CardTitleUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            break;
 
-                                if (cardAddedToCardNotification != null)
-                                {
-                                    await searchIndexNotificationService.AddCardToIndex(cardAddedToCardNotification);
-                                }
-                                break;
+                        case SearchIndexNotificationType.CardStatusUpdated:
+                            await Index<CardStatusUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            break;
 
-                            case SearchIndexNotificationType.CardTitleUpdated:
-
-                                var cardTitleUpdatedNotification = JsonSerializer
-                                                    .Deserialize<CardTitleUpdatedIndexNotification>(ea.Body.Span);
-
-                                if (cardTitleUpdatedNotification != null)
-                                {
-                                    await searchIndexNotificationService.UpdateCardTitle(cardTitleUpdatedNotification);
-                                }
-                                break;
-
-                            case SearchIndexNotificationType.CardStatusUpdated:
-
-                                var cardStatusUpdatedNotification = JsonSerializer
-                                                    .Deserialize<CardStatusUpdatedIndexNotification>(ea.Body.Span);
-
-                                if (cardStatusUpdatedNotification != null)
-                                {
-                                    await searchIndexNotificationService.UpdateCardStatus(cardStatusUpdatedNotification);
-                                }
-                                break;
-                        }
+                        case SearchIndexNotificationType.CardListUpdated:
+                            await Index<CardListUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            break;
                     }
                 }
             };
@@ -135,6 +114,30 @@ namespace Harmony.Notifications.Services.Hosted
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             _channel.BasicConsume(BrokerConstants.SearchIndexNotificationsQueue, true, consumer);
+        }
+
+        private async Task Index<T>(BasicDeliverEventArgs args, SearchIndexOperation operation) where T : class, ISearchIndexNotification
+        {
+            var notification = JsonSerializer.Deserialize<T>(args.Body.Span);
+
+            if (notification != null)
+            {
+                using (IServiceScope scope = _serviceProvider.CreateScope())
+                {
+                    var searchIndexNotificationService = scope.ServiceProvider.GetRequiredService<ISearchIndexNotificationService>();
+
+                    switch(operation)
+                    {
+                        case SearchIndexOperation.AddToIndex:
+                            await searchIndexNotificationService.AddToIndex(notification);
+                            break;
+                        case SearchIndexOperation.UpdateObjectInIndex:
+                            await searchIndexNotificationService.UpdateCard(notification);
+                            break;
+                    }
+                    
+                }
+            }
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }

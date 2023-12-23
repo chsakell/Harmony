@@ -11,6 +11,7 @@ using MediatR;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Domain.Entities;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 
@@ -85,6 +86,17 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                         .UpdateCardPosition(boardId.Value, request.CardId, 
 						previousBoardListId.Value,request.ListId.Value, 
 						previousPosition, request.Position, request.UpdateId);
+            }
+
+			if(previousBoardListId != request.ListId)
+			{
+                _notificationsPublisher
+                    .PublishSearchIndexNotification(new CardListUpdatedIndexNotification()
+                    {
+                        ObjectID = card.Id.ToString(),
+                        BoardId = request.BoardId,
+                        ListId = request.ListId?.ToString(),
+                    });
             }
 
             return await Result<CardDto>.SuccessAsync(result);
