@@ -22,13 +22,13 @@ namespace Harmony.Infrastructure.Services.Search
             _searchClient = searchClient;
         }
 
-        public async Task<List<SearchableCard>> Search(List<Guid> boards, string term)
+        public async Task<List<IndexedCard>> Search(List<Guid> boards, string term)
         {
             var indexedBoards = await GetIndexedBoards(boards);
 
             if(!indexedBoards.Any())
             {
-                return Enumerable.Empty<SearchableCard>().ToList();
+                return Enumerable.Empty<IndexedCard>().ToList();
             }
 
             var indexQueries = new List<QueryMultiIndices>();
@@ -43,7 +43,7 @@ namespace Harmony.Infrastructure.Services.Search
                 Requests = indexQueries
             };
 
-            var res = await _searchClient.MultipleQueriesAsync<SearchableCard>(request);
+            var res = await _searchClient.MultipleQueriesAsync<IndexedCard>(request);
 
             return res.Results.SelectMany(r => r.Hits).ToList();
         }

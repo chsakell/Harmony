@@ -90,7 +90,7 @@ namespace Harmony.Notifications.Services.Hosted
                     switch (notificationType)
                     {
                         case SearchIndexNotificationType.CardAddedToBoard:
-                            await Index<CardAddedIndexNotification>(ea, SearchIndexOperation.AddToIndex);
+                            await Index<CardCreatedIndexNotification>(ea, SearchIndexOperation.AddToIndex);
                             break;
 
                         case SearchIndexNotificationType.CardTitleUpdated:

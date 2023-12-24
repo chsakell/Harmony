@@ -2,7 +2,7 @@
 using Harmony.Domain.Enums;
 namespace Harmony.Application.Notifications.SearchIndex
 {
-    public class CardAddedIndexNotification : BaseSearchIndexNotification
+    public class CardCreatedIndexNotification : BaseSearchIndexNotification
     {
         public override SearchIndexNotificationType Type =>  SearchIndexNotificationType.CardAddedToBoard;
 

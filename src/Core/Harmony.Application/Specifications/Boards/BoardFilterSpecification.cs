@@ -22,5 +22,23 @@ namespace Harmony.Application.Specifications.Boards
                 Criteria = Board => Board.Id == boardId;
             }
         }
+
+        public BoardFilterSpecification(List<Guid> boardIds, BoardIncludes includes)
+        {
+            if (includes.Workspace)
+            {
+                Includes.Add(Board => Board.Workspace);
+            }
+
+            if (includes.Lists)
+            {
+                Includes.Add(Board => Board.Lists);
+            }
+
+            if (boardIds != null)
+            {
+                Criteria = Board => boardIds.Contains(Board.Id);
+            }
+        }
     }
 }

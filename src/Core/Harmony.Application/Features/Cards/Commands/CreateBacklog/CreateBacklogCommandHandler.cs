@@ -64,7 +64,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
             if (dbResult > 0)
             {
                 _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardAddedIndexNotification()
+                    .PublishSearchIndexNotification(new CardCreatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         BoardId = request.BoardId,

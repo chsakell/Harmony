@@ -68,7 +68,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 await _cardRepository.LoadIssueEntryAsync(card);
 
                 _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardAddedIndexNotification()
+                    .PublishSearchIndexNotification(new CardCreatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         BoardId = request.BoardId,

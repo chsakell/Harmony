@@ -85,7 +85,7 @@ namespace Harmony.Infrastructure.Services.Management
             return await _memoryCache.GetOrCreateAsync(CacheKeys.BoardInfo(boardId),
             async cacheEntry =>
             {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
 
                 var filter = new BoardFilterSpecification(boardId, new BoardIncludes()
                 {
@@ -104,8 +104,9 @@ namespace Harmony.Infrastructure.Services.Management
 
                 var result = new BoardInfo()
                 {
+                    Id = board.Id,
                     Title = board.Title,
-                    Lists = board.Lists?.ToDictionary(l => l.Id, l => l.Title)
+                    Lists = board.Lists
                 };
 
                 return result;

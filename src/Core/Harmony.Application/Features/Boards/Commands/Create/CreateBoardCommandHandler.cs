@@ -8,6 +8,8 @@ using Harmony.Shared.Constants.Application;
 using Harmony.Domain.Enums;
 using Harmony.Application.DTO;
 using AutoMapper;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
@@ -20,13 +22,14 @@ namespace Harmony.Application.Features.Boards.Commands.Create
         private readonly IUserBoardRepository _userBoardRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IBoardLabelRepository _boardLabelRepository;
         private readonly IStringLocalizer<CreateBoardCommandHandler> _localizer;
 
         public CreateBoardCommandHandler(IBoardRepository boardRepository,
             IUserBoardRepository userBoardRepository,
             ICurrentUserService currentUserService,
-            IMapper mapper,
+            IMapper mapper, INotificationsPublisher notificationsPublisher,
             IBoardLabelRepository boardLabelRepository,
             IStringLocalizer<CreateBoardCommandHandler> localizer)
         {
@@ -34,6 +37,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
             _userBoardRepository = userBoardRepository;
             _currentUserService = currentUserService;
             _mapper = mapper;
+            _notificationsPublisher = notificationsPublisher;
             _boardLabelRepository = boardLabelRepository;
             _localizer = localizer;
         }

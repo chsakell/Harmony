@@ -31,7 +31,6 @@ namespace Harmony.Notifications.Services.Notifications.SearchIndex
         public bool CreateIndex(string name)
         {
             var index = _searchClient.InitIndex(name);
-
             return index != null;
         }
     }
