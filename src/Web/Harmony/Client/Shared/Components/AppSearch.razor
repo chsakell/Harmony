@@ -1,12 +1,24 @@
 ﻿@using Harmony.Application.DTO.Search
+@using Harmony.Client.Infrastructure.Helper
 <MudStack Class="SearchStack">
-    <MudAutocomplete T="SearchableCard" @bind-Value="_selectedCard" Margin="Margin.Dense"
+    <MudAutocomplete @ref="_autoComplete" T="SearchableCard" @bind-Value="_selectedCard" Margin="Margin.Dense"
                      Clearable="true" Placeholder="Search.."
                      DebounceInterval="1500"
                      ShowProgressIndicator="true" ProgressIndicatorColor="Color.Default"
                      SearchFuncWithCancel="@Search" Variant="Variant.Outlined">
         <ItemTemplate Context="card">
-            <MudText>@card.Title</MudText>
-            </ItemTemplate>
-        </MudAutocomplete>
-    </MudStack>
+            <MudPaper Class="pa-4" @onclick="@(() => Navigate(card))">
+                <MudStack Row="true">
+                    <MudTooltip Text="@card.IssueType" Delay="2000">
+                        <MudIcon Size="Size.Large" Icon="@ColorHelper.GetIssueTypeIcon(card.IssueType)"
+                                 Color="ColorHelper.GetIssueTypeColor(card.IssueType)" />
+                    </MudTooltip>
+                    <MudStack Justify="Justify.Center" Spacing="0">
+                        <MudText Typo="Typo.body1">@card.Title</MudText>
+                        <MudText Typo="Typo.body2">@card.BoardTitle: @card.List</MudText>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </ItemTemplate>
+    </MudAutocomplete>
+</MudStack>
