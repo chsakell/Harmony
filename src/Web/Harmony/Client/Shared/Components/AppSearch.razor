@@ -14,10 +14,19 @@
                         <MudIcon Size="Size.Large" Icon="@ColorHelper.GetIssueTypeIcon(card.IssueType)"
                                  Color="ColorHelper.GetIssueTypeColor(card.IssueType)" />
                     </MudTooltip>
-                    <MudStack Justify="Justify.Center" Spacing="0">
-                        <MudText Typo="Typo.body1">@card.Title</MudText>
-                        <MudText Typo="Typo.body2">@card.BoardTitle: @card.List</MudText>
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width:100%">
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.body1">@card.Title</MudText>
+                                <MudText Typo="Typo.body2">@card.BoardTitle: @card.List</MudText>
+                            </MudStack>
+                            @if (!string.IsNullOrEmpty(card.SerialKey))
+                        {
+                            <MudChip Label="true" Size="Size.Small" Color="Color.Warning">
+                                @card.SerialKey
+                            </MudChip>
+                        }
                     </MudStack>
+
                 </MudStack>
             </MudPaper>
         </ItemTemplate>

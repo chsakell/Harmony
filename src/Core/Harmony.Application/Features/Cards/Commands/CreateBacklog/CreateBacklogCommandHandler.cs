@@ -11,6 +11,7 @@ using Harmony.Application.DTO.Search;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Domain.Enums;
+using Harmony.Application.Contracts.Services.Management;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
 {
@@ -19,6 +20,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly ISearchService _searchService;
+        private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<CreateBacklogCommandHandler> _localizer;
         private readonly IMapper _mapper;
@@ -26,6 +28,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
         public CreateBacklogCommandHandler(ICardRepository cardRepository,
             ICurrentUserService currentUserService,
             ISearchService searchService,
+            IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<CreateBacklogCommandHandler> localizer,
             IMapper mapper)
@@ -33,6 +36,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
             _cardRepository = cardRepository;
             _currentUserService = currentUserService;
             _searchService = searchService;
+            _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
             _mapper = mapper;
@@ -56,13 +60,15 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
                 UserId = userId,
                 Position = (byte)totalBacklogCards,
                 SerialNumber = nextSerialNumber,
-                Status = Domain.Enums.CardStatus.Backlog,
+                Status = CardStatus.Backlog,
                 IssueTypeId = request.IssueType.Id,
             };
 
             var dbResult = await _cardRepository.CreateAsync(card);
             if (dbResult > 0)
             {
+                var board = await _boardService.GetBoardInfo(request.BoardId);
+
                 _notificationsPublisher
                     .PublishSearchIndexNotification(new CardCreatedIndexNotification()
                     {
@@ -70,7 +76,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
                         BoardId = request.BoardId,
                         Title = card.Title,
                         IssueType = request.IssueType.Summary,
-                        Status = CardStatus.Active.ToString()
+                        Status = CardStatus.Active.ToString(),
+                        SerialKey = $"{board.Key}-{card.SerialNumber}"
                     });
 
                 var result = _mapper.Map<CardDto>(card);

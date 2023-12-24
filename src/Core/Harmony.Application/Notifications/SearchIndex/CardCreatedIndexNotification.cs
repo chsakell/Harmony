@@ -11,5 +11,6 @@ namespace Harmony.Application.Notifications.SearchIndex
         public string Status { get; set; }
         public string ListId {  get; set; }
         public string IssueType { get; set; }
+        public string SerialKey { get; set; }
     }
 }

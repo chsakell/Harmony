@@ -106,7 +106,8 @@ namespace Harmony.Infrastructure.Services.Management
                 {
                     Id = board.Id,
                     Title = board.Title,
-                    Lists = board.Lists
+                    Lists = board.Lists,
+                    Key = board.Key
                 };
 
                 return result;

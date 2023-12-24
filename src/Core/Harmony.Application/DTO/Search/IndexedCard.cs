@@ -14,5 +14,6 @@ namespace Harmony.Application.DTO.Search
         public string BoardId { get; set; }
         public Guid ListId { get; set; }
         public string IssueType { get; set; }
+        public string SerialKey { get; set; }
     }
 }

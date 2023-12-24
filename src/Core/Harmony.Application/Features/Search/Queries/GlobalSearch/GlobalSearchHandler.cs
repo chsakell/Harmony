@@ -71,7 +71,8 @@ namespace Harmony.Application.Features.Search.Queries.GlobalSearch
                     CardId = indexedCard.ObjectID,
                     Title = indexedCard.Title,
                     IssueType = indexedCard.IssueType,
-                    Status = indexedCard.Status
+                    Status = indexedCard.Status,
+                    SerialKey = indexedCard.SerialKey
                 };
 
                 var board = boardInfos.FirstOrDefault(bi => bi.Id == Guid.Parse(indexedCard.BoardId));

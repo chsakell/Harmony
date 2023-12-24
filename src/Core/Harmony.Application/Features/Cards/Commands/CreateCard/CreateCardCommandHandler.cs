@@ -12,6 +12,7 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Domain.Enums;
+using Harmony.Application.Contracts.Services.Management;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateCard
 {
@@ -20,6 +21,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly ISearchService _searchService;
+        private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<CreateCardCommandHandler> _localizer;
         private readonly IMapper _mapper;
@@ -27,6 +29,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
         public CreateCardCommandHandler(ICardRepository cardRepository,
             ICurrentUserService currentUserService,
             ISearchService searchService,
+            IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<CreateCardCommandHandler> localizer,
             IMapper mapper)
@@ -34,6 +37,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             _cardRepository = cardRepository;
             _currentUserService = currentUserService;
             _searchService = searchService;
+            _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
             _mapper = mapper;
@@ -67,6 +71,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             {
                 await _cardRepository.LoadIssueEntryAsync(card);
 
+                var board = await _boardService.GetBoardInfo(request.BoardId);
+
                 _notificationsPublisher
                     .PublishSearchIndexNotification(new CardCreatedIndexNotification()
                     {
@@ -75,7 +81,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                         Title = card.Title,
                         IssueType = request.IssueType.Summary,
                         ListId = request.ListId.ToString(),
-                        Status = CardStatus.Active.ToString()
+                        Status = CardStatus.Active.ToString(),
+                        SerialKey = $"{board.Key}-{card.SerialNumber}"
                     });
 
                 var result = _mapper.Map<CardDto>(card);
