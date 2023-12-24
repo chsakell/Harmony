@@ -9,6 +9,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
         public string CardTitle { get; set; }
         public DateTime? CardStartDate { get; set; }
         public DateTime? CardDueDate { get; set; }
+        public string BoardKey { get; set; }
         public string CardSerialKey { get; set; }
         public IssueTypeDto? CardIssueType { get; set; }
         public Guid SprintId { get; set; }

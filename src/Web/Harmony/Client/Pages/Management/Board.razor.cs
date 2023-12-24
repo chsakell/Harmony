@@ -8,6 +8,7 @@ using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
+using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using MudBlazor;
+using static MudBlazor.Colors;
 
 namespace Harmony.Client.Pages.Management
 {
@@ -27,6 +29,9 @@ namespace Harmony.Client.Pages.Management
 
         [Parameter]
         public string Name { get; set; }
+
+        [Parameter]
+        public string? CardId { get; set; }
 
         [Inject]
         public IKanbanStore KanbanStore { get; set; }
@@ -41,7 +46,7 @@ namespace Harmony.Client.Pages.Management
         private string _stopListeningBoardId = string.Empty;
         private IDisposable registration;
 
-        private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum && 
+        private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum &&
             KanbanStore.Board.ActiveSprints.Count == 0;
 
         protected override void OnAfterRender(bool firstRender)
@@ -62,7 +67,7 @@ namespace Harmony.Client.Pages.Management
 
         protected async override Task OnParametersSetAsync()
         {
-            if(KanbanStore.Board.WorkspaceId != Guid.Empty)
+            if (KanbanStore.Board.WorkspaceId != Guid.Empty)
             {
                 await CleanBoard();
             }
@@ -83,6 +88,14 @@ namespace Harmony.Client.Pages.Management
                 _unauthorisedAccess = result.Code == ResultCode.UnauthorisedAccess;
 
                 DisplayMessage(result);
+            }
+
+            if (!string.IsNullOrEmpty(CardId) && Guid.TryParse(CardId, out var cardId))
+            {
+                await EditCard(new CardDto()
+                {
+                    Id = cardId
+                });
             }
         }
 
@@ -194,14 +207,14 @@ namespace Harmony.Client.Pages.Management
 
         private void OnCardItemPositionChanged(object? sender, CardItemPositionChangedEvent e)
         {
-            if(_moveUpdateId == e.UpdateId)
+            if (_moveUpdateId == e.UpdateId)
             {
                 return;
             }
 
             var cardToMove = KanbanStore.KanbanCards.FirstOrDefault(x => x.Id == e.CardId);
 
-            if(cardToMove != null)
+            if (cardToMove != null)
             {
                 cardToMove.Position = e.NewPosition;
                 cardToMove.BoardListId = e.NewBoardListId;
@@ -506,7 +519,7 @@ namespace Harmony.Client.Pages.Management
             {
                 { c => c.CardId, card.Id },
                 { c => c.BoardId, Guid.Parse(Id) },
-                { c => c.SerialKey, $"{KanbanStore.Board.Key}-{card.SerialNumber}" },
+                { c => c.BoardKey, $"{KanbanStore.Board.Key}" },
                 { c => c.IssueTypes, KanbanStore.Board.IssueTypes },
             };
 

@@ -342,6 +342,7 @@ namespace Harmony.Infrastructure.Services.Management
                         CardTitle = p != null ? p.Title : null,
                         CardStartDate = p != null ? p.StartDate : null,
                         CardDueDate = p != null ? p.DueDate : null,
+                        BoardKey = board.Key,
                         CardSerialKey = p != null ? $"{board.Key}-{p.SerialNumber}" : null,
                         Sprint = sprint.Name,
                         SprintGoal = sprint.Goal,

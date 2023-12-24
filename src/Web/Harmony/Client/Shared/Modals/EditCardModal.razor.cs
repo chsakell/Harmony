@@ -47,7 +47,7 @@ namespace Harmony.Client.Shared.Modals
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
-        [Parameter] public string SerialKey { get; set; }
+        [Parameter] public string BoardKey { get; set; }
         [Parameter] public List<IssueTypeDto> IssueTypes { get; set; }
 
         public event EventHandler<EditableCardModel> OnCardUpdated;

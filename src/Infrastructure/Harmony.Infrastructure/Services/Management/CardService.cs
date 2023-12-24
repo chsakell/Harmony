@@ -132,6 +132,7 @@ namespace Harmony.Infrastructure.Services.Management
 						Title = card.Title,
 						StartDate = card.StartDate,
 						DueDate = card.DueDate,
+                        BoardKey = $"{board.Key}",
                         SerialKey = $"{board.Key}-{card.SerialNumber}",
 						Position = card.Position,
 						IssueType = new Application.DTO.IssueTypeDto()

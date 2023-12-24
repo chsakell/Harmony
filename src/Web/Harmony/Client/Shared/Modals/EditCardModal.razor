@@ -25,7 +25,7 @@ else
                                        OnSave="(newTitle) => SaveTitle(newTitle)"
                                        Text="@_card.Title" Label="@_localizer["Title"]" />
                     <MudStack Row="true" Class="align-end">
-                        <MudChip Label="true" Color="Color.Warning">@SerialKey</MudChip>
+                        <MudChip Label="true" Color="Color.Warning">@BoardKey - @_card.SerialNumber</MudChip>
                             @if (_card.Sprint != null)
                         {
                             <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>

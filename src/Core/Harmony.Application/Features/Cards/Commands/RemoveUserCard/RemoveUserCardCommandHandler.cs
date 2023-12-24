@@ -80,7 +80,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                     var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
-                    var cardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/?cardId={request.CardId}";
+                    var cardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/{request.CardId}";
 
                     _notificationsPublisher.PublishEmailNotification(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
 

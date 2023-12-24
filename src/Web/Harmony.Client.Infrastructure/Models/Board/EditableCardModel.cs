@@ -18,6 +18,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public string UserId { get; set; } // User created the card
         public EditableBoardListModel BoardList { get; set; }
         public CardStatus Status { get; set; }
+        public int SerialNumber { get; set; }
         public List<EditableCheckListModel> CheckLists { get; set; }
         public List<AttachmentDto> Attachments { get; set; }
         public bool UploadingAttachment { get; set; }

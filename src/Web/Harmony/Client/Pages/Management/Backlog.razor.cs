@@ -117,7 +117,7 @@ namespace Harmony.Client.Pages.Management
                 {
                     { c => c.CardId, card.Id },
                     { c => c.BoardId, Guid.Parse(Id) },
-                    { c => c.SerialKey, card.SerialKey },
+                    { c => c.BoardKey, card.BoardKey },
                     { c => c.IssueTypes, _issueTypes },
                 };
 

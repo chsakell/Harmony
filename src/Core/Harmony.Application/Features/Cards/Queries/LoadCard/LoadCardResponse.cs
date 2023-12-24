@@ -13,6 +13,7 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public BoardType BoardType { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public int SerialNumber { get; set; }
         public string UserId { get; set; } // User created the card
         public BoardListDto BoardList { get; set; }
         public CardStatus Status { get; set; }

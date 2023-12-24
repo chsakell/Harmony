@@ -44,7 +44,7 @@ namespace Harmony.Client.Shared.Components
 
             await JSRuntime.InvokeVoidAsync("resetAppSearchWidth");
 
-            _navigationManager.NavigateTo($"boards/{card.BoardId}/{slug}?/?cardId={card.CardId}");
+            _navigationManager.NavigateTo($"boards/{card.BoardId}/{slug}/{card.CardId}");
         }
     }
 }

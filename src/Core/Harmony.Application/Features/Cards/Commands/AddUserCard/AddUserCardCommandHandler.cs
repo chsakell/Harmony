@@ -98,7 +98,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 
                     var slug = StringUtilities.SlugifyString(userBoard.Board.Title.ToString());
 
-                    var cardUrl = $"{request.HostUrl}boards/{userBoard.Board.Id}/{slug}/?cardId={request.CardId}";
+                    var cardUrl = $"{request.HostUrl}boards/{userBoard.Board.Id}/{slug}/{request.CardId}";
                     
                     _notificationsPublisher.PublishEmailNotification(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
 
