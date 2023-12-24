@@ -39,6 +39,12 @@ function toggleAppSearchWidth() {
         input.onfocus = function () {
             searchBar.style.width = "700px";
         }
+
+        input.addEventListener("focusout", function () {
+            if (input.value.trim() == '') {
+                searchBar.style.width = "250px";
+            }
+        });
     }
 }
 
