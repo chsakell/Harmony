@@ -34,8 +34,7 @@ else
                             <MudSelect @bind-Value:get="_card.IssueType.Summary"
                                        @bind-Value:set="SaveIssueType"
                                        For="@(() => _card.IssueType.Summary)"
-                                       Label="Type" AnchorOrigin="Origin.BottomCenter"
-                                       Variant="Variant.Outlined">
+                                       Label="Type" AnchorOrigin="Origin.BottomCenter">
                                 @foreach (var type in IssueTypes)
                                 {
                                     <MudSelectItem Value="type.Summary">
