@@ -29,3 +29,23 @@ function toggleFullScreenModal(modalClass, showFullScreen) {
         }
     }
 }
+
+function toggleAppSearchWidth() {
+    var elements = document.getElementsByClassName("app-search-bar");
+    if (elements != null && elements != undefined && elements.length == 1) {
+        var searchBar = elements[0];
+        var input = searchBar.getElementsByTagName("input")[0];
+
+        input.onfocus = function () {
+            searchBar.style.width = "700px";
+        }
+    }
+}
+
+function resetAppSearchWidth() {
+    var elements = document.getElementsByClassName("app-search-bar");
+    if (elements != null && elements != undefined && elements.length == 1) {
+        var searchBar = elements[0];
+        searchBar.style.width = "250px";
+    }
+}

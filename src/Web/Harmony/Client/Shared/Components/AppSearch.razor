@@ -2,8 +2,9 @@
 @using Harmony.Client.Infrastructure.Helper
 <MudStack Class="SearchStack">
     <MudAutocomplete @ref="_autoComplete" T="SearchableCard" @bind-Value="_selectedCard" Margin="Margin.Dense"
-                     Clearable="true" Placeholder="Search.."
-                     DebounceInterval="1500"
+                     Clearable="true" Placeholder="Search" Class="app-search-bar"
+                     DebounceInterval="700"
+                     Style="width:250px"
                      ShowProgressIndicator="true" ProgressIndicatorColor="Color.Default"
                      SearchFuncWithCancel="@Search" Variant="Variant.Outlined">
         <ItemTemplate Context="card">
