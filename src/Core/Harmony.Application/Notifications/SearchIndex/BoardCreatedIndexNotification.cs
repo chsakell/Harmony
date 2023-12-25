@@ -7,7 +7,6 @@ namespace Harmony.Application.Notifications.SearchIndex
         public override SearchIndexNotificationType Type =>  SearchIndexNotificationType.BoardCreated;
 
         public string ObjectID { get; set; }  // Board Id
-        public string IndexName { get; set; }
         public List<string> SearchableAttributes { get; set; }
     }
 }

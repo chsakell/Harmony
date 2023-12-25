@@ -140,9 +140,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                     .PublishSearchIndexNotification(new BoardCreatedIndexNotification()
                     {
                         ObjectID = board.Id.ToString(),
-                        IndexName = indexName,
                         SearchableAttributes = new List<string> { "title", "serialKey" }
-                    });
+                    }, indexName);
 
                 var result = _mapper.Map<BoardDto>(board);
 

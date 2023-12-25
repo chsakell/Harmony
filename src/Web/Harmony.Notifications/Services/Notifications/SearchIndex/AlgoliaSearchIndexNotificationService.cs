@@ -15,25 +15,25 @@ namespace Harmony.Notifications.Services.Notifications.SearchIndex
             _searchClient = searchClient;
         }
 
-        public async Task AddToIndex<T>(T notification) where T : class, ISearchIndexNotification
+        public async Task AddToIndex<T>(T notification, string indexName) where T : class, ISearchIndexNotification
         {
-            var index = _searchClient.InitIndex($"board-{notification.BoardId}");
+            var index = _searchClient.InitIndex(indexName);
 
             var result = await index.SaveObjectAsync(notification);
         }
 
-        public async Task UpdateCard<T>(T notification) where T : class, ISearchIndexNotification
+        public async Task UpdateCard<T>(T notification, string indexName) where T : class, ISearchIndexNotification
         {
-            var index = _searchClient.InitIndex($"board-{notification.BoardId}");
+            var index = _searchClient.InitIndex(indexName);
 
             var result = await index.PartialUpdateObjectAsync(notification, createIfNotExists: true);
         }
 
-        public async Task CreateIndex<T>(T notification) where T : class, ISearchIndexNotification
+        public async Task CreateIndex<T>(T notification, string indexName) where T : class, ISearchIndexNotification
         {
             if(notification is BoardCreatedIndexNotification boardCreatedNotification)
             {
-                var index = _searchClient.InitIndex(boardCreatedNotification.IndexName);
+                var index = _searchClient.InitIndex(indexName);
                 var settings = new IndexSettings
                 {
                     SearchableAttributes = boardCreatedNotification.SearchableAttributes,
@@ -41,7 +41,6 @@ namespace Harmony.Notifications.Services.Notifications.SearchIndex
 
                 await index.SetSettingsAsync(settings);
             }
-            
         }
     }
 }

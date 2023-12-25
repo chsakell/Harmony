@@ -10,6 +10,6 @@ namespace Harmony.Application.Contracts.Services.Search
 {
     public interface ISearchService
     {
-        Task<List<IndexedCard>> Search(List<Guid> boards, string term);
+        Task<List<SearchableCard>> Search(List<Guid> boards, string term);
     }
 }

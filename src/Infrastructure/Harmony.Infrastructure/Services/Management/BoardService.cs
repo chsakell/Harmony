@@ -14,6 +14,7 @@ using System.Data;
 using Harmony.Application.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Harmony.Application.Constants;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -107,7 +108,8 @@ namespace Harmony.Infrastructure.Services.Management
                     Id = board.Id,
                     Title = board.Title,
                     Lists = board.Lists,
-                    Key = board.Key
+                    Key = board.Key,
+                    IndexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}")
                 };
 
                 return result;

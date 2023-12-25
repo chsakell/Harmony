@@ -13,5 +13,6 @@ namespace Harmony.Application.Models
         public string Title { get; set; }
         public List<BoardList> Lists { get; set; }
         public string Key { get; set; }
+        public string IndexName { get; set; }
     }
 }

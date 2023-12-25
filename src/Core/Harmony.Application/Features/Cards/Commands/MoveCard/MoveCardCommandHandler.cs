@@ -21,7 +21,8 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 	private readonly ICardRepository _cardRepository;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly ICurrentUserService _currentUserService;
-	private readonly IStringLocalizer<MoveCardCommandHandler> _localizer;
+    private readonly IBoardService _boardService;
+    private readonly IStringLocalizer<MoveCardCommandHandler> _localizer;
     private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly IMapper _mapper;
 
@@ -29,6 +30,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 		ICardRepository cardRepository,
 		INotificationsPublisher notificationsPublisher,
 		ICurrentUserService currentUserService,
+		IBoardService boardService,
 		IStringLocalizer<MoveCardCommandHandler> localizer,
         IHubClientNotifierService hubClientNotifierService,
         IMapper mapper)
@@ -37,7 +39,8 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 		_cardRepository = cardRepository;
         _notificationsPublisher = notificationsPublisher;
         _currentUserService = currentUserService;
-		_localizer = localizer;
+        _boardService = boardService;
+        _localizer = localizer;
         _hubClientNotifierService = hubClientNotifierService;
         _mapper = mapper;
 	}
@@ -88,15 +91,16 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 						previousPosition, request.Position, request.UpdateId);
             }
 
-			if(previousBoardListId != request.ListId)
+            var board = await _boardService.GetBoardInfo(request.BoardId);
+
+            if (previousBoardListId != request.ListId)
 			{
                 _notificationsPublisher
                     .PublishSearchIndexNotification(new CardListUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
-                        BoardId = request.BoardId,
                         ListId = request.ListId?.ToString(),
-                    });
+                    }, board.IndexName);
             }
 
             return await Result<CardDto>.SuccessAsync(result);

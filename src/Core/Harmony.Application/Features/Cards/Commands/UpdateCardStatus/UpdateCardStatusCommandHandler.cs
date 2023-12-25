@@ -17,6 +17,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly INotificationsPublisher _notificationsPublisher;
+    private readonly IBoardService _boardService;
     private readonly IStringLocalizer<UpdateCardStatusCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
@@ -24,6 +25,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		INotificationsPublisher notificationsPublisher,
+		IBoardService boardService,
 		IStringLocalizer<UpdateCardStatusCommandHandler> localizer,
 		IMapper mapper)
 	{
@@ -31,6 +33,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _notificationsPublisher = notificationsPublisher;
+        _boardService = boardService;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -52,13 +55,14 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 
 		if (updateResult > 0)
 		{
+            var board = await _boardService.GetBoardInfo(request.BoardId);
+
             _notificationsPublisher
                     .PublishSearchIndexNotification(new CardStatusUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
-                        BoardId = request.BoardId,
                         Status = card.Status.ToString()
-                    });
+                    }, board.IndexName);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Status updated"]);
 		}

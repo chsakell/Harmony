@@ -77,13 +77,13 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                     .PublishSearchIndexNotification(new CardCreatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
-                        BoardId = request.BoardId,
+                        BoardId = board.Id,
                         Title = card.Title,
                         IssueType = request.IssueType.Summary,
                         ListId = request.ListId.ToString(),
                         Status = CardStatus.Active.ToString(),
                         SerialKey = $"{board.Key}-{card.SerialNumber}"
-                    });
+                    }, board.IndexName);
 
                 var result = _mapper.Map<CardDto>(card);
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Card Created"]);

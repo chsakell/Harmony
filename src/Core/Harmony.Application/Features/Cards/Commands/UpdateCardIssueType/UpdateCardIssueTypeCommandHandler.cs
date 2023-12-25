@@ -8,6 +8,7 @@ using AutoMapper;
 using Harmony.Application.DTO;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
+using Harmony.Application.Contracts.Services.Management;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardIssueType;
 
@@ -16,6 +17,7 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly IHubClientNotifierService _hubClientNotifierService;
+    private readonly IBoardService _boardService;
     private readonly IMapper _mapper;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IStringLocalizer<UpdateCardIssueTypeCommandHandler> _localizer;
@@ -24,12 +26,14 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		IHubClientNotifierService hubClientNotifierService,
+		IBoardService boardService,
 		IMapper mapper, INotificationsPublisher notificationsPublisher,
 		IStringLocalizer<UpdateCardIssueTypeCommandHandler> localizer)
 	{
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _hubClientNotifierService = hubClientNotifierService;
+        _boardService = boardService;
         _mapper = mapper;
         _notificationsPublisher = notificationsPublisher;
         _localizer = localizer;
@@ -56,13 +60,14 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 
             await _hubClientNotifierService.UpdateCardIssueType(request.BoardId, card.Id, issueType);
 
+            var board = await _boardService.GetBoardInfo(request.BoardId);
+
             _notificationsPublisher
                     .PublishSearchIndexNotification(new CardIssueTypeUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
-						BoardId = request.BoardId,
                         IssueType = issueType.Summary
-                    });
+                    }, board.IndexName);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Issue type updated"]);
 		}

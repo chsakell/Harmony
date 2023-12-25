@@ -6,6 +6,6 @@ namespace Harmony.Application.Contracts.Messaging
     public interface INotificationsPublisher
     {
         void PublishEmailNotification<T>(T notification) where T : BaseEmailNotification;
-        void PublishSearchIndexNotification<T>(T notification) where T : BaseSearchIndexNotification;
+        void PublishSearchIndexNotification<T>(T notification, string index) where T : BaseSearchIndexNotification;
     }
 }

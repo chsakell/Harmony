@@ -23,6 +23,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
     private readonly ISearchService _searchService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IMapper _mapper;
+    private readonly IBoardService _boardService;
     private readonly IStringLocalizer<UpdateCardTitleCommandHandler> _localizer;
 
 	public UpdateCardTitleCommandHandler(ICardRepository cardRepository,
@@ -31,7 +32,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
         IHubClientNotifierService hubClientNotifierService,
 		ISearchService searchService,
 		INotificationsPublisher notificationsPublisher,
-		IMapper mapper,
+		IMapper mapper, IBoardService boardService,
         IStringLocalizer<UpdateCardTitleCommandHandler> localizer)
 	{
 		_cardRepository = cardRepository;
@@ -41,6 +42,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
         _searchService = searchService;
         _notificationsPublisher = notificationsPublisher;
         _mapper = mapper;
+        _boardService = boardService;
         _localizer = localizer;
 	}
 	public async Task<Result<bool>> Handle(UpdateCardTitleCommand request, CancellationToken cancellationToken)
@@ -64,13 +66,14 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 			await _cardActivityService.CreateActivity(card.Id, userId,
 				CardActivityType.CardTitleUpdated, card.DateUpdated.Value, card.Title);
 
+            var board = await _boardService.GetBoardInfo(request.BoardId);
+
             _notificationsPublisher
                     .PublishSearchIndexNotification(new CardTitleUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
-                        BoardId = request.BoardId,
                         Title = card.Title
-                    });
+                    }, board.IndexName);
 
             await _hubClientNotifierService.UpdateCardTitle(request.BoardId, card.Id, card.Title);
 

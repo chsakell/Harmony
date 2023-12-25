@@ -89,7 +89,7 @@ namespace Harmony.Server.Extensions
 
             services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
 
-            services.AddSingleton<ISearchService, AlgoliaSearchService>();
+            services.AddScoped<ISearchService, AlgoliaSearchService>();
 
             return services;
         }

@@ -79,7 +79,7 @@ namespace Harmony.Messaging
                 body: body);
         }
 
-        public void PublishSearchIndexNotification<T>(T notification) where T : BaseSearchIndexNotification
+        public void PublishSearchIndexNotification<T>(T notification, string index) where T : BaseSearchIndexNotification
         {
             if (connection == null || !connection.IsOpen)
             {
@@ -96,7 +96,8 @@ namespace Harmony.Messaging
             props.DeliveryMode = 2;
             props.Headers = new Dictionary<string, object>
             {
-                { BrokerConstants.NotificationHeader, notification.Type.ToString() }
+                { BrokerConstants.NotificationHeader, notification.Type.ToString() },
+                { BrokerConstants.IndexNameHeader, index }
             };
 
             channel.BasicPublish(

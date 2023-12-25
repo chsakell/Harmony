@@ -73,12 +73,12 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
                     .PublishSearchIndexNotification(new CardCreatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
-                        BoardId = request.BoardId,
                         Title = card.Title,
                         IssueType = request.IssueType.Summary,
                         Status = CardStatus.Active.ToString(),
-                        SerialKey = $"{board.Key}-{card.SerialNumber}"
-                    });
+                        SerialKey = $"{board.Key}-{card.SerialNumber}",
+                        BoardId = board.Id
+                    }, board.IndexName);
 
                 var result = _mapper.Map<CardDto>(card);
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Issue Created"]);

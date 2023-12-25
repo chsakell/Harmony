@@ -43,7 +43,6 @@ namespace Harmony.Application.Features.Search.Queries.GlobalSearch
         public async Task<IResult<List<SearchableCard>>> Handle(GlobalSearchQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
-            var result = new List<SearchableCard>();
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -53,47 +52,7 @@ namespace Harmony.Application.Features.Search.Queries.GlobalSearch
             var userBoards = await _boardService.GetUserBoards(null, userId);
             var boardIds = userBoards.Select(b => b.Id).ToList();
 
-            var indexedCards = await _searchService.Search(boardIds, request.Term);
-            List<BoardInfo> boardInfos = new List<BoardInfo>();
-            foreach(var boardId in boardIds) 
-            {
-                var boardInfo = await _boardService.GetBoardInfo(boardId);
-                if(boardInfo != null)
-                {
-                    boardInfos.Add(boardInfo);
-                }
-            }
-
-            foreach(var indexedCard in  indexedCards)
-            {
-                var searchableCard = new SearchableCard()
-                {
-                    CardId = indexedCard.ObjectID,
-                    Title = indexedCard.Title,
-                    IssueType = indexedCard.IssueType,
-                    Status = indexedCard.Status,
-                    SerialKey = indexedCard.SerialKey
-                };
-
-                var board = boardInfos.FirstOrDefault(bi => bi.Id == Guid.Parse(indexedCard.BoardId));
-
-                if(board != null)
-                {
-                    searchableCard.BoardTitle = board.Title;
-                    searchableCard.BoardId = board.Id;
-
-                    var list = board.Lists.FirstOrDefault(l => l.Id == indexedCard.ListId);
-
-                    if(list != null)
-                    {
-                        searchableCard.List = list.Title;
-
-                        searchableCard.IsComplete = list.CardStatus == Domain.Enums.BoardListCardStatus.DONE;
-                    }
-                }
-
-                result.Add(searchableCard);
-            }
+            var result = await _searchService.Search(boardIds, request.Term);
 
             return await Result<List<SearchableCard>>.SuccessAsync(result);
         }

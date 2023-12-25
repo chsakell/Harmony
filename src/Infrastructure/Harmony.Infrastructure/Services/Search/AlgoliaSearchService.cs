@@ -1,13 +1,17 @@
 ﻿using Algolia.Search.Clients;
 using Algolia.Search.Models.Common;
 using Algolia.Search.Models.Search;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.DTO.Search;
 using Harmony.Application.Features.Search.Queries.GlobalSearch;
+using Harmony.Application.Models;
+using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core.Tokenizer;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,26 +20,40 @@ namespace Harmony.Infrastructure.Services.Search
     public class AlgoliaSearchService : ISearchService
     {
         private readonly ISearchClient _searchClient;
+        private readonly IBoardService _boardService;
 
-        public AlgoliaSearchService(ISearchClient searchClient)
+        public AlgoliaSearchService(ISearchClient searchClient, IBoardService boardService)
         {
             _searchClient = searchClient;
+            _boardService = boardService;
         }
 
-        public async Task<List<IndexedCard>> Search(List<Guid> boards, string term)
+        public async Task<List<SearchableCard>> Search(List<Guid> boards, string term)
         {
-            var indexedBoards = await GetIndexedBoards(boards);
+            var result = new List<SearchableCard>();
 
-            if(!indexedBoards.Any())
+            List<BoardInfo> boardInfos = new List<BoardInfo>();
+            foreach (var boardId in boards)
             {
-                return Enumerable.Empty<IndexedCard>().ToList();
+                var boardInfo = await _boardService.GetBoardInfo(boardId);
+                if (boardInfo != null)
+                {
+                    boardInfos.Add(boardInfo);
+                }
+            }
+
+            var indexedBoards = await GetIndexedBoards(boardInfos.Select(bi => bi.IndexName).ToList());
+
+            if (!indexedBoards.Any())
+            {
+                return Enumerable.Empty<SearchableCard>().ToList();
             }
 
             var indexQueries = new List<QueryMultiIndices>();
-            
-            foreach (var boardId in indexedBoards)
+
+            foreach (var index in indexedBoards)
             {
-                indexQueries.Add(new QueryMultiIndices($"board-{boardId}", term));
+                indexQueries.Add(new QueryMultiIndices(index, term));
             }
 
             MultipleQueriesRequest request = new MultipleQueriesRequest
@@ -43,30 +61,57 @@ namespace Harmony.Infrastructure.Services.Search
                 Requests = indexQueries
             };
 
-            var res = await _searchClient.MultipleQueriesAsync<IndexedCard>(request);
+            var multiQueryResult = await _searchClient.MultipleQueriesAsync<IndexedCard>(request);
 
-            return res.Results.SelectMany(r => r.Hits).ToList();
+            var hits = multiQueryResult.Results.SelectMany(x => x.Hits);
+
+            foreach (var indexedCard in hits)
+            {
+                var searchableCard = new SearchableCard()
+                {
+                    CardId = indexedCard.ObjectID,
+                    Title = indexedCard.Title,
+                    IssueType = indexedCard.IssueType,
+                    Status = indexedCard.Status,
+                    SerialKey = indexedCard.SerialKey,
+                    BoardId = indexedCard.BoardId
+                };
+
+                var board = boardInfos.FirstOrDefault(bi => bi.Id == indexedCard.BoardId);
+
+                if (board != null)
+                {
+                    searchableCard.BoardTitle = board.Title;
+                    searchableCard.BoardId = board.Id;
+
+                    var list = board.Lists.FirstOrDefault(l => l.Id == indexedCard.ListId);
+
+                    if (list != null)
+                    {
+                        searchableCard.List = list.Title;
+
+                        searchableCard.IsComplete = list.CardStatus == Domain.Enums.BoardListCardStatus.DONE;
+                    }
+                }
+
+                result.Add(searchableCard);
+            }
+
+            return result;
         }
 
-        
-
-        private async Task<List<string>> GetIndexedBoards(List<Guid> boards)
+        private async Task<List<string>> GetIndexedBoards(List<string> userBoardIndices)
         {
             var boardIds = new List<string>();
             var indices = await _searchClient.ListIndicesAsync();
 
-            if(indices == null)
+            if (indices == null)
             {
                 return boardIds;
             }
 
-            foreach(var index in indices.Items)
-            {
-                var board = index.Name.Replace("board-", string.Empty);
-                boardIds.Add(board);
-            }
-
-            return boardIds;
+            return indices.Items.Select(i => i.Name)
+                .Where(userBoardIndices.Contains).ToList();
         }
     }
 }

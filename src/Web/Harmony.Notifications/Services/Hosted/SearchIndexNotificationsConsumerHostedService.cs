@@ -84,31 +84,33 @@ namespace Harmony.Notifications.Services.Hosted
             consumer.Received += async (ch, ea) =>
             {
                 if (ea.BasicProperties.Headers
-                     .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
-                     Enum.TryParse<SearchIndexNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
+                     .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw)  &&
+                     Enum.TryParse<SearchIndexNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType)
+                     && ea.BasicProperties.Headers.TryGetValue(BrokerConstants.IndexNameHeader, out var indexNameRaw) &&
+                     (Encoding.UTF8.GetString((byte[])indexNameRaw) is string index))
                 {
                     switch (notificationType)
                     {
                         case SearchIndexNotificationType.BoardCreated:
-                            await Index<BoardCreatedIndexNotification>(ea, SearchIndexOperation.CreateIndex);
+                            await Index<BoardCreatedIndexNotification>(ea, SearchIndexOperation.CreateIndex, index);
                             break;
                         case SearchIndexNotificationType.CardAddedToBoard:
-                            await Index<CardCreatedIndexNotification>(ea, SearchIndexOperation.AddToIndex);
+                            await Index<CardCreatedIndexNotification>(ea, SearchIndexOperation.AddToIndex, index);
                             break;
 
                         case SearchIndexNotificationType.CardTitleUpdated:
-                            await Index<CardTitleUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            await Index<CardTitleUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
                             break;
 
                         case SearchIndexNotificationType.CardStatusUpdated:
-                            await Index<CardStatusUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            await Index<CardStatusUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
                             break;
 
                         case SearchIndexNotificationType.CardListUpdated:
-                            await Index<CardListUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            await Index<CardListUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
                             break;
                         case SearchIndexNotificationType.CardIssueTypeUpdated:
-                            await Index<CardIssueTypeUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            await Index<CardIssueTypeUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
                             break;
                     }
                 }
@@ -122,7 +124,7 @@ namespace Harmony.Notifications.Services.Hosted
             _channel.BasicConsume(BrokerConstants.SearchIndexNotificationsQueue, true, consumer);
         }
 
-        private async Task Index<T>(BasicDeliverEventArgs args, SearchIndexOperation operation) where T : class, ISearchIndexNotification
+        private async Task Index<T>(BasicDeliverEventArgs args, SearchIndexOperation operation, string index) where T : class, ISearchIndexNotification
         {
             var notification = JsonSerializer.Deserialize<T>(args.Body.Span);
 
@@ -135,13 +137,13 @@ namespace Harmony.Notifications.Services.Hosted
                     switch(operation)
                     {
                         case SearchIndexOperation.CreateIndex:
-                            await searchIndexNotificationService.CreateIndex(notification);
+                            await searchIndexNotificationService.CreateIndex(notification, index);
                             break;
                         case SearchIndexOperation.AddToIndex:
-                            await searchIndexNotificationService.AddToIndex(notification);
+                            await searchIndexNotificationService.AddToIndex(notification, index);
                             break;
                         case SearchIndexOperation.UpdateObjectInIndex:
-                            await searchIndexNotificationService.UpdateCard(notification);
+                            await searchIndexNotificationService.UpdateCard(notification, index);
                             break;
                     }
                     
