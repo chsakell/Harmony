@@ -1,4 +1,5 @@
 ﻿using Algolia.Search.Clients;
+using Algolia.Search.Models.Settings;
 using Harmony.Application.DTO.Search;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Notifications.Contracts.Notifications.SearchIndex;
@@ -28,10 +29,19 @@ namespace Harmony.Notifications.Services.Notifications.SearchIndex
             var result = await index.PartialUpdateObjectAsync(notification, createIfNotExists: true);
         }
 
-        public bool CreateIndex(string name)
+        public async Task CreateIndex<T>(T notification) where T : class, ISearchIndexNotification
         {
-            var index = _searchClient.InitIndex(name);
-            return index != null;
+            if(notification is BoardCreatedIndexNotification boardCreatedNotification)
+            {
+                var index = _searchClient.InitIndex(boardCreatedNotification.IndexName);
+                var settings = new IndexSettings
+                {
+                    SearchableAttributes = boardCreatedNotification.SearchableAttributes,
+                };
+
+                await index.SetSettingsAsync(settings);
+            }
+            
         }
     }
 }

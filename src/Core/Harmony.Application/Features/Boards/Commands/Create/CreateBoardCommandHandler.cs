@@ -10,6 +10,8 @@ using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
+using Slugify;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Boards.Commands.Create
 {
@@ -131,6 +133,17 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             if (dbResult > 0)
             {
+                await _boardRepository.LoadWorkspaceEntryAsync(board);
+                var indexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}");
+
+                _notificationsPublisher
+                    .PublishSearchIndexNotification(new BoardCreatedIndexNotification()
+                    {
+                        ObjectID = board.Id.ToString(),
+                        IndexName = indexName,
+                        SearchableAttributes = new List<string> { "title", "serialKey" }
+                    });
+
                 var result = _mapper.Map<BoardDto>(board);
 
                 return await Result<BoardDto>.SuccessAsync(result, _localizer["Board created"]);

@@ -17,5 +17,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<bool> Exists(Guid boardId);
         Task<bool> Exists(string key);
         Task<int> Update(Board board);
-	}
+        Task LoadWorkspaceEntryAsync(Board board);
+
+    }
 }

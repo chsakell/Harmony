@@ -7,6 +7,6 @@
         CardTitleUpdated,
         CardStatusUpdated,
         CardListUpdated,
-        CardUpdated
+        CardIssueTypeUpdated
     }
 }

@@ -89,6 +89,9 @@ namespace Harmony.Notifications.Services.Hosted
                 {
                     switch (notificationType)
                     {
+                        case SearchIndexNotificationType.BoardCreated:
+                            await Index<BoardCreatedIndexNotification>(ea, SearchIndexOperation.CreateIndex);
+                            break;
                         case SearchIndexNotificationType.CardAddedToBoard:
                             await Index<CardCreatedIndexNotification>(ea, SearchIndexOperation.AddToIndex);
                             break;
@@ -103,6 +106,9 @@ namespace Harmony.Notifications.Services.Hosted
 
                         case SearchIndexNotificationType.CardListUpdated:
                             await Index<CardListUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
+                            break;
+                        case SearchIndexNotificationType.CardIssueTypeUpdated:
+                            await Index<CardIssueTypeUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex);
                             break;
                     }
                 }
@@ -128,6 +134,9 @@ namespace Harmony.Notifications.Services.Hosted
 
                     switch(operation)
                     {
+                        case SearchIndexOperation.CreateIndex:
+                            await searchIndexNotificationService.CreateIndex(notification);
+                            break;
                         case SearchIndexOperation.AddToIndex:
                             await searchIndexNotificationService.AddToIndex(notification);
                             break;

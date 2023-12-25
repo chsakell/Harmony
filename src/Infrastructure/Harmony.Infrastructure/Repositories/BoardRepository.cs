@@ -33,6 +33,11 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public async Task LoadWorkspaceEntryAsync(Board board)
+        {
+            await _context.Entry(board).Reference(board => board.Workspace).LoadAsync();
+        }
+
         public async Task<bool> Exists(Guid boardId)
         {
             return await _context.Boards

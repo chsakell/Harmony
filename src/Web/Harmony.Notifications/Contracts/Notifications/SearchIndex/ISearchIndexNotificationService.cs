@@ -5,7 +5,7 @@ namespace Harmony.Notifications.Contracts.Notifications.SearchIndex
 {
     public interface ISearchIndexNotificationService
     {
-        bool CreateIndex(string name);
+        Task CreateIndex<T>(T notification) where T : class, ISearchIndexNotification;
         Task AddToIndex<T>(T notification) where T : class, ISearchIndexNotification;
         Task UpdateCard<T>(T notification) where T : class, ISearchIndexNotification;
     }
