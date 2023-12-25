@@ -144,5 +144,12 @@ namespace Harmony.Server.Services
                     new CardItemPositionChangedEvent(boardId, cardId, previousBoardListId,
                     newBoardListId, previousPosition, newPosition, updateId));
         }
+
+        public async Task UpdateCardIssueType(Guid boardId, Guid cardId, IssueTypeDto issueType)
+        {
+            await _hubContext.Clients.Group(boardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardIssueTypeChanged,
+                    new CardIssueTypeChangedEvent(cardId, issueType));
+        }
     }
 }

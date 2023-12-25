@@ -27,5 +27,6 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task RemoveCheckList(Guid boardId, Guid checkListId, Guid cardId, int totalItems, int totalItemsCompleted);
         Task UpdateCardPosition(Guid boardId, Guid cardId, Guid previousBoardListId, Guid nextBoardListId,
             short previousPosition, short newPosition, Guid updateId);
+        Task UpdateCardIssueType(Guid boardId, Guid cardId, IssueTypeDto issueType);
     }
 }

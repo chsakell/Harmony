@@ -110,6 +110,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardDescriptionChanged += OnCardDescriptionChanged;
             _hubSubscriptionManager.OnCardStoryPointsChanged += OnCardStoryPointsChanged;
             _hubSubscriptionManager.OnCardTitleChanged += OnCardTitleChanged;
+            _hubSubscriptionManager.OnCardIssueTypeChanged += OnCardIssueTypeChanged;
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentAdded += OnCardAttachmentAdded;
@@ -134,6 +135,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardDescriptionChanged -= OnCardDescriptionChanged;
             _hubSubscriptionManager.OnCardStoryPointsChanged -= OnCardStoryPointsChanged;
             _hubSubscriptionManager.OnCardTitleChanged -= OnCardTitleChanged;
+            _hubSubscriptionManager.OnCardIssueTypeChanged -= OnCardIssueTypeChanged;
             _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentAdded -= OnCardAttachmentAdded;
@@ -249,6 +251,13 @@ namespace Harmony.Client.Pages.Management
         private void OnCardTitleChanged(object? sender, CardTitleChangedEvent e)
         {
             KanbanStore.UpdateCardTitle(e.CardId, e.Title);
+
+            _dropContainer.Refresh();
+        }
+
+        private void OnCardIssueTypeChanged(object? sender, CardIssueTypeChangedEvent e)
+        {
+            KanbanStore.UpdateCardIssueType(e.CardId, e.IssueType);
 
             _dropContainer.Refresh();
         }

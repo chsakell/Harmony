@@ -40,6 +40,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public event EventHandler<BoardListArchivedEvent> OnBoardListArchived;
         public event EventHandler<BoardListsPositionsChangedEvent> OnBoardListsPositionsChanged;
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
+        public event EventHandler<CardIssueTypeChangedEvent> OnCardIssueTypeChanged;
         public event EventHandler<CardDescriptionChangedEvent> OnCardDescriptionChanged;
         public event EventHandler<CardStoryPointsChangedEvent> OnCardStoryPointsChanged;
         public event EventHandler<CardLabelToggledEvent> OnCardLabelToggled;
@@ -117,6 +118,11 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             {
                 OnCardAttachmentAdded?.Invoke(this,
                     new AttachmentAddedEvent(@event.CardId, @event.Attachment));
+            });
+
+            _hubConnection.On<CardIssueTypeChangedEvent>(ApplicationConstants.SignalR.OnCardIssueTypeChanged, (@event) =>
+            {
+                OnCardIssueTypeChanged?.Invoke(this, @event);
             });
 
             _hubConnection.On<AttachmentRemovedEvent>(ApplicationConstants.SignalR.OnCardAttachmentRemoved, (@event) =>

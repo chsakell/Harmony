@@ -215,6 +215,16 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
+        public void UpdateCardIssueType(Guid cardId, IssueTypeDto issueType)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.IssueType = issueType;
+            }
+        }
+
         public void ToggleCardLabel(Guid cardId, LabelDto label)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
