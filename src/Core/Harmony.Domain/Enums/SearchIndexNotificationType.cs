@@ -8,6 +8,7 @@
         CardStatusUpdated,
         CardHasAttachmentsUpdated,
         CardListUpdated,
-        CardIssueTypeUpdated
+        CardIssueTypeUpdated,
+        CardMembersUpdated
     }
 }

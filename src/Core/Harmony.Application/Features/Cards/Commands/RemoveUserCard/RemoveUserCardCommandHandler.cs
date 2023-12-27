@@ -12,6 +12,8 @@ using Harmony.Application.Notifications;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 {
@@ -24,6 +26,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
         private readonly IBoardRepository _boardRepository;
         private readonly ICardRepository _cardRepository;
         private readonly IUserService _userService;
+        private readonly IBoardService _boardService;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<RemoveUserCardCommandHandler> _localizer;
 
@@ -34,6 +37,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
             IBoardRepository boardRepository,
             ICardRepository cardRepository,
             IUserService userService,
+            IBoardService boardService,
             IMapper mapper,
             IStringLocalizer<RemoveUserCardCommandHandler> localizer)
         {
@@ -44,6 +48,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
             _boardRepository = boardRepository;
             _cardRepository = cardRepository;
             _userService = userService;
+            _boardService = boardService;
             _mapper = mapper;
             _localizer = localizer;
         }
@@ -76,13 +81,22 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                     await _hubClientNotifierService.RemoveCardMember(request.BoardId, request.CardId, member);
 
-                    var board = await _boardRepository.GetAsync(request.BoardId);
+                    var board = await _boardService.GetBoardInfo(request.BoardId);
 
                     var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
                     var cardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/{request.CardId}";
 
                     _notificationsPublisher.PublishEmailNotification(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
+                    
+                    var members = await _userCardRepository.GetCardMembers(request.CardId);
+
+                    _notificationsPublisher
+                            .PublishSearchIndexNotification(new CardMembersUpdatedIndexNotification()
+                            {
+                                ObjectID = request.CardId.ToString(),
+                                Members = members
+                            }, board.IndexName);
 
                     return await Result<RemoveUserCardResponse>.SuccessAsync(result, _localizer["User removed from card"]);
                 }

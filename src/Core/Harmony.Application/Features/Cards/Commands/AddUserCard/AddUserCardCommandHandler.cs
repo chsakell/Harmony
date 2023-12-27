@@ -12,6 +12,8 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
@@ -23,6 +25,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
         private readonly ICardRepository _cardRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IStringLocalizer<AddUserCardCommandHandler> _localizer;
@@ -32,6 +35,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             IUserCardRepository userCardRepository,
             ICardRepository cardRepository,
             IUserService userService, IMapper mapper,
+            IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
             IHubClientNotifierService hubClientNotifierService,
             IStringLocalizer<AddUserCardCommandHandler> localizer)
@@ -42,6 +46,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             _cardRepository = cardRepository;
             _userService = userService;
             _mapper = mapper;
+            _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
             _hubClientNotifierService = hubClientNotifierService;
             _localizer = localizer;
@@ -103,6 +108,16 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
                     _notificationsPublisher.PublishEmailNotification(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
 
                     await _hubClientNotifierService.AddCardMember(request.BoardId, request.CardId, member);
+
+                    var board = await _boardService.GetBoardInfo(request.BoardId);
+                    var members = await _userCardRepository.GetCardMembers(request.CardId);
+
+                    _notificationsPublisher
+                            .PublishSearchIndexNotification(new CardMembersUpdatedIndexNotification()
+                            {
+                                ObjectID = request.CardId.ToString(),
+                                Members = members
+                            }, board.IndexName);
 
                     return await Result<AddUserCardResponse>.SuccessAsync(result, _localizer["User added to card"]);
                 }

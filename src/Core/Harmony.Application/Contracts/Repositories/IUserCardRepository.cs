@@ -9,6 +9,7 @@ namespace Harmony.Application.Contracts.Repositories
     public interface IUserCardRepository
     {
         Task<UserCard?> GetUserCard(Guid cardId, string userId);
+        Task<List<string>> GetCardMembers(Guid cardId);
         Task<int> CreateAsync(UserCard Board);
 
         Task<int> CountCardUsers(Guid cardId);

@@ -21,6 +21,14 @@ namespace Harmony.Infrastructure.Repositories
                 .FirstOrDefaultAsync(uc => uc.CardId == cardId && uc.UserId == userId);
         }
 
+        public async Task<List<string>> GetCardMembers(Guid cardId)
+        {
+            return await _context.UserCards
+                .Where(uc => uc.CardId == cardId)
+                .Select(uc => uc.UserId)
+                .ToListAsync();
+        }
+
         public async Task<int> CreateAsync(UserCard Board)
         {
             await _context.UserCards.AddAsync(Board);
