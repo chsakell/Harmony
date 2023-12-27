@@ -1,4 +1,6 @@
 ﻿using Harmony.Application.DTO.Search;
+using Harmony.Client.Infrastructure.Store.Kanban;
+using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Components;
@@ -34,6 +36,17 @@ namespace Harmony.Client.Shared.Components
             {
                 await JSRuntime.InvokeVoidAsync("toggleAppSearchWidth");
             }
+        }
+
+        private async Task AdvancedSearch()
+        {
+            var parameters = new DialogParameters<AdvancedSearchModal>
+            {
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = false };
+            var dialog = _dialogService.Show<AdvancedSearchModal>("Advanced search", parameters, options);
+            var result = await dialog.Result;
         }
 
         private async Task Navigate(SearchableCard card)

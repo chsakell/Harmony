@@ -6,6 +6,7 @@
         CardAddedToBoard,
         CardTitleUpdated,
         CardStatusUpdated,
+        CardHasAttachmentsUpdated,
         CardListUpdated,
         CardIssueTypeUpdated
     }

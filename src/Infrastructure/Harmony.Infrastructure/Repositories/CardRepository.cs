@@ -1,18 +1,25 @@
-﻿using Harmony.Application.Contracts.Repositories;
+﻿using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Models;
+using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
+using Harmony.Shared.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Harmony.Infrastructure.Repositories
 {
     public class CardRepository : ICardRepository
     {
         private readonly HarmonyContext _context;
+        private readonly IMemoryCache _memoryCache;
 
-        public CardRepository(HarmonyContext context)
+        public CardRepository(HarmonyContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _memoryCache = memoryCache;
         }
 
         public IQueryable<Card> Entities => _context.Set<Card>();
@@ -30,18 +37,24 @@ namespace Harmony.Infrastructure.Repositories
 
         public async Task<Guid> GetBoardId(Guid cardId)
         {
-			var card = (await _context.Cards
-					.Include(c => c.BoardList)
-				.FirstOrDefaultAsync(c => c.Id == cardId));
-
-            if(card.BoardList == null && card.Status == CardStatus.Backlog)
+            return await _memoryCache.GetOrCreateAsync(CacheKeys.BoardIdFromCard(cardId),
+            async cacheEntry =>
             {
-                await LoadIssueEntryAsync(card);
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
 
-                return card.IssueType.BoardId;
-            }
+                var card = (await _context.Cards
+                    .Include(c => c.BoardList)
+                .FirstOrDefaultAsync(c => c.Id == cardId));
 
-			return card.BoardList.BoardId;
+                if (card.BoardList == null && card.Status == CardStatus.Backlog)
+                {
+                    await LoadIssueEntryAsync(card);
+
+                    return card.IssueType.BoardId;
+                }
+
+                return card.BoardList.BoardId;
+            });
         }
 
         public async Task<Card?> Load(Guid cardId)

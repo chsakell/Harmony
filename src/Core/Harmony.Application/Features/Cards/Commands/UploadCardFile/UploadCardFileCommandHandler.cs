@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Hubs;
@@ -6,6 +7,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Helpers;
+using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
@@ -22,6 +24,8 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
         private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
+        private readonly IBoardService _boardService;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly ICardRepository _cardRepository;
 
         public UploadCardFileCommandHandler(IUploadService uploadService,
@@ -29,6 +33,8 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
             IHubClientNotifierService hubClientNotifierService,
             ICurrentUserService currentUserService,
             IMapper mapper,
+            IBoardService boardService,
+            INotificationsPublisher notificationsPublisher,
             ICardRepository cardRepository)
         {
             _uploadService = uploadService;
@@ -36,6 +42,8 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
             _hubClientNotifierService = hubClientNotifierService;
             _currentUserService = currentUserService;
             _mapper = mapper;
+            _boardService = boardService;
+            _notificationsPublisher = notificationsPublisher;
             _cardRepository = cardRepository;
         }
 
@@ -78,6 +86,18 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
                     activityType, card.DateUpdated.Value,
                     command.FileName,
                     url: $"files/{attachment.Type.ToDescriptionString()}/{attachment.FileName}");
+
+                if (card.Attachments.Count == 1)
+                {
+                    var board = await _boardService.GetBoardInfo(command.BoardId);
+
+                    _notificationsPublisher
+                            .PublishSearchIndexNotification(new CardHasAttachmentsUpdatedIndexNotification()
+                            {
+                                ObjectID = card.Id.ToString(),
+                                HasAttachments = true
+                            }, board.IndexName);
+                }
             }
 
             var attachmentDto = _mapper.Map<AttachmentDto>(attachment);

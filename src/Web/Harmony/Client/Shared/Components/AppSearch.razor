@@ -5,6 +5,9 @@
                      Clearable="true" Placeholder="Search" Class="app-search-bar"
                      DebounceInterval="700"
                      Style="width:250px"
+                     AdornmentColor="Color.Tertiary"
+                     AdornmentIcon="@Icons.Material.Filled.SavedSearch"
+                     OnAdornmentClick="AdvancedSearch"
                      ShowProgressIndicator="true" ProgressIndicatorColor="Color.Default"
                      SearchFuncWithCancel="@Search" Variant="Variant.Outlined">
         <ItemTemplate Context="card">
