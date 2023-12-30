@@ -3,35 +3,64 @@
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<AdvancedSearchModal> _localizer
 
-<EditForm Model="@_advancedSearchCommandModel" OnValidSubmit="SubmitAsync">
+<EditForm Model="@_advancedSearchCommandModel" OnValidSubmit="Search">
     <DataAnnotationsValidator />
     <MudDialog>
         <TitleContent>
             @{
                 <MudText Typo="Typo.h6">
                     <MudIcon Icon="@Icons.Material.Filled.AddCard" Class="mr-3 mb-n1" />
-                    @_localizer["Create issue"]
+                    @_localizer["Advanced search"]
                 </MudText>
             }
         </TitleContent>
         <DialogContent>
+
             <MudGrid>
-                
+                <MudItem xs="12" md="7">
+                    <MudPaper>
+                        <MudList>
+                            <MudListItem>
+                                <MudTextField For="@(() => _advancedSearchCommandModel.Title)" @bind-Value="_advancedSearchCommandModel.Title" Label="Title" Variant="Variant.Text"></MudTextField>
+                            </MudListItem>
+                            <MudListItem>
+                                <MudTextField For="@(() => _advancedSearchCommandModel.Description)" @bind-Value="_advancedSearchCommandModel.Description" Label="Description" Variant="Variant.Text"></MudTextField>
+                            </MudListItem>
+                            <MudListItem>
+                                <MudCheckBox T="bool" For="@(() => _advancedSearchCommandModel.HasAttachments)" @bind-Value="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary" Label="Attachments"></MudCheckBox>
+                            </MudListItem>
+                            <MudListItem>
+                                <MudDatePicker PickerVariant="PickerVariant.Dialog" @ref="_datePicker" Label="Due date"
+                                               For="@(() => _advancedSearchCommandModel.DueDate)"
+                                               @bind-Date="_advancedSearchCommandModel.DueDate" AutoClose="true">
+                                    <PickerActions Context="pickContext">
+                                        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker.Clear())">Clear</MudButton>
+                                        <MudButton OnClick="@(() => _datePicker.Close(false))">Cancel</MudButton>
+                                        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker.Close())">Ok</MudButton>
+                                    </PickerActions>
+                                </MudDatePicker>
+                            </MudListItem>
+                        </MudList>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" md="5">
+
+                </MudItem>
             </MudGrid>
-            
+
         </DialogContent>
         <DialogActions>
             <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
-                       ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                @if (_processing)
+                <MudButton Disabled="@(!context.Validate() || _processing)"
+                           ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                    @if (_processing)
                 {
                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                    <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+                    <MudText Class="ms-2">@_localizer["Searching.."]</MudText>
                 }
                 else
                 {
-                    <MudText>@_localizer["Create"]</MudText>
+                    <MudText>@_localizer["Search"]</MudText>
                 }
             </MudButton>
         </DialogActions>

@@ -12,6 +12,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _processing;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
+        private MudDatePicker _datePicker;
         private List<IssueTypeDto> _issueTypes = new List<IssueTypeDto>();
         private AdvancedSearchCommand _advancedSearchCommandModel = new AdvancedSearchCommand();
         private void Cancel()
@@ -21,19 +22,19 @@ namespace Harmony.Client.Shared.Modals
 
         protected override async Task OnInitializedAsync()
         {
-            //var issueTypesResult = await _boardManager.GetIssueTypesAsync(CreateBacklogCommandModel.BoardId.ToString());
+            var initAdvancedSearchResult = await _searchManager.InitAdvancedSearch();
 
-            //if(issueTypesResult.Succeeded)
-            //{
-            //    _issueTypes = issueTypesResult.Data;
-            //}
+            if(initAdvancedSearchResult.Succeeded)
+            {
+
+            }
         }
 
-        private async Task SubmitAsync()
+        private async Task Search()
         {
             _processing = true;
 
-            //var result = await _cardManager.CreateBacklogItemAsync(CreateBacklogCommandModel);
+            var result = await _searchManager.AdvancedSearch(_advancedSearchCommandModel);
 
             //MudDialog.Close(result.Data);
 

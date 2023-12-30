@@ -8,5 +8,7 @@
         {
             return $"{Index}?text={text}";
         }
+
+        public static string AdvancedSearch = $"{Index}advanced";
     }
 }

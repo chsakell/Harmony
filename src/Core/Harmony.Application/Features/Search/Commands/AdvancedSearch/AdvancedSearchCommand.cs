@@ -14,8 +14,6 @@ namespace Harmony.Application.Features.Search.Commands.AdvancedSearch
 {
     public class AdvancedSearchCommand : IRequest<IResult<List<SearchableCard>>>
     {
-        [Required]
-        [MinLength(5)]
         public string Title { get; set; }
 
         public string Description { get; set; }
@@ -24,14 +22,14 @@ namespace Harmony.Application.Features.Search.Commands.AdvancedSearch
 
         public List<string> AssignedMembers { get; set; }
 
-        public Guid BoardId { get; set; }
+        public Guid? BoardId { get; set; }
 
-        public Guid ListId { get; set; }
+        public Guid? ListId { get; set; }
 
         public bool HasAttachments { get; set; }
 
         public CardStatus CardStatus { get; set; }
 
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
     }
 }
