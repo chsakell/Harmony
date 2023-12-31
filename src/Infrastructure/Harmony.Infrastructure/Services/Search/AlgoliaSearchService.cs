@@ -221,7 +221,7 @@ namespace Harmony.Infrastructure.Services.Search
                 result.Add(searchableCard);
             }
 
-            return result.OrderBy(card => card.SerialKey).ToList();
+            return result.DistinctBy(card => card.CardId).OrderBy(card => card.SerialKey).ToList();
         }
 
         private async Task<List<string>> GetIndexedBoards(List<string> userBoardIndices)

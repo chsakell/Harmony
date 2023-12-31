@@ -16,7 +16,7 @@
             }
         </TitleContent>
         <DialogContent>
-            <MudGrid>
+            <MudGrid Style="">
                 <MudItem xs="12" md="4">
                     <MudPaper>
                         <MudList>
@@ -72,27 +72,37 @@
                                 </MudDatePicker>
                             </MudListItem>
                             <MudListItem>
-                                <MudButton FullWidth="true" Disabled="@(!context.Validate() || _searching || _selectedBoard == null)"
-                                           ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                                    @if (_searching)
-                                    {
-                                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                                        <MudText Class="ms-2">@_localizer["Searching.."]</MudText>
-                                    }
-                                    else
-                                    {
-                                        <MudText>@_localizer["Search"]</MudText>
-                                    }
-                                </MudButton>
+                                <MudGrid>
+                                    <MudItem xs="6">
+                                        <MudSwitch @bind-Checked="@_advancedSearchCommandModel.CombineFilters"
+                                                   Label="Combine filters" Color="Color.Success" />
+                                    </MudItem>
+                                    <MudItem xs="6">
+                                        <MudButton FullWidth="true" Disabled="@(!context.Validate() || _searching || _selectedBoard == null)"
+                                                   ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                                            @if (_searching)
+                                            {
+                                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                                <MudText Class="ms-2">@_localizer["Searching.."]</MudText>
+                                            }
+                                            else
+                                            {
+                                                <MudText>@_localizer["Search"]</MudText>
+                                            }
+                                        </MudButton>
+                                    </MudItem>
+                                </MudGrid>
+
                             </MudListItem>
                         </MudList>
                     </MudPaper>
                 </MudItem>
                 <MudItem xs="12" md="8">
                     <MudPaper>
-                        <MudTable Items="@_cards" Hover="true" T="SearchableCard"
+                        <MudTable @ref="_mudTable" Items="@_cards" Hover="true" T="SearchableCard"
                                   Loading="@_searching" LoadingProgressColor="Color.Info"
-                                  RowClass="cursor-pointer" OnRowClick="RowClickEvent">
+                                  RowClass="cursor-pointer" OnRowClick="RowClickEvent"
+                                  FixedHeader="true" Style="height: calc(100vh - 90px);">
                             <HeaderContent>
                                 <MudTh>Key</MudTh>
                                 <MudTh>Title</MudTh>

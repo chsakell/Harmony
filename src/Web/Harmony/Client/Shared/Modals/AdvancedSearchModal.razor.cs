@@ -25,7 +25,7 @@ namespace Harmony.Client.Shared.Modals
         private List<IssueTypeDto> _issueTypes = new List<IssueTypeDto>();
         private IEnumerable<SearchableCard> _cards = new List<SearchableCard>();
         private AdvancedSearchCommand _advancedSearchCommandModel = new AdvancedSearchCommand();
-
+        private MudTable<SearchableCard> _mudTable;
         public bool FiltersDisabled => _selectedBoard == null;
         private void Cancel()
         {

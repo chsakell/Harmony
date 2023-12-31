@@ -31,5 +31,6 @@ namespace Harmony.Application.Features.Search.Commands.AdvancedSearch
         public CardStatus CardStatus { get; set; }
 
         public DateTime? DueDate { get; set; }
+        public bool CombineFilters { get; set; }
     }
 }
