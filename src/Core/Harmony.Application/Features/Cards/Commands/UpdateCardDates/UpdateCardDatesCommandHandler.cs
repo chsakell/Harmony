@@ -11,6 +11,7 @@ using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 
@@ -22,6 +23,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
     private readonly ICardActivityService _cardActivityService;
     private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly INotificationsPublisher _notificationsPublisher;
+    private readonly IBoardService _boardService;
     private readonly IStringLocalizer<UpdateCardDatesCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
@@ -31,6 +33,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		ICardActivityService cardActivityService,
 		IHubClientNotifierService hubClientNotifierService,
 		INotificationsPublisher notificationsPublisher,
+		IBoardService boardService,
 		IStringLocalizer<UpdateCardDatesCommandHandler> localizer,
 		IMapper mapper)
 	{
@@ -40,6 +43,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
         _cardActivityService = cardActivityService;
         _hubClientNotifierService = hubClientNotifierService;
         _notificationsPublisher = notificationsPublisher;
+        _boardService = boardService;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -70,6 +74,18 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
             await _hubClientNotifierService.UpdateCardDates(request.BoardId, card.Id, card.StartDate, card.DueDate);
 
 			_notificationsPublisher.PublishEmailNotification(new CardDueTimeUpdatedNotification(card.Id));
+
+            var board = await _boardService.GetBoardInfo(request.BoardId);
+
+            DateTime sTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            long? unixTime = card.DueDate.HasValue ? (long)(card.DueDate.Value - sTime).TotalSeconds : null;
+
+            _notificationsPublisher
+                    .PublishSearchIndexNotification(new CardDueDateUpdatedIndexNotification()
+                    {
+                        ObjectID = card.Id.ToString(),
+                        DueDate = unixTime
+                    }, board.IndexName);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Dates updated"]);
 		}

@@ -98,7 +98,7 @@
             </DialogContent>
             <DialogActions>
                 <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-                <MudButton Disabled="@(!context.Validate() || _searching || FiltersDisabled)"
+                <MudButton Disabled="@(!context.Validate() || _searching)"
                            ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
                     @if (_searching)
                 {

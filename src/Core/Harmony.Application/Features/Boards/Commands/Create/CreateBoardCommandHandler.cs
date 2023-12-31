@@ -150,7 +150,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                             "status",
                             "comments",
                             "members",
-                            "hasAttachments"
+                            "hasAttachments",
+                            "dueDate"
                         }
                     }, indexName);
 

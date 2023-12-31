@@ -120,6 +120,14 @@ namespace Harmony.Notifications.Services.Hosted
                         case SearchIndexNotificationType.CardMembersUpdated:
                             await Index<CardMembersUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
                             break;
+
+                        case SearchIndexNotificationType.CardDescriptionUpdated:
+                            await Index<CardDescriptionUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                            break;
+
+                        case SearchIndexNotificationType.CardDueDateUpdated:
+                            await Index<CardDueDateUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                            break;
                     }
                 }
             };

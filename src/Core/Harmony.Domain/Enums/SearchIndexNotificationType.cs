@@ -5,6 +5,8 @@
         BoardCreated,
         CardAddedToBoard,
         CardTitleUpdated,
+        CardDescriptionUpdated,
+        CardDueDateUpdated,
         CardStatusUpdated,
         CardHasAttachmentsUpdated,
         CardListUpdated,

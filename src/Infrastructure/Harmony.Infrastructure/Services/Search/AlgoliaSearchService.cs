@@ -7,6 +7,7 @@ using Harmony.Application.DTO.Search;
 using Harmony.Application.Features.Search.Commands.AdvancedSearch;
 using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Application.Models;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -150,6 +151,30 @@ namespace Harmony.Infrastructure.Services.Search
                     indexQueries.Add(new QueryMultiIndices(index, query.ListId.ToString())
                     {
                         RestrictSearchableAttributes = new List<string> { "listId" }
+                    });
+                }
+
+                if (query.HasAttachments)
+                {
+                    indexQueries.Add(new QueryMultiIndices(index, "true")
+                    {
+                        RestrictSearchableAttributes = new List<string> { "hasAttachments" }
+                    });
+                }
+
+                if (query.DueDate.HasValue)
+                {
+                    var startDate = query.DueDate.Value.Date;
+                    DateTime sTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    long unixStartDateTime = (long)(startDate - sTime).TotalSeconds;
+
+                    var endDate = startDate.AddDays(1);
+                    long unixEndDateTime = (long)(endDate - sTime).TotalSeconds;
+
+                    indexQueries.Add(new QueryMultiIndices(index, query.ListId.ToString())
+                    {
+                        RestrictSearchableAttributes = new List<string> { "dueDate" },
+                        Filters = $"dueDate:{unixStartDateTime} TO {unixEndDateTime}"
                     });
                 }
             }

@@ -7,6 +7,8 @@ using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 
@@ -17,6 +19,8 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 	private readonly ICurrentUserService _currentUserService;
     private readonly ICardActivityService _cardActivityService;
     private readonly IHubClientNotifierService _hubClientNotifierService;
+    private readonly IBoardService _boardService;
+    private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IStringLocalizer<UpdateCardDescriptionCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
@@ -25,6 +29,8 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 		ICurrentUserService currentUserService,
 		ICardActivityService cardActivityService,
 		IHubClientNotifierService hubClientNotifierService,
+		IBoardService boardService,
+		INotificationsPublisher notificationsPublisher,
 		IStringLocalizer<UpdateCardDescriptionCommandHandler> localizer,
 		IMapper mapper)
 	{
@@ -33,6 +39,8 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 		_currentUserService = currentUserService;
         _cardActivityService = cardActivityService;
         _hubClientNotifierService = hubClientNotifierService;
+        _boardService = boardService;
+        _notificationsPublisher = notificationsPublisher;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -57,6 +65,15 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
                 CardActivityType.CardDescriptionUpdated, card.DateUpdated.Value);
 
             await _hubClientNotifierService.UpdateCardDescription(request.BoardId, card.Id, card.Description);
+
+            var board = await _boardService.GetBoardInfo(request.BoardId);
+
+            _notificationsPublisher
+                    .PublishSearchIndexNotification(new CardDescriptionUpdatedIndexNotification()
+                    {
+                        ObjectID = card.Id.ToString(),
+                        Description = card.Description
+                    }, board.IndexName);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Description updated"]);
 		}
