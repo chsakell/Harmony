@@ -4,6 +4,7 @@ using Algolia.Search.Models.Search;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.DTO.Search;
+using Harmony.Application.Features.Search.Commands.AdvancedSearch;
 using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Application.Models;
 using Harmony.Shared.Wrapper;
@@ -53,7 +54,104 @@ namespace Harmony.Infrastructure.Services.Search
 
             foreach (var index in indexedBoards)
             {
-                indexQueries.Add(new QueryMultiIndices(index, term));
+                indexQueries.Add(new QueryMultiIndices(index, term)
+                {
+                    RestrictSearchableAttributes = new List<string> { "title", "serialKey" }
+                });
+            }
+
+            MultipleQueriesRequest request = new MultipleQueriesRequest
+            {
+                Requests = indexQueries
+            };
+
+            var multiQueryResult = await _searchClient.MultipleQueriesAsync<IndexedCard>(request);
+
+            var hits = multiQueryResult.Results.SelectMany(x => x.Hits);
+
+            foreach (var indexedCard in hits)
+            {
+                var searchableCard = new SearchableCard()
+                {
+                    CardId = indexedCard.ObjectID,
+                    Title = indexedCard.Title,
+                    IssueType = indexedCard.IssueType,
+                    Status = indexedCard.Status,
+                    SerialKey = indexedCard.SerialKey,
+                    BoardId = indexedCard.BoardId
+                };
+
+                var board = boardInfos.FirstOrDefault(bi => bi.Id == indexedCard.BoardId);
+
+                if (board != null)
+                {
+                    searchableCard.BoardTitle = board.Title;
+                    searchableCard.BoardId = board.Id;
+
+                    var list = board.Lists.FirstOrDefault(l => l.Id == indexedCard.ListId);
+
+                    if (list != null)
+                    {
+                        searchableCard.List = list.Title;
+
+                        searchableCard.IsComplete = list.CardStatus == Domain.Enums.BoardListCardStatus.DONE;
+                    }
+                }
+
+                result.Add(searchableCard);
+            }
+
+            return result;
+        }
+
+        public async Task<List<SearchableCard>> Search(List<Guid> boards, AdvancedSearchCommand query)
+        {
+            var result = new List<SearchableCard>();
+
+            List<BoardInfo> boardInfos = new List<BoardInfo>();
+            foreach (var boardId in boards)
+            {
+                var boardInfo = await _boardService.GetBoardInfo(boardId);
+                if (boardInfo != null)
+                {
+                    boardInfos.Add(boardInfo);
+                }
+            }
+
+            var indexedBoards = await GetIndexedBoards(boardInfos.Select(bi => bi.IndexName).ToList());
+
+            if (!indexedBoards.Any())
+            {
+                return Enumerable.Empty<SearchableCard>().ToList();
+            }
+
+            var indexQueries = new List<QueryMultiIndices>();
+
+            foreach (var index in indexedBoards)
+            {
+                if(!string.IsNullOrEmpty(query.Title))
+                {
+                    indexQueries.Add(new QueryMultiIndices(index, query.Title)
+                    {
+                        RestrictSearchableAttributes = new List<string> { "title" }
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(query.Description))
+                {
+                    indexQueries.Add(new QueryMultiIndices(index, query.Description)
+                    {
+                        RestrictSearchableAttributes = new List<string> { "description" }
+                    });
+                }
+
+                if (query.ListId.HasValue)
+                {
+                    indexQueries.Add(new QueryMultiIndices(index, query.ListId.ToString())
+                    {
+                        RestrictSearchableAttributes = new List<string> { "listId" }
+                    });
+                }
             }
 
             MultipleQueriesRequest request = new MultipleQueriesRequest

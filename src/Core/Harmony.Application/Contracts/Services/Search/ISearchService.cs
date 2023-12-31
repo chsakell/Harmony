@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO.Search;
+using Harmony.Application.Features.Search.Commands.AdvancedSearch;
 using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace Harmony.Application.Contracts.Services.Search
     public interface ISearchService
     {
         Task<List<SearchableCard>> Search(List<Guid> boards, string term);
+        Task<List<SearchableCard>> Search(List<Guid> boards, AdvancedSearchCommand query);
     }
 }

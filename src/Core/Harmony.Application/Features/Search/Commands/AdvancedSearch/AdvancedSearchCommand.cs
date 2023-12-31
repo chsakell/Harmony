@@ -20,7 +20,7 @@ namespace Harmony.Application.Features.Search.Commands.AdvancedSearch
 
         public string Comment { get; set; }
 
-        public List<string> AssignedMembers { get; set; }
+        public List<string> Members { get; set; }
 
         public Guid? BoardId { get; set; }
 
