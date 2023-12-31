@@ -37,6 +37,7 @@ namespace Harmony.Notifications.Services.Notifications.SearchIndex
                 var settings = new IndexSettings
                 {
                     SearchableAttributes = boardCreatedNotification.SearchableAttributes,
+                    AttributesForFaceting = boardCreatedNotification.AttributesForFaceting
                 };
 
                 await index.SetSettingsAsync(settings);

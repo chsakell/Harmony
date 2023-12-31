@@ -152,6 +152,10 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                             "members",
                             "hasAttachments",
                             "dueDate"
+                        },
+                        AttributesForFaceting = new List<string>
+                        {
+                            "hasAttachments"
                         }
                     }, indexName);
 

@@ -57,7 +57,9 @@
                                 <MudTextField For="@(() => _advancedSearchCommandModel.Description)" @bind-Value="_advancedSearchCommandModel.Description" Label="Description" Variant="Variant.Text"></MudTextField>
                             </MudListItem>
                             <MudListItem>
-                                <MudCheckBox T="bool" For="@(() => _advancedSearchCommandModel.HasAttachments)" @bind-Value="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary" Label="Has attachments"></MudCheckBox>
+                                <MudCheckBox For="@(() => _advancedSearchCommandModel.HasAttachments)" 
+                                    @bind-Checked="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary" 
+                                    Label="Has attachments"></MudCheckBox>
                             </MudListItem>
                             <MudListItem>
                                 <MudDatePicker PickerVariant="PickerVariant.Dialog" @ref="_datePicker" Label="Due date"

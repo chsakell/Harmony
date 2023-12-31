@@ -156,9 +156,10 @@ namespace Harmony.Infrastructure.Services.Search
 
                 if (query.HasAttachments)
                 {
-                    indexQueries.Add(new QueryMultiIndices(index, "true")
+                    indexQueries.Add(new QueryMultiIndices(index)
                     {
-                        RestrictSearchableAttributes = new List<string> { "hasAttachments" }
+                        RestrictSearchableAttributes = new List<string> { "hasAttachments" },
+                        Filters = "hasAttachments:true"
                     });
                 }
 

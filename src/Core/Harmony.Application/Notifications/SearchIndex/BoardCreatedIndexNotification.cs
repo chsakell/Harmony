@@ -8,5 +8,6 @@ namespace Harmony.Application.Notifications.SearchIndex
 
         public string ObjectID { get; set; }  // Board Id
         public List<string> SearchableAttributes { get; set; }
+        public List<string> AttributesForFaceting { get; set; }
     }
 }
