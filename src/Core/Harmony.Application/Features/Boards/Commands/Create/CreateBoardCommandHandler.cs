@@ -149,7 +149,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                             "issueType", 
                             "status",
                             "comments",
-                            "members"
+                            "members",
+                            "hasAttachments"
                         }
                     }, indexName);
 

@@ -1,4 +1,5 @@
 ﻿@using Harmony.Application.DTO
+@using Harmony.Application.DTO.Search
 @using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<AdvancedSearchModal> _localizer
@@ -17,7 +18,7 @@
         <DialogContent>
 
             <MudGrid>
-                <MudItem xs="12" md="7">
+                <MudItem xs="12" md="4">
                     <MudPaper>
                         <MudList>
                             <MudListItem>
@@ -27,7 +28,7 @@
                                 <MudTextField For="@(() => _advancedSearchCommandModel.Description)" @bind-Value="_advancedSearchCommandModel.Description" Label="Description" Variant="Variant.Text"></MudTextField>
                             </MudListItem>
                             <MudListItem>
-                                <MudCheckBox T="bool" For="@(() => _advancedSearchCommandModel.HasAttachments)" @bind-Value="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary" Label="Attachments"></MudCheckBox>
+                                <MudCheckBox T="bool" For="@(() => _advancedSearchCommandModel.HasAttachments)" @bind-Value="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary" Label="Has attachments"></MudCheckBox>
                             </MudListItem>
                             <MudListItem>
                                 <MudDatePicker PickerVariant="PickerVariant.Dialog" @ref="_datePicker" Label="Due date"
@@ -43,17 +44,34 @@
                         </MudList>
                     </MudPaper>
                 </MudItem>
-                <MudItem xs="12" md="5">
+                <MudItem xs="12" md="8">
+                    <MudPaper>
+                        <MudTable Items="@_cards" Hover="true" T="SearchableCard"
+                                  Loading="@_searching" LoadingProgressColor="Color.Info"
+                                  RowClass="cursor-pointer" OnRowClick="RowClickEvent">
+                            <HeaderContent>
+                                <MudTh>Key</MudTh>
+                                <MudTh>Title</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="card">
+                                <MudTd DataLabel="Serial Key">
+                                    <MudChip Label="true" Size="Size.Small" Color="Color.Warning">
+                                        @card.SerialKey
+                                    </MudChip>
+                                </MudTd>
+                                <MudTd DataLabel="Title">@card.Title</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
 
-                </MudItem>
-            </MudGrid>
-
-        </DialogContent>
-        <DialogActions>
-            <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-                <MudButton Disabled="@(!context.Validate() || _processing)"
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+                <MudButton Disabled="@(!context.Validate() || _searching)"
                            ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                    @if (_processing)
+                    @if (_searching)
                 {
                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                     <MudText Class="ms-2">@_localizer["Searching.."]</MudText>
