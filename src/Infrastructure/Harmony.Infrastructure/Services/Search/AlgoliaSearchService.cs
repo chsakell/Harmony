@@ -102,7 +102,7 @@ namespace Harmony.Infrastructure.Services.Search
                 result.Add(searchableCard);
             }
 
-            return result;
+            return result.OrderBy(card => card.SerialKey).ToList();
         }
 
         public async Task<List<SearchableCard>> Search(List<Guid> boards, AdvancedSearchCommand query)
@@ -221,7 +221,7 @@ namespace Harmony.Infrastructure.Services.Search
                 result.Add(searchableCard);
             }
 
-            return result;
+            return result.OrderBy(card => card.SerialKey).ToList();
         }
 
         private async Task<List<string>> GetIndexedBoards(List<string> userBoardIndices)

@@ -27,7 +27,7 @@
                         </MudStack>
                         @if (!string.IsNullOrEmpty(card.SerialKey))
                         {
-                            <MudChip Label="true" Size="Size.Small" Color="Color.Warning">
+                            <MudChip Label="true" Size="Size.Small" Color="@(card.IsComplete ? Color.Tertiary : Color.Warning)">
                                 @card.SerialKey
                             </MudChip>
                         }

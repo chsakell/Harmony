@@ -44,7 +44,7 @@ namespace Harmony.Client.Shared.Components
             {
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, FullScreen=true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
             var dialog = _dialogService.Show<AdvancedSearchModal>("Advanced search", parameters, options);
             var result = await dialog.Result;
         }

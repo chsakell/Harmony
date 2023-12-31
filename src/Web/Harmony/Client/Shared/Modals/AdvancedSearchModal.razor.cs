@@ -93,20 +93,20 @@ namespace Harmony.Client.Shared.Modals
         {
             if (board == null)
             {
-                return "Select project";
+                return string.Empty;
             }
 
             return board.Title;
         };
 
-        private Func<BoardListDto, string> boardListConverterFunc = board =>
+        private Func<BoardListDto, string> boardListConverterFunc = list =>
         {
-            if (board == null)
+            if (list == null)
             {
-                return "Select list";
+                return string.Empty;
             }
 
-            return board.Title;
+            return list.Title;
         };
 
         private void DisplayMessage(IResult result)

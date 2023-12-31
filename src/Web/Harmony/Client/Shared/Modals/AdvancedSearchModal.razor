@@ -16,7 +16,6 @@
             }
         </TitleContent>
         <DialogContent>
-
             <MudGrid>
                 <MudItem xs="12" md="4">
                     <MudPaper>
@@ -26,7 +25,7 @@
                                            @bind-Value:get="_selectedBoard"
                                            @bind-Value:set="SetBoard"
                                            ToStringFunc="boardConverterFunc"
-                                           Label="" AnchorOrigin="Origin.BottomCenter">
+                                           Label="Select project (required)" AnchorOrigin="Origin.BottomCenter">
                                     @foreach (var board in _userBoards)
                                     {
                                         <MudSelectItem Value="board">
@@ -40,7 +39,7 @@
                                                @bind-Value:get="_selectedBoardList"
                                                @bind-Value:set="SetBoardList"
                                                ToStringFunc="boardListConverterFunc"
-                                               Label="" AnchorOrigin="Origin.BottomCenter">
+                                               Label="List (optional)" AnchorOrigin="Origin.BottomCenter">
                                         @foreach (var list in _selectedBoard.Lists)
                                         {
                                             <MudSelectItem Value="list">
@@ -57,9 +56,9 @@
                                 <MudTextField For="@(() => _advancedSearchCommandModel.Description)" @bind-Value="_advancedSearchCommandModel.Description" Label="Description" Variant="Variant.Text"></MudTextField>
                             </MudListItem>
                             <MudListItem>
-                                <MudCheckBox For="@(() => _advancedSearchCommandModel.HasAttachments)" 
-                                    @bind-Checked="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary" 
-                                    Label="Has attachments"></MudCheckBox>
+                                <MudCheckBox For="@(() => _advancedSearchCommandModel.HasAttachments)"
+                                             @bind-Checked="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary"
+                                             Label="Has attachments"></MudCheckBox>
                             </MudListItem>
                             <MudListItem>
                                 <MudDatePicker PickerVariant="PickerVariant.Dialog" @ref="_datePicker" Label="Due date"
@@ -72,6 +71,20 @@
                                     </PickerActions>
                                 </MudDatePicker>
                             </MudListItem>
+                            <MudListItem>
+                                <MudButton FullWidth="true" Disabled="@(!context.Validate() || _searching || _selectedBoard == null)"
+                                           ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                                    @if (_searching)
+                                    {
+                                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                        <MudText Class="ms-2">@_localizer["Searching.."]</MudText>
+                                    }
+                                    else
+                                    {
+                                        <MudText>@_localizer["Search"]</MudText>
+                                    }
+                                </MudButton>
+                            </MudListItem>
                         </MudList>
                     </MudPaper>
                 </MudItem>
@@ -83,35 +96,28 @@
                             <HeaderContent>
                                 <MudTh>Key</MudTh>
                                 <MudTh>Title</MudTh>
+                                <MudTh>Type</MudTh>
                             </HeaderContent>
                             <RowTemplate Context="card">
                                 <MudTd DataLabel="Serial Key">
-                                    <MudChip Label="true" Size="Size.Small" Color="Color.Warning">
+                                    <MudChip Label="true" Size="Size.Small" Color="@(card.IsComplete ? Color.Tertiary : Color.Warning)">
                                         @card.SerialKey
                                     </MudChip>
                                 </MudTd>
                                 <MudTd DataLabel="Title">@card.Title</MudTd>
+                                    <MudTd DataLabel="Issue Type">
+                                        <MudStack Row="true">
+                                            <MudTooltip Text="@card.IssueType" Delay="2500">
+                                                <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(card.IssueType)"
+                                                         Color="ColorHelper.GetIssueTypeColor(card.IssueType)" />
+                                            </MudTooltip>
+                                        </MudStack>
+                                    </MudTd>
                                 </RowTemplate>
                             </MudTable>
                         </MudPaper>
                     </MudItem>
                 </MudGrid>
-
             </DialogContent>
-            <DialogActions>
-                <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-                <MudButton Disabled="@(!context.Validate() || _searching)"
-                           ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                    @if (_searching)
-                {
-                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                    <MudText Class="ms-2">@_localizer["Searching.."]</MudText>
-                }
-                else
-                {
-                    <MudText>@_localizer["Search"]</MudText>
-                }
-            </MudButton>
-        </DialogActions>
-    </MudDialog>
-</EditForm>
+        </MudDialog>
+    </EditForm>
