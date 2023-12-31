@@ -17,10 +17,16 @@ namespace Harmony.Client.Shared.Modals
         private bool _searching;
         [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
+        private BoardDto _selectedBoard { get; set; }
+        private BoardListDto _selectedBoardList { get; set; }
+        private List<BoardDto> _userBoards { get; set; } = new List<BoardDto>();
+
         private MudDatePicker _datePicker;
         private List<IssueTypeDto> _issueTypes = new List<IssueTypeDto>();
         private IEnumerable<SearchableCard> _cards = new List<SearchableCard>();
         private AdvancedSearchCommand _advancedSearchCommandModel = new AdvancedSearchCommand();
+
+        public bool FiltersDisabled => _selectedBoard == null;
         private void Cancel()
         {
             MudDialog.Cancel();
@@ -28,11 +34,11 @@ namespace Harmony.Client.Shared.Modals
 
         protected override async Task OnInitializedAsync()
         {
-            var initAdvancedSearchResult = await _searchManager.InitAdvancedSearch();
+            var userBoardsResult = await _boardManager.GetUserBoards();
 
-            if(initAdvancedSearchResult.Succeeded)
+            if(userBoardsResult.Succeeded)
             {
-
+                _userBoards = userBoardsResult.Data;
             }
         }
 
@@ -42,7 +48,7 @@ namespace Harmony.Client.Shared.Modals
 
             var result = await _searchManager.AdvancedSearch(_advancedSearchCommandModel);
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 _cards = result.Data;
             }
@@ -67,6 +73,40 @@ namespace Harmony.Client.Shared.Modals
             }
 
             return type.Summary;
+        };
+
+        private void SetBoard(BoardDto board)
+        {
+            _selectedBoard = board;
+
+            _advancedSearchCommandModel.BoardId = board?.Id;
+        }
+
+        private void SetBoardList(BoardListDto boardList)
+        {
+            _selectedBoardList = boardList;
+
+            _advancedSearchCommandModel.ListId = boardList?.Id;
+        }
+
+        private Func<BoardDto, string> boardConverterFunc = board =>
+        {
+            if (board == null)
+            {
+                return "Select project";
+            }
+
+            return board.Title;
+        };
+
+        private Func<BoardListDto, string> boardListConverterFunc = board =>
+        {
+            if (board == null)
+            {
+                return "Select list";
+            }
+
+            return board.Title;
         };
 
         private void DisplayMessage(IResult result)

@@ -22,6 +22,35 @@
                     <MudPaper>
                         <MudList>
                             <MudListItem>
+                                <MudSelect Disabled="!_userBoards.Any()" T="BoardDto" Clearable="true"
+                                           @bind-Value:get="_selectedBoard"
+                                           @bind-Value:set="SetBoard"
+                                           ToStringFunc="boardConverterFunc"
+                                           Label="" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var board in _userBoards)
+                                    {
+                                        <MudSelectItem Value="board">
+                                            <MudText>@board.Title</MudText>
+                                            </MudSelectItem>
+                                    }
+                                </MudSelect>
+                                @if (_selectedBoard != null)
+                                {
+                                    <MudSelect Disabled="!_userBoards.Any()" T="BoardListDto" Clearable="true"
+                                               @bind-Value:get="_selectedBoardList"
+                                               @bind-Value:set="SetBoardList"
+                                               ToStringFunc="boardListConverterFunc"
+                                               Label="" AnchorOrigin="Origin.BottomCenter">
+                                        @foreach (var list in _selectedBoard.Lists)
+                                        {
+                                            <MudSelectItem Value="list">
+                                                <MudText>@list.Title</MudText>
+                                                </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                }
+                            </MudListItem>
+                            <MudListItem>
                                 <MudTextField For="@(() => _advancedSearchCommandModel.Title)" @bind-Value="_advancedSearchCommandModel.Title" Label="Title" Variant="Variant.Text"></MudTextField>
                             </MudListItem>
                             <MudListItem>
@@ -69,7 +98,7 @@
             </DialogContent>
             <DialogActions>
                 <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-                <MudButton Disabled="@(!context.Validate() || _searching)"
+                <MudButton Disabled="@(!context.Validate() || _searching || FiltersDisabled)"
                            ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
                     @if (_searching)
                 {

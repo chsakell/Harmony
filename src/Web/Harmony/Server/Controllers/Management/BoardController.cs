@@ -6,6 +6,7 @@ using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
+using Harmony.Application.Features.Boards.Queries.GetUserBoards;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
@@ -17,6 +18,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Domain.Enums;
 using Harmony.Server.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -167,6 +169,13 @@ namespace Harmony.Server.Controllers.Management
         public async Task<IActionResult> MoveCardsToBacklog(Guid id, MoveToBacklogCommand request)
         {
             return Ok(await _mediator.Send(request));
+        }
+
+        [HttpGet("userboards")]
+        [Authorize]
+        public async Task<IActionResult> GetBoardsForUser()
+        {
+            return Ok(await _mediator.Send(new GetUserBoardsQuery()));
         }
     }
 }

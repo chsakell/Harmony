@@ -81,6 +81,25 @@ namespace Harmony.Infrastructure.Services.Management
             return result;
         }
 
+        public async Task<List<Board>> GetUserBoardsWithLists(Guid? workspaceId, string userId)
+        {
+            var userWorkspaceBoardsQuery = _userWorkspaceRepository
+                    .GetUserWorkspaceBoardsQuery(workspaceId, userId);
+
+            var userBoardsQuery = _userBoardRepository.GetUserBoardsQuery(workspaceId, userId);
+
+            var result = await userWorkspaceBoardsQuery
+                    .Union(userBoardsQuery)
+                    .Distinct().ToListAsync();
+
+            foreach (var board in result)
+            {
+                await _boardRepository.LoadBoardListEntryAsync(board);
+            }
+
+            return result;
+        }
+
         public async Task<BoardInfo?> GetBoardInfo(Guid boardId)
         {
             return await _memoryCache.GetOrCreateAsync(CacheKeys.BoardInfo(boardId),

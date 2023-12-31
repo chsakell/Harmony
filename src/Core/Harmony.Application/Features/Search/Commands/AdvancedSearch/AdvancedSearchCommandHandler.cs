@@ -43,9 +43,17 @@ namespace Harmony.Application.Features.Search.Commands.AdvancedSearch
                 return await Result<List<SearchableCard>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var userBoards = await _boardService.GetUserBoards(null, userId);
+            List<Guid> boardIds = null;
 
-            var boardIds = userBoards.Select(b => b.Id).ToList();
+            if (request.BoardId.HasValue)
+            {
+                boardIds = new List<Guid> { request.BoardId.Value };
+            }
+            else
+            {
+                var userBoards = await _boardService.GetUserBoards(null, userId);
+                boardIds = userBoards.Select(x => x.Id).ToList();
+            }
 
             var result = await _searchService.Search(boardIds, request);
 

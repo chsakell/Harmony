@@ -195,5 +195,11 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
             return await response.ToResult<List<CardDto>>();
         }
+
+        public async Task<IResult<List<BoardDto>>> GetUserBoards()
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.UserBoards);
+            return await response.ToResult<List<BoardDto>>();
+        }
     }
 }

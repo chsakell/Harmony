@@ -6,6 +6,8 @@ namespace Harmony.Client.Infrastructure.Routes
     {
         public static string Index = "api/board/";
 
+        public static string UserBoards = "api/board/userboards/";
+
         public static string Get(string boardId, int size)
         {
             return $"{Index}{boardId}/?size={size}";

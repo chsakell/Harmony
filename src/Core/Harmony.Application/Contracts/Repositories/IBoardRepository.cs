@@ -18,6 +18,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<bool> Exists(string key);
         Task<int> Update(Board board);
         Task LoadWorkspaceEntryAsync(Board board);
-
+        Task LoadBoardListEntryAsync(Board board);
     }
 }
