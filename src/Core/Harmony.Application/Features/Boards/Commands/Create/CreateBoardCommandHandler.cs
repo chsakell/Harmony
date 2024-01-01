@@ -155,6 +155,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                         },
                         AttributesForFaceting = new List<string>
                         {
+                            //"title",
+                            //"listId",
                             "hasAttachments"
                         }
                     }, indexName);
