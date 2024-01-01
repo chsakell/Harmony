@@ -84,12 +84,13 @@ namespace Harmony.Server.Extensions
 
             if (applicationId == null || apiKey == null)
             {
-                return services;
+                services.AddScoped<ISearchService, DatabaseSearchService>();
             }
-
-            services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
-
-            services.AddScoped<ISearchService, AlgoliaSearchService>();
+            else
+            {
+                services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
+                services.AddScoped<ISearchService, AlgoliaSearchService>();
+            }
 
             return services;
         }
