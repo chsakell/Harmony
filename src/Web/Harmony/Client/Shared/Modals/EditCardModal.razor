@@ -359,6 +359,18 @@ else
                     <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
                                Color="Color.Error">ARCHIVE CARD</MudButton>
+                    <MudMenu AnchorOrigin="Origin.BottomLeft" FullWidth="true" Class="close-edit-card my-2" Label="Close Edit And" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary">
+                        @if(_card.Status == CardStatus.Active)
+                        {
+                            <MudMenuItem OnClick="@(() => ViewBoard(_card.BoardId, _card.BoardTitle))" 
+                                IconSize="Size.Small" IconColor="Color.Primary" 
+                                Icon="@Icons.Material.Filled.Dashboard">View board</MudMenuItem>
+                        }
+                        else if(_card.Status == CardStatus.Backlog)
+                        {
+                            <MudMenuItem OnClick="@(() => ViewBacklog(BoardId))" IconSize="Size.Small" IconColor="Color.Primary" Icon="@Icons.Material.Filled.FormatListBulleted">View backlog</MudMenuItem>
+                        }
+                    </MudMenu>
                 </MudItem>
             </MudGrid>
         </DialogContent>

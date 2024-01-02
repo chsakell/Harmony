@@ -19,9 +19,11 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
+using Harmony.Client.Pages.Management;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Entities;
+using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -719,6 +721,21 @@ namespace Harmony.Client.Shared.Modals
 
             return type.Summary;
         };
+
+        private void ViewBacklog(Guid boardId)
+        {
+            MudDialog.Close();
+            _navigationManager.NavigateTo($"/projects/{boardId}/backlog");
+        }
+
+        private void ViewBoard(Guid boardId, string boardTitle)
+        {
+            MudDialog.Close();
+
+            var slug = StringUtilities.SlugifyString(boardTitle);
+            _navigationManager.NavigateTo($"boards/{boardId}/{slug}");
+        }
+
         public void Dispose()
         {
             UnRegisterEvents();

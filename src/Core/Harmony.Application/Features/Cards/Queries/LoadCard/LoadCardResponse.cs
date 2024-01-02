@@ -9,9 +9,10 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
     public class LoadCardResponse
     {
         public Guid Id { get; set; }
+        public string Title { get; set; }
         public Guid BoardId { get; set; }
         public BoardType BoardType { get; set; }
-        public string Title { get; set; }
+        public string BoardTitle { get; set; }
         public string Description { get; set; }
         public int SerialNumber { get; set; }
         public string UserId { get; set; } // User created the card

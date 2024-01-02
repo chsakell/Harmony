@@ -72,11 +72,9 @@ namespace Harmony.Client.Shared.Components
                 {
                     case CardStatus.Backlog:
                         await EditCard(new CardDto() { Id = Guid.Parse(card.CardId) }, card.BoardId, boardKey);
-                        // _navigationManager.NavigateTo($"projects/{card.BoardId}/backlog/{card.CardId.ToLower()}");
                         break;
                     default:
                         await EditCard(new CardDto() { Id = Guid.Parse(card.CardId) }, card.BoardId, boardKey);
-                        //_navigationManager.NavigateTo($"boards/{card.BoardId}/{slug}/{card.CardId}");
                         break;
                 }
             }

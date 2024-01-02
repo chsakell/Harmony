@@ -59,7 +59,9 @@ namespace Harmony.Application.Mappings.Management
                 .ForMember(dto => dto.BoardId, opt =>
                     opt.MapFrom(src => src.BoardList.BoardId))
                 .ForMember(dto => dto.BoardType, opt =>
-                    opt.MapFrom(src => src.BoardList.Board.Type)); ;
+                    opt.MapFrom(src => src.BoardList.Board.Type))
+                .ForMember(dto => dto.BoardTitle, opt =>
+                    opt.MapFrom(src => src.IssueType.Board.Title)); ;
 
             CreateMap<Label, LabelDto>();
             CreateMap<CardLabel, LabelDto>()

@@ -10,6 +10,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public Guid Id { get; set; }
         public Guid BoardId { get; set; }
         public BoardType BoardType { get; set; }
+        public string BoardTitle { get; set; }
 
         [Required]
         [MaxLength(300)]

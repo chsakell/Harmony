@@ -38,6 +38,14 @@ body, .wrapper {
     stroke-linecap: round;
 }
 
+.close-edit-card {
+    width: 100%;
+}
+
+.close-edit-card .mud-button {
+    width: 100%;
+}
+
 @keyframes rotate {
     100% {
         transform: rotate(360deg);
