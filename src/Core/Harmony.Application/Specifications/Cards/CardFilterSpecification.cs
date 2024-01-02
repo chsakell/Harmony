@@ -79,14 +79,24 @@ namespace Harmony.Application.Specifications.Cards
                     Criteria = And(card => card.Description.Contains(filters.Description));
                 }
 
+                if (filters.BoardListId.HasValue)
+                {
+                    Criteria = And(card => card.BoardListId == filters.BoardListId.Value);
+                }
+
                 if (filters.HasAttachments)
                 {
                     Criteria = And(card => card.Attachments.Count > 0);
                 }
 
-                if (filters.BoardId.HasValue)
+                if (filters.BoardId.HasValue && includes.BoardList)
                 {
                     Criteria = And(card => card.BoardList.BoardId == filters.BoardId.Value);
+                }
+
+                if (filters.BoardId.HasValue && includes.IssueType)
+                {
+                    Criteria = And(card => card.IssueType.BoardId == filters.BoardId.Value);
                 }
             }
             else
@@ -101,9 +111,19 @@ namespace Harmony.Application.Specifications.Cards
                     Criteria = Or(card => card.Description.Contains(filters.Description));
                 }
 
-                if (filters.BoardId.HasValue)
+                if (filters.BoardListId.HasValue)
+                {
+                    Criteria = And(card => card.BoardListId == filters.BoardListId.Value);
+                }
+
+                if (filters.BoardId.HasValue && includes.BoardList)
                 {
                     Criteria = And(card => card.BoardList.BoardId == filters.BoardId.Value);
+                }
+
+                if (filters.BoardId.HasValue && includes.IssueType)
+                {
+                    Criteria = And(card => card.IssueType.BoardId == filters.BoardId.Value);
                 }
             }
         }

@@ -46,7 +46,7 @@ namespace Harmony.Infrastructure.Services.Search
 
         public async Task<List<SearchableCard>> Search(List<Guid> boards, AdvancedSearchCommand query)
         {
-            var includes = new CardIncludes() { Board = true };
+            var includes = new CardIncludes() { Board = true, IssueType = true };
 
             if(query.HasAttachments)
             {
@@ -71,14 +71,14 @@ namespace Harmony.Infrastructure.Services.Search
                 .Select(card => new SearchableCard
                 {
                     CardId = card.Id.ToString(),
-                    BoardId = card.BoardList.BoardId,
-                    List = card.BoardList.Title,
-                    BoardTitle = card.BoardList.Board.Title,
-                    IsComplete = card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE,
+                    BoardId = card.IssueType.BoardId,
+                    List = card.BoardList != null ? card.BoardList.Title : null,
+                    BoardTitle = card.IssueType.Board.Title,
+                    IsComplete = card.BoardList != null ? card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE : false,
                     Title = card.Title,
                     IssueType = card.IssueType.Summary,
                     Status = card.Status.ToString(),
-                    SerialKey = $"{card.BoardList.Board.Key}-{card.SerialNumber}"
+                    SerialKey = $"{card.IssueType.Board.Key}-{card.SerialNumber}"
                 })
                 .ToListAsync();
 
