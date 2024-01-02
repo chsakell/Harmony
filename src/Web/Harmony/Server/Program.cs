@@ -2,6 +2,7 @@ using Harmony.Server.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Harmony.Application.Extensions;
 using Harmony.Infrastructure.Extensions;
+using Harmony.Application.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,9 @@ builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
 builder.Services.AddMessaging(builder.Configuration);
-builder.Services.AddSearching(builder.Configuration);
+
+// Configure your Search Engine
+builder.Services.AddSearching(SearchEngine.Database, builder.Configuration);
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();

@@ -169,6 +169,16 @@ namespace Harmony.Client.Shared.Modals
                 _card = _mapper.Map<EditableCardModel>(loadCardResult.Data);
                 CreateCommentCommandModel.CardId = CardId;
                 CreateCommentCommandModel.BoardId = BoardId;
+
+                if(IssueTypes == null)
+                {
+                    var issueTypesResult = await _boardManager.GetIssueTypesAsync(BoardId.ToString());
+
+                    if (issueTypesResult.Succeeded)
+                    {
+                        IssueTypes = issueTypesResult.Data;
+                    }
+                }
             }
 
             _loading = false;

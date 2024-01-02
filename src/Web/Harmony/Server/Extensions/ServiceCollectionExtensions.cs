@@ -9,6 +9,7 @@ using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.Contracts.Services.UserNotifications;
+using Harmony.Application.Enums;
 using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services;
 using Harmony.Infrastructure.Services.Identity;
@@ -77,17 +78,18 @@ namespace Harmony.Server.Extensions
             return services;
         }
 
-        internal static IServiceCollection AddSearching(this IServiceCollection services, IConfiguration configuration)
+        internal static IServiceCollection AddSearching(this IServiceCollection services,
+            SearchEngine engine, IConfiguration configuration)
         {
-            var applicationId = configuration["AlgoliaConfiguration:ApplicationId"];
-            var apiKey = configuration["AlgoliaConfiguration:ApiKey"];
-
-            if (applicationId == null || apiKey == null)
+            if (engine == SearchEngine.Database)
             {
                 services.AddScoped<ISearchService, DatabaseSearchService>();
             }
-            else
+            else if(engine == SearchEngine.Algolia)
             {
+                var applicationId = configuration["AlgoliaConfiguration:ApplicationId"];
+                var apiKey = configuration["AlgoliaConfiguration:ApiKey"];
+
                 services.AddSingleton<ISearchClient>(new SearchClient(applicationId, apiKey));
                 services.AddScoped<ISearchService, AlgoliaSearchService>();
             }

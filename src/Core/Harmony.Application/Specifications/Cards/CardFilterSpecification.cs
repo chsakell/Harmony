@@ -31,6 +31,11 @@ namespace Harmony.Application.Specifications.Cards
                 Includes.Add(card => card.Attachments);
             }
 
+            if(includes.IssueType)
+            {
+                Includes.Add(card => card.IssueType.Board);
+            }
+
             if (includes.Board)
             {
                 Includes.Add(card => card.BoardList.Board);

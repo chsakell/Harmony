@@ -1,5 +1,7 @@
 ﻿@using Harmony.Application.DTO.Search
 @using Harmony.Client.Infrastructure.Helper
+@inject Microsoft.Extensions.Localization.IStringLocalizer<AppSearch> _localizer
+
 <MudStack Class="SearchStack">
     <MudAutocomplete @ref="_autoComplete" T="SearchableCard" @bind-Value="_selectedCard" Margin="Margin.Dense"
                      Clearable="true" Placeholder="Search" Class="app-search-bar"

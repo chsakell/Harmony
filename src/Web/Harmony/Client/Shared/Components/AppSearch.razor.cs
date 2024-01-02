@@ -1,6 +1,9 @@
-﻿using Harmony.Application.DTO.Search;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.DTO.Search;
+using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Components;
@@ -57,7 +60,35 @@ namespace Harmony.Client.Shared.Components
 
             await JSRuntime.InvokeVoidAsync("resetAppSearchWidth");
 
-            _navigationManager.NavigateTo($"boards/{card.BoardId}/{slug}/{card.CardId}");
+            if(Enum.TryParse<CardStatus>(card.Status, out var status))
+            {
+                var boardKey = card.SerialKey.Split('-')[0];
+                switch(status)
+                {
+                    case CardStatus.Backlog:
+                        await EditCard(new CardDto() { Id = Guid.Parse(card.CardId) }, card.BoardId, boardKey);
+                        // _navigationManager.NavigateTo($"projects/{card.BoardId}/backlog/{card.CardId.ToLower()}");
+                        break;
+                    default:
+                        await EditCard(new CardDto() { Id = Guid.Parse(card.CardId) }, card.BoardId, boardKey);
+                        // _navigationManager.NavigateTo($"boards/{card.BoardId}/{slug}/{card.CardId}");
+                        break;
+                }
+            }
+        }
+
+        private async Task EditCard(CardDto card, Guid boardId, string boardKey)
+        {
+            var parameters = new DialogParameters<EditCardModal>
+            {
+                { c => c.CardId, card.Id },
+                { c => c.BoardId, boardId },
+                { c => c.BoardKey, boardKey }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
+            var result = await dialog.Result;
         }
     }
 }
