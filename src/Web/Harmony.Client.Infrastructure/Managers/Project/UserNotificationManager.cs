@@ -4,7 +4,6 @@ using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {

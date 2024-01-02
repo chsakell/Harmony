@@ -1,16 +1,11 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Hubs;
-using Harmony.Application.DTO;
-using AutoMapper;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Notifications;
-using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Comments.Commands.UpdateComment
 {

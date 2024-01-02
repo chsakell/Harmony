@@ -9,7 +9,6 @@ using Harmony.Domain.Enums;
 using Harmony.Application.Helpers;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Notifications;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
 

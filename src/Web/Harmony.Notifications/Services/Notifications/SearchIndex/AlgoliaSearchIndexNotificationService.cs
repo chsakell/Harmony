@@ -1,6 +1,5 @@
 ﻿using Algolia.Search.Clients;
 using Algolia.Search.Models.Settings;
-using Harmony.Application.DTO.Search;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Notifications.Contracts.Notifications.SearchIndex;
 

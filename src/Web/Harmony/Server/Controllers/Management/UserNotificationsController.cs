@@ -1,9 +1,5 @@
-﻿using Harmony.Application.Features.Labels.Commands.CreateCardLabel;
-using Harmony.Application.Features.Labels.Commands.RemoveCardLabel;
-using Harmony.Application.Features.Labels.Commands.UpdateTitle;
-using Harmony.Application.Features.Users.Commands.UpdateUserNotifications;
+﻿using Harmony.Application.Features.Users.Commands.UpdateUserNotifications;
 using Harmony.Application.Features.Users.Queries.GetUserNotifications;
-using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Server.Controllers.Management

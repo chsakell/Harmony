@@ -1,5 +1,4 @@
 ﻿using Harmony.Domain.Enums;
-using System.Text.Json.Serialization;
 
 namespace Harmony.Application.Notifications.SearchIndex
 {

@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.DTO;
-using Harmony.Application.DTO.Search;
-using Harmony.Application.Models;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;

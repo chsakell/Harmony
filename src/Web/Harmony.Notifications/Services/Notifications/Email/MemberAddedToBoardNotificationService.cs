@@ -7,7 +7,6 @@ using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Enums;
-using Harmony.Infrastructure.Repositories;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;
 

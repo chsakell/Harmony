@@ -1,14 +1,10 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.DTO.Search;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Search.Commands.AdvancedSearch;
-using Harmony.Domain.Entities;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using MudBlazor;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {

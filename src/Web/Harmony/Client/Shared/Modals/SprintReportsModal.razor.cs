@@ -1,6 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
+﻿using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;

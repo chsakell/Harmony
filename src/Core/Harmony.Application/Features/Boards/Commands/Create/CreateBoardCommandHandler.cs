@@ -10,7 +10,6 @@ using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
-using Slugify;
 using Harmony.Shared.Utilities;
 
 namespace Harmony.Application.Features.Boards.Commands.Create

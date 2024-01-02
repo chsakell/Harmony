@@ -1,5 +1,4 @@
-﻿using Harmony.Application.DTO.Search;
-using Harmony.Domain.Enums;
+﻿using Harmony.Domain.Enums;
 namespace Harmony.Application.Notifications.SearchIndex
 {
     public class CardMembersUpdatedIndexNotification : BaseSearchIndexNotification

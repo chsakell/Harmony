@@ -7,7 +7,6 @@ using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
-using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 

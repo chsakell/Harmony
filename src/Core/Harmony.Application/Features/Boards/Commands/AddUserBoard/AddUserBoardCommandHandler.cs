@@ -7,7 +7,6 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Notifications;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Notifications.Email;
 

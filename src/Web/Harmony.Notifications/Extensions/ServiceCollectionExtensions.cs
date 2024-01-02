@@ -1,16 +1,10 @@
 ﻿using Algolia.Search.Clients;
 using Harmony.Application.Configurations;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.Contracts.Services.Search;
-using Harmony.Application.Contracts.Services.UserNotifications;
 using Harmony.Infrastructure.Mappings;
-using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
-using Harmony.Infrastructure.Services.Search;
-using Harmony.Infrastructure.Services.UserNotifications;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Contracts.Notifications.SearchIndex;
 using Harmony.Notifications.Persistence;
@@ -56,7 +50,10 @@ namespace Harmony.Notifications.Extensions
             var applicationId = configuration["AlgoliaConfiguration:ApplicationId"];
             var apiKey = configuration["AlgoliaConfiguration:ApiKey"];
 
-            if (applicationId == null || apiKey == null)
+
+            services.Configure<AlgoliaConfiguration>(configuration.GetSection("AlgoliaConfiguration"));
+
+            if (string.IsNullOrEmpty(applicationId) || string.IsNullOrEmpty(apiKey))
             {
                 return services;
             }
@@ -111,9 +108,6 @@ namespace Harmony.Notifications.Extensions
 
         internal static IServiceCollection ConfigureBrevo(this IServiceCollection services, IConfiguration configuration)
         {
-            //var apiKey = configuration["BrevoSettings:ApiKey"];
-            //Configuration.Default.ApiKey.Add("api-key", apiKey);
-
             services.Configure<BrevoSettings>(configuration.GetSection("BrevoSettings"));
 
             return services;

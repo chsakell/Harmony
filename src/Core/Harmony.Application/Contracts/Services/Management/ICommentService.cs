@@ -1,8 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetBacklog;
-using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
-using Harmony.Shared.Wrapper;
 
 namespace Harmony.Application.Contracts.Services.Management
 {

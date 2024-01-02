@@ -1,8 +1,6 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Features.Users.Queries.GetUserNotifications;
-using Harmony.Application.Responses;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;

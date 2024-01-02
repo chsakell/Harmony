@@ -3,7 +3,6 @@ using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace Harmony.Infrastructure.Repositories
 {

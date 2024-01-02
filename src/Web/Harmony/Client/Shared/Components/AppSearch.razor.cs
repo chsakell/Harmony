@@ -1,12 +1,9 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.DTO.Search;
-using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
-using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
-using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;

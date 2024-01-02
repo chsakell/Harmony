@@ -1,5 +1,4 @@
-﻿using Harmony.Application.DTO.Search;
-using Harmony.Application.Notifications.SearchIndex;
+﻿using Harmony.Application.Notifications.SearchIndex;
 
 namespace Harmony.Notifications.Contracts.Notifications.SearchIndex
 {

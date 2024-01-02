@@ -7,7 +7,6 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Search;
-using Harmony.Application.DTO.Search;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Domain.Enums;

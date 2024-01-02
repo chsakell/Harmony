@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.DTO.Search;
 using Harmony.Application.Features.Search.Commands.AdvancedSearch;
-using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Application.Features.Search.Queries.InitAdvancedSearch;
 using Harmony.Shared.Wrapper;
 

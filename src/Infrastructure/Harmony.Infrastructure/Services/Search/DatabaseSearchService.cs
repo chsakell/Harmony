@@ -1,12 +1,10 @@
 ﻿using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.DTO.Search;
 using Harmony.Application.Features.Search.Commands.AdvancedSearch;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Infrastructure.Services.Search
 {

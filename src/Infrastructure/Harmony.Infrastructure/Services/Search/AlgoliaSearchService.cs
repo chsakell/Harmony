@@ -1,22 +1,12 @@
 ﻿using Algolia.Search.Clients;
 using Algolia.Search.Models.Common;
-using Algolia.Search.Models.Enums;
 using Algolia.Search.Models.Search;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.DTO.Search;
 using Harmony.Application.Features.Search.Commands.AdvancedSearch;
-using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Application.Models;
-using Harmony.Domain.Entities;
-using Harmony.Shared.Wrapper;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core.Tokenizer;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Services.Search
 {

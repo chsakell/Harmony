@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;

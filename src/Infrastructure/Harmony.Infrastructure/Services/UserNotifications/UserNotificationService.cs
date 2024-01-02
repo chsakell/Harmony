@@ -2,12 +2,6 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.UserNotifications;
 using Harmony.Application.Notifications.Email;
-using Harmony.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Infrastructure.Services.UserNotifications
 {

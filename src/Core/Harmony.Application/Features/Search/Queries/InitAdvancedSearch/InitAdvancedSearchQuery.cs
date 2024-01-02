@@ -1,5 +1,4 @@
-﻿using Harmony.Application.DTO.Search;
-using Harmony.Shared.Wrapper;
+﻿using Harmony.Shared.Wrapper;
 using MediatR;
 
 namespace Harmony.Application.Features.Search.Queries.InitAdvancedSearch

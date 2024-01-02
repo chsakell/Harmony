@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Pages.Identity
 {

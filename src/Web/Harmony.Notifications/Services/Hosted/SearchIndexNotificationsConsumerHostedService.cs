@@ -148,6 +148,13 @@ namespace Harmony.Notifications.Services.Hosted
             {
                 using (IServiceScope scope = _serviceProvider.CreateScope())
                 {
+                    var algoliaConfiguration = scope.ServiceProvider.GetRequiredService<IOptions<AlgoliaConfiguration>>();
+                    
+                    if(algoliaConfiguration == null || !algoliaConfiguration.Value.Enabled)
+                    {
+                        return;
+                    }
+
                     var searchIndexNotificationService = scope.ServiceProvider.GetRequiredService<ISearchIndexNotificationService>();
 
                     switch(operation)

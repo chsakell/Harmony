@@ -1,17 +1,12 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
-using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
-using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
-using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Client.Infrastructure.Models.Board;
-using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;

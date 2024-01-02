@@ -1,5 +1,4 @@
-﻿using Harmony.Application.Contracts.Persistence;
-using Harmony.Notifications.Persistence;
+﻿using Harmony.Notifications.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Notifications.Extensions

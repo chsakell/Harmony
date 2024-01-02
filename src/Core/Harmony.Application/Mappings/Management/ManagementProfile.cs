@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Harmony.Application.DTO;
-using Harmony.Application.DTO.Search;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;

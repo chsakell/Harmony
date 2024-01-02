@@ -2,14 +2,8 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
-using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
-using Harmony.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using static Harmony.Application.Events.BoardListArchivedEvent;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Harmony.Infrastructure.Services.Management
 {

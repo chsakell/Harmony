@@ -2,11 +2,7 @@
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
-using Harmony.Application.Features.Lists.Commands.ArchiveList;
-using Harmony.Application.Features.Lists.Commands.CreateList;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Comments.Commands.CreateComment;
-using Harmony.Domain.Enums;
 using Harmony.Application.Features.Comments.Commands.UpdateComment;
 
 namespace Harmony.Client.Infrastructure.Managers.Project

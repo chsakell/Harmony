@@ -9,7 +9,6 @@ using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Notifications;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Contracts.Services.Management;

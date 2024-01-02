@@ -2,17 +2,10 @@
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
 using Harmony.Application.DTO.Search;
-using Harmony.Application.Features.Labels.Commands.CreateCardLabel;
 using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Application.Features.Search.Commands.AdvancedSearch
 {

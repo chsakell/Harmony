@@ -6,10 +6,8 @@ using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Notifications;
 using MediatR;
 using Harmony.Application.Contracts.Services.Hubs;
-using Harmony.Domain.Entities;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
 

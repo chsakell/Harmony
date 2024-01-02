@@ -4,10 +4,8 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 

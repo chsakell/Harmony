@@ -1,11 +1,5 @@
 ﻿using Harmony.Application.DTO.Search;
 using Harmony.Application.Features.Search.Commands.AdvancedSearch;
-using Harmony.Application.Features.Search.Queries.GlobalSearch;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Application.Contracts.Services.Search
 {

@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
-using Harmony.Application.DTO.Search;
 using Harmony.Application.Features.Boards.Queries.GetUserBoards;
 using Harmony.Shared.Wrapper;
 using MediatR;

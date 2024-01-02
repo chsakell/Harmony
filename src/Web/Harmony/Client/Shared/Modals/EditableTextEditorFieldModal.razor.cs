@@ -1,7 +1,4 @@
-﻿using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
-using Harmony.Client.Infrastructure.Models.Board;
-using Harmony.Shared.Wrapper;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace Harmony.Client.Shared.Modals

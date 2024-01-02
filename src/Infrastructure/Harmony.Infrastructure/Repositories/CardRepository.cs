@@ -1,11 +1,8 @@
 ﻿using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Models;
-using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
-using Harmony.Shared.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 

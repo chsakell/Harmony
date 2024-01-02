@@ -1,14 +1,7 @@
 ﻿using Harmony.Application.DTO.Search;
-using Harmony.Application.Features.Labels.Commands.CreateCardLabel;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Application.Features.Search.Commands.AdvancedSearch
 {

@@ -1,7 +1,6 @@
 ﻿using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using Harmony.Application.DTO.Search;
-using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Application.Features.Search.Queries.InitAdvancedSearch;
 using Harmony.Application.Features.Search.Commands.AdvancedSearch;
 using System.Net.Http.Json;

@@ -5,9 +5,7 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
-using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Hubs;
-using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 
