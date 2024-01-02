@@ -5,6 +5,7 @@ using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
+using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -28,6 +29,10 @@ namespace Harmony.Client.Shared.Components
             if(searchResult.Succeeded)
             {
                 return searchResult.Data;
+            }
+            else
+            {
+                DisplayMessage(searchResult);
             }
 
             return Enumerable.Empty<SearchableCard>();
@@ -71,7 +76,7 @@ namespace Harmony.Client.Shared.Components
                         break;
                     default:
                         await EditCard(new CardDto() { Id = Guid.Parse(card.CardId) }, card.BoardId, boardKey);
-                        // _navigationManager.NavigateTo($"boards/{card.BoardId}/{slug}/{card.CardId}");
+                        //_navigationManager.NavigateTo($"boards/{card.BoardId}/{slug}/{card.CardId}");
                         break;
                 }
             }
@@ -89,6 +94,21 @@ namespace Harmony.Client.Shared.Components
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
             var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
             var result = await dialog.Result;
+        }
+
+        private void DisplayMessage(IResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var severity = result.Succeeded ? Severity.Success : Severity.Error;
+
+            foreach (var message in result.Messages)
+            {
+                _snackBar.Add(message, severity);
+            }
         }
     }
 }

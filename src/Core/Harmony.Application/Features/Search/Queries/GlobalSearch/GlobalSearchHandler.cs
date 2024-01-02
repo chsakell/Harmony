@@ -50,6 +50,13 @@ namespace Harmony.Application.Features.Search.Queries.GlobalSearch
             }
 
             var userBoards = await _boardService.GetUserBoards(null, userId);
+
+            if(!userBoards.Any())
+            {
+                return await Result<List<SearchableCard>>
+                    .FailAsync(_localizer["There are no boards that you can access at the moment"]);
+            }
+
             var boardIds = userBoards.Select(b => b.Id).ToList();
 
             var result = await _searchService.Search(boardIds, request.Term);
