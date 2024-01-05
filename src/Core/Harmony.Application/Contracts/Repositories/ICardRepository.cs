@@ -13,7 +13,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<Card?> GetWithBoardList(Guid cardId);
         Task<Guid> GetBoardId(Guid cardId);
         Task<Card> Load(Guid cardId);
-        Task<Card> GetByPosition(Guid? boardListId, short position, CardStatus status);
 		Task<List<Card>> GetCardsInPositionGreaterThan(Guid boardListId, short position);
 		Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, short position);
         Task<List<Card>> GetPendingSprintCards(Guid sprintId);

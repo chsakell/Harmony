@@ -56,7 +56,7 @@ namespace Harmony.Infrastructure.Repositories
 
         public async Task<Card?> Load(Guid cardId)
         {
-            return await _context.Cards
+            return await _context.Cards.IgnoreQueryFilters()
 				.Include(card => card.BoardList)
 					.ThenInclude(bl => bl.Board)
 				.Include(card => card.CheckLists)
@@ -72,16 +72,15 @@ namespace Harmony.Infrastructure.Repositories
 				.FirstOrDefaultAsync(card => card.Id == cardId);
         }
 
-        public async Task<Card?> GetByPosition(Guid? boardListId, short position, CardStatus status)
-		{
-			return await _context.Cards
-				.FirstOrDefaultAsync(card => card.BoardListId == boardListId 
-				&& card.Position == position && card.Status == status);
-		}
-
+        /// <summary>
+        /// Exludes child issues
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns></returns>
 		public async Task<int> CountCards(Guid listId)
 		{
-			return await _context.Cards.Where(c => c.BoardListId == listId).CountAsync();
+			return await _context.Cards
+                .Where(c => c.BoardListId == listId).CountAsync();
 		}
 
         public async Task<int> CountBacklogCards(Guid boardId)

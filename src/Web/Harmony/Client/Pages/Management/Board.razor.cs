@@ -363,6 +363,7 @@ namespace Harmony.Client.Pages.Management
                         cardDto.TotalAttachments = info.Item.TotalAttachments;
                         cardDto.Members = info.Item.Members;
                         cardDto.IssueType = info.Item.IssueType;
+                        cardDto.TotalChildren = info.Item.TotalChildren;
 
                         KanbanStore.MoveCard(cardDto, currentListId, moveToListId, currentPosition, newPosition);
 

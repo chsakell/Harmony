@@ -48,9 +48,7 @@ namespace Harmony.Persistence.Configurations
                 .WithOne(a => a.Card)
                 .HasForeignKey(a => a.CardId);
 
-            //builder.HasMany(c => c.Children)
-            //    .WithOne(c => c.ParentCard)
-            //    .HasForeignKey(c => c.ParentCardId);
+            builder.HasQueryFilter(c => !c.ParentCardId.HasValue);
 
             builder.HasOne(x => x.ParentCard)
                 .WithMany(x => x.Children)
