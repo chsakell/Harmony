@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
@@ -50,6 +51,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
 			return await response.ToResult<CardDto>();
 		}
+
+        public async Task<IResult<CardDto>> CreateChildIssueAsync(CreateChildIssueCommand request)
+        {
+            var response = await _httpClient.PostAsJsonAsync(Routes.CardEndpoints.ChildIssue(request.CardId), request);
+
+            return await response.ToResult<CardDto>();
+        }
 
         public async Task<IResult<CardDto>> CreateBacklogItemAsync(CreateBacklogCommand request)
         {

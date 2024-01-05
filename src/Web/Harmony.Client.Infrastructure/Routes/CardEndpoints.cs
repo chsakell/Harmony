@@ -7,6 +7,8 @@
         public static string Backlog => $"api/cards/backlog/";
         public static string BacklogItem(Guid cardId) => $"api/cards/backlog/{cardId}/";
         public static string Get(Guid id) => $"api/cards/{id}/";
+
+        public static string ChildIssue(Guid id) => $"api/cards/{id}/childissue";
         public static string GetLabels(Guid id) => $"api/cards/{id}/labels/";
         public static string GetActivity(Guid id) => $"api/cards/{id}/activity/";
         public static string Move(Guid cardId) => $"{Index}/{cardId}/move/";

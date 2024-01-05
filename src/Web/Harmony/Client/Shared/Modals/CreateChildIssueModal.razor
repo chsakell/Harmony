@@ -1,0 +1,52 @@
+﻿@using Harmony.Application.DTO
+@using Harmony.Application.Features.Lists.Queries.GetBoardLists
+@using Harmony.Client.Infrastructure.Helper
+@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<CreateChildIssueModal> _localizer
+
+<EditForm Model="@CreateChildIssueCommandModel" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <TitleContent>
+            @{
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.AddCard" Class="mr-3 mb-n1" />
+                    @_localizer["Create child issue"]
+                </MudText>
+            }
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12" md="8">
+                    <MudTextField For="@(() => CreateChildIssueCommandModel.Title)" @bind-Value="CreateChildIssueCommandModel.Title" Label="@_localizer["Title"]" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect @bind-Value="_selectedBoardList"
+                               ToStringFunc="@converter"
+                               T="GetBoardListResponse" Label="Status" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var list in _boardLists)
+                        {
+                            <MudSelectItem Disabled="@(list.CardStatus == BoardListCardStatus.DONE)" Value="list">@list.Title</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+                <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+                           ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                    @if (_processing)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+                }
+                else
+                {
+                    <MudText>@_localizer["Create"]</MudText>
+                }
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

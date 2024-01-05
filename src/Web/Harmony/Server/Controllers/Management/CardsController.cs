@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
@@ -47,6 +48,12 @@ namespace Harmony.Server.Controllers.Management
 
         [HttpPut("backlog/{id:guid}")]
         public async Task<IActionResult> CreateBacklog(Guid id, UpdateBacklogCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpPost("{id:guid}/childissue")]
+        public async Task<IActionResult> CreateChildIssue(Guid id, CreateChildIssueCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

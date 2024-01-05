@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
@@ -26,6 +27,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     {
         Task<IResult<LoadCardResponse>> LoadCardAsync(LoadCardQuery request);
         Task<IResult<CardDto>> CreateCardAsync(CreateCardCommand request);
+        Task<IResult<CardDto>> CreateChildIssueAsync(CreateChildIssueCommand request);
         Task<IResult<CardDto>> CreateBacklogItemAsync(CreateBacklogCommand request);
         Task<IResult<bool>> UpdateBacklogItemAsync(UpdateBacklogCommand request);
         Task<IResult<CardDto>> MoveCardAsync(MoveCardCommand request);

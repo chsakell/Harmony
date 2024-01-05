@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
+using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
@@ -229,6 +230,30 @@ namespace Harmony.Client.Shared.Modals
             {
                 _card.Attachments.Remove(attachment);
                 StateHasChanged();
+            }
+        }
+
+        private async Task AddSubTask()
+        {
+            var parameters = new DialogParameters<CreateChildIssueModal>
+            {
+                {
+                    modal => modal.CreateChildIssueCommandModel,
+                    new CreateChildIssueCommand()
+                    {
+                        CardId = CardId,
+                        BoardId = BoardId
+                    }
+                },
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateChildIssueModal>(_localizer["Create child issue"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                var cardAdded = result.Data as CardDto;
             }
         }
 
