@@ -254,6 +254,10 @@ namespace Harmony.Client.Shared.Modals
             if (!result.Canceled)
             {
                 var cardAdded = result.Data as CardDto;
+                if (cardAdded != null)
+                {
+                    _card.Children.Add(cardAdded);
+                }
             }
         }
 

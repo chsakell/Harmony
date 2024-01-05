@@ -68,6 +68,7 @@ namespace Harmony.Infrastructure.Repositories
 					.ThenInclude(cl => cl.Label)
 				.Include(card => card.Sprint)
                 .Include(card => card.IssueType)
+                .Include(card => card.Children)
 				.FirstOrDefaultAsync(card => card.Id == cardId);
         }
 

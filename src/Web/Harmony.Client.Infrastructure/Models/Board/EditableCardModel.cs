@@ -33,6 +33,7 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
         public short? StoryPoints { get; set; }
         public IssueTypeDto IssueType { get; set; }
+        public List<CardDto> Children { get; set; } = new List<CardDto>();
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

@@ -11,6 +11,11 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Extensions;
+using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
+using Harmony.Application.Specifications.Cards;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 {
@@ -49,25 +54,37 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
                 return await Result<CardDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var totalCards = await _cardRepository.CountCards(request.ListId.Value);
+            var includes = new CardIncludes() { Children = true };
+
+            var filter = new CardFilterSpecification(request.CardId, includes);
+
+            var card = await _cardRepository
+                .Entities.Specify(filter)
+                .FirstOrDefaultAsync();
+
+            if (card == null)
+            {
+                return Result<CardDto>.Fail("Card not found");
+            }
+
+            var totalChildren = card.Children.Count;
+
             var nextSerialNumber = await _cardRepository.GetNextSerialNumber(request.BoardId);
 
-            var card = new Card()
+            var childIssue = new Card()
             {
                 Title = request.Title,
                 UserId = userId,
                 BoardListId = request.ListId,
-                Position = (byte)totalCards,
+                Position = (byte)totalChildren,
                 SerialNumber = nextSerialNumber,
-                //IssueTypeId = request.IssueType.Id,
+                ParentCardId = request.CardId,
             };
 
-            var dbResult = await _cardRepository.CreateAsync(card);
+            var dbResult = await _cardRepository.CreateAsync(childIssue);
 
             if (dbResult > 0)
             {
-                await _cardRepository.LoadIssueEntryAsync(card);
-
                 var board = await _boardService.GetBoardInfo(request.BoardId);
 
                 _notificationsPublisher
@@ -82,7 +99,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
                         SerialKey = $"{board.Key}-{card.SerialNumber}"
                     }, board.IndexName);
 
-                var result = _mapper.Map<CardDto>(card);
+                var result = _mapper.Map<CardDto>(childIssue);
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Child issue created"]);
             }
 

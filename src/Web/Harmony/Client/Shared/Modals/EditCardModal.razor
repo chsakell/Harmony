@@ -8,6 +8,16 @@
     p img {
         max-width: 100%;
     }
+
+    .mud-table-head .header-centered th {
+        text-align: center;
+        font-size: 1.2em;
+    }
+
+    .mud-table-foot .bold-text .mud-table-cell {
+        font-weight: 500;
+    }
+
 </style>
 
 @if (_loading)
@@ -145,6 +155,25 @@ else
                                 </MudStack>
                             }
                         </MudItem>
+                        @if (_card.Children.Any())
+                        {
+                            <MudItem xs="12">
+                                <MudTable Context="child" Items="@_card.Children" Hover="true">
+                                    <HeaderContent>
+                                        <MudTh>Serial Key</MudTh>
+                                        <MudTh>Title</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Serial Key">
+                                            <MudTooltip Text="Click for full editint" Delay="2500">
+                                                <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
+                                                </MudTooltip>
+                                            </MudTd>
+                                            <MudTd DataLabel="Title">@child.Title</MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                </MudItem>
+                        }
                         <MudItem xs="12">
                             @foreach (var checkList in _card.CheckLists)
                             {
@@ -363,13 +392,13 @@ else
                                Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
                                Color="Color.Error">ARCHIVE CARD</MudButton>
                     <MudMenu AnchorOrigin="Origin.BottomLeft" FullWidth="true" Class="close-edit-card my-2" Label="Close Edit And" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary">
-                        @if(_card.Status == CardStatus.Active)
+                        @if (_card.Status == CardStatus.Active)
                         {
-                            <MudMenuItem OnClick="@(() => ViewBoard(_card.BoardId, _card.BoardTitle))" 
-                                IconSize="Size.Small" IconColor="Color.Primary" 
-                                Icon="@Icons.Material.Filled.Dashboard">View board</MudMenuItem>
+                            <MudMenuItem OnClick="@(() => ViewBoard(_card.BoardId, _card.BoardTitle))"
+                                         IconSize="Size.Small" IconColor="Color.Primary"
+                                         Icon="@Icons.Material.Filled.Dashboard">View board</MudMenuItem>
                         }
-                        else if(_card.Status == CardStatus.Backlog)
+                        else if (_card.Status == CardStatus.Backlog)
                         {
                             <MudMenuItem OnClick="@(() => ViewBacklog(BoardId))" IconSize="Size.Small" IconColor="Color.Primary" Icon="@Icons.Material.Filled.FormatListBulleted">View backlog</MudMenuItem>
                         }

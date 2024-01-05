@@ -44,6 +44,8 @@ namespace Harmony.Client.Shared.Modals
         {
             _processing = true;
 
+            CreateChildIssueCommandModel.ListId = _selectedBoardList.Id;
+
             var result = await _cardManager
                 .CreateChildIssueAsync(CreateChildIssueCommandModel);
 

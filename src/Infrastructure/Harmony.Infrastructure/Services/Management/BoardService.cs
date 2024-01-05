@@ -164,6 +164,7 @@ namespace Harmony.Infrastructure.Services.Management
                         var issueTypes = (await multi.ReadAsync<IssueType>()).ToList();
                         var sprints = (await multi.ReadAsync<Sprint>()).ToList();
                         var comments = (await multi.ReadAsync<CardCommentsDto>()).ToList();
+                        var children = (await multi.ReadAsync<CardChildrenDto>()).ToList();
 
                         foreach (var cardLabel in cardLabels)
                         {
@@ -221,6 +222,17 @@ namespace Harmony.Infrastructure.Services.Management
                                 for (var i = 0; i < totalComments.TotalComments; i++)
                                 {
                                     card.Comments.Add(new Comment());
+                                }
+                            }
+
+                            var cardChildren = children.FirstOrDefault(c => c.CardId == card.Id);
+                            if (cardChildren != null)
+                            {
+                                card.Children = new List<Card>();
+
+                                for (var i = 0; i < cardChildren.TotalChildren; i++)
+                                {
+                                    card.Children.Add(new Card());
                                 }
                             }
                         }

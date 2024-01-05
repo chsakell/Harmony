@@ -12,6 +12,5 @@ public class CreateChildIssueCommand : BaseBoardCommand, IRequest<Result<CardDto
     public string Title { get; set; }
     public Guid CardId { get; set; }
 
-    [Required]
-    public Guid? ListId { get; set; }
+    public Guid ListId { get; set; }
 }

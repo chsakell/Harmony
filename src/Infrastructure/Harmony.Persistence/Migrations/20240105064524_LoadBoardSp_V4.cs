@@ -67,7 +67,7 @@ BEGIN
 				BEGIN
 					INSERT INTO @cards 
 					Select * from Cards
-					where BoardListId = @boardListId AND Status = 0 
+					where BoardListId = @boardListId AND Status = 0  AND ParentCardId IS NULL
 					order by Position
 					OFFSET 0 ROWS 
 					FETCH FIRST @cardsPerList ROWS ONLY;
@@ -79,7 +79,7 @@ BEGIN
 					INSERT INTO @cards 
 					Select c.* from Cards c
 					JOIN Sprints s on s.Id = c.SprintId
-					where BoardListId = @boardListId AND c.Status = 0 AND s.Status = 1
+					where BoardListId = @boardListId AND c.Status = 0 AND s.Status = 1 AND ParentCardId IS NULL
 					order by c.Position
 					OFFSET 0 ROWS 
 					FETCH FIRST @cardsPerList ROWS ONLY;
@@ -119,6 +119,12 @@ BEGIN
 	from Comments
 	where CardId in (select id from @cards)
 	group by CardId
+
+	select parent.Id CardId, COUNT(*) as TotalChildren
+	from Cards parent
+	join Cards child on child.ParentCardId = parent.Id
+	where child.ParentCardId in (select id from @cards)
+	group by parent.Id
 END
 GO");
         }

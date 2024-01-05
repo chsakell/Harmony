@@ -17,6 +17,11 @@ namespace Harmony.Application.Specifications.Cards
                 Includes.Add(card => card.BoardListId);
             }
 
+            if (includes.Children)
+            {
+                Includes.Add(card => card.Children);
+            }
+
             if (cardId.HasValue)
             {
                 Criteria = card => card.Id == cardId;
