@@ -30,5 +30,6 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public short? StoryPoints { get; set; }
         public IssueTypeDto IssueType { get; set; }
         public List<CardDto> Children { get; set; }
+        public bool IsChild { get; set; }
     }
 }

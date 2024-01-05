@@ -390,9 +390,12 @@ else
                             }
                         </ButtonTemplate>
                     </MudFileUpload>
-                    <MudButton StartIcon="@Icons.Material.Filled.AddTask" OnClick="AddSubTask" Class="mt-2"
-                               Variant="Variant.Outlined" FullWidth="true"
-                               Color="Color.Primary">ADD CHILD ISSUE</MudButton>
+                    @if (!_card.IsChild)
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.AddTask" OnClick="AddSubTask" Class="mt-2"
+                                   Variant="Variant.Outlined" FullWidth="true"
+                                   Color="Color.Primary">ADD CHILD ISSUE</MudButton>
+                    }
                     <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
                                Color="Color.Error">ARCHIVE CARD</MudButton>

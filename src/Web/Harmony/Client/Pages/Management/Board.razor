@@ -200,6 +200,13 @@ else
                                         <MudChip Icon="@Icons.Material.Filled.Checklist" Label="true"
                                                  Size="Size.Small" Variant="Variant.Text" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Tertiary : Color.Default)">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
                                     }
+                                    @if (context.TotalChildren > 0)
+                                    {
+                                        <MudTooltip Delay="2500" Text="@($"Card contains {context.TotalChildren} child issues")">
+                                            <MudChip Icon="@Icons.Material.Filled.Workspaces" Label="true"
+                                                     Size="Size.Small" Variant="Variant.Text" Color="@(Color.Default)">@context.TotalChildren</MudChip>
+                                            </MudTooltip>
+                                    }
                                     @if (context.TotalAttachments > 0)
                                     {
                                         <MudChip Icon="@Icons.Material.Filled.Attachment" Label="true"
