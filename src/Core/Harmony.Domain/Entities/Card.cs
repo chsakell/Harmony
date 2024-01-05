@@ -31,5 +31,11 @@ namespace Harmony.Domain.Entities
         public Sprint Sprint { get; set; }
         public short? StoryPoints { get; set; }
         public DateTime? DateCompleted { get; set; }
+
+        #region Child issue
+        public List<Card> Children { get; set; }
+        public Guid? ParentCardId { get; set; }
+        public Card ParentCard { get; set; }
+        #endregion
     }
 }

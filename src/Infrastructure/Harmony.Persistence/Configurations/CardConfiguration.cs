@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using System.Reflection.Emit;
+using Harmony.Domain.Contracts;
 
 namespace Harmony.Persistence.Configurations
 {
@@ -45,6 +47,16 @@ namespace Harmony.Persistence.Configurations
             builder.HasMany(c => c.Attachments)
                 .WithOne(a => a.Card)
                 .HasForeignKey(a => a.CardId);
+
+            //builder.HasMany(c => c.Children)
+            //    .WithOne(c => c.ParentCard)
+            //    .HasForeignKey(c => c.ParentCardId);
+
+            builder.HasOne(x => x.ParentCard)
+                .WithMany(x => x.Children)
+                .HasForeignKey(x => x.ParentCardId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -7,6 +7,14 @@ Add-Migration Initial -Context HarmonyContext -StartUpProject Harmony.Server -v
 ```
 
 ```
+Add-Migration LoadBoardSp_VX -Context HarmonyContext -StartUpProject Harmony.Server -v
+```
+
+```
+Add-Migration LoadBoardListCardsSp_VX -Context HarmonyContext -StartUpProject Harmony.Server -v
+```
+
+```
 Remove-Migration PostCommentsInitial -Context HarmonyContext -StartUpProject Harmony.Server -v
 ```
 
