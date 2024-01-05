@@ -40,23 +40,26 @@ else
                         {
                             <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
                         }
-                        <div style="width:135px;">
-                            <MudSelect @bind-Value:get="_card.IssueType.Summary"
-                                       @bind-Value:set="SaveIssueType"
-                                       For="@(() => _card.IssueType.Summary)"
-                                       Label="Type" AnchorOrigin="Origin.BottomCenter">
-                                @foreach (var type in IssueTypes)
-                                {
-                                    <MudSelectItem Value="type.Summary">
-                                        <MudStack Row="true">
-                                            <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
-                                                     Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
-                                            <MudText>@type.Summary</MudText>
-                                        </MudStack>
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
-                        </div>
+                        @if (_card.IssueType != null)
+                        {
+                            <div style="width:135px;">
+                                <MudSelect @bind-Value:get="_card.IssueType.Summary"
+                                           @bind-Value:set="SaveIssueType"
+                                           For="@(() => _card.IssueType.Summary)"
+                                           Label="Type" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var type in IssueTypes)
+                                    {
+                                        <MudSelectItem Value="type.Summary">
+                                            <MudStack Row="true">
+                                                <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
+                                                         Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
+                                                <MudText>@type.Summary</MudText>
+                                            </MudStack>
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </div>
+                        }
                         @if (_card.BoardType == BoardType.Scrum)
                         {
                             <MudNumericField Style="width:110px" T="short?" HideSpinButtons="true"
@@ -158,20 +161,22 @@ else
                         @if (_card.Children.Any())
                         {
                             <MudItem xs="12">
-                                <MudTable Context="child" Items="@_card.Children" Hover="true">
-                                    <HeaderContent>
-                                        <MudTh>Serial Key</MudTh>
-                                        <MudTh>Title</MudTh>
-                                    </HeaderContent>
-                                    <RowTemplate>
-                                        <MudTd DataLabel="Serial Key">
-                                            <MudTooltip Text="Click for full editint" Delay="2500">
-                                                <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
-                                                </MudTooltip>
-                                            </MudTd>
-                                            <MudTd DataLabel="Title">@child.Title</MudTd>
-                                        </RowTemplate>
-                                    </MudTable>
+                                <MudPaper>
+                                    <MudTable Context="child" Items="@_card.Children" Hover="true">
+                                        <HeaderContent>
+                                            <MudTh>Serial Key</MudTh>
+                                            <MudTh>Title</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd DataLabel="Serial Key">
+                                                <MudTooltip Text="Click for full editint" Delay="2500">
+                                                    <MudChip OnClick="() => EditCard(child)" Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
+                                                    </MudTooltip>
+                                                </MudTd>
+                                                <MudTd DataLabel="Title">@child.Title</MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudPaper>
                                 </MudItem>
                         }
                         <MudItem xs="12">

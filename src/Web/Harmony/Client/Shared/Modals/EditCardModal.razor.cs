@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
@@ -22,6 +23,7 @@ using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -169,7 +171,7 @@ namespace Harmony.Client.Shared.Modals
                 CreateCommentCommandModel.CardId = CardId;
                 CreateCommentCommandModel.BoardId = BoardId;
 
-                if(IssueTypes == null)
+                if (IssueTypes == null)
                 {
                     var issueTypesResult = await _boardManager.GetIssueTypesAsync(BoardId.ToString());
 
@@ -259,6 +261,23 @@ namespace Harmony.Client.Shared.Modals
                     _card.Children.Add(cardAdded);
                 }
             }
+        }
+
+        private async Task EditCard(CardDto card)
+        {
+            var parameters = new DialogParameters<EditCardModal>
+                {
+                    { c => c.CardId, card.Id },
+                    { c => c.BoardId, BoardId },
+                    { c => c.BoardKey, BoardKey },
+                    { c => c.IssueTypes, IssueTypes },
+                };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var dialog = _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
+
+            MudDialog.Cancel();
+            var dialogResult = await dialog;
         }
 
         private void OnCardLabelToggled(object? sender, CardLabelToggledEvent e)
