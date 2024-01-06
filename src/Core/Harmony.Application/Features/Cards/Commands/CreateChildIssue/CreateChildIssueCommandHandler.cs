@@ -16,6 +16,8 @@ using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Specifications.Cards;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.EntityFrameworkCore;
+using Harmony.Shared.Constants.Application;
+using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 {
@@ -26,7 +28,9 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
         private readonly ISearchService _searchService;
         private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly IStringLocalizer<CreateChildIssueCommandHandler> _localizer;
+        private readonly ISender _sender;
         private readonly IMapper _mapper;
 
         public CreateChildIssueCommandHandler(ICardRepository cardRepository,
@@ -34,15 +38,18 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
             ISearchService searchService,
             IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
+            IIssueTypeRepository issueTypeRepository,
             IStringLocalizer<CreateChildIssueCommandHandler> localizer,
-            IMapper mapper)
+            ISender sender, IMapper mapper)
         {
             _cardRepository = cardRepository;
             _currentUserService = currentUserService;
             _searchService = searchService;
             _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
+            _issueTypeRepository = issueTypeRepository;
             _localizer = localizer;
+            _sender = sender;
             _mapper = mapper;
         }
         public async Task<Result<CardDto>> Handle(CreateChildIssueCommand request, CancellationToken cancellationToken)
@@ -69,6 +76,11 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 
             var totalChildren = card.Children.Count;
 
+            var boardIssueTypes = (await _sender.Send(new GetIssueTypesQuery(request.BoardId) { NormalOnly = false })).Data;
+
+            var subTaskIssueType = boardIssueTypes
+                .FirstOrDefault(type => type.Summary.Equals(IssueTypesConstants.SUBTASK));
+
             var nextSerialNumber = await _cardRepository.GetNextSerialNumber(request.BoardId);
 
             var childIssue = new Card()
@@ -79,6 +91,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
                 Position = (byte)totalChildren,
                 SerialNumber = nextSerialNumber,
                 ParentCardId = request.CardId,
+                IssueTypeId = subTaskIssueType?.Id
             };
 
             var dbResult = await _cardRepository.CreateAsync(childIssue);

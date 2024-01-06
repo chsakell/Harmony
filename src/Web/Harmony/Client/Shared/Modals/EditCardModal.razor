@@ -42,7 +42,7 @@ else
                         {
                             <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
                         }
-                        @if (_card.IssueType != null)
+                        @if (_card.IssueType != null && !_card.IsChild)
                         {
                             <div style="width:135px;">
                                 <MudSelect @bind-Value:get="_card.IssueType.Summary"

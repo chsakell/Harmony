@@ -6,10 +6,11 @@
         public const string BUG = "Bug";
         public const string STORY = "Story";
         public const string TASK = "Task";
+        public const string SUBTASK = "SubTask";
 
         public static List<string> GetDefaultIssueTypes()
         {
-            return new List<string> { TASK, STORY, BUG, EPIC };
+            return new List<string> { TASK, STORY, BUG, EPIC, SUBTASK };
         }
     }
 }

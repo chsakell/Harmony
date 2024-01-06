@@ -1,6 +1,7 @@
 ﻿@using Harmony.Application.DTO
 @using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums;
+
 @inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardListModal> _localizer
 
 <EditForm Model="@CreateCardCommandModel" OnValidSubmit="SubmitAsync">

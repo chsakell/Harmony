@@ -2,6 +2,7 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.DTO;
+using Harmony.Application.Extensions;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
@@ -34,7 +35,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetIssueTypes
 
             var result = _mapper.Map<List<IssueTypeDto>>(issueTypes);
 
-            return await Result<List<IssueTypeDto>>.SuccessAsync(result);
+            return await Result<List<IssueTypeDto>>.SuccessAsync(request.NormalOnly ? result.Normal() : result);
         }
 
         private async Task<List<IssueType>> GetIssueTypes(Guid boardId)
