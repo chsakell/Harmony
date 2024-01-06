@@ -24,7 +24,8 @@ namespace Harmony.Infrastructure.Services.Search
             var filter = new CardFilterSpecification(term, includes);
 
             var cards = await _cardRepository
-                .Entities.Specify(filter)
+                .Entities.IgnoreQueryFilters()
+                .Specify(filter)
                 .Select(card => new SearchableCard
                 {
                     CardId = card.Id.ToString(),
