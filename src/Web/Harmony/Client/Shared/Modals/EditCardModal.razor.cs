@@ -4,6 +4,7 @@ using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
+using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 using Harmony.Application.Features.Cards.Commands.UpdateCardIssueType;
@@ -19,11 +20,13 @@ using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -45,11 +48,10 @@ namespace Harmony.Client.Shared.Modals
         public EditableTextEditorField _commentsTextEditor;
         private bool _historyLoaded = false;
         private bool _updatingStoryPoints;
-
+        private GetBoardListResponse? _cardBoardList;
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
         [Parameter] public string BoardKey { get; set; }
-        [Parameter] public List<IssueTypeDto> IssueTypes { get; set; }
 
         public event EventHandler<EditableCardModel> OnCardUpdated;
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
@@ -171,14 +173,9 @@ namespace Harmony.Client.Shared.Modals
                 CreateCommentCommandModel.CardId = CardId;
                 CreateCommentCommandModel.BoardId = BoardId;
 
-                if (IssueTypes == null)
+                if (_card.BoardList != null) 
                 {
-                    var issueTypesResult = await _boardManager.GetIssueTypesAsync(BoardId.ToString());
-
-                    if (issueTypesResult.Succeeded)
-                    {
-                        IssueTypes = issueTypesResult.Data;
-                    }
+                    _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == _card.BoardList.Id);
                 }
             }
 
@@ -269,8 +266,7 @@ namespace Harmony.Client.Shared.Modals
                 {
                     { c => c.CardId, card.Id },
                     { c => c.BoardId, BoardId },
-                    { c => c.BoardKey, BoardKey },
-                    { c => c.IssueTypes, IssueTypes },
+                    { c => c.BoardKey, BoardKey }
                 };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
@@ -354,7 +350,7 @@ namespace Harmony.Client.Shared.Modals
                 return;
             }
 
-            var issueType = IssueTypes.FirstOrDefault(t => t.Summary.Equals(summary));
+            var issueType = _card.IssueTypes.FirstOrDefault(t => t.Summary.Equals(summary));
 
             if ((issueType == null))
             {
@@ -751,6 +747,26 @@ namespace Harmony.Client.Shared.Modals
             dialog.Close();
         }
 
+        private async Task UpdateCardBoardList(GetBoardListResponse? boardList)
+        {
+            var currentBoardListId = _cardBoardList.Id;
+
+            _cardBoardList = boardList;
+
+            var moveUpdateResult = await _cardManager
+                    .MoveCardAsync(new MoveCardCommand(_card.Id, boardList.Id, 
+                    null, CardStatus.Active, Guid.NewGuid())
+                    {
+                        BoardId = BoardId
+                    });
+
+            if(!moveUpdateResult.Succeeded)
+            {
+                _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == currentBoardListId);
+                DisplayMessage(moveUpdateResult);
+            }
+        }
+
         private async Task ToggleFullScreen(bool fullScreen)
         {
             await JSRuntime.InvokeVoidAsync("toggleFullScreenModal", "editCardModal", fullScreen);
@@ -764,6 +780,11 @@ namespace Harmony.Client.Shared.Modals
             }
 
             return type.Summary;
+        };
+
+        Func<GetBoardListResponse, string> boardListConverter = p =>
+        {
+            return p?.Title ?? "Status";
         };
 
         private void ViewBacklog(Guid boardId)

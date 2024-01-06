@@ -527,8 +527,7 @@ namespace Harmony.Client.Pages.Management
             {
                 { c => c.CardId, card.Id },
                 { c => c.BoardId, Guid.Parse(Id) },
-                { c => c.BoardKey, $"{KanbanStore.Board.Key}" },
-                { c => c.IssueTypes, KanbanStore.Board.IssueTypes },
+                { c => c.BoardKey, $"{KanbanStore.Board.Key}" }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };

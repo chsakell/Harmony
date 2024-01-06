@@ -52,15 +52,37 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 		}
 
         var card = await _cardRepository.GetWithBoardList(request.CardId);
-
-		var previousBoardListId = card.BoardListId;
+        var isChildIssue = card.ParentCardId.HasValue;
+        var previousBoardListId = card.BoardListId;
 		var previousPosition = card.Position;
 
         var boardId = card.BoardList?.BoardId;
 
+        
+        if(!request.Position.HasValue && request.ListId.HasValue)
+        {
+            if (isChildIssue)
+            {
+                card.BoardListId = request.ListId.Value;
+                var updateResult = await _cardRepository.Update(card);
+
+                if(updateResult > 0)
+                {
+                    var result = _mapper.Map<CardDto>(card);
+                    return await Result<CardDto>.SuccessAsync(result);
+                }
+            }
+            else
+            {
+                // make this the last card in the list
+                var totalCards = await _cardRepository.CountCards(request.ListId.Value);
+                request.Position = (short)totalCards;
+            }
+        }
+
         // commit all the changes
         var operationCompleted = await _cardService
-			.PositionCard(card, request.ListId, request.Position, request.Status);
+			.PositionCard(card, request.ListId, request.Position.Value, request.Status);
 
         if (operationCompleted)
 		{
@@ -81,12 +103,12 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
             var result = _mapper.Map<CardDto>(card);
 
-            if (request.ListId.HasValue && boardId.HasValue)
+            if (request.ListId.HasValue && boardId.HasValue && !isChildIssue)
             {
                 await _hubClientNotifierService
                         .UpdateCardPosition(boardId.Value, request.CardId, 
 						previousBoardListId.Value,request.ListId.Value, 
-						previousPosition, request.Position, request.UpdateId);
+						previousPosition, request.Position.Value, request.UpdateId);
             }
 
             var board = await _boardService.GetBoardInfo(request.BoardId);

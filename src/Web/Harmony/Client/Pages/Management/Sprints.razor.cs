@@ -118,8 +118,7 @@ namespace Harmony.Client.Pages.Management
                 {
                     { c => c.CardId, item.CardId.Value },
                     { c => c.BoardId, Guid.Parse(Id) },
-                    { c => c.BoardKey, item.BoardKey },
-                    { c => c.IssueTypes, _issueTypes },
+                    { c => c.BoardKey, item.BoardKey }
                 };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };

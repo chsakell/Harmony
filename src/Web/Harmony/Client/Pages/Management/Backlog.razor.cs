@@ -103,14 +103,11 @@ namespace Harmony.Client.Pages.Management
 
         private async Task EditCard(GetBacklogItemResponse card)
         {
-            await LoadIssueTypes();
-
             var parameters = new DialogParameters<EditCardModal>
                 {
                     { c => c.CardId, card.Id },
                     { c => c.BoardId, Guid.Parse(Id) },
-                    { c => c.BoardKey, card.BoardKey },
-                    { c => c.IssueTypes, _issueTypes },
+                    { c => c.BoardKey, card.BoardKey }
                 };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };

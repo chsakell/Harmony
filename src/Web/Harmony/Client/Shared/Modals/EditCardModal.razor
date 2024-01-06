@@ -1,4 +1,5 @@
 ﻿@using Harmony.Application.DTO
+@using Harmony.Application.Features.Lists.Queries.GetBoardLists
 @using Harmony.Application.Helpers;
 @using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums;
@@ -29,8 +30,9 @@ else
     <MudDialog Class="editCardModal">
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
-                <MudStack Style="min-width:50%">
+                <MudStack Style="width:100%">
                     <EditableTextField For="@(() => _card.Title)"
+                                       Style="max-width:50%"
                                        AdornmentIcon="@Icons.Material.Filled.Edit"
                                        OnSave="(newTitle) => SaveTitle(newTitle)"
                                        Text="@_card.Title" Label="@_localizer["Title"]" />
@@ -47,7 +49,7 @@ else
                                            @bind-Value:set="SaveIssueType"
                                            For="@(() => _card.IssueType.Summary)"
                                            Label="Type" AnchorOrigin="Origin.BottomCenter">
-                                    @foreach (var type in IssueTypes)
+                                    @foreach (var type in _card.IssueTypes)
                                     {
                                         <MudSelectItem Value="type.Summary">
                                             <MudStack Row="true">
@@ -60,6 +62,21 @@ else
                                 </MudSelect>
                             </div>
                         }
+                        @if (_card.BoardList != null)
+                        {
+                            <div style="min-width:150px">
+                                <MudSelect @bind-Value:get="_cardBoardList"
+                                           @bind-Value:set="UpdateCardBoardList"
+                                           FullWidth="false"
+                                           ToStringFunc="@boardListConverter"
+                                           T="GetBoardListResponse" Label="Status" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var list in _card.BoardLists)
+                                    {
+                                        <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </div>
+                        }
                         @if (_card.BoardType == BoardType.Scrum)
                         {
                             <MudNumericField Style="width:110px" T="short?" HideSpinButtons="true"
@@ -67,6 +84,7 @@ else
                                              Adornment="Adornment.Start"
                                              Clearable="true" Disabled="_updatingStoryPoints"
                                              Label="Story Points"
+                                             FullWidth="false"
                                              DebounceInterval="1000" OnDebounceIntervalElapsed="UpdateStoryPoints"
                                              @bind-Value:get="@_card.StoryPoints" Min="0" />
                         }

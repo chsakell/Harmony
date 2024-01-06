@@ -57,7 +57,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 Title = request.Title,
                 UserId = userId,
                 BoardListId = request.ListId,
-                Position = (byte)totalCards,
+                Position = (short)totalCards,
                 SerialNumber = nextSerialNumber,
                 IssueTypeId = request.IssueType.Id,
                 SprintId = request.SprintId,

@@ -58,7 +58,7 @@ namespace Harmony.Application.Mappings.Management
                 .ForMember(dto => dto.Labels, opt => 
                     opt.MapFrom(src => src.Labels.Select(cl => cl.Label)))
                 .ForMember(dto => dto.BoardId, opt =>
-                    opt.MapFrom(src => src.BoardList.BoardId))
+                    opt.MapFrom(src => src.IssueType != null ? src.IssueType.BoardId : src.BoardList.BoardId))
                 .ForMember(dto => dto.BoardType, opt =>
                     opt.MapFrom(src => src.BoardList.Board.Type))
                 .ForMember(dto => dto.BoardTitle, opt =>

@@ -10,11 +10,11 @@ public class MoveCardCommand : BaseBoardCommand, IRequest<Result<CardDto>>
 {
     public Guid CardId { get; set; }
     public Guid? ListId { get; set; }
-    public short Position { get; set; }
+    public short? Position { get; set; }
 	public CardStatus Status { get; set; }
     public Guid UpdateId { get; set; }
 
-    public MoveCardCommand(Guid cardId, Guid? listId, short position, CardStatus status, Guid updateId)
+    public MoveCardCommand(Guid cardId, Guid? listId, short? position, CardStatus status, Guid updateId)
     {
         CardId = cardId;
         ListId = listId;

@@ -2,6 +2,7 @@
 using Harmony.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 
 namespace Harmony.Client.Infrastructure.Models.Board
 {
@@ -35,6 +36,8 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public IssueTypeDto IssueType { get; set; }
         public List<CardDto> Children { get; set; } = new List<CardDto>();
         public bool IsChild { get; set; }
+        public List<IssueTypeDto> IssueTypes { get; set; }
+        public List<GetBoardListResponse> BoardLists { get; set; }
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

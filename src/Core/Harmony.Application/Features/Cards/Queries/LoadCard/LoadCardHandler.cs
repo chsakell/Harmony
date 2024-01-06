@@ -3,6 +3,8 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.DTO;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
+using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
@@ -17,18 +19,21 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUserService _userService;
+        private readonly ISender _sender;
         private readonly IStringLocalizer<LoadCardHandler> _localizer;
         private readonly IMapper _mapper;
 
         public LoadCardHandler(ICardRepository CardRepository,
             ICurrentUserService currentUserService,
             IUserService userService,
+            ISender sender,
             IStringLocalizer<LoadCardHandler> localizer,
             IMapper mapper)
         {
             _cardRepository = CardRepository;
             _currentUserService = currentUserService;
             _userService = userService;
+            _sender = sender;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -45,6 +50,20 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             var card = await _cardRepository.Load(request.CardId);
 
             var result = _mapper.Map<LoadCardResponse>(card);
+
+            var issueTypesResult = await _sender.Send(new GetIssueTypesQuery(result.BoardId));
+
+            if(issueTypesResult.Succeeded)
+            {
+                result.IssueTypes = issueTypesResult.Data;
+            }
+
+            var boardLists = await _sender.Send(new GetBoardListsQuery(result.BoardId));
+            
+            if(boardLists.Succeeded)
+            {
+                result.BoardLists = boardLists.Data;
+            }
 
             var boardId = card?.BoardList?.Board.Id ?? card.IssueType?.BoardId;
 
