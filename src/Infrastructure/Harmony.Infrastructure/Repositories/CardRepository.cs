@@ -23,7 +23,9 @@ namespace Harmony.Infrastructure.Repositories
 
         public async Task<Card?> Get(Guid cardId)
 		{
-			return await _context.Cards.FirstOrDefaultAsync(card => card.Id == cardId);
+			return await _context.Cards
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(card => card.Id == cardId);
 		}
 
         public async Task<Card?> GetWithBoardList(Guid cardId)
@@ -69,7 +71,7 @@ namespace Harmony.Infrastructure.Repositories
 					.ThenInclude(cl => cl.Label)
 				.Include(card => card.Sprint)
                 .Include(card => card.IssueType)
-                .Include(card => card.Children)
+                .Include(card => card.Children.Where(c => c.Status == CardStatus.Active))
 				.FirstOrDefaultAsync(card => card.Id == cardId);
         }
 
@@ -105,7 +107,7 @@ namespace Harmony.Infrastructure.Repositories
 
         public async Task<int> CountBoardCards(Guid boardId)
         {
-            return await _context.Cards
+            return await _context.Cards.IgnoreQueryFilters()
                     .Include(c => c.BoardList)
 					.Include(c => c.IssueType)
                 .Where(c => c.BoardList.BoardId == boardId || c.IssueType.BoardId == boardId)
