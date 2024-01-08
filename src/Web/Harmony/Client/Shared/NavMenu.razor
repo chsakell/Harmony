@@ -12,7 +12,7 @@
 <MudDivider DividerType="DividerType.Inset" Class="ml-0 mb-2" />
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">Home</MudNavLink>
-@*     <MudNavLink Href="/swagger/index.html" Target="_blank" Icon="@Icons.Material.Outlined.LiveHelp">
+    @*     <MudNavLink Href="/swagger/index.html" Target="_blank" Icon="@Icons.Material.Outlined.LiveHelp">
     Swagger
     </MudNavLink> *@
 
@@ -51,6 +51,16 @@
                                                         Sprints
                                                     </MudListItem>
                                                 }
+                                                <MudListItem Text="Settings" Icon="@Icons.Material.Filled.Settings">
+                                                    <NestedList>
+                                                        <MudListItem Href="@GetBoardDetailsUrl(board)" Icon="@Icons.Material.Filled.Dashboard">
+                                                            Details
+                                                        </MudListItem>
+                                                        <MudListItem Href="@GetBoardAutomationUrl(board)" Icon="@Icons.Material.Filled.AutoMode">
+                                                            Automation
+                                                        </MudListItem>
+                                                    </NestedList>
+                                                </MudListItem>
                                             </NestedList>
                                         </MudListItem>
                                         <MudDivider />
@@ -108,6 +118,16 @@
         var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
         return $"boards/{board.Id}/{slug}";
+    }
+
+    private string GetBoardDetailsUrl(BoardDto board)
+    {
+        return $"projects/{board.Id}/settings/details";
+    }
+
+    private string GetBoardAutomationUrl(BoardDto board)
+    {
+        return $"projects/{board.Id}//settings/automation";
     }
 
     private string GetBacklogUrl(BoardDto board)
