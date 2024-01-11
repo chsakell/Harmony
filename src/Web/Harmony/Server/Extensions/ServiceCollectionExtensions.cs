@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Bson.Serialization;
 using System.Net;
 using System.Reflection;
 using System.Security.Claims;
@@ -72,6 +73,15 @@ namespace Harmony.Server.Extensions
             services.Configure<BrokerConfiguration>(configuration.GetSection("BrokerConfiguration"));
 
             services.AddSingleton<INotificationsPublisher, RabbitMQNotificationPublisher>();
+
+            return services;
+        }
+
+        internal static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<MongoDbConfiguration>(configuration.GetSection("MongoDb"));
+
+            Persistence.Configurations.MongoDb.MongoDbConfiguration.RegisterEntities();
 
             return services;
         }
@@ -228,7 +238,8 @@ namespace Harmony.Server.Extensions
                 })
                 .AddScoped<IDatabaseSeeder, DatabaseRolesSeeder>()
                 .AddScoped<IDatabaseSeeder, DatabaseUsersSeeder>()
-                .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>();
+                .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>()
+                .AddScoped<IDatabaseSeeder, MongoDbSeeder>();
 
         internal static IServiceCollection AddIdentity(this IServiceCollection services)
         {

@@ -25,6 +25,7 @@ builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
 builder.Services.AddMessaging(builder.Configuration);
+builder.Services.AddMongoDb(builder.Configuration);
 
 // Configure your Search Engine
 builder.Services.AddSearching(SearchEngine.Database, builder.Configuration);

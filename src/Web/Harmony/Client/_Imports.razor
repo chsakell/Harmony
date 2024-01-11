@@ -25,6 +25,8 @@
 @using Harmony.Client.Shared.Dialogs
 
 @using Harmony.Client.Shared
+@using Harmony.Client.Shared.Components.Automation
+
 @using Harmony.Client.Infrastructure.Authentication;
 @using Harmony.Client.Infrastructure.Managers.Project;
 @using Harmony.Client.Infrastructure.Managers.Identity.Authentication;
@@ -64,5 +66,6 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 @inject IUserNotificationManager _userNotificationManager
 @inject ICommentManager _commentManager
 @inject ISearchManager _searchManager
+@inject IAutomationManager _automationManager
 
 @inject IMapper _mapper
