@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Harmony.Domain.Enums;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace Harmony.Client.Shared.Components.Automation
@@ -12,7 +13,7 @@ namespace Harmony.Client.Shared.Components.Automation
         public Guid BoardId { get; set; }
 
         [Parameter]
-        public string AutomationTemplateId { get; set; }
+        public AutomationType? AutomationType { get; set; }
 
         private MudDrawer _drawer;
 

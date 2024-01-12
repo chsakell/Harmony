@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO.Automation;
+using Harmony.Domain.Enums;
 using Microsoft.AspNetCore.Components;
 
 namespace Harmony.Client.Pages.Management.BoardSettings
@@ -8,7 +9,7 @@ namespace Harmony.Client.Pages.Management.BoardSettings
         [Parameter]
         public string Id { get; set; }
         private bool _drawerOpened = false;
-        private string? _selectedTemplateId = null;
+        private AutomationType? _automationType = null;
 
         private List<AutomationTemplateDto> _templates = new List<AutomationTemplateDto>();
 
@@ -22,14 +23,14 @@ namespace Harmony.Client.Pages.Management.BoardSettings
             }
         }
 
-        private void OpenTemplate(string templateId)
+        private void OpenTemplate(AutomationTemplateDto template)
         {
             if(_drawerOpened)
             {
-                if (_selectedTemplateId == templateId)
+                if (_automationType == template.Type)
                 {
                     _drawerOpened = false;
-                    _selectedTemplateId = null;
+                    _automationType = null;
                     return;
                 }
             }
@@ -37,9 +38,8 @@ namespace Harmony.Client.Pages.Management.BoardSettings
             {
                 _drawerOpened = true;
             }
-            
 
-            _selectedTemplateId = templateId;
+            _automationType = template.Type;
         }
     }
 }

@@ -3,8 +3,12 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Domain.Automation;
+using Harmony.Domain.Enums;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualBasic;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -44,6 +48,27 @@ namespace Harmony.Infrastructure.Repositories
                 .Find(filter).ToListAsync();
 
             return templates;
+        }
+
+        public async Task<IEnumerable<T>> GetAutomations<T>(AutomationType type, Guid boardId)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.AutomationsDatabase);
+
+            var automationsCollection = database
+                .GetCollection<BsonDocument>(MongoDbConstants.AutomationsCollection);
+
+            var boardIdFilter = Builders<BsonDocument>.Filter
+                .Eq("boardId", boardId);
+
+            var typeFilter = Builders<BsonDocument>.Filter
+                .Eq("type", type);
+
+            var automations = await automationsCollection
+                .Find(Builders<BsonDocument>.Filter.And(boardIdFilter, typeFilter)).ToListAsync();
+
+            return automations
+                .Select(automation => BsonSerializer.Deserialize<T>(automation));
         }
 
         public async Task CreateTemplate(AutomationTemplate template)

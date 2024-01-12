@@ -1,0 +1,19 @@
+﻿@if (_loaded)
+{
+    @if (!_automations.Any())
+    {
+        <EditForm Model="@_automationModel" OnValidSubmit="SubmitAsync">
+            <DataAnnotationsValidator />
+            <MudPaper Class="pa-4">
+                <MudStack Spacing="4">
+                    <MudTextField For="@(() => _automationModel.Name)"
+                                  @bind-Value="_automationModel.Name" Label="Name" />
+                    <MudTextField For="@(() => _automationModel.Description)"
+                                  @bind-Value="_automationModel.Description" Label="Description" />
+
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" DisableElevation="true">Enable</MudButton>
+                </MudStack>
+            </MudPaper>
+        </EditForm>
+    }
+}

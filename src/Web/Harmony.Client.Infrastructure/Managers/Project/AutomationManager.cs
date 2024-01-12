@@ -20,6 +20,8 @@ using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Client.Infrastructure.Extensions;
+using Harmony.Domain.Automation;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using System.Net.Http.Json;
@@ -42,6 +44,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.AutomationEndpoints.Templates);
             return await response.ToResult<List<AutomationTemplateDto>>();
+        }
+
+        public async Task<IResult<List<T>>> GetAutomations<T>(Guid boardId, AutomationType type)
+            where T : IAutomationDto
+        {
+            var response = await _httpClient.GetAsync(Routes.AutomationEndpoints.Automations(boardId, type));
+            return await response.ToResult<List<T>>();
         }
     }
 }

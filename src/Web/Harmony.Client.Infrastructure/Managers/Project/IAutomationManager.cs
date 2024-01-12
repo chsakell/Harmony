@@ -1,7 +1,6 @@
 ﻿using Harmony.Application.DTO.Automation;
-using Harmony.Application.DTO.Search;
-using Harmony.Application.Features.Search.Commands.AdvancedSearch;
-using Harmony.Application.Features.Search.Queries.InitAdvancedSearch;
+using Harmony.Domain.Automation;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
@@ -9,5 +8,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     public interface IAutomationManager : IManager
     {
         Task<IResult<List<AutomationTemplateDto>>> GetTemplates();
+        Task<IResult<List<T>>> GetAutomations<T>(Guid boardId, AutomationType type)
+            where T : IAutomationDto;
     }
 }

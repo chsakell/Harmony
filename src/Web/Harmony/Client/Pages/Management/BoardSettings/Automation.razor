@@ -3,7 +3,7 @@
 <MudContainer Style="position:relative;height:calc(100vh - 100px);overflow:hidden">
     <AutomationEditor IsOpened="_drawerOpened" 
                       BoardId="Guid.Parse(Id)"
-                      AutomationTemplateId="@_selectedTemplateId" />
+                      AutomationType="_automationType" />
     <MudPaper Class="d-flex flex-wrap gap-4" Elevation="0">
         @foreach (var template in _templates)
         {
@@ -14,7 +14,7 @@
                     </MudCardContent>
                     <MudCardActions>
                         <MudButton Variant="Variant.Text" 
-                        OnClick="@(() => OpenTemplate(template.Id))" Color="Color.Primary">Open</MudButton>
+                        OnClick="@(() => OpenTemplate(template))" Color="Color.Primary">Open</MudButton>
                     </MudCardActions>
                 </MudCard>
         }

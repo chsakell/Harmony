@@ -10,5 +10,6 @@ namespace Harmony.Application.Constants
     {
         public const string AutomationsDatabase = "automations";
         public const string TemplatesCollection = "templates";
+        public const string AutomationsCollection = "automations";
     }
 }

@@ -22,6 +22,12 @@ namespace Harmony.Persistence.Configurations.MongoDb
                 cm.AutoMap();
                 cm.MapIdMember(c => c.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
             });
+
+            BsonClassMap.RegisterClassMap<Automation>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
+            });
         }
     }
 }
