@@ -8,6 +8,9 @@ namespace Harmony.Domain.Enums
 {
     public enum AutomationType
     {
-        AutoCloseParentIsssueWhenSubTasksAreDone
+        SyncParentAndChildIssues,
+        SmartAutoAssign,
+        AutoCreateSubtasks,
+        SumUpStorePoints
     }
 }

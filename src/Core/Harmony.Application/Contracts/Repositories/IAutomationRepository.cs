@@ -12,6 +12,7 @@ namespace Harmony.Application.Contracts.Repositories
     public interface IAutomationRepository
     {
         Task CreateTemplate(AutomationTemplate template);
+        Task CreateTemplates(List<AutomationTemplate> templates);
         Task<List<AutomationTemplate>> GetTemplates();
         Task<int> CreateAsync(CreateAutomationCommand automation);
     }

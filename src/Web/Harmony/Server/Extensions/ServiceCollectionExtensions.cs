@@ -81,7 +81,7 @@ namespace Harmony.Server.Extensions
         {
             services.Configure<MongoDbConfiguration>(configuration.GetSection("MongoDb"));
 
-            Persistence.Configurations.MongoDb.MongoDbConfiguration.RegisterEntities();
+            Persistence.Configurations.MongoDb.MongoDbConfiguration.Configure();
 
             return services;
         }

@@ -8,6 +8,7 @@ namespace Harmony.Client.Pages.Management.BoardSettings
         [Parameter]
         public string Id { get; set; }
         private bool _drawerOpened = false;
+        private string? _selectedTemplateId = null;
 
         private List<AutomationTemplateDto> _templates = new List<AutomationTemplateDto>();
 
@@ -19,6 +20,26 @@ namespace Harmony.Client.Pages.Management.BoardSettings
             {
                 _templates = result.Data;
             }
+        }
+
+        private void OpenTemplate(string templateId)
+        {
+            if(_drawerOpened)
+            {
+                if (_selectedTemplateId == templateId)
+                {
+                    _drawerOpened = false;
+                    _selectedTemplateId = null;
+                    return;
+                }
+            }
+            else
+            {
+                _drawerOpened = true;
+            }
+            
+
+            _selectedTemplateId = templateId;
         }
     }
 }

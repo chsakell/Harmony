@@ -56,5 +56,16 @@ namespace Harmony.Infrastructure.Repositories
 
             await templatesCollection.InsertOneAsync(template);
         }
+
+        public async Task CreateTemplates(List<AutomationTemplate> templates)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.AutomationsDatabase);
+
+            var templatesCollection = database
+                .GetCollection<AutomationTemplate>(MongoDbConstants.TemplatesCollection);
+
+            await templatesCollection.InsertManyAsync(templates);
+        }
     }
 }

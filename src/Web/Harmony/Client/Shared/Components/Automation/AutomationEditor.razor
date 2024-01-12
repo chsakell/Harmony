@@ -1,0 +1,13 @@
+﻿<MudDrawer @bind-Open="IsOpened" @ref="_drawer" 
+           Fixed="false" Anchor="Anchor.End"
+           Elevation="0" Width="400px"
+           Variant="@DrawerVariant.Persistent">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">Settings</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Profile</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">Orders</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.History">Order History</MudNavLink>
+    </MudNavMenu>
+</MudDrawer>

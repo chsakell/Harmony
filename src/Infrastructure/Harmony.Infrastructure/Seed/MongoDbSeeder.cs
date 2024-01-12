@@ -9,7 +9,8 @@ namespace Harmony.Infrastructure.Seed
     {
         private readonly IAutomationRepository _automationRepository;
 
-        public MongoDbSeeder(IAutomationRepository automationRepository) {
+        public MongoDbSeeder(IAutomationRepository automationRepository)
+        {
             _automationRepository = automationRepository;
         }
 
@@ -19,17 +20,39 @@ namespace Harmony.Infrastructure.Seed
         {
             var templates = await _automationRepository.GetTemplates();
 
-            if(!templates.Any())
+            if (!templates.Any())
             {
-                var automationTemplate = new AutomationTemplate()
+                templates.AddRange(new List<AutomationTemplate>()
                 {
-                    Title = "Auto-close parent issue when subtasks are done",
-                    Type = AutomationType.AutoCloseParentIsssueWhenSubTasksAreDone,
-                    Description = @"Keep sub-tasks and their parent in sync. When the last sub-task moves to 'done', usually you will want the parent / epic to move to 'done' also. This automation rule solves that problem.
-                                    <br><br>It is a common rule that most customers use to ensure the parent and child issue always stay in sync. "
-                };
+                    new AutomationTemplate()
+                    {
+                        Name = "Sync parent and child tasks",
+                        Summary = "If the sub-task moves to 'In Progress' then move the parent issue to 'In Progress' also. Always keep your parent and child tasks in sync.",
+                        Type = AutomationType.SyncParentAndChildIssues,
+                        Enabled = true,
+                    },
+                    new AutomationTemplate()
+                    {
+                        Name = "Smart auto-assign",
+                        Summary = "When an issue is created without an assignee, automatically assign it. Go one better and assign it based on skillset or in a balanced workload.",
+                        Type = AutomationType.SmartAutoAssign,
+                    },
+                    new AutomationTemplate()
+                    {
+                        Name = "Auto-create sub-tasks",
+                        Summary = "Whenever a Jira issue is created, automatically create 5 sub-tasks with certain fields populated. Start simple and add depth as you go.",
+                        Type = AutomationType.AutoCreateSubtasks,
+                    },
+                    new AutomationTemplate()
+                    {
+                        Name = "Sum up story points",
+                        Summary = "When a new sub-task is created, sum up its story points to the parent",
+                        Type = AutomationType.SumUpStorePoints,
+                    }
+                });
 
-                await _automationRepository.CreateTemplate(automationTemplate);
+
+                await _automationRepository.CreateTemplates(templates);
             }
         }
     }

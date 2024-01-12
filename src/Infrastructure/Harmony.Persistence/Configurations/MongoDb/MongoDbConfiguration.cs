@@ -1,5 +1,6 @@
 ﻿using Harmony.Domain.Automation;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,11 @@ namespace Harmony.Persistence.Configurations.MongoDb
 {
     public class MongoDbConfiguration
     {
-        public static void RegisterEntities()
+        public static void Configure()
         {
+            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
+            ConventionRegistry.Register("camel case", pack, t => true);
+
             BsonClassMap.RegisterClassMap<AutomationTemplate>(cm =>
             {
                 cm.AutoMap();
