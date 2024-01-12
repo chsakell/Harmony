@@ -7,6 +7,7 @@ namespace Harmony.Client.Pages.Management.BoardSettings
     {
         [Parameter]
         public string Id { get; set; }
+        private bool _drawerOpened = false;
 
         private List<AutomationTemplateDto> _templates = new List<AutomationTemplateDto>();
 
