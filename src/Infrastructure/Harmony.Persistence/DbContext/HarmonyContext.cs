@@ -25,6 +25,7 @@ namespace Harmony.Persistence.DbContext
         public DbSet<Sprint> Sprints { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
 
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {

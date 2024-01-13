@@ -32,7 +32,8 @@ namespace Harmony.Infrastructure.Extensions
                 .AddScoped<ISprintRepository, SprintRepository>()
                 .AddScoped<IUserNotificationRepository, UserNotificationRepository>()
                 .AddScoped<ICommentRepository, CommentRepository>()
-                .AddScoped<IAutomationRepository, AutomationRepository>();
+                .AddScoped<IAutomationRepository, AutomationRepository>()
+                .AddScoped<IAttachmentRepository, AttachmentRepository>();
         }
     }
 }
