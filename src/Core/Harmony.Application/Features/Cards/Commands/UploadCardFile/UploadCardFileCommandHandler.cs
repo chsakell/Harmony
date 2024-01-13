@@ -71,8 +71,10 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
                 CardId = command.CardId,
                 FileName = newFileName,
                 OriginalFileName = command.FileName,
-                Type = command.Type
+                Type = command.Type,
+                UserId = userId
             };
+
             card.Attachments.Add(attachment);
 
             var dbResult = await _cardRepository.Update(card);
