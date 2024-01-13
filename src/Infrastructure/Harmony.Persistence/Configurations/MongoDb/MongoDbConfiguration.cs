@@ -1,7 +1,9 @@
-﻿using Harmony.Domain.Automation;
+﻿using Harmony.Application.DTO.Automation;
+using Harmony.Domain.Automation;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Bson.Serialization.Serializers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,9 @@ namespace Harmony.Persistence.Configurations.MongoDb
         {
             var pack = new ConventionPack { new CamelCaseElementNameConvention() };
             ConventionRegistry.Register("camel case", pack, t => true);
+
+            var objectSerializer = new ObjectSerializer(type => ObjectSerializer.DefaultAllowedTypes(type) || type.FullName.StartsWith("Harmony"));
+            BsonSerializer.RegisterSerializer(objectSerializer);
 
             BsonClassMap.RegisterClassMap<AutomationTemplate>(cm =>
             {

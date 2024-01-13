@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.DTO.Automation
 {
-    public abstract class AutomationDto : IAutomationDto
+    public class AutomationDto : IAutomationDto
     {
         public string Id { get; set; }
 
@@ -18,7 +18,7 @@ namespace Harmony.Application.DTO.Automation
         public string Name { get; set; }
         public string Description { get; set; }
         public AutomationType Type { get; set; }
-        public Guid BoardId { get; set; }
+        public string BoardId { get; set; }
         public bool Enabled { get; set; }
     }
 }

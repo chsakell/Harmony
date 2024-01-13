@@ -1,7 +1,10 @@
 ﻿using Harmony.Application.DTO.Automation;
-using Harmony.Application.Requests.Identity;
+using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Domain.Enums;
+using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using System.Text.Json;
 
 namespace Harmony.Client.Shared.Components.Automation
 {
@@ -24,7 +27,7 @@ namespace Harmony.Client.Shared.Components.Automation
             new SyncParentAndChildIssuesAutomationDto()
             {
                 Type = AutomationType,
-                BoardId = BoardId,
+                BoardId = BoardId.ToString(),
             };
 
             var automationsResult = await _automationManager
@@ -32,7 +35,7 @@ namespace Harmony.Client.Shared.Components.Automation
 
             if(automationsResult.Succeeded)
             {
-
+                _automations = automationsResult.Data;
             }
 
             _loaded = true;
@@ -45,20 +48,26 @@ namespace Harmony.Client.Shared.Components.Automation
 
         private async Task SubmitAsync()
         {
-            //var response = await _userManager.RegisterUserAsync(_registerUserModel);
-            //if (response.Succeeded)
-            //{
-            //    _snackBar.Add(response.Messages[0], Severity.Success);
-            //    _navigationManager.NavigateTo("/login");
-            //    _registerUserModel = new RegisterRequest();
-            //}
-            //else
-            //{
-            //    foreach (var message in response.Messages)
-            //    {
-            //        _snackBar.Add(message, Severity.Error);
-            //    }
-            //}
+            var response = await _automationManager.CreateAutomation
+                (new CreateAutomationCommand(JsonSerializer.Serialize(_automationModel), 
+                AutomationType.SyncParentAndChildIssues));
+
+            DisplayMessage(response);
+        }
+
+        private void DisplayMessage(IResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var severity = result.Succeeded ? Severity.Success : Severity.Error;
+
+            foreach (var message in result.Messages)
+            {
+                _snackBar.Add(message, severity);
+            }
         }
     }
 }

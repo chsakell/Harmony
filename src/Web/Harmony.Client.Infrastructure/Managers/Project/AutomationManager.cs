@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.DTO.Automation;
 using Harmony.Application.Events;
+using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
@@ -51,6 +52,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.AutomationEndpoints.Automations(boardId, type));
             return await response.ToResult<List<T>>();
+        }
+
+        public async Task<IResult<bool>> CreateAutomation(CreateAutomationCommand command)
+        {
+            var response = await _httpClient.PostAsJsonAsync(Routes.AutomationEndpoints.Index, command);
+
+            return await response.ToResult<bool>();
         }
     }
 }

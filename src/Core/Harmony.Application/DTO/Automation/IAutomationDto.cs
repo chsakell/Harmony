@@ -9,7 +9,8 @@ namespace Harmony.Application.DTO.Automation
 {
     public interface IAutomationDto
     {
+        string Id { get; set; }
         AutomationType Type { get; set; }
-        Guid BoardId { get; set; }
+        string BoardId { get; set; }
     }
 }

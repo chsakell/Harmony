@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Features.Automations.Queries.GetAutomations;
+﻿using Harmony.Application.DTO.Automation;
+using Harmony.Application.Features.Automations.Commands.CreateAutomation;
+using Harmony.Application.Features.Automations.Queries.GetAutomations;
 using Harmony.Application.Features.Automations.Queries.GetAutomationTemplates;
 using Harmony.Domain.Enums;
 using Harmony.Server.Controllers.Management;
@@ -13,6 +15,12 @@ namespace Harmony.Server.Controllers.Automation
         public async Task<IActionResult> GetTemplates()
         {
             return Ok(await _mediator.Send(new GetAutomationTemplatesQuery()));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateAutomationCommand command)
+        {
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpGet("{boardId:guid}/types/{type:int}")]

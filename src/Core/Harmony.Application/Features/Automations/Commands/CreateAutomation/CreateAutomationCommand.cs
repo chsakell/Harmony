@@ -1,18 +1,18 @@
-﻿using Harmony.Application.Enums;
-using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
-using Harmony.Application.Models;
+﻿using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
 {
-    public class CreateAutomationCommand : BaseAutomationCommand, IRequest<Result<bool>>
+    public class CreateAutomationCommand : IRequest<Result<bool>>
     {
+        public string Automation { get; set; }
+        public AutomationType Type { get; set; }
 
+        public CreateAutomationCommand(string automation, AutomationType type)
+        {
+            Automation = automation;
+            Type = type;
+        }
     }
 }

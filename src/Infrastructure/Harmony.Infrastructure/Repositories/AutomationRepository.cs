@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
@@ -29,9 +30,17 @@ namespace Harmony.Infrastructure.Repositories
             _client = new MongoClient(mongoConfiguration.Value.ConnectionURI);
         }
 
-        public Task<int> CreateAsync(CreateAutomationCommand automation)
+        public async Task CreateAsync(IAutomationDto automation)
         {
-            throw new NotImplementedException();
+            automation.Id = Guid.NewGuid().ToString();
+
+            var database = _client
+                .GetDatabase(MongoDbConstants.AutomationsDatabase);
+
+            var automationsCollection = database
+                .GetCollection<IAutomationDto>(MongoDbConstants.AutomationsCollection);
+
+            await automationsCollection.InsertOneAsync(automation);
         }
 
         public async Task<List<AutomationTemplate>> GetTemplates()
@@ -59,10 +68,10 @@ namespace Harmony.Infrastructure.Repositories
                 .GetCollection<BsonDocument>(MongoDbConstants.AutomationsCollection);
 
             var boardIdFilter = Builders<BsonDocument>.Filter
-                .Eq("boardId", boardId);
+                .Eq("boardId", boardId.ToString());
 
             var typeFilter = Builders<BsonDocument>.Filter
-                .Eq("type", type);
+                .Eq("type", (int)type);
 
             var automations = await automationsCollection
                 .Find(Builders<BsonDocument>.Filter.And(boardIdFilter, typeFilter)).ToListAsync();

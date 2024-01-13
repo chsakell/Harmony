@@ -1,12 +1,15 @@
 ﻿using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
@@ -21,9 +24,18 @@ namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
             _automationRepository = automationRepository;
         }
 
-        public async Task<Result<bool>> Handle(CreateAutomationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(CreateAutomationCommand command, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            IAutomationDto automation = command.Type switch
+            {
+                AutomationType.SyncParentAndChildIssues 
+                    => JsonSerializer.Deserialize<SyncParentAndChildIssuesAutomationDto>(command.Automation),
+                    _ => throw new NotImplementedException("Automation not supported")
+            };
+
+            await _automationRepository.CreateAsync(automation);
+
+            return await Result<bool>.SuccessAsync(true);
         }
     }
 }

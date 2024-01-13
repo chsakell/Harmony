@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO.Automation;
+using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
@@ -10,5 +11,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<AutomationTemplateDto>>> GetTemplates();
         Task<IResult<List<T>>> GetAutomations<T>(Guid boardId, AutomationType type)
             where T : IAutomationDto;
+
+        Task<IResult<bool>> CreateAutomation(CreateAutomationCommand command);
     }
 }

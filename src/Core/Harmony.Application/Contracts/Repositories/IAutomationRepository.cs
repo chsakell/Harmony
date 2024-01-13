@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Automations.Commands.CreateAutomation;
+﻿using Harmony.Application.DTO.Automation;
+using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
@@ -15,7 +16,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task CreateTemplate(AutomationTemplate template);
         Task CreateTemplates(List<AutomationTemplate> templates);
         Task<List<AutomationTemplate>> GetTemplates();
-        Task<int> CreateAsync(CreateAutomationCommand automation);
+        Task CreateAsync(IAutomationDto automation);
         Task<IEnumerable<T>> GetAutomations<T>(AutomationType type, Guid boardId);
     }
 }
