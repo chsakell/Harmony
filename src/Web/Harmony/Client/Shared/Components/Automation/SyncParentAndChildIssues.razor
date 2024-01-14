@@ -4,50 +4,54 @@
 {
     @if (_automations.Any())
     {
-        <MudSelect T="SyncParentAndChildIssuesAutomationDto" @bind-Value="_automationModel"
-                   Label="Automations" ToStringFunc="syncParentChildConverter">
-            @foreach (var automation in _automations)
-            {
-                <MudSelectItem Value="automation">@automation.Name</MudSelectItem>
-            }
-        </MudSelect>
+        <div class="mb-4">
+            <MudSelect T="SyncParentAndChildIssuesAutomationDto" 
+                       @bind-Value:get="_selectedAutomationModel"
+                       @bind-Value:set="SelectAutomationBoardLists"
+                       Label="Automations" ToStringFunc="syncParentChildConverter"
+                       AnchorOrigin="Origin.BottomCenter">
+                @foreach (var automation in _automations)
+                {
+                    <MudSelectItem Value="automation">@automation.Name</MudSelectItem>
+                }
+                <MudSelectItem Value="_newAutomationModel">Create new..</MudSelectItem>
+            </MudSelect>
+        </div>
     }
-    else
-    {
-        <EditForm Model="@_automationModel" OnValidSubmit="SubmitAsync">
-            <DataAnnotationsValidator />
-            <MudPaper Class="pa-4">
-                <MudStack Spacing="4">
-                    <MudTextField For="@(() => _automationModel.Name)"
-                                  @bind-Value="_automationModel.Name" Label="Name" />
-                    <MudTextField Lines="2" For="@(() => _automationModel.Description)"
-                                  @bind-Value="_automationModel.Description" Label="Description" />
-                    <MudSelect @bind-Value="_fromStatusBoardList"
-                               @bind-SelectedValues="_fromStatusBoardLists"
-                               MultiSelection="true"
-                               ToStringFunc="@converter" Clearable="true"
-                               T="GetBoardListResponse" Label="From status"
-                               Placeholder="Leave blank to match all statuses.."
-                               AnchorOrigin="Origin.BottomCenter">
-                        @foreach (var list in _boardLists)
-                        {
-                            <MudSelectItem Value="list">@list.Title</MudSelectItem>
-                        }
-                    </MudSelect>
-                    <MudSelect @bind-Value="_toStatusBoardList"
-                               @bind-SelectedValues="_toStatusBoardLists"
-                               MultiSelection="true"
-                               ToStringFunc="@converter" Clearable="true"
-                               Placeholder="Leave blank to match all statuses.."
-                               T="GetBoardListResponse" Label="To status" AnchorOrigin="Origin.BottomCenter">
-                        @foreach (var list in _boardLists)
-                        {
-                            <MudSelectItem Value="list">@list.Title</MudSelectItem>
-                        }
-                    </MudSelect>
-                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" DisableElevation="true">Enable</MudButton>
-                </MudStack>
-            </MudPaper>
-        </EditForm>
-    }
+
+    <EditForm Model="@_selectedAutomationModel" OnValidSubmit="SubmitAsync">
+        <DataAnnotationsValidator />
+        <MudPaper Class="pa-4">
+            <MudStack Spacing="4">
+                <MudTextField For="@(() => _selectedAutomationModel.Name)"
+                              @bind-Value="_selectedAutomationModel.Name" Label="Name" />
+                <MudTextField Lines="2" For="@(() => _selectedAutomationModel.Description)"
+                              @bind-Value="_selectedAutomationModel.Description" Label="Description" />
+                <MudSelect @bind-Value="_fromStatusBoardList"
+                           @bind-SelectedValues="_fromStatusBoardLists"
+                           MultiSelection="true"
+                           ToStringFunc="@converter" Clearable="true"
+                           T="GetBoardListResponse" Label="From status"
+                           Placeholder="Leave blank to match all statuses.."
+                           AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var list in _boardLists)
+                    {
+                        <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect @bind-Value="_toStatusBoardList"
+                           @bind-SelectedValues="_toStatusBoardLists"
+                           MultiSelection="true"
+                           ToStringFunc="@converter" Clearable="true"
+                           Placeholder="Leave blank to match all statuses.."
+                           T="GetBoardListResponse" Label="To status" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var list in _boardLists)
+                    {
+                        <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" DisableElevation="true">Enable</MudButton>
+            </MudStack>
+        </MudPaper>
+    </EditForm>
 }
