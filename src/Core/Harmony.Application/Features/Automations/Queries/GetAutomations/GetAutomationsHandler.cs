@@ -41,7 +41,7 @@ namespace Harmony.Application.Features.Automations.Queries.GetAutomations
             var automations = await _automationRepository
                     .GetAutomations<SyncParentAndChildIssuesAutomationDto>(request.AutomationType, request.BoardId);
 
-            return await Result<IEnumerable<IAutomationDto>>.SuccessAsync(automations);
+            return await Result<IEnumerable<SyncParentAndChildIssuesAutomationDto>>.SuccessAsync(automations);
         }
     }
 }

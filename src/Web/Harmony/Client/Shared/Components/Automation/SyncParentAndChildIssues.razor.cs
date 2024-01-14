@@ -72,6 +72,12 @@ namespace Harmony.Client.Shared.Components.Automation
                 (new CreateAutomationCommand(JsonSerializer.Serialize(_automationModel), 
                 AutomationType.SyncParentAndChildIssues));
 
+            if(response.Succeeded)
+            {
+                _automationModel.Id = response.Data;
+                _automations.Add(_automationModel);
+            }
+
             DisplayMessage(response);
         }
 
@@ -93,6 +99,11 @@ namespace Harmony.Client.Shared.Components.Automation
         Func<GetBoardListResponse, string> converter = p =>
         { 
             return p?.Title ;
+        };
+
+        Func<SyncParentAndChildIssuesAutomationDto, string> syncParentChildConverter = p =>
+        {
+            return p?.Name;
         };
     }
 }

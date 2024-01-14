@@ -12,6 +12,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<T>>> GetAutomations<T>(Guid boardId, AutomationType type)
             where T : IAutomationDto;
 
-        Task<IResult<bool>> CreateAutomation(CreateAutomationCommand command);
+        Task<IResult<string>> CreateAutomation(CreateAutomationCommand command);
     }
 }

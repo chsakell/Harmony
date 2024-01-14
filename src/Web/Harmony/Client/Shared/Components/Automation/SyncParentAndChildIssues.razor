@@ -1,7 +1,18 @@
-﻿@using Harmony.Application.Features.Lists.Queries.GetBoardLists
+﻿@using Harmony.Application.DTO.Automation
+@using Harmony.Application.Features.Lists.Queries.GetBoardLists
 @if (_loaded)
 {
-    @if (!_automations.Any())
+    @if (_automations.Any())
+    {
+        <MudSelect T="SyncParentAndChildIssuesAutomationDto" @bind-Value="_automationModel"
+                   Label="Automations" ToStringFunc="syncParentChildConverter">
+            @foreach (var automation in _automations)
+            {
+                <MudSelectItem Value="automation">@automation.Name</MudSelectItem>
+            }
+        </MudSelect>
+    }
+    else
     {
         <EditForm Model="@_automationModel" OnValidSubmit="SubmitAsync">
             <DataAnnotationsValidator />
@@ -15,8 +26,8 @@
                                @bind-SelectedValues="_fromStatusBoardLists"
                                MultiSelection="true"
                                ToStringFunc="@converter" Clearable="true"
-                               T="GetBoardListResponse" Label="From status" 
-                               Placeholder="Leave blank to match all statuses.." 
+                               T="GetBoardListResponse" Label="From status"
+                               Placeholder="Leave blank to match all statuses.."
                                AnchorOrigin="Origin.BottomCenter">
                         @foreach (var list in _boardLists)
                         {

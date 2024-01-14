@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
 {
-    public class CreateAutomationCommand : IRequest<Result<bool>>
+    public class CreateAutomationCommand : IRequest<Result<string>>
     {
         public string Automation { get; set; }
         public AutomationType Type { get; set; }

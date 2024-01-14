@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
 {
     internal class CreateAutomationCommandHandler
-        : IRequestHandler<CreateAutomationCommand, Result<bool>>
+        : IRequestHandler<CreateAutomationCommand, Result<string>>
     {
         private readonly IAutomationRepository _automationRepository;
 
@@ -24,7 +24,7 @@ namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
             _automationRepository = automationRepository;
         }
 
-        public async Task<Result<bool>> Handle(CreateAutomationCommand command, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(CreateAutomationCommand command, CancellationToken cancellationToken)
         {
             IAutomationDto automation = command.Type switch
             {
@@ -35,7 +35,7 @@ namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
 
             await _automationRepository.CreateAsync(automation);
 
-            return await Result<bool>.SuccessAsync(true);
+            return await Result<string>.SuccessAsync(automation.Id, "Rule has been enabled");
         }
     }
 }
