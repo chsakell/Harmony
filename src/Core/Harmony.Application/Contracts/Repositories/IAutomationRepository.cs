@@ -18,5 +18,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<List<AutomationTemplate>> GetTemplates();
         Task CreateAsync(IAutomationDto automation);
         Task<IEnumerable<T>> GetAutomations<T>(AutomationType type, Guid boardId);
+        Task<bool> UpdateAsync(IAutomationDto automation);
     }
 }

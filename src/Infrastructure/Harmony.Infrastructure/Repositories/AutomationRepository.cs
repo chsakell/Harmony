@@ -43,6 +43,22 @@ namespace Harmony.Infrastructure.Repositories
             await automationsCollection.InsertOneAsync(automation);
         }
 
+        public async Task<bool> UpdateAsync(IAutomationDto automation)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.AutomationsDatabase);
+
+            var automationsCollection = database
+                .GetCollection<IAutomationDto>(MongoDbConstants.AutomationsCollection);
+
+            var filter = Builders<IAutomationDto>.Filter
+                    .Eq(automation => automation.Id, automation.Id);
+
+             var replaceResult = await automationsCollection.ReplaceOneAsync(filter, automation);
+
+            return replaceResult.MatchedCount == 1 && replaceResult.ModifiedCount == 1;
+        }
+
         public async Task<List<AutomationTemplate>> GetTemplates()
         {
             var database = _client

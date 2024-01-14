@@ -18,6 +18,7 @@ namespace Harmony.Client.Shared.Components.Automation
         [Parameter] public Guid BoardId { get; set; }
 
         private bool _loaded = false;
+        private bool _processing = false;
 
         private SyncParentAndChildIssuesAutomationDto _selectedAutomationModel;
         private SyncParentAndChildIssuesAutomationDto _newAutomationModel;
@@ -37,6 +38,7 @@ namespace Harmony.Client.Shared.Components.Automation
             {
                 Type = AutomationType,
                 BoardId = BoardId.ToString(),
+                Enabled = true
             };
 
             var automationsResult = await _automationManager
@@ -76,6 +78,9 @@ namespace Harmony.Client.Shared.Components.Automation
 
         private async Task SubmitAsync()
         {
+            _processing = true;
+            var isNewRule = string.IsNullOrEmpty(_selectedAutomationModel.Id);
+
             _selectedAutomationModel.FromStatuses = _fromStatusBoardLists?.Select(s => s.Id.ToString()) ?? Enumerable.Empty<string>();
             _selectedAutomationModel.ToStatuses = _toStatusBoardLists?.Select(s => s.Id.ToString()) ?? Enumerable.Empty<string>();
 
@@ -85,15 +90,21 @@ namespace Harmony.Client.Shared.Components.Automation
 
             if (response.Succeeded)
             {
-                _selectedAutomationModel.Id = response.Data;
-                _automations.Add(_selectedAutomationModel);
-
+                if (isNewRule)
+                {
+                    _selectedAutomationModel.Id = response.Data;
+                    _automations.Add(_selectedAutomationModel);
+                }
+                
                 _newAutomationModel = new SyncParentAndChildIssuesAutomationDto()
                 {
                     Type = AutomationType,
                     BoardId = BoardId.ToString(),
+                    Enabled = true
                 };
             }
+
+            _processing = false;
 
             DisplayMessage(response);
         }
@@ -110,10 +121,10 @@ namespace Harmony.Client.Shared.Components.Automation
             else
             {
                 _fromStatusBoardLists = _boardLists.Where(l => _selectedAutomationModel
-                    .FromStatuses.ToList().Contains(l.Id.ToString()));
+                    .FromStatuses.ToList().Contains(l.Id.ToString())).ToList();
 
                 _toStatusBoardLists = _boardLists.Where(l => _selectedAutomationModel
-                    .ToStatuses.ToList().Contains(l.Id.ToString()));
+                    .ToStatuses.ToList().Contains(l.Id.ToString())).ToList();
             }
         }
 

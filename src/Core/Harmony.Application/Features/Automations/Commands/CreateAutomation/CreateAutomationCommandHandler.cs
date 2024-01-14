@@ -33,9 +33,23 @@ namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
                     _ => throw new NotImplementedException("Automation not supported")
             };
 
-            await _automationRepository.CreateAsync(automation);
+            if(string.IsNullOrEmpty(automation.Id))
+            {
+                await _automationRepository.CreateAsync(automation);
+                return await Result<string>.SuccessAsync(automation.Id, "Rule has been enabled");
+            }
+            else
+            {
+                var automationUpdated = await _automationRepository.UpdateAsync(automation);
 
-            return await Result<string>.SuccessAsync(automation.Id, "Rule has been enabled");
+                if(automationUpdated)
+                {
+                    return await Result<string>.SuccessAsync(automation.Id, "Rule has been updated");
+                }
+
+                return await Result<string>.SuccessAsync(automation.Id, "Failed to update rule");
+            }
+            
         }
     }
 }

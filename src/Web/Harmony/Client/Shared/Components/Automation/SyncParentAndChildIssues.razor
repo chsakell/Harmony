@@ -5,7 +5,7 @@
     @if (_automations.Any())
     {
         <div class="mb-4">
-            <MudSelect T="SyncParentAndChildIssuesAutomationDto" 
+            <MudSelect T="SyncParentAndChildIssuesAutomationDto"
                        @bind-Value:get="_selectedAutomationModel"
                        @bind-Value:set="SelectAutomationBoardLists"
                        Label="Automations" ToStringFunc="syncParentChildConverter"
@@ -50,7 +50,70 @@
                         <MudSelectItem Value="list">@list.Title</MudSelectItem>
                     }
                 </MudSelect>
-                <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" DisableElevation="true">Enable</MudButton>
+
+                @if (string.IsNullOrEmpty(_selectedAutomationModel.Id))
+                {
+                    <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+                               ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Enable</MudText>
+                        }
+                    </MudButton>
+                }
+                else
+                {
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+                                       FullWidth="true"
+                                       ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                                @if (_processing)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>UPDATE</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudButton Disabled="@(_processing)" FullWidth="true"
+                                       Variant="Variant.Filled" Color="Color.Warning">
+                                @if (_processing)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>DISABLE</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudButton Disabled="@(_processing)" FullWidth="true"
+                                       Variant="Variant.Filled" Color="Color.Error">
+                                @if (_processing)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>REMOVE</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                }
             </MudStack>
         </MudPaper>
     </EditForm>
