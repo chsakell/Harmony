@@ -9,6 +9,7 @@ namespace Harmony.Client.Pages.Management.BoardSettings
         [Parameter]
         public string Id { get; set; }
         private bool _drawerOpened = false;
+        private string _selectedTemplateName = string.Empty;
         private AutomationType? _automationType = null;
 
         private List<AutomationTemplateDto> _templates = new List<AutomationTemplateDto>();
@@ -40,6 +41,7 @@ namespace Harmony.Client.Pages.Management.BoardSettings
             }
 
             _automationType = template.Type;
+            _selectedTemplateName = template.Name;
         }
     }
 }

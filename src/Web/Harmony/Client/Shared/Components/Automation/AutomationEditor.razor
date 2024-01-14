@@ -1,9 +1,10 @@
 ﻿<MudDrawer @bind-Open="IsOpened" @ref="_drawer" 
            Fixed="false" Anchor="Anchor.End"
            Elevation="0" Width="400px"
+           Class="pa-4"
            Variant="@DrawerVariant.Persistent">
     <MudDrawerHeader>
-        <MudText Typo="Typo.h6">Automation configuration</MudText>
+        <MudText Typo="Typo.h6">@TemplateName</MudText>
     </MudDrawerHeader>
     @if (AutomationType.HasValue)
     {

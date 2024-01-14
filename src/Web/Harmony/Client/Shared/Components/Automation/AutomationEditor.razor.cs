@@ -15,6 +15,9 @@ namespace Harmony.Client.Shared.Components.Automation
         [Parameter]
         public AutomationType? AutomationType { get; set; }
 
+        [Parameter]
+        public string TemplateName { get; set; }
+
         private MudDrawer _drawer;
 
         protected override Task OnInitializedAsync()

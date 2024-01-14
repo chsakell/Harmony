@@ -2,6 +2,7 @@
 
 <MudContainer Style="position:relative;height:calc(100vh - 100px);overflow:hidden">
     <AutomationEditor IsOpened="_drawerOpened" 
+                      TemplateName="@_selectedTemplateName"
                       BoardId="Guid.Parse(Id)"
                       AutomationType="_automationType" />
     <MudPaper Class="d-flex flex-wrap gap-4" Elevation="0">

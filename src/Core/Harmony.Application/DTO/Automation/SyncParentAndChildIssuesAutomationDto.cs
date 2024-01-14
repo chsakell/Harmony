@@ -2,7 +2,7 @@
 {
     public class SyncParentAndChildIssuesAutomationDto : AutomationDto
     {
-        public string FromStatus { get; set; }
-        public string ToStatus { get; set; }
+        public IEnumerable<string> FromStatuses { get; set; }
+        public IEnumerable<string> ToStatuses { get; set; }
     }
 }

@@ -16,6 +16,9 @@ namespace Harmony.Application.DTO.Automation
 
         [Required]
         public string Name { get; set; }
+
+        [Required]
+        [MaxLength(400)]
         public string Description { get; set; }
         public AutomationType Type { get; set; }
         public string BoardId { get; set; }

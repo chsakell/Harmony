@@ -1,4 +1,5 @@
-﻿@if (_loaded)
+﻿@using Harmony.Application.Features.Lists.Queries.GetBoardLists
+@if (_loaded)
 {
     @if (!_automations.Any())
     {
@@ -8,9 +9,31 @@
                 <MudStack Spacing="4">
                     <MudTextField For="@(() => _automationModel.Name)"
                                   @bind-Value="_automationModel.Name" Label="Name" />
-                    <MudTextField For="@(() => _automationModel.Description)"
+                    <MudTextField Lines="2" For="@(() => _automationModel.Description)"
                                   @bind-Value="_automationModel.Description" Label="Description" />
-
+                    <MudSelect @bind-Value="_fromStatusBoardList"
+                               @bind-SelectedValues="_fromStatusBoardLists"
+                               MultiSelection="true"
+                               ToStringFunc="@converter" Clearable="true"
+                               T="GetBoardListResponse" Label="From status" 
+                               Placeholder="Leave blank to match all statuses.." 
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var list in _boardLists)
+                        {
+                            <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect @bind-Value="_toStatusBoardList"
+                               @bind-SelectedValues="_toStatusBoardLists"
+                               MultiSelection="true"
+                               ToStringFunc="@converter" Clearable="true"
+                               Placeholder="Leave blank to match all statuses.."
+                               T="GetBoardListResponse" Label="To status" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var list in _boardLists)
+                        {
+                            <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                        }
+                    </MudSelect>
                     <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" DisableElevation="true">Enable</MudButton>
                 </MudStack>
             </MudPaper>
