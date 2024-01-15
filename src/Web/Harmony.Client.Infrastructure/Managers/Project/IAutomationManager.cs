@@ -14,7 +14,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             where T : IAutomationDto;
 
         Task<IResult<string>> CreateAutomation(CreateAutomationCommand command);
-
+        Task<IResult<bool>> RemoveAutomation(string automationId);
         Task<IResult<bool>> ToggleAutomation(ToggleAutomationCommand command);
     }
 }

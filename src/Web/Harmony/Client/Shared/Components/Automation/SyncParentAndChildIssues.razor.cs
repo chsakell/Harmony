@@ -140,6 +140,35 @@ namespace Harmony.Client.Shared.Components.Automation
             }
         }
 
+        private async Task Remove()
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want " +
+                $"to remove this rule?"},
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var removeResult = await _automationManager.RemoveAutomation(_selectedAutomationModel.Id);
+
+                if (removeResult.Succeeded)
+                {
+                    _automations.Remove(_selectedAutomationModel);
+
+                    _selectedAutomationModel = _automations.Any() ? _automations.First() : _newAutomationModel;
+                    SelectAutomationBoardLists(_selectedAutomationModel);
+                }
+
+                DisplayMessage(removeResult);
+            }
+        }
+
         private void SelectAutomationBoardLists(SyncParentAndChildIssuesAutomationDto automation)
         {
             _selectedAutomationModel = automation;

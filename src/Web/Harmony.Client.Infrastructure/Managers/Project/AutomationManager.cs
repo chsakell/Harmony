@@ -47,5 +47,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
             return await response.ToResult<bool>();
         }
+
+        public async Task<IResult<bool>> RemoveAutomation(string automationId)
+        {
+            var response = await _httpClient
+                .DeleteAsync(Routes.AutomationEndpoints.Automation(automationId));
+
+            return await response.ToResult<bool>();
+        }
     }
 }

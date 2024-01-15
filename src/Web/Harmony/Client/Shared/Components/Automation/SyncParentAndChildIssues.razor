@@ -114,7 +114,7 @@
                         </MudItem>
                         <MudItem xs="12">
                             <MudButton Disabled="@(_creating || _updating || _removing)" FullWidth="true"
-                                       Variant="Variant.Filled" Color="Color.Error">
+                                       Variant="Variant.Filled" Color="Color.Error" OnClick="Remove">
                                 @if (_removing)
                                 {
                                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />

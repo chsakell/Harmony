@@ -135,5 +135,21 @@ namespace Harmony.Infrastructure.Repositories
 
             return updateResult.MatchedCount == 1 && updateResult.ModifiedCount == 1;
         }
+
+        public async Task<bool> Remove(string automationId)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.AutomationsDatabase);
+
+            var automationsCollection = database
+                .GetCollection<IAutomationDto>(MongoDbConstants.AutomationsCollection);
+
+            var filter = Builders<IAutomationDto>.Filter
+                    .Eq(automation => automation.Id, automationId);
+
+            var deleteResult = await automationsCollection.DeleteOneAsync(filter);
+
+            return deleteResult.DeletedCount == 1;
+        }
     }
 }
