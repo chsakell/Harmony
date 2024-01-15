@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
+using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
@@ -13,5 +14,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             where T : IAutomationDto;
 
         Task<IResult<string>> CreateAutomation(CreateAutomationCommand command);
+
+        Task<IResult<bool>> ToggleAutomation(ToggleAutomationCommand command);
     }
 }

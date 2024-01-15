@@ -12,9 +12,23 @@
                        AnchorOrigin="Origin.BottomCenter">
                 @foreach (var automation in _automations)
                 {
-                    <MudSelectItem Value="automation">@automation.Name</MudSelectItem>
+
+                    <MudSelectItem Value="automation">
+                        <MudStack Row="true">
+                            <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                            <MudText>@automation.Name</MudText>
+                            </MudStack>
+                        </MudSelectItem>
                 }
-                <MudSelectItem Value="_newAutomationModel">Create new..</MudSelectItem>
+
+                <MudSelectItem Value="_newAutomationModel">
+                    <MudStack Row="true">
+                        <MudIcon Icon="@Icons.Material.Filled.Add" />
+                        <MudText>Create new..</MudText>
+                    </MudStack>
+                </MudSelectItem>
+
+
             </MudSelect>
         </div>
     }
@@ -53,9 +67,9 @@
 
                 @if (string.IsNullOrEmpty(_selectedAutomationModel.Id))
                 {
-                    <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+                    <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _creating)"
                                ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                        @if (_processing)
+                        @if (_creating)
                         {
                             <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                             <MudText Class="ms-2">Processing</MudText>
@@ -70,10 +84,10 @@
                 {
                     <MudGrid>
                         <MudItem xs="12" sm="6">
-                            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+                            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _creating || _updating || _toggling || _removing)"
                                        FullWidth="true"
                                        ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                                @if (_processing)
+                                @if (_updating)
                                 {
                                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                                     <MudText Class="ms-2">Processing</MudText>
@@ -85,23 +99,23 @@
                             </MudButton>
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudButton Disabled="@(_processing)" FullWidth="true"
-                                       Variant="Variant.Filled" Color="Color.Warning">
-                                @if (_processing)
+                            <MudButton Disabled="@(_creating || _updating || _toggling || _removing)" OnClick="ToggleStatus" FullWidth="true"
+                                       Variant="Variant.Filled" Color="@(_selectedAutomationModel.Enabled ? Color.Warning : Color.Default)">
+                                @if (_toggling)
                                 {
                                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                                     <MudText Class="ms-2">Processing</MudText>
                                 }
                                 else
                                 {
-                                    <MudText>DISABLE</MudText>
+                                    <MudText>@(_selectedAutomationModel.Enabled ? "DISABLE" : "ENABLE")</MudText>
                                 }
                             </MudButton>
                         </MudItem>
                         <MudItem xs="12">
-                            <MudButton Disabled="@(_processing)" FullWidth="true"
+                            <MudButton Disabled="@(_creating || _updating || _removing)" FullWidth="true"
                                        Variant="Variant.Filled" Color="Color.Error">
-                                @if (_processing)
+                                @if (_removing)
                                 {
                                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                                     <MudText Class="ms-2">Processing</MudText>

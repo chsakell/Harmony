@@ -43,7 +43,7 @@ namespace Harmony.Infrastructure.Repositories
             await automationsCollection.InsertOneAsync(automation);
         }
 
-        public async Task<bool> UpdateAsync(IAutomationDto automation)
+        public async Task<bool> ReplaceAsync(IAutomationDto automation)
         {
             var database = _client
                 .GetDatabase(MongoDbConstants.AutomationsDatabase);
@@ -116,6 +116,24 @@ namespace Harmony.Infrastructure.Repositories
                 .GetCollection<AutomationTemplate>(MongoDbConstants.TemplatesCollection);
 
             await templatesCollection.InsertManyAsync(templates);
+        }
+
+        public async Task<bool> ChangeStatusAsync(string automationId, bool enabled)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.AutomationsDatabase);
+
+            var automationsCollection = database
+                .GetCollection<IAutomationDto>(MongoDbConstants.AutomationsCollection);
+
+            var filter = Builders<IAutomationDto>.Filter
+                    .Eq(automation => automation.Id, automationId);
+
+            var update = Builders<IAutomationDto>.Update.Set(automation => automation.Enabled, enabled);
+
+            var updateResult = await automationsCollection.UpdateOneAsync(filter, update);
+
+            return updateResult.MatchedCount == 1 && updateResult.ModifiedCount == 1;
         }
     }
 }

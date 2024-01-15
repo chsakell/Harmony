@@ -1,6 +1,8 @@
 ﻿using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
+using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
+using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
@@ -18,7 +20,10 @@ namespace Harmony.Client.Shared.Components.Automation
         [Parameter] public Guid BoardId { get; set; }
 
         private bool _loaded = false;
-        private bool _processing = false;
+        private bool _creating = false;
+        private bool _updating = false;
+        private bool _toggling = false;
+        private bool _removing = false;
 
         private SyncParentAndChildIssuesAutomationDto _selectedAutomationModel;
         private SyncParentAndChildIssuesAutomationDto _newAutomationModel;
@@ -78,7 +83,7 @@ namespace Harmony.Client.Shared.Components.Automation
 
         private async Task SubmitAsync()
         {
-            _processing = true;
+            _creating = true;
             var isNewRule = string.IsNullOrEmpty(_selectedAutomationModel.Id);
 
             _selectedAutomationModel.FromStatuses = _fromStatusBoardLists?.Select(s => s.Id.ToString()) ?? Enumerable.Empty<string>();
@@ -104,9 +109,35 @@ namespace Harmony.Client.Shared.Components.Automation
                 };
             }
 
-            _processing = false;
+            _creating = false;
 
             DisplayMessage(response);
+        }
+
+        private async Task ToggleStatus()
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want " +
+                $"to {(_selectedAutomationModel.Enabled ? "disable" : "enable" )} this rule?"},
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Warning }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var toggleResult = await _automationManager.ToggleAutomation(new ToggleAutomationCommand(_selectedAutomationModel.Id, !_selectedAutomationModel.Enabled));
+
+                if(toggleResult.Succeeded)
+                {
+                    _selectedAutomationModel.Enabled = !_selectedAutomationModel.Enabled;
+                }
+
+                DisplayMessage(toggleResult);
+            }
         }
 
         private void SelectAutomationBoardLists(SyncParentAndChildIssuesAutomationDto automation)

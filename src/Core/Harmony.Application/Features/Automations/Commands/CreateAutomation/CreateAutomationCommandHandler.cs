@@ -40,7 +40,7 @@ namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
             }
             else
             {
-                var automationUpdated = await _automationRepository.UpdateAsync(automation);
+                var automationUpdated = await _automationRepository.ReplaceAsync(automation);
 
                 if(automationUpdated)
                 {

@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
+using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
@@ -37,6 +38,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             var response = await _httpClient.PostAsJsonAsync(Routes.AutomationEndpoints.Index, command);
 
             return await response.ToResult<string>();
+        }
+
+        public async Task<IResult<bool>> ToggleAutomation(ToggleAutomationCommand command)
+        {
+            var response = await _httpClient
+                .PutAsJsonAsync(Routes.AutomationEndpoints.ToggleAutomation(command.AutomationId), command);
+
+            return await response.ToResult<bool>();
         }
     }
 }

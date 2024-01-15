@@ -12,5 +12,6 @@ namespace Harmony.Application.DTO.Automation
         string Id { get; set; }
         AutomationType Type { get; set; }
         string BoardId { get; set; }
+        bool Enabled { get; set; }
     }
 }
