@@ -14,7 +14,7 @@ namespace Harmony.Client.Pages.Management.BoardSettings
 
         private List<AutomationTemplateDto> _templates = new List<AutomationTemplateDto>();
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
             var result = await _automationManager.GetTemplates();
 

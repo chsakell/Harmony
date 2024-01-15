@@ -10,6 +10,7 @@ using MediatR;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 
@@ -122,6 +123,24 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                         ListId = request.ListId?.ToString(),
                     }, board.IndexName);
             }
+
+            if (previousBoardListId.HasValue && card.BoardListId.HasValue && card.BoardList != null)
+            {
+                var cardMovedNotification = new CardMovedNotification()
+                {
+                    BoardId = request.BoardId,
+                    CardId = request.CardId,
+                    IsChild = card.ParentCardId.HasValue,
+                    MovedFromListId = previousBoardListId.Value,
+                    MovedToListId = card.BoardListId.Value,
+                    IsCompleted = card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE
+                };
+
+                _notificationsPublisher.PublishNotification(cardMovedNotification, 
+                    Enums.NotificationType.CardMovedNotification);
+            }
+
+            
 
             return await Result<CardDto>.SuccessAsync(result);
 		}

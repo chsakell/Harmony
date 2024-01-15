@@ -6,5 +6,7 @@
         public const string SearchIndexNotificationsQueue = "search_index_notifications";
         public const string NotificationHeader = "notification_type";
         public const string IndexNameHeader = "index_name";
+
+        public const string NotificationsQueue = "notifications";
     }
 }

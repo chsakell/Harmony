@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Enums;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
 using Microsoft.Extensions.Logging;
@@ -45,11 +46,52 @@ namespace Harmony.Messaging
                     exclusive: false,
                     autoDelete: false,
                     arguments: null);
+
+                channel.QueueDeclare(
+                    queue: BrokerConstants.SearchIndexNotificationsQueue,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
+
+                channel.QueueDeclare(
+                    queue: BrokerConstants.NotificationsQueue,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to connect to RabbitMQ {ex}");
             }
+        }
+
+        public void PublishNotification<T>(T notification, NotificationType type)
+        {
+            if (connection == null || !connection.IsOpen)
+            {
+                return;
+            }
+
+            using var channel = connection.CreateModel();
+
+            var json = JsonConvert.SerializeObject(notification);
+            var body = Encoding.UTF8.GetBytes(json);
+
+            var props = channel.CreateBasicProperties();
+            props.ContentType = "text/plain";
+            props.DeliveryMode = 2;
+            props.Headers = new Dictionary<string, object>
+            {
+                { BrokerConstants.NotificationHeader, type.ToString() }
+            };
+
+            channel.BasicPublish(
+                exchange: "",
+                routingKey: BrokerConstants.NotificationsQueue,
+                basicProperties: props,
+                body: body);
         }
 
         public void PublishEmailNotification<T>(T notification) where T : BaseEmailNotification
