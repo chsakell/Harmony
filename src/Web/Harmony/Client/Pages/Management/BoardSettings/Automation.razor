@@ -1,7 +1,7 @@
 ﻿@page "/projects/{id}/settings/automation"
 
 <MudContainer Style="position:relative;height:calc(100vh - 100px);overflow:hidden">
-    <AutomationEditor IsOpened="_drawerOpened" 
+    <AutomationEditor IsOpened="_drawerOpened"
                       TemplateName="@_selectedTemplateName"
                       BoardId="Guid.Parse(Id)"
                       AutomationType="_automationType" />
@@ -11,17 +11,38 @@
             <MudCard Class="ma-4" Style="width:300px;height:300px;">
                 <MudCardContent>
                     <MudStack Row="true" Class="py-6 mud-theme-primary" Spacing="3" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Filled.Task" Size="Size.Large" />
-                        <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
-                        <MudIcon Icon="@Icons.Material.Filled.AccountTree" Size="Size.Large" />
-                        <MudIcon Icon="@Icons.Material.Filled.TaskAlt"  Size="Size.Large" />
+                        @switch(template.Type)
+                        {
+                            case Domain.Enums.AutomationType.SyncParentAndChildIssues:
+                                <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Filled.AccountTree" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Size="Size.Large" />
+                                break;
+                            case Domain.Enums.AutomationType.SmartAutoAssign:
+                                <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Filled.AssignmentInd" Size="Size.Large" />
+                                break;
+                            case Domain.Enums.AutomationType.AutoCreateSubtasks:
+                                <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Filled.LibraryAddCheck" Size="Size.Large" />
+                                break;
+                            case Domain.Enums.AutomationType.SumUpStorePoints:
+                                <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
+                                <MudIcon Icon="@Icons.Material.Filled.AddChart" Size="Size.Large" />
+                                break;
+                        }
+                        
                     </MudStack>
-                    <MudText>@template.Name</MudText>
+                    <MudText Class="my-4">@template.Name</MudText>
                         <MudText Typo="Typo.body2">@((MarkupString)template.Summary)</MudText>
                     </MudCardContent>
                     <MudCardActions>
                         <MudButton Variant="Variant.Text" Disabled="!template.Enabled"
-                        OnClick="@(() => OpenTemplate(template))" Color="Color.Primary">Open</MudButton>
+                                   OnClick="@(() => OpenTemplate(template))" Color="Color.Primary">Open</MudButton>
                     </MudCardActions>
                 </MudCard>
         }
