@@ -1,3 +1,8 @@
+using Harmony.Application.Configurations;
+using Harmony.Automations.Extensions;
+using Harmony.Infrastructure.Extensions;
+using Harmony.Notifications.Services.Hosted;
+
 namespace Harmony.Automations
 {
     public class Program
@@ -5,6 +10,28 @@ namespace Harmony.Automations
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add DbContexts
+            builder.Services.AddIdentityServices();
+            builder.Services.AddHarmonyDatabase(builder.Configuration);
+            //builder.Services.AddNotificationDatabase(builder.Configuration);
+
+            builder.Services.AddRepositories();
+            builder.Services.AddApplicationServices();
+            builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
+            builder.Services.AddAutomationServices();
+
+            // Add Hangfire services.
+            //builder.Services.AddHangfire(configuration => configuration
+            //    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            //    .UseSimpleAssemblyNameTypeSerializer()
+            //    .UseRecommendedSerializerSettings()
+            //    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            //// Add the processing server as IHostedService
+            //builder.Services.AddHangfireServer();
+            builder.Services.AddHostedService<AutomationNotificationsConsumerHostedService>();
+            builder.Services.AddMemoryCache();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -21,6 +48,8 @@ namespace Harmony.Automations
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // app.UseHangfireDashboard();
 
             app.UseRouting();
 
