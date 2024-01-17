@@ -8,8 +8,9 @@ namespace Harmony.Domain.Enums
 {
     public enum NotificationType
     {
-        CardMovedNotification,
-        CardCreatedNotification,
-        SubTaskStoryPointsNotification
+        CardMoved,
+        CardCreated,
+        SubTaskStoryPoints,
+        BoardListCreated
     }
 }

@@ -69,7 +69,7 @@ namespace Harmony.Messaging
             }
         }
 
-        public void PublishNotification<T>(T notification, NotificationType type, string routingKey)
+        public void PublishMessage<T>(T message, NotificationType type, string routingKey)
         {
             if (connection == null || !connection.IsOpen)
             {
@@ -78,7 +78,7 @@ namespace Harmony.Messaging
 
             using var channel = connection.CreateModel();
 
-            var json = JsonConvert.SerializeObject(notification);
+            var json = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(json);
 
             var props = channel.CreateBasicProperties();

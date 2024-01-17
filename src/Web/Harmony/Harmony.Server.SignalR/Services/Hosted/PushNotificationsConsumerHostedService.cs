@@ -71,11 +71,11 @@ namespace Harmony.Notifications.Services.Hosted
 
             _channel.QueueBind(queue: BrokerConstants.SignalrNotificationsQueue,
                       exchange: BrokerConstants.NotificationsExchange,
-                      routingKey: "notifications.push");
+                      routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             _channel.QueueBind(queue: BrokerConstants.SignalrNotificationsQueue,
                       exchange: BrokerConstants.NotificationsExchange,
-                      routingKey: "notifications");
+                      routingKey: BrokerConstants.RoutingKeys.Notifications);
 
             _channel.BasicQos(0, 1, false);
 
@@ -99,22 +99,32 @@ namespace Harmony.Notifications.Services.Hosted
                 {
                     using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
+                        var hubClientNotifierService = scope.ServiceProvider.GetRequiredService<IHubClientNotifierService>();
+
                         switch (notificationType)
                         {
-                            case NotificationType.CardMovedNotification:
-                                var hubClientNotifierService = scope.ServiceProvider.GetRequiredService<IHubClientNotifierService>();
-                                var notification = JsonSerializer
-                                                    .Deserialize<CardMovedNotification>(ea.Body.Span);
-
-                                if (notification != null && 
-                                    notification.MovedFromListId.HasValue &&
-                                    notification.MovedToListId.HasValue 
-                                    && !notification.ParentCardId.HasValue)
+                            case NotificationType.CardMoved:
                                 {
-                                    await hubClientNotifierService
-                                            .UpdateCardPosition(notification.BoardId, notification.CardId,
-                                            notification.MovedFromListId.Value, notification.MovedToListId.Value,
-                                            notification.FromPosition, notification.ToPosition.Value, notification.UpdateId.Value);
+                                    var notification = JsonSerializer
+                                                        .Deserialize<CardMovedMessage>(ea.Body.Span);
+                                    if (notification != null &&
+                                        notification.MovedFromListId.HasValue &&
+                                        notification.MovedToListId.HasValue
+                                        && !notification.ParentCardId.HasValue)
+                                    {
+                                        await hubClientNotifierService
+                                                .UpdateCardPosition(notification.BoardId, notification.CardId,
+                                                notification.MovedFromListId.Value, notification.MovedToListId.Value,
+                                                notification.FromPosition, notification.ToPosition.Value, notification.UpdateId.Value);
+                                    }
+                                }
+                                break;
+                            case NotificationType.BoardListCreated:
+                                {
+                                    var notification = JsonSerializer
+                                                        .Deserialize<BoardListCreatedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.AddBoardList(notification.BoardId, notification.BoardList);
                                 }
                                 break;
                             default:

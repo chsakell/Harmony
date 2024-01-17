@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Harmony.Application.Notifications
 {
-    public class CardMovedNotification
+    public class CardMovedMessage
     {
         public Guid BoardId { get; set; }
         public Guid CardId { get; set; }

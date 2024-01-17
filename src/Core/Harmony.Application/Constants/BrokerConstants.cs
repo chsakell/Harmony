@@ -11,5 +11,11 @@
 
         public const string AutomationNotificationsQueue = "notifications.automation";
         public const string SignalrNotificationsQueue = "notifications.signalr";
+
+        public class RoutingKeys
+        {
+            public const string Notifications = "notifications";
+            public const string SignalR = "notifications.signalr";
+        }
     }
 }

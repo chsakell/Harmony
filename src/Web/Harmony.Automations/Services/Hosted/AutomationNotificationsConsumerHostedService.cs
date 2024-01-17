@@ -101,10 +101,10 @@ namespace Harmony.Notifications.Services.Hosted
                     {
                         switch (notificationType)
                         {
-                            case NotificationType.CardMovedNotification:
+                            case NotificationType.CardMoved:
                                 var cardMovedAutomationService = scope.ServiceProvider.GetRequiredService<ICardMovedAutomationService>();
                                 var cardMovedAutomationNotification = JsonSerializer
-                                                    .Deserialize<CardMovedNotification>(ea.Body.Span);
+                                                    .Deserialize<CardMovedMessage>(ea.Body.Span);
 
                                 if (cardMovedAutomationNotification != null)
                                 {

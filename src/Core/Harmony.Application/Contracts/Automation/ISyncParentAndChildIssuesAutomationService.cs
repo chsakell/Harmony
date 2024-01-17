@@ -10,6 +10,6 @@ namespace Harmony.Application.Contracts.Automation
 {
     public interface ISyncParentAndChildIssuesAutomationService
     {
-        Task Process(SyncParentAndChildIssuesAutomationDto automation, CardMovedNotification notification);
+        Task Process(SyncParentAndChildIssuesAutomationDto automation, CardMovedMessage notification);
     }
 }

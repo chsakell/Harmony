@@ -17,7 +17,7 @@ namespace Harmony.Automations.Services
             _cardRepository = cardRepository;
         }
 
-        public async Task Process(SyncParentAndChildIssuesAutomationDto automation, CardMovedNotification notification)
+        public async Task Process(SyncParentAndChildIssuesAutomationDto automation, CardMovedMessage notification)
         {
             if(!notification.ParentCardId.HasValue)
             {

@@ -12,6 +12,7 @@ using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Application.Constants;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 
@@ -23,7 +24,6 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
     private readonly ICurrentUserService _currentUserService;
     private readonly IBoardService _boardService;
     private readonly IStringLocalizer<MoveCardCommandHandler> _localizer;
-    private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly IMapper _mapper;
 
 	public MoveCardCommandHandler(ICardService cardService,
@@ -32,7 +32,6 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 		ICurrentUserService currentUserService,
 		IBoardService boardService,
 		IStringLocalizer<MoveCardCommandHandler> localizer,
-        IHubClientNotifierService hubClientNotifierService,
         IMapper mapper)
 	{
 		_cardService = cardService;
@@ -41,7 +40,6 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
         _currentUserService = currentUserService;
         _boardService = boardService;
         _localizer = localizer;
-        _hubClientNotifierService = hubClientNotifierService;
         _mapper = mapper;
 	}
 	public async Task<Result<CardDto>> Handle(MoveCardCommand request, CancellationToken cancellationToken)
@@ -105,14 +103,6 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
             var result = _mapper.Map<CardDto>(card);
 
-            if (request.ListId.HasValue && boardId.HasValue && !isChildIssue)
-            {
-      //          await _hubClientNotifierService
-      //                  .UpdateCardPosition(boardId.Value, request.CardId, 
-						//previousBoardListId.Value,request.ListId.Value, 
-						//previousPosition, request.Position.Value, request.UpdateId);
-            }
-
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
             if (previousBoardListId != request.ListId)
@@ -127,7 +117,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
             if (previousBoardListId.HasValue && card.BoardListId.HasValue && card.BoardList != null)
             {
-                var cardMovedNotification = new CardMovedNotification()
+                var cardMovedNotification = new CardMovedMessage()
                 {
                     BoardId = request.BoardId,
                     CardId = request.CardId,
@@ -140,11 +130,9 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                     UpdateId = request.UpdateId,
                 };
 
-                _notificationsPublisher.PublishNotification(cardMovedNotification,
-                    NotificationType.CardMovedNotification, "notifications");
+                _notificationsPublisher.PublishMessage(cardMovedNotification,
+                    NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Notifications);
             }
-
-            
 
             return await Result<CardDto>.SuccessAsync(result);
 		}

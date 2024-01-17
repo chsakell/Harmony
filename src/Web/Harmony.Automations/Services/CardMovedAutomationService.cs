@@ -19,10 +19,10 @@ namespace Harmony.Automations.Services
             _syncParentAndChildIssuesAutomationService = syncParentAndChildIssuesAutomationService;
         }
 
-        public async Task Run(CardMovedNotification notification)
+        public async Task Run(CardMovedMessage notification)
         {
             var templatesForAutomation = await _automationRepository
-                .GetTemplates(Domain.Enums.NotificationType.CardMovedNotification);
+                .GetTemplates(Domain.Enums.NotificationType.CardMoved);
 
             if(templatesForAutomation.Any())
             {

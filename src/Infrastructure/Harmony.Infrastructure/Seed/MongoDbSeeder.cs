@@ -30,28 +30,28 @@ namespace Harmony.Infrastructure.Seed
                         Summary = "If the sub-task moves to 'In Progress' then move the parent issue to 'In Progress' also. Always keep your parent and child tasks in sync.",
                         Type = AutomationType.SyncParentAndChildIssues,
                         Enabled = true,
-                        NotificationTypes = new List<NotificationType>() { NotificationType.CardMovedNotification }
+                        NotificationTypes = new List<NotificationType>() { NotificationType.CardMoved }
                     },
                     new AutomationTemplate()
                     {
                         Name = "Smart auto-assign",
                         Summary = "When an issue is created without an assignee, automatically assign it. Go one better and assign it based on skillset or in a balanced workload.",
                         Type = AutomationType.SmartAutoAssign,
-                        NotificationTypes = new List<NotificationType>() { NotificationType.CardCreatedNotification }
+                        NotificationTypes = new List<NotificationType>() { NotificationType.CardCreated }
                     },
                     new AutomationTemplate()
                     {
                         Name = "Auto-create sub-tasks",
                         Summary = "Whenever a Jira issue is created, automatically create 5 sub-tasks with certain fields populated. Start simple and add depth as you go.",
                         Type = AutomationType.AutoCreateSubtasks,
-                        NotificationTypes = new List<NotificationType>() { NotificationType.CardCreatedNotification }
+                        NotificationTypes = new List<NotificationType>() { NotificationType.CardCreated }
                     },
                     new AutomationTemplate()
                     {
                         Name = "Sum up story points",
                         Summary = "When a new sub-task is created, sum up its story points to the parent",
                         Type = AutomationType.SumUpStorePoints,
-                        NotificationTypes = new List<NotificationType>() { NotificationType.SubTaskStoryPointsNotification }
+                        NotificationTypes = new List<NotificationType>() { NotificationType.SubTaskStoryPoints }
                     }
                 });
 
