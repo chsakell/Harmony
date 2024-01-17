@@ -9,6 +9,8 @@ using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDescription;
 
@@ -18,7 +20,6 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly ICardActivityService _cardActivityService;
-    private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly IBoardService _boardService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IStringLocalizer<UpdateCardDescriptionCommandHandler> _localizer;
@@ -28,7 +29,6 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		ICardActivityService cardActivityService,
-		IHubClientNotifierService hubClientNotifierService,
 		IBoardService boardService,
 		INotificationsPublisher notificationsPublisher,
 		IStringLocalizer<UpdateCardDescriptionCommandHandler> localizer,
@@ -38,7 +38,6 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _cardActivityService = cardActivityService;
-        _hubClientNotifierService = hubClientNotifierService;
         _boardService = boardService;
         _notificationsPublisher = notificationsPublisher;
         _localizer = localizer;
@@ -64,8 +63,6 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
             await _cardActivityService.CreateActivity(card.Id, userId,
                 CardActivityType.CardDescriptionUpdated, card.DateUpdated.Value);
 
-            await _hubClientNotifierService.UpdateCardDescription(request.BoardId, card.Id, card.Description);
-
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
             _notificationsPublisher
@@ -74,6 +71,11 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
                         ObjectID = card.Id.ToString(),
                         Description = card.Description
                     }, board.IndexName);
+
+            var message = new CardDescriptionChangedMessage(request.BoardId, request.CardId, card.Description);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardDescriptionChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Description updated"]);
 		}
