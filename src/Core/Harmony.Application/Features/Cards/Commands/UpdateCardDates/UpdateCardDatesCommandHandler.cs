@@ -7,10 +7,11 @@ using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Application.Helpers;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardDates;
 
@@ -20,7 +21,6 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly ICardActivityService _cardActivityService;
-    private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IBoardService _boardService;
     private readonly IStringLocalizer<UpdateCardDatesCommandHandler> _localizer;
@@ -30,7 +30,6 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		ICardActivityService cardActivityService,
-		IHubClientNotifierService hubClientNotifierService,
 		INotificationsPublisher notificationsPublisher,
 		IBoardService boardService,
 		IStringLocalizer<UpdateCardDatesCommandHandler> localizer,
@@ -40,7 +39,6 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _cardActivityService = cardActivityService;
-        _hubClientNotifierService = hubClientNotifierService;
         _notificationsPublisher = notificationsPublisher;
         _boardService = boardService;
         _localizer = localizer;
@@ -70,8 +68,6 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
                 CardActivityType.CardDatesUpdated, card.DateUpdated.Value,
                 CardHelper.DisplayDates(card.StartDate, card.DueDate));
 
-            await _hubClientNotifierService.UpdateCardDates(request.BoardId, card.Id, card.StartDate, card.DueDate);
-
 			_notificationsPublisher.PublishEmailNotification(new CardDueTimeUpdatedNotification(card.Id));
 
             var board = await _boardService.GetBoardInfo(request.BoardId);
@@ -85,6 +81,11 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
                         ObjectID = card.Id.ToString(),
                         DueDate = unixTime
                     }, board.IndexName);
+
+            var message = new CardDatesChangedMessage(request.BoardId, request.CardId, card.StartDate, card.DueDate);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardDatesChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Dates updated"]);
 		}

@@ -145,6 +145,14 @@ namespace Harmony.Notifications.Services.Hosted
                                     await hubClientNotifierService.UpdateCardDescription(message.BoardId, message.CardId, message.Description);
                                 }
                                 break;
+                            case NotificationType.CardDatesChanged:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<CardDatesChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.UpdateCardDates(message.BoardId, message.CardId, message.StartDate, message.DueDate);
+                                }
+                                break;
                             default:
                                 break;
                         }
