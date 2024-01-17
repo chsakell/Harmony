@@ -11,22 +11,17 @@ namespace Harmony.Client.Infrastructure.Extensions
         {
             if (hubConnection == null)
             {
+                var signalrEndpoint = $"https://localhost:7262{ApplicationConstants.SignalR.HubUrl}";
+                var uri = new Uri(signalrEndpoint);
+                var absoluteUrl = navigationManager
+                                  .ToAbsoluteUri(ApplicationConstants.SignalR.HubUrl);
+
                 hubConnection = new HubConnectionBuilder()
-                                  .WithUrl(navigationManager.ToAbsoluteUri(ApplicationConstants.SignalR.HubUrl), options =>
+                                  .WithUrl(uri, options =>
                                   {
                                       options.AccessTokenProvider = async () => await _localStorage.GetItemAsync<string>("authToken");
                                   })
                                   .WithAutomaticReconnect()
-                                  .Build();
-            }
-            return hubConnection;
-        }
-        public static HubConnection TryInitialize(this HubConnection hubConnection, NavigationManager navigationManager)
-        {
-            if (hubConnection == null)
-            {
-                hubConnection = new HubConnectionBuilder()
-                                  .WithUrl(navigationManager.ToAbsoluteUri(ApplicationConstants.SignalR.HubUrl))
                                   .Build();
             }
             return hubConnection;

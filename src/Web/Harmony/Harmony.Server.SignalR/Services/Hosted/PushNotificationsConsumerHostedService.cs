@@ -1,18 +1,18 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Notifications;
-using Harmony.Application.Notifications.Email;
-using Harmony.Automations.Contracts;
 using Harmony.Domain.Enums;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Channels;
 
 namespace Harmony.Notifications.Services.Hosted
 {
-    public class AutomationNotificationsConsumerHostedService : BackgroundService
+    public class PushNotificationsConsumerHostedService : BackgroundService
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -20,11 +20,11 @@ namespace Harmony.Notifications.Services.Hosted
         private IModel? _channel;
         private BrokerConfiguration _brokerConfiguration;
 
-        public AutomationNotificationsConsumerHostedService(ILoggerFactory loggerFactory,
+        public PushNotificationsConsumerHostedService(ILoggerFactory loggerFactory,
             IOptions<BrokerConfiguration> brokerConfig,
             IServiceProvider serviceProvider)
         {
-            _logger = loggerFactory.CreateLogger<AutomationNotificationsConsumerHostedService>();
+            _logger = loggerFactory.CreateLogger<PushNotificationsConsumerHostedService>();
             _brokerConfiguration = brokerConfig.Value;
 
             try
@@ -63,17 +63,17 @@ namespace Harmony.Notifications.Services.Hosted
             _channel.ExchangeDeclare(exchange: BrokerConstants.NotificationsExchange, type: ExchangeType.Topic);
 
             _channel.QueueDeclare(
-                queue: BrokerConstants.AutomationNotificationsQueue,
+                queue: BrokerConstants.SignalrNotificationsQueue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
 
-            _channel.QueueBind(queue: BrokerConstants.AutomationNotificationsQueue,
+            _channel.QueueBind(queue: BrokerConstants.SignalrNotificationsQueue,
                       exchange: BrokerConstants.NotificationsExchange,
-                      routingKey: "notifications.automation");
+                      routingKey: "notifications.push");
 
-            _channel.QueueBind(queue: BrokerConstants.AutomationNotificationsQueue,
+            _channel.QueueBind(queue: BrokerConstants.SignalrNotificationsQueue,
                       exchange: BrokerConstants.NotificationsExchange,
                       routingKey: "notifications");
 
@@ -102,13 +102,19 @@ namespace Harmony.Notifications.Services.Hosted
                         switch (notificationType)
                         {
                             case NotificationType.CardMovedNotification:
-                                var cardMovedAutomationService = scope.ServiceProvider.GetRequiredService<ICardMovedAutomationService>();
-                                var cardMovedAutomationNotification = JsonSerializer
+                                var hubClientNotifierService = scope.ServiceProvider.GetRequiredService<IHubClientNotifierService>();
+                                var notification = JsonSerializer
                                                     .Deserialize<CardMovedNotification>(ea.Body.Span);
 
-                                if (cardMovedAutomationNotification != null)
+                                if (notification != null && 
+                                    notification.MovedFromListId.HasValue &&
+                                    notification.MovedToListId.HasValue 
+                                    && !notification.ParentCardId.HasValue)
                                 {
-                                    await cardMovedAutomationService.Run(cardMovedAutomationNotification);
+                                    await hubClientNotifierService
+                                            .UpdateCardPosition(notification.BoardId, notification.CardId,
+                                            notification.MovedFromListId.Value, notification.MovedToListId.Value,
+                                            notification.FromPosition, notification.ToPosition.Value, notification.UpdateId.Value);
                                 }
                                 break;
                             default:
@@ -123,7 +129,7 @@ namespace Harmony.Notifications.Services.Hosted
             consumer.Unregistered += OnConsumerUnregistered;
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
-            _channel.BasicConsume(BrokerConstants.AutomationNotificationsQueue, true, consumer);
+            _channel.BasicConsume(BrokerConstants.SignalrNotificationsQueue, true, consumer);
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }

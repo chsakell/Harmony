@@ -107,10 +107,10 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
             if (request.ListId.HasValue && boardId.HasValue && !isChildIssue)
             {
-                await _hubClientNotifierService
-                        .UpdateCardPosition(boardId.Value, request.CardId, 
-						previousBoardListId.Value,request.ListId.Value, 
-						previousPosition, request.Position.Value, request.UpdateId);
+      //          await _hubClientNotifierService
+      //                  .UpdateCardPosition(boardId.Value, request.CardId, 
+						//previousBoardListId.Value,request.ListId.Value, 
+						//previousPosition, request.Position.Value, request.UpdateId);
             }
 
             var board = await _boardService.GetBoardInfo(request.BoardId);
@@ -132,13 +132,16 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                     BoardId = request.BoardId,
                     CardId = request.CardId,
                     ParentCardId = card.ParentCardId,
+                    FromPosition = previousPosition,
+                    ToPosition = request.Position,
                     MovedFromListId = previousBoardListId.Value,
                     MovedToListId = card.BoardListId.Value,
-                    IsCompleted = card.BoardList.CardStatus == BoardListCardStatus.DONE
+                    IsCompleted = card.BoardList.CardStatus == BoardListCardStatus.DONE,
+                    UpdateId = request.UpdateId,
                 };
 
                 _notificationsPublisher.PublishNotification(cardMovedNotification,
-                    NotificationType.CardMovedNotification);
+                    NotificationType.CardMovedNotification, "notifications");
             }
 
             

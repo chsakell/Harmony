@@ -40,6 +40,8 @@ namespace Harmony.Messaging
 
                 using var channel = connection.CreateModel();
 
+                channel.ExchangeDeclare(exchange: BrokerConstants.NotificationsExchange, type: ExchangeType.Topic);
+
                 channel.QueueDeclare(
                     queue: BrokerConstants.EmailNotificationsQueue,
                     durable: true,
@@ -54,12 +56,12 @@ namespace Harmony.Messaging
                     autoDelete: false,
                     arguments: null);
 
-                channel.QueueDeclare(
-                    queue: BrokerConstants.NotificationsQueue,
-                    durable: true,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
+                //channel.QueueDeclare(
+                //    queue: BrokerConstants.NotificationsQueue,
+                //    durable: true,
+                //    exclusive: false,
+                //    autoDelete: false,
+                //    arguments: null);
             }
             catch (Exception ex)
             {
@@ -67,7 +69,7 @@ namespace Harmony.Messaging
             }
         }
 
-        public void PublishNotification<T>(T notification, NotificationType type)
+        public void PublishNotification<T>(T notification, NotificationType type, string routingKey)
         {
             if (connection == null || !connection.IsOpen)
             {
@@ -88,8 +90,8 @@ namespace Harmony.Messaging
             };
 
             channel.BasicPublish(
-                exchange: "",
-                routingKey: BrokerConstants.NotificationsQueue,
+                exchange: BrokerConstants.NotificationsExchange,
+                routingKey: routingKey,
                 basicProperties: props,
                 body: body);
         }

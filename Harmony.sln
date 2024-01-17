@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Notifications", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Automations", "src\Web\Harmony.Automations\Harmony.Automations.csproj", "{13E165A6-6A3C-40A2-B3F4-558780DFCDC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Server.SignalR", "src\Web\Harmony\Harmony.Server.SignalR\Harmony.Server.SignalR.csproj", "{94FEF86F-D729-49A8-B2EE-771976CEBAAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{13E165A6-6A3C-40A2-B3F4-558780DFCDC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13E165A6-6A3C-40A2-B3F4-558780DFCDC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13E165A6-6A3C-40A2-B3F4-558780DFCDC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94FEF86F-D729-49A8-B2EE-771976CEBAAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94FEF86F-D729-49A8-B2EE-771976CEBAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94FEF86F-D729-49A8-B2EE-771976CEBAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94FEF86F-D729-49A8-B2EE-771976CEBAAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +121,7 @@ Global
 		{C2BF9160-C787-4B1F-A771-1A66FCD3E3D2} = {68B5421A-5494-4494-98C3-9BC5BCF02130}
 		{A36C8DCB-8DB6-4DE0-800F-9E08BE02C2AD} = {4C18078A-C728-4E4A-A950-395F497181ED}
 		{13E165A6-6A3C-40A2-B3F4-558780DFCDC2} = {4C18078A-C728-4E4A-A950-395F497181ED}
+		{94FEF86F-D729-49A8-B2EE-771976CEBAAF} = {4C18078A-C728-4E4A-A950-395F497181ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33331015-6B3C-4A49-95BB-1D4FC3983BFD}
