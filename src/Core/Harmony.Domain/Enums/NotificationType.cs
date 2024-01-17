@@ -10,6 +10,7 @@ namespace Harmony.Domain.Enums
     {
         CardMoved,
         CardCreated,
+        CardTitleChanged,
         SubTaskStoryPoints,
         BoardListCreated
     }

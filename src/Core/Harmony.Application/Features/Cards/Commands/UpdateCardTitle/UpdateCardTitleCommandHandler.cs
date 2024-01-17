@@ -10,6 +10,9 @@ using Harmony.Application.Contracts.Services.Search;
 using AutoMapper;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
+using Harmony.Application.Events;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 
@@ -18,7 +21,6 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly ICardActivityService _cardActivityService;
-    private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly ISearchService _searchService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IMapper _mapper;
@@ -28,7 +30,6 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 	public UpdateCardTitleCommandHandler(ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
         ICardActivityService cardActivityService,
-        IHubClientNotifierService hubClientNotifierService,
 		ISearchService searchService,
 		INotificationsPublisher notificationsPublisher,
 		IMapper mapper, IBoardService boardService,
@@ -37,7 +38,6 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _cardActivityService = cardActivityService;
-        _hubClientNotifierService = hubClientNotifierService;
         _searchService = searchService;
         _notificationsPublisher = notificationsPublisher;
         _mapper = mapper;
@@ -74,7 +74,10 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
                         Title = card.Title
                     }, board.IndexName);
 
-            await _hubClientNotifierService.UpdateCardTitle(request.BoardId, card.Id, card.Title);
+            var message = new CardTitleChangedMessage(request.BoardId,request.CardId, card.Title);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardTitleChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
 			return await Result<bool>.SuccessAsync(true, _localizer["Title updated"]);
 		}

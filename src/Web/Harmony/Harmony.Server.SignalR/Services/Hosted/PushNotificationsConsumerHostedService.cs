@@ -2,7 +2,9 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Notifications;
+using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -125,6 +127,14 @@ namespace Harmony.Notifications.Services.Hosted
                                                         .Deserialize<BoardListCreatedMessage>(ea.Body.Span);
 
                                     await hubClientNotifierService.AddBoardList(notification.BoardId, notification.BoardList);
+                                }
+                                break;
+                            case NotificationType.CardTitleChanged:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<CardTitleChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.UpdateCardTitle(message.BoardId, message.CardId, message.Title);
                                 }
                                 break;
                             default:
