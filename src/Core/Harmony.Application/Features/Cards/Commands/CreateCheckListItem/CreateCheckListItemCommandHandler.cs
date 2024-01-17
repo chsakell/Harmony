@@ -9,7 +9,9 @@ using AutoMapper;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
-using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
@@ -19,8 +21,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardActivityService _cardActivityService;
         private readonly ICheckListRepository _checklistRepository;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly ICardRepository _cardRepository;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
@@ -28,8 +30,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             ICurrentUserService currentUserService,
             ICardActivityService cardActivityService,
             ICheckListRepository checklistRepository,
-            IHubClientNotifierService hubClientNotifierService,
             ICardRepository cardRepository,
+            INotificationsPublisher notificationsPublisher,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,
             IMapper mapper)
         {
@@ -37,8 +39,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             _currentUserService = currentUserService;
             _cardActivityService = cardActivityService;
             _checklistRepository = checklistRepository;
-            _hubClientNotifierService = hubClientNotifierService;
             _cardRepository = cardRepository;
+            _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -72,8 +74,10 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 
                 var result = _mapper.Map<CheckListItemDto>(newItem);
 
-                await _hubClientNotifierService
-                    .CreateCheckListItem(request.BoardId, request.CardId);
+                var message = new CardItemAddedMessage(request.BoardId, request.CardId);
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.CardItemAdded, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<CheckListItemDto>.SuccessAsync(result, _localizer["Item Created"]);
             }
