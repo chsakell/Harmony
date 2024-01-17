@@ -1,9 +1,9 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.Enums;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
+using Harmony.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;

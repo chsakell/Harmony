@@ -1,5 +1,6 @@
 ﻿using Algolia.Search.Clients;
 using Harmony.Application.Configurations;
+using Harmony.Application.Contracts.Automation;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Automations.Contracts;
@@ -31,6 +32,16 @@ namespace Harmony.Automations.Extensions
         internal static IServiceCollection AddAutomationServices(this IServiceCollection services)
         {
             services.AddScoped<ICardMovedAutomationService, CardMovedAutomationService>();
+            services.AddScoped<ISyncParentAndChildIssuesAutomationService, SyncParentAndChildIssuesAutomationService>();
+
+            return services;
+        }
+
+        internal static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<MongoDbConfiguration>(configuration.GetSection("MongoDb"));
+
+            Persistence.Configurations.MongoDb.MongoDbConfiguration.Configure();
 
             return services;
         }

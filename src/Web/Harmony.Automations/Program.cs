@@ -21,6 +21,7 @@ namespace Harmony.Automations
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
             builder.Services.AddAutomationServices();
 
+            builder.Services.AddMongoDb(builder.Configuration);
             // Add Hangfire services.
             //builder.Services.AddHangfire(configuration => configuration
             //    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)

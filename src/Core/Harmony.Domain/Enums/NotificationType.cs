@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Harmony.Application.Enums
+namespace Harmony.Domain.Enums
 {
     public enum NotificationType
     {
-        CardMovedNotification
+        CardMovedNotification,
+        CardCreatedNotification,
+        SubTaskStoryPointsNotification
     }
 }

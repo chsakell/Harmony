@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
-using Harmony.Application.Enums;
 using Harmony.Application.Notifications;
 using Harmony.Application.Notifications.Email;
 using Harmony.Automations.Contracts;

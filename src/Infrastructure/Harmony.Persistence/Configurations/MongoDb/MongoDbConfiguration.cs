@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO.Automation;
 using Harmony.Domain.Automation;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.IdGenerators;

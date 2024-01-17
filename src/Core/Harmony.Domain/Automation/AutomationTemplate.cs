@@ -14,5 +14,6 @@ namespace Harmony.Domain.Automation
         public string Name { get; set; }
         public AutomationType Type { get; set; }
         public bool Enabled { get; set; }
+        public List<NotificationType> NotificationTypes { get; set; }
     }
 }

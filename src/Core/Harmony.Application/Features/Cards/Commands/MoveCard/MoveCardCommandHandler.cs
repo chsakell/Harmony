@@ -11,6 +11,7 @@ using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.MoveCard;
 
@@ -130,14 +131,14 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                 {
                     BoardId = request.BoardId,
                     CardId = request.CardId,
-                    IsChild = card.ParentCardId.HasValue,
+                    ParentCardId = card.ParentCardId,
                     MovedFromListId = previousBoardListId.Value,
                     MovedToListId = card.BoardListId.Value,
-                    IsCompleted = card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE
+                    IsCompleted = card.BoardList.CardStatus == BoardListCardStatus.DONE
                 };
 
-                _notificationsPublisher.PublishNotification(cardMovedNotification, 
-                    Enums.NotificationType.CardMovedNotification);
+                _notificationsPublisher.PublishNotification(cardMovedNotification,
+                    NotificationType.CardMovedNotification);
             }
 
             
