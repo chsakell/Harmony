@@ -1,12 +1,12 @@
-﻿namespace Harmony.Application.Events
+﻿namespace Harmony.Application.Notifications
 {
-    public class BoardListArchivedEvent
+    public class BoardListArchivedMessage
     {
         public Guid BoardId { get; set; }
         public Guid ArchivedList { get; set; }
 
         public List<BoardListOrder> Positions { get; set; }
-        public BoardListArchivedEvent(Guid boardId,
+        public BoardListArchivedMessage(Guid boardId,
             Guid archivedList,
             List<BoardListOrder> positions)
         {

@@ -1,6 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.Get;
-using static Harmony.Application.Events.BoardListArchivedEvent;
+using static Harmony.Application.Notifications.BoardListArchivedMessage;
 
 namespace Harmony.Client.Infrastructure.Store.Kanban
 {

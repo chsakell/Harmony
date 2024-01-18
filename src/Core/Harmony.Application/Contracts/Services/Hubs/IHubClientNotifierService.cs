@@ -1,5 +1,5 @@
 ﻿using Harmony.Application.DTO;
-using static Harmony.Application.Events.BoardListArchivedEvent;
+using static Harmony.Application.Notifications.BoardListArchivedMessage;
 
 namespace Harmony.Application.Contracts.Services.Hubs
 {

@@ -6,6 +6,11 @@ using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
+using System.Collections.Generic;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListsPositions
 {
@@ -13,19 +18,19 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListsPositions
     {
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<CreateBoardCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public UpdateListsPositionsCommandHandler(IBoardListRepository boardListRepository,
             ICurrentUserService currentUserService,
-            IHubClientNotifierService hubClientNotifierService,
+            INotificationsPublisher notificationsPublisher,
             IStringLocalizer<CreateBoardCommandHandler> localizer,
             IMapper mapper)
         {
             _boardListRepository = boardListRepository;
             _currentUserService = currentUserService;
-            _hubClientNotifierService = hubClientNotifierService;
+            _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -52,8 +57,10 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListsPositions
             {
                 var result = _mapper.Map<UpdateListsPositionsResponse>(request);
 
-                await _hubClientNotifierService
-                    .UpdateBoardListsPositions(request.BoardId, result.ListPositions);
+                var message = new BoardListsPositionsChangedMessage(request.BoardId, result.ListPositions);
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.BoardListsPositionChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<UpdateListsPositionsResponse>.SuccessAsync(result, _localizer["List re ordered"]);
             }

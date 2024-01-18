@@ -1,7 +1,8 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Entities;
-using static Harmony.Application.Events.BoardListArchivedEvent;
+using static Harmony.Application.Notifications.BoardListArchivedMessage;
+
 
 namespace Harmony.Infrastructure.Services.Management
 {

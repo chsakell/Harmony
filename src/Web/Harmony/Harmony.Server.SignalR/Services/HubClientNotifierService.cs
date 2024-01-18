@@ -1,10 +1,11 @@
 ﻿using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Notifications;
 using Harmony.Server.SignalR.Hubs;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.SignalR;
-using static Harmony.Application.Events.BoardListArchivedEvent;
+using static Harmony.Application.Notifications.BoardListArchivedMessage;
 
 namespace Harmony.Server.SignalR.Services
 {
@@ -98,7 +99,7 @@ namespace Harmony.Server.SignalR.Services
         {
             await _hubContext.Clients.Group(boardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnBoardListArchived,
-                    new BoardListArchivedEvent(boardId, archivedList, positions));
+                    new BoardListArchivedMessage(boardId, archivedList, positions));
         }
 
         public async Task RemoveCardLabel(Guid boardId, Guid cardLabelId)

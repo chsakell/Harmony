@@ -4,6 +4,7 @@ using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -176,6 +177,22 @@ namespace Harmony.Notifications.Services.Hosted
                                                         .Deserialize<BoardListTitleChangedMessage>(ea.Body.Span);
 
                                     await hubClientNotifierService.UpdateBoardListTitle(message.BoardId, message.BoardListId, message.Title);
+                                }
+                                break;
+                            case NotificationType.BoardListsPositionChanged:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<BoardListsPositionsChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.UpdateBoardListsPositions(message.BoardId, message.ListPositions);
+                                }
+                                break;
+                            case NotificationType.BoardListArchived:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<BoardListArchivedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.ArchiveBoardList(message.BoardId, message.ArchivedList, message.Positions);
                                 }
                                 break;
                             default:

@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Harmony.Application.Events;
+using Harmony.Application.Notifications;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.Components;
@@ -37,7 +38,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
 
         public event EventHandler<BoardListAddedEvent> OnBoardListAdded;
         public event EventHandler<BoardListTitleChangedEvent> OnBoardListTitleChanged;
-        public event EventHandler<BoardListArchivedEvent> OnBoardListArchived;
+        public event EventHandler<BoardListArchivedMessage> OnBoardListArchived;
         public event EventHandler<BoardListsPositionsChangedEvent> OnBoardListsPositionsChanged;
         public event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         public event EventHandler<CardIssueTypeChangedEvent> OnCardIssueTypeChanged;
@@ -146,10 +147,10 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
                 OnBoardListAdded?.Invoke(this, new BoardListAddedEvent(@event.BoardList));
             });
 
-            _hubConnection.On<BoardListArchivedEvent>(ApplicationConstants.SignalR.OnBoardListArchived, (@event) =>
+            _hubConnection.On<BoardListArchivedMessage>(ApplicationConstants.SignalR.OnBoardListArchived, (@event) =>
             {
                 OnBoardListArchived?.Invoke(this,
-                    new BoardListArchivedEvent(@event.BoardId, @event.ArchivedList, @event.Positions));
+                    new BoardListArchivedMessage(@event.BoardId, @event.ArchivedList, @event.Positions));
             });
 
             _hubConnection.On<BoardListTitleChangedEvent>(ApplicationConstants.SignalR.OnBoardListTitleChanged, (@event) =>

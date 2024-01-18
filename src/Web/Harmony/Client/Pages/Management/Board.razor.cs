@@ -8,6 +8,7 @@ using Harmony.Application.Features.Lists.Commands.CreateList;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
+using Harmony.Application.Notifications;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
@@ -186,7 +187,7 @@ namespace Harmony.Client.Pages.Management
             StateHasChanged();
         }
 
-        private void OnBoardListArchived(object? sender, BoardListArchivedEvent e)
+        private void OnBoardListArchived(object? sender, BoardListArchivedMessage e)
         {
             KanbanStore.ArchiveListAndReorder(e.ArchivedList, e.Positions);
             StateHasChanged();

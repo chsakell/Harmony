@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Harmony.Application.Events;
+using Harmony.Application.Notifications;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -18,7 +19,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #region Events
         event EventHandler<BoardListAddedEvent> OnBoardListAdded;
         event EventHandler<BoardListTitleChangedEvent> OnBoardListTitleChanged;
-        event EventHandler<BoardListArchivedEvent> OnBoardListArchived;
+        event EventHandler<BoardListArchivedMessage> OnBoardListArchived;
         event EventHandler<BoardListsPositionsChangedEvent> OnBoardListsPositionsChanged;
         event EventHandler<CardTitleChangedEvent> OnCardTitleChanged;
         event EventHandler<CardIssueTypeChangedEvent> OnCardIssueTypeChanged;

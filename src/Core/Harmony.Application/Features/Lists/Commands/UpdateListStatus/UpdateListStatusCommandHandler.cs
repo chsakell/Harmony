@@ -6,7 +6,12 @@ using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Hubs;
-using static Harmony.Application.Events.BoardListArchivedEvent;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
+using Harmony.Application.Events;
+using static Harmony.Application.Notifications.BoardListArchivedMessage;
 
 namespace Harmony.Application.Features.Lists.Commands.ArchiveList
 {
@@ -15,21 +20,21 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IStringLocalizer<ArchiveListCommandHandler> _localizer;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IListService _listService;
         private readonly IMapper _mapper;
 
         public ArchiveListCommandHandler(IBoardListRepository boardListRepository,
             ICurrentUserService currentUserService,
             IStringLocalizer<ArchiveListCommandHandler> localizer,
-            IHubClientNotifierService hubClientNotifierService,
+            INotificationsPublisher notificationsPublisher,
             IListService listService,
             IMapper mapper)
         {
             _boardListRepository = boardListRepository;
             _currentUserService = currentUserService;
             _localizer = localizer;
-            _hubClientNotifierService = hubClientNotifierService;
+            _notificationsPublisher = notificationsPublisher;
             _listService = listService;
             _mapper = mapper;
         }
@@ -47,7 +52,7 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
 
             list.Status = request.Status;
 
-            if(request.Status == Domain.Enums.BoardListStatus.Archived)
+            if(request.Status == BoardListStatus.Archived)
             {
                 newPositions = await _listService.ReorderAfterArchive(list);
             }
@@ -56,10 +61,12 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
 
             if (dbResult > 0)
             {
-                if(request.Status == Domain.Enums.BoardListStatus.Archived)
+                if(request.Status == BoardListStatus.Archived)
                 {
-                    await _hubClientNotifierService
-                        .ArchiveBoardList(list.BoardId, list.Id, newPositions);
+                    var message = new BoardListArchivedMessage(list.BoardId, list.Id, newPositions);
+
+                    _notificationsPublisher.PublishMessage(message,
+                        NotificationType.BoardListArchived, routingKey: BrokerConstants.RoutingKeys.SignalR);
                 }
 
                 return await Result<bool>.SuccessAsync(true, _localizer["List status updated"]);
