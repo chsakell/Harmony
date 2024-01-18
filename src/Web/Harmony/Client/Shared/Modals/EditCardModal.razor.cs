@@ -54,6 +54,78 @@ namespace Harmony.Client.Shared.Modals
         [Parameter] public string BoardKey { get; set; }
 
         public event EventHandler<EditableCardModel> OnCardUpdated;
+        
+        protected async override Task OnInitializedAsync()
+        {
+            _loading = true;
+
+            var loadCardResult = await _cardManager.LoadCardAsync(new LoadCardQuery(CardId));
+
+            if (loadCardResult.Succeeded)
+            {
+                _card = _mapper.Map<EditableCardModel>(loadCardResult.Data);
+                CreateCommentCommandModel.CardId = CardId;
+                CreateCommentCommandModel.BoardId = BoardId;
+
+                if (_card.BoardList != null) 
+                {
+                    _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == _card.BoardList.Id);
+                }
+            }
+
+            _loading = false;
+
+            RegisterEvents();
+
+            await Task.Run(() =>
+            {
+                var commentsTask = LoadCommentsTask();
+
+                commentsTask.ContinueWith(res =>
+                {
+                    var result = res.Result;
+
+                    if (result.Succeeded)
+                    {
+                        _card.Comments = result.Data;
+
+                        StateHasChanged();
+                    }
+                });
+            });
+        }
+
+        private void RegisterEvents()
+        {
+            _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
+            _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
+            _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
+            _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
+            _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
+        }
+
+        private void UnRegisterEvents()
+        {
+            _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
+            _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
+            _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
+            _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
+            _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
+            _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
+        }
+
+        private void OnCardAttachmentRemoved(object? sender, AttachmentRemovedEvent e)
+        {
+            var attachment = _card.Attachments.FirstOrDefault(x => x.Id == e.AttachmentId);
+
+            if (attachment != null)
+            {
+                _card.Attachments.Remove(attachment);
+                StateHasChanged();
+            }
+        }
+
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
         {
             const long maxAllowedImageSize = 10000000;
@@ -161,76 +233,6 @@ namespace Harmony.Client.Shared.Modals
             MudDialog.Cancel();
         }
 
-        protected async override Task OnInitializedAsync()
-        {
-            _loading = true;
-
-            var loadCardResult = await _cardManager.LoadCardAsync(new LoadCardQuery(CardId));
-
-            if (loadCardResult.Succeeded)
-            {
-                _card = _mapper.Map<EditableCardModel>(loadCardResult.Data);
-                CreateCommentCommandModel.CardId = CardId;
-                CreateCommentCommandModel.BoardId = BoardId;
-
-                if (_card.BoardList != null) 
-                {
-                    _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == _card.BoardList.Id);
-                }
-            }
-
-            _loading = false;
-
-            RegisterEvents();
-
-            await Task.Run(() =>
-            {
-                var commentsTask = LoadCommentsTask();
-
-                commentsTask.ContinueWith(res =>
-                {
-                    var result = res.Result;
-
-                    if (result.Succeeded)
-                    {
-                        _card.Comments = result.Data;
-
-                        StateHasChanged();
-                    }
-                });
-            });
-        }
-
-        private void RegisterEvents()
-        {
-            _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
-            _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
-            _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
-            _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
-            _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
-            _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
-        }
-
-        private void UnRegisterEvents()
-        {
-            _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
-            _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
-            _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
-            _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
-            _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
-            _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
-        }
-
-        private void OnCardAttachmentRemoved(object? sender, AttachmentRemovedEvent e)
-        {
-            var attachment = _card.Attachments.FirstOrDefault(x => x.Id == e.AttachmentId);
-
-            if (attachment != null)
-            {
-                _card.Attachments.Remove(attachment);
-                StateHasChanged();
-            }
-        }
 
         private async Task AddSubTask()
         {
@@ -767,6 +769,20 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
+        private async Task UpdateChildBoardList(CardDto card, Guid boardListId)
+        {
+            card.BoardListId = boardListId;
+
+            var moveUpdateResult = await _cardManager
+                    .MoveCardAsync(new MoveCardCommand(card.Id, boardListId,
+                    null, CardStatus.Active, Guid.NewGuid())
+                    {
+                        BoardId = BoardId
+                    });
+
+            DisplayMessage(moveUpdateResult);
+        }
+
         private async Task ToggleFullScreen(bool fullScreen)
         {
             await JSRuntime.InvokeVoidAsync("toggleFullScreenModal", "editCardModal", fullScreen);
@@ -785,6 +801,12 @@ namespace Harmony.Client.Shared.Modals
         Func<GetBoardListResponse, string> boardListConverter = p =>
         {
             return p?.Title ?? "Status";
+        };
+
+        Func<Guid, List<GetBoardListResponse>, string> childBoardListConverter = (childListId, boardLists) =>
+        {
+            var boardList = boardLists.FirstOrDefault(l => l.Id == childListId);
+            return boardList?.Title ?? "Status";
         };
 
         private void ViewBacklog(Guid boardId)

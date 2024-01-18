@@ -25,7 +25,7 @@ namespace Harmony.Automations.Services
 
         public async Task Process(SyncParentAndChildIssuesAutomationDto automation, CardMovedMessage notification)
         {
-            if(!notification.ParentCardId.HasValue)
+            if(notification == null || !notification.ParentCardId.HasValue)
             {
                 return;
             }
@@ -35,16 +35,26 @@ namespace Harmony.Automations.Services
             var filter = new CardFilterSpecification(notification.ParentCardId, includes);
 
             var card = await _cardRepository
-                .Entities.Specify(filter)
+                .Entities.IgnoreQueryFilters().Specify(filter)
                 .FirstOrDefaultAsync();
+
+            if(card == null)
+            {
+                return;
+            }
 
             if(notification.MovedToListId != card.BoardListId)
             {
                 // check all children have the same status
                 var allChildrenHaveSameStatus = card.Children.All(c => c.BoardListId == notification.MovedToListId); ;
 
-                if(allChildrenHaveSameStatus && automation.ToStatuses
-                    .Contains(notification.MovedToListId.ToString()))
+                var currentStatusConditionPass = !automation.FromStatuses.Any() ||
+                    automation.FromStatuses.Contains(card.BoardListId.ToString());
+
+                var destinationStatusConditionPass = !automation.ToStatuses.Any() ||
+                    automation.ToStatuses.Contains(notification.MovedToListId.ToString());
+
+                if (allChildrenHaveSameStatus && currentStatusConditionPass && destinationStatusConditionPass)
                 {
                     var currentBoardListId = card.BoardListId;
                     card.BoardListId = notification.MovedToListId;

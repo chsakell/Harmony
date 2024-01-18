@@ -184,6 +184,7 @@ else
                                         <HeaderContent>
                                             <MudTh>Serial Key</MudTh>
                                             <MudTh>Title</MudTh>
+                                            <MudTh>Status</MudTh>
                                         </HeaderContent>
                                         <RowTemplate>
                                             <MudTd DataLabel="Serial Key">
@@ -192,6 +193,18 @@ else
                                                     </MudTooltip>
                                                 </MudTd>
                                                 <MudTd DataLabel="Title">@child.Title</MudTd>
+                                                <MudTd DataLabel="Status">
+                                                    <MudSelect @bind-Value:get="child.BoardListId"
+                                                               @bind-Value:set="@((listId) => UpdateChildBoardList(child, listId))"
+                                                               FullWidth="false"
+                                                               ToStringFunc="@((childList) => childBoardListConverter(childList, _card.BoardLists))"
+                                                               T="Guid" AnchorOrigin="Origin.BottomCenter">
+                                                        @foreach (var list in _card.BoardLists)
+                                                    {
+                                                        <MudSelectItem Value="list.Id">@list.Title</MudSelectItem>
+                                                    }
+                                                </MudSelect>
+                                                </MudTd>
                                             </RowTemplate>
                                         </MudTable>
                                     </MudPaper>
