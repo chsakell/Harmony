@@ -5,6 +5,11 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
 {
@@ -12,19 +17,19 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
     {
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<UpdateListTitleCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public UpdateListTitleCommandHandler(IBoardListRepository ListRepository,
             ICurrentUserService currentUserService,
-            IHubClientNotifierService hubClientNotifierService,
+            INotificationsPublisher notificationsPublisher,
             IStringLocalizer<UpdateListTitleCommandHandler> localizer,
             IMapper mapper)
         {
             _boardListRepository = ListRepository;
             _currentUserService = currentUserService;
-            _hubClientNotifierService = hubClientNotifierService;
+            _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -46,9 +51,11 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
             if (dbResult > 0)
             {
                 var result = new UpdateListTitleResponse(request.BoardId, list.Id, list.Title);
+                
+                var message = new BoardListTitleChangedMessage(request.BoardId, list.Id, list.Title);
 
-                await _hubClientNotifierService
-                        .UpdateBoardListTitle(list.BoardId, list.Id, list.Title);
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.BoardListTitleChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<UpdateListTitleResponse>.SuccessAsync(result, _localizer["List title updated"]);
             }

@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Channels;
@@ -167,6 +168,14 @@ namespace Harmony.Notifications.Services.Hosted
                                                         .Deserialize<CardIssueTypeChangedMessage>(ea.Body.Span);
 
                                     await hubClientNotifierService.UpdateCardIssueType(message.BoardId, message.CardId, message.IssueType);
+                                }
+                                break;
+                            case NotificationType.BoardListTitleChanged:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<BoardListTitleChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.UpdateBoardListTitle(message.BoardId, message.BoardListId, message.Title);
                                 }
                                 break;
                             default:
