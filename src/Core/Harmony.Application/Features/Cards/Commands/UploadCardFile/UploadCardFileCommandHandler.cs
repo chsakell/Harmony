@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
@@ -7,6 +8,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Helpers;
+using Harmony.Application.Notifications;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Entities;
@@ -21,7 +23,6 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
     {
         private readonly IUploadService _uploadService;
         private readonly ICardActivityService _cardActivityService;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
         private readonly IBoardService _boardService;
@@ -30,7 +31,6 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 
         public UploadCardFileCommandHandler(IUploadService uploadService,
             ICardActivityService cardActivityService,
-            IHubClientNotifierService hubClientNotifierService,
             ICurrentUserService currentUserService,
             IMapper mapper,
             IBoardService boardService,
@@ -39,7 +39,6 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
         {
             _uploadService = uploadService;
             _cardActivityService = cardActivityService;
-            _hubClientNotifierService = hubClientNotifierService;
             _currentUserService = currentUserService;
             _mapper = mapper;
             _boardService = boardService;
@@ -104,7 +103,10 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 
             var attachmentDto = _mapper.Map<AttachmentDto>(attachment);
 
-            await _hubClientNotifierService.AddCardAttachment(command.BoardId, card.Id, attachmentDto);
+            var message = new AttachmentAddedMessage(command.BoardId, card.Id, attachmentDto);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardAttachmentAdded, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             var result = new UploadCardFileResponse(command.CardId, attachmentDto);
 

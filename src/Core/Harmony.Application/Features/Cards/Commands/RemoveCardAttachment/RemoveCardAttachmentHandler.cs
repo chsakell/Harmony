@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
+using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
+using Harmony.Application.Notifications;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Specifications.Cards;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,27 +19,18 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 {
     public class RemoveCardAttachmentCommandHandler : IRequestHandler<RemoveCardAttachmentCommand, Result<RemoveCardAttachmentResponse>>
     {
-        private readonly IUploadService _uploadService;
-        private readonly ICardActivityService _cardActivityService;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
         private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly ICardRepository _cardRepository;
 
-        public RemoveCardAttachmentCommandHandler(IUploadService uploadService,
-            ICardActivityService cardActivityService,
-            IHubClientNotifierService hubClientNotifierService,
-            ICurrentUserService currentUserService,
+        public RemoveCardAttachmentCommandHandler(ICurrentUserService currentUserService,
             IMapper mapper,
             IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
             ICardRepository cardRepository)
         {
-            _uploadService = uploadService;
-            _cardActivityService = cardActivityService;
-            _hubClientNotifierService = hubClientNotifierService;
             _currentUserService = currentUserService;
             _mapper = mapper;
             _boardService = boardService;
@@ -70,7 +65,10 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 
                 if (dbResult > 0)
                 {
-                    await _hubClientNotifierService.RemoveCardAttachment(command.BoardId, card.Id, command.AttachmentId);
+                    var message = new AttachmentRemovedMessage(command.BoardId, card.Id, command.AttachmentId);
+
+                    _notificationsPublisher.PublishMessage(message,
+                        NotificationType.CardAttachmentRemoved, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                     if (card.Attachments.Count == 0)
                     {

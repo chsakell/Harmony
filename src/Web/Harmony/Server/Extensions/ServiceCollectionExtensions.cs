@@ -269,7 +269,7 @@ namespace Harmony.Server.Extensions
         internal static IServiceCollection AddClientNotificationService(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            services.AddScoped<IHubClientNotifierService, HubClientNotifierService>();
+
             return services;
         }
 

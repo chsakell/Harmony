@@ -16,7 +16,6 @@ namespace Harmony.Application.Features.Comments.Commands.UpdateComment
         private readonly ICommentRepository _commentRepository;
         private readonly IUserService _userService;
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IStringLocalizer<UpdateCommentCommandHandler> _localizer;
 
         public UpdateCommentCommandHandler(ICurrentUserService currentUserService,
@@ -24,7 +23,6 @@ namespace Harmony.Application.Features.Comments.Commands.UpdateComment
             ICommentRepository commentRepository,
             IUserService userService,
             INotificationsPublisher notificationsPublisher,
-            IHubClientNotifierService hubClientNotifierService,
             IStringLocalizer<UpdateCommentCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
@@ -32,7 +30,6 @@ namespace Harmony.Application.Features.Comments.Commands.UpdateComment
             _commentRepository = commentRepository;
             _userService = userService;
             _notificationsPublisher = notificationsPublisher;
-            _hubClientNotifierService = hubClientNotifierService;
             _localizer = localizer;
         }
         public async Task<Result<bool>> Handle(UpdateCommentCommand request, CancellationToken cancellationToken)

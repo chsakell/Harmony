@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Configurations;
+﻿using AutoMapper.Execution;
+using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
@@ -15,6 +16,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Channels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Notifications.Services.Hosted
 {
@@ -227,6 +229,47 @@ namespace Harmony.Notifications.Services.Hosted
                                                         .Deserialize<CardStoryPointsChangedMessage>(ea.Body.Span);
 
                                     await hubClientNotifierService.UpdateCardStoryPoints(message.BoardId, message.CardId, message.StoryPoints);
+                                }
+                                break;
+                            case NotificationType.CardAttachmentAdded:
+                                {
+                                    var message = JsonSerializer
+                                    .Deserialize<AttachmentAddedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.AddCardAttachment(message.BoardId, message.CardId, message.Attachment);
+                                }
+                                break;
+                            case NotificationType.CardAttachmentRemoved:
+                                {
+                                    var message = JsonSerializer
+                                    .Deserialize<AttachmentRemovedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.RemoveCardAttachment(message.BoardId, message.CardId, message.AttachmentId);
+                                }
+                                break;
+                            case NotificationType.CardMemberRemoved:
+                                {
+                                    var message = JsonSerializer
+                                    .Deserialize<CardMemberRemovedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.RemoveCardMember(message.BoardId, message.CardId, message.Member);
+                                }
+                                break;
+                            case NotificationType.CardMemberAdded:
+                                {
+                                    var message = JsonSerializer
+                                    .Deserialize<CardMemberAddedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.AddCardMember(message.BoardId, message.CardId, message.Member);
+                                }
+                                break;
+                            case NotificationType.CheckListRemoved:
+                                {
+                                    var message = JsonSerializer
+                                    .Deserialize<CheckListRemovedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.RemoveCheckList(message.BoardId, message.CheckListId, 
+                                        message.CardId, message.TotalItems, message.TotalItemsCompleted);
                                 }
                                 break;
                             default:

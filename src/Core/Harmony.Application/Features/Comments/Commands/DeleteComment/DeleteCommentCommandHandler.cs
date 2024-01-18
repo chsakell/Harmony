@@ -15,7 +15,6 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
         private readonly ICommentRepository _commentRepository;
         private readonly IUserService _userService;
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IStringLocalizer<DeleteCommentCommandHandler> _localizer;
 
         public DeleteCommentCommandHandler(ICurrentUserService currentUserService,
@@ -23,14 +22,12 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
             ICommentRepository commentRepository,
             IUserService userService,
             INotificationsPublisher notificationsPublisher,
-            IHubClientNotifierService hubClientNotifierService,
             IStringLocalizer<DeleteCommentCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
             _commentRepository = commentRepository;
             _userService = userService;
             _notificationsPublisher = notificationsPublisher;
-            _hubClientNotifierService = hubClientNotifierService;
             _localizer = localizer;
         }
         public async Task<Result<bool>> Handle(DeleteCommentCommand request, CancellationToken cancellationToken)

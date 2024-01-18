@@ -14,20 +14,17 @@ namespace Harmony.Application.Features.Users.Commands.UploadProfilePicture
     public class UploadProfilePictureCommandHandler : IRequestHandler<UploadProfilePictureCommand, Result<UploadProfilePictureResponse>>
     {
         private readonly IUploadService _uploadService;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly IUserService _userService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
 
         public UploadProfilePictureCommandHandler(IUploadService uploadService,
-            IHubClientNotifierService hubClientNotifierService,
             IUserService userService,
             
             ICurrentUserService currentUserService,
             IMapper mapper)
         {
             _uploadService = uploadService;
-            _hubClientNotifierService = hubClientNotifierService;
             _userService = userService;
             _currentUserService = currentUserService;
             _mapper = mapper;
