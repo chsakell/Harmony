@@ -6,9 +6,9 @@ using Harmony.Shared.Constants.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
-
 builder.Services.AddClientNotificationService();
+builder.Services.AddMessaging(builder.Configuration);
+
 builder.Services.AddHostedService<PushNotificationsConsumerHostedService>();
 
 // Add services to the container.

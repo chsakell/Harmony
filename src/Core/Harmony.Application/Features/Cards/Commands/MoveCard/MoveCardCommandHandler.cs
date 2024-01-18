@@ -66,9 +66,28 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                 card.BoardListId = request.ListId.Value;
                 var updateResult = await _cardRepository.Update(card);
 
+                await _cardRepository.LoadBoardListEntryAsync(card);
+
                 if(updateResult > 0)
                 {
+                    var cardMovedNotification = new CardMovedMessage()
+                    {
+                        BoardId = request.BoardId,
+                        CardId = request.CardId,
+                        ParentCardId = card.ParentCardId,
+                        FromPosition = previousPosition,
+                        ToPosition = request.Position,
+                        MovedFromListId = previousBoardListId.Value,
+                        MovedToListId = card.BoardListId.Value,
+                        IsCompleted = card.BoardList.CardStatus == BoardListCardStatus.DONE,
+                        UpdateId = request.UpdateId,
+                    };
+
+                    _notificationsPublisher.PublishMessage(cardMovedNotification,
+                        NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Notifications);
+
                     var result = _mapper.Map<CardDto>(card);
+
                     return await Result<CardDto>.SuccessAsync(result);
                 }
             }

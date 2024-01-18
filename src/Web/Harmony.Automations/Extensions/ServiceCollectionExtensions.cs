@@ -1,6 +1,7 @@
 ﻿using Algolia.Search.Clients;
 using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Automation;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Automations.Contracts;
@@ -8,6 +9,7 @@ using Harmony.Automations.Services;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
+using Harmony.Messaging;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +44,15 @@ namespace Harmony.Automations.Extensions
             services.Configure<MongoDbConfiguration>(configuration.GetSection("MongoDb"));
 
             Persistence.Configurations.MongoDb.MongoDbConfiguration.Configure();
+
+            return services;
+        }
+
+        internal static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<BrokerConfiguration>(configuration.GetSection("BrokerConfiguration"));
+
+            services.AddSingleton<INotificationsPublisher, RabbitMQNotificationPublisher>();
 
             return services;
         }

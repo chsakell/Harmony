@@ -22,6 +22,8 @@ namespace Harmony.Automations
             builder.Services.AddAutomationServices();
 
             builder.Services.AddMongoDb(builder.Configuration);
+            builder.Services.AddMessaging(builder.Configuration);
+
             // Add Hangfire services.
             //builder.Services.AddHangfire(configuration => configuration
             //    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)

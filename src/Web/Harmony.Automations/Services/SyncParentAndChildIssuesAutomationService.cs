@@ -5,16 +5,22 @@ using Harmony.Application.Notifications;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Constants;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Automations.Services
 {
     public class SyncParentAndChildIssuesAutomationService : ISyncParentAndChildIssuesAutomationService
     {
         private readonly ICardRepository _cardRepository;
+        private readonly INotificationsPublisher _notificationsPublisher;
 
-        public SyncParentAndChildIssuesAutomationService(ICardRepository cardRepository)
+        public SyncParentAndChildIssuesAutomationService(ICardRepository cardRepository, 
+            INotificationsPublisher notificationsPublisher)
         {
             _cardRepository = cardRepository;
+            _notificationsPublisher = notificationsPublisher;
         }
 
         public async Task Process(SyncParentAndChildIssuesAutomationDto automation, CardMovedMessage notification)
@@ -38,11 +44,31 @@ namespace Harmony.Automations.Services
                 var allChildrenHaveSameStatus = card.Children.All(c => c.BoardListId == notification.MovedToListId); ;
 
                 if(allChildrenHaveSameStatus && automation.ToStatuses
-                    .Contains(notification.MovedFromListId.ToString()))
+                    .Contains(notification.MovedToListId.ToString()))
                 {
+                    var currentBoardListId = card.BoardListId;
                     card.BoardListId = notification.MovedToListId;
 
-                    await _cardRepository.Update(card);
+                    // make this the last card in the list
+                    var totalCards = await _cardRepository.CountCards(notification.MovedToListId.Value);
+                    card.Position = (short)totalCards;
+
+                    var updateResult = await _cardRepository.Update(card);
+
+                    var cardMovedNotification = new CardMovedMessage()
+                    {
+                        BoardId = notification.BoardId,
+                        CardId = card.Id,
+                        FromPosition = card.Position,
+                        ToPosition = card.Position,
+                        MovedFromListId = currentBoardListId,
+                        MovedToListId = card.BoardListId,
+                        IsCompleted = notification.IsCompleted,
+                        UpdateId = Guid.NewGuid(),
+                    };
+
+                    _notificationsPublisher.PublishMessage(cardMovedNotification,
+                        NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Notifications);
                 }
             }
 

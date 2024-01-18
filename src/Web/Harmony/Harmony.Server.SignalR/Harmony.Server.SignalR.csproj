@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Harmony.Application\Harmony.Application.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Harmony.Messaging\Harmony.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

@@ -22,7 +22,7 @@ namespace Harmony.Automations.Services
         public async Task Run(CardMovedMessage notification)
         {
             var templatesForAutomation = await _automationRepository
-                .GetTemplates(Domain.Enums.NotificationType.CardMoved);
+                .GetTemplates(NotificationType.CardMoved);
 
             if(templatesForAutomation.Any())
             {
