@@ -6,32 +6,32 @@ using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.DTO;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 
 public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardStoryPointsCommand, Result<bool>>
 {
-	private readonly ICardService _cardService;
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
-    private readonly ICardActivityService _cardActivityService;
-    private readonly IHubClientNotifierService _hubClientNotifierService;
+    private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IStringLocalizer<UpdateCardStoryPointsCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
 	public UpdateCardStoryPointsCommandHandler(ICardService cardService,
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
-		ICardActivityService cardActivityService,
-		IHubClientNotifierService hubClientNotifierService,
+		INotificationsPublisher notificationsPublisher,
 		IStringLocalizer<UpdateCardStoryPointsCommandHandler> localizer,
 		IMapper mapper)
 	{
-		_cardService = cardService;
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
-        _cardActivityService = cardActivityService;
-        _hubClientNotifierService = hubClientNotifierService;
+        _notificationsPublisher = notificationsPublisher;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -53,9 +53,13 @@ public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardSto
 
         if (updateResult > 0)
         {
-            await _hubClientNotifierService.UpdateCardStoryPoints(request.BoardId, card.Id, card.StoryPoints);
+            var message = new CardStoryPointsChangedMessage(request.BoardId, card.Id, card.StoryPoints);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardStoryPointsChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
+
             return await Result<bool>.SuccessAsync(true, _localizer["Story points updated"]);
-		}
+        }
 
 		return await Result<bool>.FailAsync(_localizer["Operation failed"]);
 	}

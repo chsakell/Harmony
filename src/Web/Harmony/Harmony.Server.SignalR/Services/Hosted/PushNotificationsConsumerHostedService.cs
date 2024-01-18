@@ -221,6 +221,14 @@ namespace Harmony.Notifications.Services.Hosted
                                     await hubClientNotifierService.ToggleCardLabel(message.BoardId, message.CardId, message.Label);
                                 }
                                 break;
+                            case NotificationType.CardStoryPointsChanged:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<CardStoryPointsChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.UpdateCardStoryPoints(message.BoardId, message.CardId, message.StoryPoints);
+                                }
+                                break;
                             default:
                                 break;
                         }

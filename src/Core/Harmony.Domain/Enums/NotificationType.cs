@@ -22,6 +22,7 @@ namespace Harmony.Domain.Enums
         BoardListCreated,
         CardItemCheckedChanged,
         CardLabelRemoved,
-        CardLabelToggled
+        CardLabelToggled,
+        CardStoryPointsChanged
     }
 }
