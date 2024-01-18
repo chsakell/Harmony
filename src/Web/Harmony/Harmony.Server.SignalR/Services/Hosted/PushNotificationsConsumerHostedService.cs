@@ -195,6 +195,14 @@ namespace Harmony.Notifications.Services.Hosted
                                     await hubClientNotifierService.ArchiveBoardList(message.BoardId, message.ArchivedList, message.Positions);
                                 }
                                 break;
+                            case NotificationType.CardItemCheckedChanged:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<CardItemCheckedChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.ToggleCardListItemChecked(message.BoardId, message.CardId, message.CheckListItemId, message.IsChecked);
+                                }
+                                break;
                             default:
                                 break;
                         }

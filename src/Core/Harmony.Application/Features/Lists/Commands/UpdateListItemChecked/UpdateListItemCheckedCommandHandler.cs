@@ -3,7 +3,10 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
 {
@@ -12,19 +15,19 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
         private readonly ICheckListItemRepository _checkListItemRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardRepository _cardRepository;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<UpdateListItemCheckedCommandHandler> _localizer;
 
         public UpdateListItemCheckedCommandHandler(ICheckListItemRepository checkListItemRepository,
             ICurrentUserService currentUserService,
             ICardRepository cardRepository,
-            IHubClientNotifierService hubClientNotifierService,
+            INotificationsPublisher notificationsPublisher,
             IStringLocalizer<UpdateListItemCheckedCommandHandler> localizer)
         {
             _checkListItemRepository = checkListItemRepository;
             _currentUserService = currentUserService;
             _cardRepository = cardRepository;
-            _hubClientNotifierService = hubClientNotifierService;
+            _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
         }
         public async Task<Result<bool>> Handle(UpdateListItemCheckedCommand request, CancellationToken cancellationToken)
@@ -42,8 +45,11 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
             var dbResult = await _checkListItemRepository.Update(listItem);
             if (dbResult > 0)
             {
-                await _hubClientNotifierService
-                    .ToggleCardListItemChecked(request.BoardId, request.CardId, listItem.Id, listItem.IsChecked);
+                var message = new CardItemCheckedChangedMessage(request.BoardId, request.CardId, 
+                    listItem.Id, listItem.IsChecked);
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.CardItemCheckedChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<bool>.SuccessAsync(true, _localizer["List item Checked updated"]);
             }
