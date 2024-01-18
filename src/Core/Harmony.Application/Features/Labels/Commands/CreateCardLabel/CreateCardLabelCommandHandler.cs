@@ -14,7 +14,6 @@ namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
     {
         private readonly IBoardLabelRepository _boardLabelRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IHubClientNotifierService _hubClientNotifierService;
         private readonly ICardLabelRepository _cardLabelRepository;
         private readonly IStringLocalizer<CreateCardLabelCommandHandler> _localizer;
         private readonly ISender _sender;
@@ -22,7 +21,6 @@ namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
 
         public CreateCardLabelCommandHandler(IBoardLabelRepository boardLabelRepository,
             ICurrentUserService currentUserService,
-            IHubClientNotifierService hubClientNotifierService,
             ICardLabelRepository cardLabelRepository,
             IStringLocalizer<CreateCardLabelCommandHandler> localizer,
             ISender sender,
@@ -30,7 +28,6 @@ namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
         {
             _boardLabelRepository = boardLabelRepository;
             _currentUserService = currentUserService;
-            _hubClientNotifierService = hubClientNotifierService;
             _cardLabelRepository = cardLabelRepository;
             _localizer = localizer;
             _sender = sender;

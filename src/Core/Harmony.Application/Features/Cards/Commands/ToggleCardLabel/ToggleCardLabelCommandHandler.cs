@@ -5,35 +5,31 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using AutoMapper;
-using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Entities;
-using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 
 public class ToggleCardLabelCommandHandler : IRequestHandler<ToggleCardLabelCommand, Result<LabelDto>>
 {
-	private readonly ICardService _cardService;
     private readonly ICardLabelRepository _cardLabelRepository;
-    private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
-    private readonly IHubClientNotifierService _hubClientNotifierService;
+    private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IStringLocalizer<ToggleCardLabelCommandHandler> _localizer;
 	private readonly IMapper _mapper;
 
-	public ToggleCardLabelCommandHandler(ICardService cardService,
-		ICardLabelRepository cardLabelRepository,
-		ICardRepository cardRepository,
+	public ToggleCardLabelCommandHandler(ICardLabelRepository cardLabelRepository,
 		ICurrentUserService currentUserService,
-		IHubClientNotifierService hubClientNotifierService,
+		INotificationsPublisher notificationsPublisher,
 		IStringLocalizer<ToggleCardLabelCommandHandler> localizer,
 		IMapper mapper)
 	{
-		_cardService = cardService;
         _cardLabelRepository = cardLabelRepository;
-        _cardRepository = cardRepository;
 		_currentUserService = currentUserService;
-        _hubClientNotifierService = hubClientNotifierService;
+        _notificationsPublisher = notificationsPublisher;
         _localizer = localizer;
 		_mapper = mapper;
 	}
@@ -74,7 +70,10 @@ public class ToggleCardLabelCommandHandler : IRequestHandler<ToggleCardLabelComm
 
         if (dbResult > 0)
 		{
-			await _hubClientNotifierService.ToggleCardLabel(request.BoardId, request.CardId, labelDto);
+            var message = new CardLabelToggledMessage(request.BoardId, request.CardId, labelDto);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardLabelToggled, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<LabelDto>.SuccessAsync(labelDto, _localizer["Card label updated"]);
 		}

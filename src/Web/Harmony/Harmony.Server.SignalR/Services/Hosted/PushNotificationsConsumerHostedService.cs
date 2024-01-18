@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.DTO;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Channels;
@@ -201,6 +203,22 @@ namespace Harmony.Notifications.Services.Hosted
                                                         .Deserialize<CardItemCheckedChangedMessage>(ea.Body.Span);
 
                                     await hubClientNotifierService.ToggleCardListItemChecked(message.BoardId, message.CardId, message.CheckListItemId, message.IsChecked);
+                                }
+                                break;
+                            case NotificationType.CardLabelRemoved:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<CardLabelRemovedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.RemoveCardLabel(message.BoardId, message.CardLabelId);
+                                }
+                                break;
+                            case NotificationType.CardLabelToggled:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<CardLabelToggledMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.ToggleCardLabel(message.BoardId, message.CardId, message.Label);
                                 }
                                 break;
                             default:
