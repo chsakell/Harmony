@@ -4,11 +4,12 @@
     <AutomationEditor IsOpened="_drawerOpened"
                       TemplateName="@_selectedTemplateName"
                       BoardId="Guid.Parse(Id)"
+                      OnClose="@(() => _drawerOpened = false)"
                       AutomationType="_automationType" />
     <MudPaper Class="d-flex flex-wrap gap-4" Elevation="0">
         @foreach (var template in _templates)
         {
-            <MudCard Class="ma-4" Style="width:300px;height:300px;">
+            <MudCard Class="ma-4" Style="width:300px;">
                 <MudCardContent>
                     <MudStack Row="true" Class="py-6 mud-theme-primary" Spacing="3" Justify="Justify.Center" AlignItems="AlignItems.Center">
                         @switch(template.Type)
@@ -42,7 +43,7 @@
                     </MudCardContent>
                     <MudCardActions>
                         <MudButton Variant="Variant.Text" Disabled="!template.Enabled"
-                                   OnClick="@(() => OpenTemplate(template))" Color="Color.Primary">Open</MudButton>
+                                   OnClick="@(() => OpenTemplate(template))" Color="Color.Primary">Configure</MudButton>
                     </MudCardActions>
                 </MudCard>
         }

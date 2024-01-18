@@ -4,7 +4,11 @@
            Class="pa-4"
            Variant="@DrawerVariant.Persistent">
     <MudDrawerHeader>
-        <MudText Typo="Typo.h6">@TemplateName</MudText>
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6">@TemplateName</MudText>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="Close" aria-label="delete"></MudIconButton>
+        </MudStack>
+        
     </MudDrawerHeader>
     @if (AutomationType.HasValue)
     {

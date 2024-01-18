@@ -18,6 +18,9 @@ namespace Harmony.Client.Shared.Components.Automation
         [Parameter]
         public string TemplateName { get; set; }
 
+        [Parameter]
+        public EventCallback OnClose { get; set; }
+
         private MudDrawer _drawer;
 
         protected override Task OnInitializedAsync()
@@ -30,5 +33,9 @@ namespace Harmony.Client.Shared.Components.Automation
             return base.OnParametersSetAsync();
         }
 
+        public async Task Close()
+        {
+            await OnClose.InvokeAsync();
+        }
     }
 }
