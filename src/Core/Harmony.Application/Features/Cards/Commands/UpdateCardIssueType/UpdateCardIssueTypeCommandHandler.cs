@@ -9,6 +9,9 @@ using Harmony.Application.DTO;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardIssueType;
 
@@ -16,7 +19,6 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 {
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
-    private readonly IHubClientNotifierService _hubClientNotifierService;
     private readonly IBoardService _boardService;
     private readonly IMapper _mapper;
     private readonly INotificationsPublisher _notificationsPublisher;
@@ -25,14 +27,12 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 	public UpdateCardIssueTypeCommandHandler(
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
-		IHubClientNotifierService hubClientNotifierService,
 		IBoardService boardService,
 		IMapper mapper, INotificationsPublisher notificationsPublisher,
 		IStringLocalizer<UpdateCardIssueTypeCommandHandler> localizer)
 	{
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
-        _hubClientNotifierService = hubClientNotifierService;
         _boardService = boardService;
         _mapper = mapper;
         _notificationsPublisher = notificationsPublisher;
@@ -58,8 +58,6 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 			await _cardRepository.LoadIssueEntryAsync(card);
 			var issueType = _mapper.Map<IssueTypeDto>(card.IssueType);
 
-            await _hubClientNotifierService.UpdateCardIssueType(request.BoardId, card.Id, issueType);
-
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
             _notificationsPublisher
@@ -68,6 +66,11 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
                         ObjectID = card.Id.ToString(),
                         IssueType = issueType.Summary
                     }, board.IndexName);
+
+            var message = new CardIssueTypeChangedMessage(request.BoardId, request.CardId, issueType);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardIssueTypeChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Issue type updated"]);
 		}

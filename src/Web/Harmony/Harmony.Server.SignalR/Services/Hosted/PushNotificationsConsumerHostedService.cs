@@ -161,6 +161,14 @@ namespace Harmony.Notifications.Services.Hosted
                                     await hubClientNotifierService.CreateCheckListItem(message.BoardId, message.CardId);
                                 }
                                 break;
+                            case NotificationType.CardIssueTypeChanged:
+                                {
+                                    var message = JsonSerializer
+                                                        .Deserialize<CardIssueTypeChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService.UpdateCardIssueType(message.BoardId, message.CardId, message.IssueType);
+                                }
+                                break;
                             default:
                                 break;
                         }

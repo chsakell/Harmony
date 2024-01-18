@@ -14,6 +14,7 @@ namespace Harmony.Domain.Enums
         CardDescriptionChanged,
         CardDatesChanged,
         CardItemAdded,
+        CardIssueTypeChanged,
         SubTaskStoryPoints,
         BoardListCreated
     }
