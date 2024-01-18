@@ -39,10 +39,12 @@
             <MudStack Spacing="4">
                 <MudTextField For="@(() => _selectedAutomationModel.Name)"
                               @bind-Value="_selectedAutomationModel.Name" Label="Name" />
-                <MudTextField Lines="2" For="@(() => _selectedAutomationModel.Description)"
-                              @bind-Value="_selectedAutomationModel.Description" Label="Description" />
+                <MudTextField Disabled="true" Lines="3" For="@(() => _selectedAutomationModel.Description)"
+                              @bind-Value="_selectedAutomationModel.Description"
+                              Label="Description" />
                 <MudSelect @bind-Value="_fromStatusBoardList"
-                           @bind-SelectedValues="_fromStatusBoardLists"
+                           @bind-SelectedValues:get="_fromStatusBoardLists"
+                           @bind-SelectedValues:set="SetFromStatusBoardLists"
                            MultiSelection="true"
                            ToStringFunc="@converter" Clearable="true"
                            T="GetBoardListResponse" Label="From status"
@@ -54,7 +56,8 @@
                     }
                 </MudSelect>
                 <MudSelect @bind-Value="_toStatusBoardList"
-                           @bind-SelectedValues="_toStatusBoardLists"
+                           @bind-SelectedValues:get="_toStatusBoardLists"
+                           @bind-SelectedValues:set="SetToStatusBoardLists"
                            MultiSelection="true"
                            ToStringFunc="@converter" Clearable="true"
                            Placeholder="Leave blank to match all statuses.."
@@ -84,7 +87,7 @@
                 {
                     <MudGrid>
                         <MudItem xs="12" sm="6">
-                            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _creating || _updating || _toggling || _removing)"
+                            <MudButton Disabled="@(!context.Validate() || _creating || _updating || _toggling || _removing)"
                                        FullWidth="true"
                                        ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
                                 @if (_updating)
@@ -100,7 +103,7 @@
                         </MudItem>
                         <MudItem xs="12" sm="6">
                             <MudButton Disabled="@(_creating || _updating || _toggling || _removing)" OnClick="ToggleStatus" FullWidth="true"
-                                       Variant="Variant.Filled" Color="@(_selectedAutomationModel.Enabled ? Color.Warning : Color.Default)">
+                                       Variant="Variant.Filled" Color="@(_selectedAutomationModel.Enabled ? Color.Default : Color.Default)">
                                 @if (_toggling)
                                 {
                                     <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />

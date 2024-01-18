@@ -7,7 +7,9 @@ using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using System;
 using System.Text.Json;
 
 namespace Harmony.Client.Shared.Components.Automation
@@ -76,6 +78,31 @@ namespace Harmony.Client.Shared.Components.Automation
             _loaded = true;
         }
 
+        private void SetFromStatusBoardLists(IEnumerable<GetBoardListResponse> statusBoardLists)
+        {
+            _fromStatusBoardLists = statusBoardLists;
+
+            SetDescription();
+        }
+
+        private void SetToStatusBoardLists(IEnumerable<GetBoardListResponse> statusBoardLists)
+        {
+            _toStatusBoardLists = statusBoardLists;
+
+            SetDescription();
+        }
+
+        private void SetDescription()
+        {
+            var fromListNames = string.Join(",", _fromStatusBoardLists.Select(l => l.Title));
+            var toListText = _toStatusBoardLists.Any() ?
+               $"{(_toStatusBoardLists.Count() == 1 ? $"{_toStatusBoardLists.FirstOrDefault()?.Title}" : $"any of {string.Join(",", _toStatusBoardLists.Select(l => l.Title))} statuses")}" : "any status";
+            var onlyIfText = _fromStatusBoardLists.Any() ? $"only if its current status belongs to [{fromListNames}]" : string.Empty;
+
+            _selectedAutomationModel.Description = $"When all children are moved to {toListText} then " +
+                $"also sync parent {onlyIfText}.";
+        }
+
         protected override Task OnParametersSetAsync()
         {
             return base.OnParametersSetAsync();
@@ -100,7 +127,7 @@ namespace Harmony.Client.Shared.Components.Automation
                     _selectedAutomationModel.Id = response.Data;
                     _automations.Add(_selectedAutomationModel);
                 }
-                
+
                 _newAutomationModel = new SyncParentAndChildIssuesAutomationDto()
                 {
                     Type = AutomationType,
@@ -131,7 +158,7 @@ namespace Harmony.Client.Shared.Components.Automation
             {
                 var toggleResult = await _automationManager.ToggleAutomation(new ToggleAutomationCommand(_selectedAutomationModel.Id, !_selectedAutomationModel.Enabled));
 
-                if(toggleResult.Succeeded)
+                if (toggleResult.Succeeded)
                 {
                     _selectedAutomationModel.Enabled = !_selectedAutomationModel.Enabled;
                 }
@@ -173,7 +200,7 @@ namespace Harmony.Client.Shared.Components.Automation
         {
             _selectedAutomationModel = automation;
 
-            if(string.IsNullOrEmpty(automation.Id))
+            if (string.IsNullOrEmpty(automation.Id))
             {
                 _fromStatusBoardLists = Enumerable.Empty<GetBoardListResponse>();
                 _toStatusBoardLists = Enumerable.Empty<GetBoardListResponse>();
@@ -186,6 +213,8 @@ namespace Harmony.Client.Shared.Components.Automation
                 _toStatusBoardLists = _boardLists.Where(l => _selectedAutomationModel
                     .ToStatuses.ToList().Contains(l.Id.ToString())).ToList();
             }
+
+            SetDescription();
         }
 
         private void DisplayMessage(IResult result)
