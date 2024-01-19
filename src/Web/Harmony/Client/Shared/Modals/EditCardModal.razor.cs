@@ -49,6 +49,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _historyLoaded = false;
         private bool _updatingStoryPoints;
         private GetBoardListResponse? _cardBoardList;
+
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
         [Parameter] public string BoardKey { get; set; }
@@ -103,22 +104,6 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
-            _hubSubscriptionManager.OnCardItemPositionChanged += OnCardItemPositionChanged;
-        }
-
-        private void OnCardItemPositionChanged(object? sender, CardItemPositionChangedEvent e)
-        {
-            if(e.CardId == _card.Id)
-            {
-                var boardList = _card.BoardLists.FirstOrDefault(l => l.Id == e.NewBoardListId);
-
-                if (boardList != null && _cardBoardList?.Id != e.NewBoardListId)
-                {
-                    _cardBoardList = boardList;
-                    
-                    StateHasChanged();
-                }
-            }
         }
 
         private void UnRegisterEvents()
@@ -129,7 +114,6 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
-            _hubSubscriptionManager.OnCardItemPositionChanged -= OnCardItemPositionChanged;
         }
 
         private void OnCardAttachmentRemoved(object? sender, AttachmentRemovedEvent e)

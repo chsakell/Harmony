@@ -71,7 +71,7 @@ namespace Harmony.Notifications.Services.Hosted
 
             _channel.QueueBind(queue: BrokerConstants.AutomationNotificationsQueue,
                       exchange: BrokerConstants.NotificationsExchange,
-                      routingKey: "notifications.automation");
+                      routingKey: BrokerConstants.RoutingKeys.Automation);
 
             _channel.QueueBind(queue: BrokerConstants.AutomationNotificationsQueue,
                       exchange: BrokerConstants.NotificationsExchange,

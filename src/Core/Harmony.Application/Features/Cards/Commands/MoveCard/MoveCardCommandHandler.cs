@@ -84,7 +84,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                     };
 
                     _notificationsPublisher.PublishMessage(cardMovedNotification,
-                        NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Notifications);
+                        NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Automation);
 
                     var result = _mapper.Map<CardDto>(card);
 

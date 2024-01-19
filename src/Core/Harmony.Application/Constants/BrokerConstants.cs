@@ -15,6 +15,7 @@
         public class RoutingKeys
         {
             public const string Notifications = "notifications";
+            public const string Automation = "notifications.automation";
             public const string SignalR = "notifications.signalr";
         }
     }
