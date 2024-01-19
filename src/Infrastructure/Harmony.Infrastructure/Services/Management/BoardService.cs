@@ -36,7 +36,7 @@ namespace Harmony.Infrastructure.Services.Management
             ICardRepository cardRepository,
             IMemoryCache memoryCache)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString("HarmonyConnection");
             _boardRepository = boardRepository;
             _userBoardRepository = userBoardRepository;
             _userWorkspaceRepository = userWorkspaceRepository;

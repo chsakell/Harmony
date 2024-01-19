@@ -47,7 +47,7 @@ namespace Harmony.Notifications
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HarmonyNotificationsConnection")));
 
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();

@@ -100,7 +100,7 @@ namespace Harmony.Notifications.Extensions
             => services
                 .AddDbContext<NotificationContext>(options =>
                 {
-                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                    options.UseSqlServer(configuration.GetConnectionString("HarmonyNotificationsConnection"));
                     options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
                     options.EnableDetailedErrors(true);
                     options.EnableSensitiveDataLogging(true);

@@ -231,7 +231,7 @@ namespace Harmony.Server.Extensions
             => services
                 .AddDbContext<HarmonyContext>(options =>
                 {
-                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                    options.UseSqlServer(configuration.GetConnectionString("HarmonyConnection"));
                     options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
                     options.EnableDetailedErrors(true);
                     options.EnableSensitiveDataLogging(true);
