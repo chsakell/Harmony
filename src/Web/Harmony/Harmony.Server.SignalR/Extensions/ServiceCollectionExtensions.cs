@@ -23,5 +23,21 @@ namespace Harmony.Server.SignalR.Extensions
 
             return services;
         }
+
+        internal static IServiceCollection AddSignalR(this IServiceCollection services, IConfiguration configuration)
+        {
+            var redisConnection = configuration["RedisConnectionString"];
+
+            if (!string.IsNullOrEmpty(redisConnection))
+            {
+                services.AddSignalR().AddStackExchangeRedis(redisConnection);
+            }
+            else
+            {
+                services.AddSignalR();
+            }
+
+            return services;
+        }
     }
 }

@@ -17,9 +17,10 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         private HubConnection _hubConnection;
         public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
 
-        public async Task<HubConnection> StartAsync(NavigationManager navigationManager, ILocalStorageService localStorageService)
+        public async Task<HubConnection> StartAsync(NavigationManager navigationManager, 
+            ILocalStorageService localStorageService, string signalrHostUrl)
         {
-            _hubConnection = _hubConnection.TryInitialize(navigationManager, localStorageService);
+            _hubConnection = _hubConnection.TryInitialize(navigationManager, localStorageService, signalrHostUrl);
 
             if (_hubConnection.State == HubConnectionState.Disconnected)
                 await _hubConnection.StartAsync();

@@ -7,11 +7,13 @@ namespace Harmony.Client.Infrastructure.Extensions
 {
     public static class HubExtensions
     {
-        public static HubConnection TryInitialize(this HubConnection hubConnection, NavigationManager navigationManager, ILocalStorageService _localStorage)
+        public static HubConnection TryInitialize(this HubConnection hubConnection, 
+            NavigationManager navigationManager, ILocalStorageService _localStorage, string signalrHostUrl)
         {
             if (hubConnection == null)
             {
-                var signalrEndpoint = $"https://localhost:7262{ApplicationConstants.SignalR.HubUrl}";
+                var host = signalrHostUrl.TrimEnd('/');
+                var signalrEndpoint = $"{host}{ApplicationConstants.SignalR.HubUrl}";
                 var uri = new Uri(signalrEndpoint);
                 var absoluteUrl = navigationManager
                                   .ToAbsoluteUri(ApplicationConstants.SignalR.HubUrl);

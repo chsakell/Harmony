@@ -8,7 +8,9 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
 {
     public interface IHubSubscriptionManager : IManager
     {
-        Task<HubConnection> StartAsync(NavigationManager navigationManager, ILocalStorageService localStorageService);
+        Task<HubConnection> StartAsync(NavigationManager navigationManager, 
+            ILocalStorageService localStorageService,
+            string signalrHostUrl);
         Task StopAsync();
 
         #region Listeners

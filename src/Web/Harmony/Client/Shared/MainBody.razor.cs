@@ -21,6 +21,7 @@ namespace Harmony.Client.Shared
         MudMenu _menu;
         [Inject] private IRoleManager RoleManager { get; set; }
 
+        [Inject] private IConfiguration Configuration { get; set; }
         private string CurrentUserId { get; set; }
         private string ImageDataUrl { get; set; }
         private string FirstName { get; set; }
@@ -36,7 +37,8 @@ namespace Harmony.Client.Shared
         protected override async Task OnInitializedAsync()
         {
             _interceptor.RegisterEvent();
-            hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage);
+            var signalrHostUrl = Configuration["signalrHostUrl"];
+            hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage, signalrHostUrl);
 
             _fileManager.OnUserProfilePictureUpdated += OnUserProfilePictureUpdated;
         }

@@ -46,7 +46,7 @@ namespace Harmony.Automations.Services
             if(notification.MovedToListId != card.BoardListId)
             {
                 // check all children have the same status
-                var allChildrenHaveSameStatus = card.Children.All(c => c.BoardListId == notification.MovedToListId); ;
+                var allChildrenHaveSameStatus = card.Children.All(c => c.BoardListId == notification.MovedToListId);
 
                 var currentStatusConditionPass = !automation.FromStatuses.Any() ||
                     automation.FromStatuses.Contains(card.BoardListId.ToString());

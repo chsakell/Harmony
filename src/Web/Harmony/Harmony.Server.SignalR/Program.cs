@@ -13,7 +13,9 @@ builder.Services.AddHostedService<PushNotificationsConsumerHostedService>();
 
 // Add services to the container.
 builder.Services.AddCors();
-builder.Services.AddSignalR();
+
+builder.Services.AddSignalR(builder.Configuration);
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
