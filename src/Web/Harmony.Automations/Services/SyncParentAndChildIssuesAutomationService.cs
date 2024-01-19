@@ -74,11 +74,11 @@ namespace Harmony.Automations.Services
                         MovedFromListId = currentBoardListId,
                         MovedToListId = card.BoardListId,
                         IsCompleted = notification.IsCompleted,
-                        UpdateId = Guid.NewGuid(),
+                        UpdateId = notification.UpdateId ?? Guid.NewGuid(),
                     };
 
                     _notificationsPublisher.PublishMessage(cardMovedNotification,
-                        NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Notifications);
+                        NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.SignalR);
                 }
             }
 

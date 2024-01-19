@@ -107,7 +107,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 		{
 			await _cardRepository.LoadBoardListEntryAsync(card);
 
-			if (card.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
+			if (card?.BoardList?.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
 			{
 				card.DateCompleted = DateTime.Now;
 				await _cardRepository.Update(card);

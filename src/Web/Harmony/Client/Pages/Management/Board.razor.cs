@@ -220,7 +220,15 @@ namespace Harmony.Client.Pages.Management
                 cardToMove.Position = e.NewPosition;
                 cardToMove.BoardListId = e.NewBoardListId;
 
-                KanbanStore.MoveCard(cardToMove, e.PreviousBoardListId, e.NewBoardListId, e.PreviousPosition, e.NewPosition);
+                try
+                {
+                    KanbanStore.MoveCard(cardToMove, e.PreviousBoardListId, e.NewBoardListId, e.PreviousPosition, e.NewPosition);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                
 
                 _dropContainer.Refresh();
             }
