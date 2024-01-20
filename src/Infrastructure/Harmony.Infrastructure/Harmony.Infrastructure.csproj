@@ -10,7 +10,7 @@
     <PackageReference Include="Algolia.Search" Version="6.16.0" />
     <PackageReference Include="Bogus" Version="34.0.2" />
     <PackageReference Include="Dapper" Version="2.1.15" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
     <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
   </ItemGroup>
