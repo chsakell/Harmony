@@ -2,9 +2,10 @@
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Messaging;
-using Harmony.Server.SignalR.Services;
+using Harmony.SignalR.Extensions;
+using Harmony.SignalR.Services;
 
-namespace Harmony.Server.SignalR.Extensions
+namespace Harmony.SignalR.Extensions
 {
     public static class ServiceCollectionExtensions
     {

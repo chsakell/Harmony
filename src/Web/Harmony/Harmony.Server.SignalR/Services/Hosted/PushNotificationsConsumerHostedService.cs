@@ -18,7 +18,7 @@ using System.Text.Json;
 using System.Threading.Channels;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace Harmony.Notifications.Services.Hosted
+namespace Harmony.SignalR.Services.Hosted
 {
     public class PushNotificationsConsumerHostedService : BackgroundService
     {
@@ -268,7 +268,7 @@ namespace Harmony.Notifications.Services.Hosted
                                     var message = JsonSerializer
                                     .Deserialize<CheckListRemovedMessage>(ea.Body.Span);
 
-                                    await hubClientNotifierService.RemoveCheckList(message.BoardId, message.CheckListId, 
+                                    await hubClientNotifierService.RemoveCheckList(message.BoardId, message.CheckListId,
                                         message.CardId, message.TotalItems, message.TotalItemsCompleted);
                                 }
                                 break;

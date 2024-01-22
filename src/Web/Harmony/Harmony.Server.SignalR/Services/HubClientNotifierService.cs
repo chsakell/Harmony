@@ -2,12 +2,12 @@
 using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Notifications;
-using Harmony.Server.SignalR.Hubs;
 using Harmony.Shared.Constants.Application;
+using Harmony.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using static Harmony.Application.Notifications.BoardListArchivedMessage;
 
-namespace Harmony.Server.SignalR.Services
+namespace Harmony.SignalR.Services
 {
     public class HubClientNotifierService : IHubClientNotifierService
     {

@@ -1,4 +1,4 @@
-namespace Harmony.Server.SignalR.Models
+namespace Harmony.SignalR.Models
 {
     public class ErrorViewModel
     {

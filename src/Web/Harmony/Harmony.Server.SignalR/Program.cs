@@ -1,8 +1,8 @@
 using Harmony.Application.Configurations;
-using Harmony.Notifications.Services.Hosted;
-using Harmony.Server.SignalR.Extensions;
-using Harmony.Server.SignalR.Hubs;
 using Harmony.Shared.Constants.Application;
+using Harmony.SignalR.Extensions;
+using Harmony.SignalR.Hubs;
+using Harmony.SignalR.Services.Hosted;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,8 +1,7 @@
-﻿using Harmony.Server.SignalR.Extensions;
-using Harmony.Server.SignalR.Hubs;
+﻿using Harmony.SignalR.Hubs;
 using Harmony.Shared.Constants.Application;
 
-namespace Harmony.Server.SignalR.Extensions
+namespace Harmony.SignalR.Extensions
 {
     /// <summary>
     /// App builder extensions
@@ -10,6 +9,6 @@ namespace Harmony.Server.SignalR.Extensions
     internal static class ApplicationBuilderExtensions
     {
 
-       
+
     }
 }

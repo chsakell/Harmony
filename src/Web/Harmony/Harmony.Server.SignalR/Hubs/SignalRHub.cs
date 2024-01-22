@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Harmony.Server.SignalR.Hubs
+namespace Harmony.SignalR.Hubs
 {
     //[Authorize]
     public class SignalRHub : Hub

@@ -1,8 +1,8 @@
-﻿using Harmony.Server.SignalR.Models;
+﻿using Harmony.SignalR.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Harmony.Server.SignalR.Controllers
+namespace Harmony.SignalR.Controllers
 {
     public class HomeController : Controller
     {
