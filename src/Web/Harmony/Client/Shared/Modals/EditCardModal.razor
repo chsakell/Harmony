@@ -399,7 +399,7 @@ else
                     <MudButton StartIcon="@Icons.Material.Filled.EditCalendar" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary" OnClick="EditDates">DATES</MudButton>
-                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
+                    @* <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
                         <ButtonTemplate>
                             @if (_card.UploadingAttachment)
                             {
@@ -420,7 +420,7 @@ else
                                 </MudButton>
                             }
                         </ButtonTemplate>
-                    </MudFileUpload>
+                    </MudFileUpload> *@
                     @if (!_card.IsChild)
                     {
                         <MudButton StartIcon="@Icons.Material.Filled.AddTask" OnClick="AddSubTask" Class="mt-2"

@@ -11,6 +11,18 @@ builder.Services.AddLocalization(options =>
 {
     options.ResourcesPath = "Resources";
 });
+
+
+var frontEndUrls = builder.Configuration["FrontendUrls"].Split(",");
+builder.Services.AddCors(
+    options => options.AddPolicy(
+        "wasm",
+        policy => policy.WithOrigins(frontEndUrls)
+            .AllowAnyMethod()
+            .SetIsOriginAllowed(pol => true)
+            .AllowAnyHeader()
+            .AllowCredentials()));
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDatabase(builder.Configuration);
@@ -33,6 +45,8 @@ builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
+app.UseCors("wasm");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -47,7 +61,7 @@ else
 
 app.UseHttpsRedirection();
 
-app.UseBlazorFrameworkFiles();
+//app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {

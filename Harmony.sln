@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Notifications", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Automations", "src\Web\Harmony.Automations\Harmony.Automations.csproj", "{13E165A6-6A3C-40A2-B3F4-558780DFCDC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Server.SignalR", "src\Web\Harmony\Harmony.Server.SignalR\Harmony.Server.SignalR.csproj", "{94FEF86F-D729-49A8-B2EE-771976CEBAAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Server.SignalR", "src\Web\Harmony\Harmony.Server.SignalR\Harmony.Server.SignalR.csproj", "{94FEF86F-D729-49A8-B2EE-771976CEBAAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

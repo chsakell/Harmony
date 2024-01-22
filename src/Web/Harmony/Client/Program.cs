@@ -12,7 +12,7 @@ using System.Globalization;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.AddClientServices();
+builder.AddClientServices(builder.Configuration);
 
 var host = builder.Build();
 

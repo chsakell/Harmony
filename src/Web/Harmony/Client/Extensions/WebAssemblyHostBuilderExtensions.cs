@@ -19,8 +19,9 @@ namespace Harmony.Client.Extensions
     {
         private const string ClientName = "Harmony.Client";
 
-        public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder)
+        public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder, WebAssemblyHostConfiguration configuration)
         {
+            var backEndUrl = configuration["backendUrl"];
             builder
                 .Services
                 .AddLocalization(options =>
@@ -54,7 +55,7 @@ namespace Harmony.Client.Extensions
                 {
                     client.DefaultRequestHeaders.AcceptLanguage.Clear();
                     client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName);
-                    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+                    client.BaseAddress = new Uri(backEndUrl);
                 })
                 .AddHttpMessageHandler<AuthenticationHeaderHandler>();
             builder.Services.AddHttpClientInterceptor();
