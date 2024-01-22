@@ -4,7 +4,7 @@ using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Management
+namespace Harmony.Api.Controllers.Management
 {
     /// <summary>
     /// Controller for Sprint operations

@@ -1,10 +1,11 @@
-﻿using Harmony.Application.Contracts.Persistence;
+﻿using Harmony.Api.Extensions;
+using Harmony.Api.Hubs;
+using Harmony.Application.Contracts.Persistence;
 using Harmony.Persistence.DbContext;
-using Harmony.Server.Hubs;
 using Harmony.Shared.Constants.Application;
 using Microsoft.EntityFrameworkCore;
 
-namespace Harmony.Server.Extensions
+namespace Harmony.Api.Extensions
 {
     /// <summary>
     /// App builder extensions
@@ -22,7 +23,7 @@ namespace Harmony.Server.Extensions
             });
         }
 
-        internal static async Task<IApplicationBuilder> InitializeDatabase(this IApplicationBuilder app, Microsoft.Extensions.Configuration.IConfiguration _configuration)
+        internal static async Task<IApplicationBuilder> InitializeDatabase(this IApplicationBuilder app, IConfiguration _configuration)
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
 

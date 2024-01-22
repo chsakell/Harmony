@@ -1,9 +1,10 @@
-﻿using Harmony.Application.Features.Search.Commands.AdvancedSearch;
+﻿using Harmony.Api.Controllers;
+using Harmony.Application.Features.Search.Commands.AdvancedSearch;
 using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Application.Features.Search.Queries.InitAdvancedSearch;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Search
+namespace Harmony.Api.Controllers.Search
 {
     /// <summary>
     /// Controller for searching

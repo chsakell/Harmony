@@ -1,10 +1,11 @@
-﻿using Harmony.Application.Features.Comments.Commands.CreateComment;
+﻿using Harmony.Api.Controllers;
+using Harmony.Application.Features.Comments.Commands.CreateComment;
 using Harmony.Application.Features.Comments.Commands.DeleteComment;
 using Harmony.Application.Features.Comments.Commands.UpdateComment;
 using Harmony.Application.Features.Comments.Queries.GetCardComments;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Management
+namespace Harmony.Api.Controllers.Management
 {
     /// <summary>
     /// Controller for comments operations

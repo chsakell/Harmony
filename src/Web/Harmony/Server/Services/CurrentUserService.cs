@@ -1,7 +1,7 @@
 ﻿using Harmony.Application.Contracts.Services;
 using System.Security.Claims;
 
-namespace Harmony.Server.Services
+namespace Harmony.Api.Services
 {
     public class CurrentUserService : ICurrentUserService
     {

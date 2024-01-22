@@ -2,7 +2,7 @@
 using Harmony.Application.Features.Users.Queries.GetUserNotifications;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Management
+namespace Harmony.Api.Controllers.Management
 {
     /// <summary>
     /// Controller for user notifications

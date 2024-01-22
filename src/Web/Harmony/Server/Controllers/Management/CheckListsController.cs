@@ -1,10 +1,11 @@
-﻿using Harmony.Application.Features.Cards.Commands.CreateChecklist;
+﻿using Harmony.Api.Controllers;
+using Harmony.Application.Features.Cards.Commands.CreateChecklist;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Management
+namespace Harmony.Api.Controllers.Management
 {
     /// <summary>
     /// Controller for Check Lists operations
@@ -12,11 +13,11 @@ namespace Harmony.Server.Controllers.Management
     public class CheckListsController : BaseApiController<CheckListsController>
     {
 
-		[HttpPost]
-		public async Task<IActionResult> Post(CreateCheckListCommand command)
-		{
-			return Ok(await _mediator.Send(command));
-		}
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateCheckListCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
 
         [HttpPost("{id:guid}/items")]
         public async Task<IActionResult> AddItem(CreateCheckListItemCommand command)

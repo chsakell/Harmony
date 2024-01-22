@@ -1,10 +1,9 @@
-﻿
-using Harmony.Application.Contracts.Services;
+﻿using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Identity
+namespace Harmony.Api.Controllers.Identity
 {
     /// <summary>
     /// Controller for token operations

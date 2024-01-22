@@ -2,7 +2,7 @@
 using Harmony.Application.Notifications.Email;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers
+namespace Harmony.Api.Controllers
 {
     public class TestController : BaseApiController<TestController>
     {

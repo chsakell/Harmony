@@ -1,7 +1,8 @@
-﻿using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+﻿using Harmony.Api.Controllers;
+using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Management
+namespace Harmony.Api.Controllers.Management
 {
     /// <summary>
     /// Controller for Board List operations

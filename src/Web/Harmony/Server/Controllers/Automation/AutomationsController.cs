@@ -1,4 +1,6 @@
-﻿using Harmony.Application.DTO.Automation;
+﻿using Harmony.Api.Controllers;
+using Harmony.Api.Controllers.Management;
+using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.RemoveAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
@@ -6,10 +8,9 @@ using Harmony.Application.Features.Automations.Queries.GetAutomations;
 using Harmony.Application.Features.Automations.Queries.GetAutomationTemplates;
 using Harmony.Application.Features.Labels.Commands.UpdateTitle;
 using Harmony.Domain.Enums;
-using Harmony.Server.Controllers.Management;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Automation
+namespace Harmony.Api.Controllers.Automation
 {
     public class AutomationsController : BaseApiController<CardsController>
     {

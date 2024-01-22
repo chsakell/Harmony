@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Persistence", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Shared", "src\Shared\Harmony.Shared\Harmony.Shared.csproj", "{FA771C79-66EF-42F0-ACD1-963C557541A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Server", "src\Web\Harmony\Server\Harmony.Server.csproj", "{7B28DE78-F915-4FB7-82AD-F5EA0DDE72B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Api", "src\Web\Harmony\Server\Harmony.Api.csproj", "{7B28DE78-F915-4FB7-82AD-F5EA0DDE72B0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Client", "src\Web\Harmony\Client\Harmony.Client.csproj", "{43EE00C0-63FB-4541-9247-75D4118007D4}"
 EndProject

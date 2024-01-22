@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Cards.Commands.AddUserCard;
+﻿using Harmony.Api.Extensions;
+using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
@@ -17,10 +18,9 @@ using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
-using Harmony.Server.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Management
+namespace Harmony.Api.Controllers.Management
 {
     /// <summary>
     /// Controller for Card operations
@@ -59,10 +59,10 @@ namespace Harmony.Server.Controllers.Management
         }
 
         [HttpPut("{id:guid}/move")]
-		public async Task<IActionResult> Put(Guid id, MoveCardCommand command)
-		{
-			return Ok(await _mediator.Send(command));
-		}
+        public async Task<IActionResult> Put(Guid id, MoveCardCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
 
         [HttpPut("{id:guid}/description")]
         public async Task<IActionResult> UpdateDescription(Guid id, UpdateCardDescriptionCommand command)

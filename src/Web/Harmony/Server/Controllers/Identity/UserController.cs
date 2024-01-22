@@ -4,7 +4,7 @@ using Harmony.Application.Requests.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Identity
+namespace Harmony.Api.Controllers.Identity
 {
     /// <summary>
     /// Controller for User operations

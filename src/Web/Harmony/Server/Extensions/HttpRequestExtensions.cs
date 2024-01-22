@@ -1,4 +1,4 @@
-﻿namespace Harmony.Server.Extensions
+﻿namespace Harmony.Api.Extensions
 {
     public static class HttpRequestExtensions
     {

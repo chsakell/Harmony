@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers
+namespace Harmony.Api.Controllers
 {
     /// <summary>
     /// Abstract BaseApi Controller Class

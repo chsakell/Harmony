@@ -1,4 +1,6 @@
-﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
+﻿using Harmony.Api.Controllers;
+using Harmony.Api.Extensions;
+using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
@@ -17,11 +19,10 @@ using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Domain.Enums;
-using Harmony.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmony.Server.Controllers.Management
+namespace Harmony.Api.Controllers.Management
 {
     /// <summary>
     /// Controller for Board operations
@@ -127,15 +128,15 @@ namespace Harmony.Server.Controllers.Management
 
             var statuses = new List<SprintStatus>();
 
-            if(idle)
+            if (idle)
             {
                 statuses.Add(SprintStatus.Idle);
             }
-            if(active)
+            if (active)
             {
                 statuses.Add(SprintStatus.Active);
             }
-            if(completed) 
+            if (completed)
             {
                 statuses.Add(SprintStatus.Completed);
             }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
-namespace Harmony.Server.Localization
+namespace Harmony.Api.Localization
 {
     internal class ServerLocalizer<T> where T : class
     {

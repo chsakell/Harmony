@@ -1,4 +1,5 @@
 ﻿using Algolia.Search.Clients;
+using Harmony.Api.Services;
 using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
@@ -17,7 +18,6 @@ using Harmony.Infrastructure.Services.Search;
 using Harmony.Messaging;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
-using Harmony.Server.Services;
 using Harmony.Shared.Constants.Application;
 using Harmony.Shared.Constants.Permission;
 using Harmony.Shared.Wrapper;
@@ -33,7 +33,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
-namespace Harmony.Server.Extensions
+namespace Harmony.Api.Extensions
 {
     /// <summary>
     /// Extension class to register services per category
@@ -93,7 +93,7 @@ namespace Harmony.Server.Extensions
             {
                 services.AddScoped<ISearchService, DatabaseSearchService>();
             }
-            else if(engine == SearchEngine.Algolia)
+            else if (engine == SearchEngine.Algolia)
             {
                 var applicationId = configuration["AlgoliaConfiguration:ApplicationId"];
                 var apiKey = configuration["AlgoliaConfiguration:ApiKey"];
@@ -156,7 +156,7 @@ namespace Harmony.Server.Extensions
                             // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
                             if (!string.IsNullOrEmpty(accessToken) &&
-                                (path.StartsWithSegments(ApplicationConstants.SignalR.HubUrl)))
+                                path.StartsWithSegments(ApplicationConstants.SignalR.HubUrl))
                             {
                                 // Read the token out of the query string
                                 context.Token = accessToken;
