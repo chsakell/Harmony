@@ -93,7 +93,7 @@ BEGIN
 	select parent.Id CardId, COUNT(*) as TotalChildren
 	from Cards parent
 	join Cards child on child.ParentCardId = parent.Id
-	where child.ParentCardId in (select id from @cards)
+	where child.ParentCardId in (select id from @cards) AND child.Status = 0
 	group by parent.Id
 END
 GO
