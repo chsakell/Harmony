@@ -22,6 +22,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Helpers;
+using Harmony.Client.Infrastructure.Configuration;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
@@ -96,6 +97,12 @@ namespace Harmony.Client.Shared.Modals
             });
         }
 
+        private string ServerUrl(string url)
+        {
+            var serverUrl = _clientConfiguration.BackendUrl.TrimEnd('/');
+            var resourcePath = url.TrimStart('/');
+            return $"{serverUrl}/{resourcePath}";
+        }
         private void RegisterEvents()
         {
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;

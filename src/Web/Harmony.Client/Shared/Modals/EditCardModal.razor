@@ -152,14 +152,14 @@ else
                                             <MudStack Row="true" Spacing="4" Class="pb-4">
                                                 @if (attachment.Type == AttachmentType.CardImage)
                                                 {
-                                                    <MudElement HtmlTag="a" href="@attachment.Url" Class="spotlight">
+                                                    <MudElement HtmlTag="a" href="@ServerUrl(attachment.Url)" Class="spotlight">
                                                         <MudElement Class="mud-avatar mud-avatar-large mud-avatar-square mud-avatar-filled mud-avatar-filled-default mud-elevation-0"
-                                                                    HtmlTag="img" src="@attachment.Url"></MudElement>
+                                                                                    HtmlTag="img" src="@ServerUrl(attachment.Url)"></MudElement>
                                                     </MudElement>
                                                 }
                                                 else
                                                 {
-                                                    <MudElement HtmlTag="a" href="@attachment.Url" target="_blank">
+                                                    <MudElement HtmlTag="a" href="@ServerUrl(attachment.Url)" target="_blank">
                                                         <MudIcon Icon="@Icons.Material.Filled.FileOpen" Style="font-size: 3rem;" />
                                                     </MudElement>
                                                 }
@@ -399,7 +399,7 @@ else
                     <MudButton StartIcon="@Icons.Material.Filled.EditCalendar" Class="mt-2"
                                Variant="Variant.Outlined" FullWidth="true"
                                Color="Color.Primary" OnClick="EditDates">DATES</MudButton>
-                    @* <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
                         <ButtonTemplate>
                             @if (_card.UploadingAttachment)
                             {
@@ -420,7 +420,7 @@ else
                                 </MudButton>
                             }
                         </ButtonTemplate>
-                    </MudFileUpload> *@
+                    </MudFileUpload>
                     @if (!_card.IsChild)
                     {
                         <MudButton StartIcon="@Icons.Material.Filled.AddTask" OnClick="AddSubTask" Class="mt-2"

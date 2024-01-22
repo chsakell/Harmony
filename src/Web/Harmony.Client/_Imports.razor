@@ -4,6 +4,7 @@
 
 
 @using AutoMapper;
+@using Harmony.Client.Infrastructure.Configuration
 @using Harmony.Client.Infrastructure.Managers.Content;
 @using Harmony.Client.Infrastructure.Managers.SignalR;
 @using Microsoft.AspNetCore.Authorization
@@ -48,6 +49,7 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 @inject ClientPreferenceManager _clientPreferenceManager
 @inject ILocalStorageService _localStorage;
 @inject IJSRuntime _jsRuntime;
+@inject ClientConfiguration _clientConfiguration;
 
 @* Managers *@
 @inject IAuthenticationManager _authenticationManager

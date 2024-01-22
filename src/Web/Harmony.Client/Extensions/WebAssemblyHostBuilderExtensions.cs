@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Harmony.Client.Infrastructure.Authentication;
+using Harmony.Client.Infrastructure.Configuration;
 using Harmony.Client.Infrastructure.Managers;
 using Harmony.Client.Infrastructure.Managers.Preferences;
 using Harmony.Client.Infrastructure.Store;
@@ -18,10 +19,14 @@ namespace Harmony.Client.Extensions
     public static class WebAssemblyHostBuilderExtensions
     {
         private const string ClientName = "Harmony.Client";
-
         public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder, WebAssemblyHostConfiguration configuration)
         {
             var backEndUrl = configuration["backendUrl"];
+            var signalrHostUrl = configuration["signalrHostUrl"];
+            var clientConfiguration = new ClientConfiguration(signalrHostUrl, backEndUrl);
+
+            builder.Services.AddSingleton(clientConfiguration);
+
             builder
                 .Services
                 .AddLocalization(options =>
