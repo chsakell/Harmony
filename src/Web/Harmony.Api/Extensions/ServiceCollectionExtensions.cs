@@ -267,8 +267,7 @@ namespace Harmony.Api.Extensions
                 })
                 .AddScoped<IDatabaseSeeder, DatabaseRolesSeeder>()
                 .AddScoped<IDatabaseSeeder, DatabaseUsersSeeder>()
-                .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>()
-                .AddScoped<IDatabaseSeeder, MongoDbSeeder>();
+                .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>();
 
         internal static IServiceCollection AddIdentity(this IServiceCollection services)
         {

@@ -7,7 +7,7 @@ namespace Harmony.Automations
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,7 @@ namespace Harmony.Automations
 
             builder.Services.AddSwaggerGen();
             builder.Services.AddRepositories();
+            builder.Services.AddDbSeed();
             builder.Services.AddApplicationServices();
             builder.Services.AddApplicationLayer();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
@@ -65,6 +66,8 @@ namespace Harmony.Automations
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.ConfigureSwagger();
+
+            await app.SeedDatabase(builder.Configuration);
 
             app.Run();
         }

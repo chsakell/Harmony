@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Harmony.Application.Contracts.Persistence;
+using Harmony.Persistence.DbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Automations.Extensions
 {
@@ -16,6 +18,20 @@ namespace Harmony.Automations.Extensions
                 options.RoutePrefix = "swagger";
                 options.DisplayRequestDuration();
             });
+        }
+
+        internal static async Task<IApplicationBuilder> SeedDatabase(this IApplicationBuilder app, IConfiguration _configuration)
+        {
+            using var serviceScope = app.ApplicationServices.CreateScope();
+
+            var initializers = serviceScope.ServiceProvider.GetServices<IDatabaseSeeder>();
+
+            foreach (var initializer in initializers.OrderBy(init => init.Order))
+            {
+                await initializer.Initialize();
+            }
+
+            return app;
         }
     }
 }

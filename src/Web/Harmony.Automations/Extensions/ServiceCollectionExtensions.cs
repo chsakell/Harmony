@@ -2,11 +2,13 @@
 using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Automation;
 using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Automations.Contracts;
 using Harmony.Automations.Services;
 using Harmony.Infrastructure.Mappings;
+using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
 using Harmony.Messaging;
@@ -31,6 +33,10 @@ namespace Harmony.Automations.Extensions
 
             return services;
         }
+
+        internal static IServiceCollection AddDbSeed(
+            this IServiceCollection services)
+            => services.AddScoped<IDatabaseSeeder, MongoDbSeeder>();
 
         public static void AddApplicationLayer(this IServiceCollection services)
         {
