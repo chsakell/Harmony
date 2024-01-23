@@ -14,6 +14,7 @@ using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Harmony.Automations.Extensions
 {
@@ -29,6 +30,12 @@ namespace Harmony.Automations.Extensions
             services.AddAutoMapper(typeof(UserProfile).Assembly);
 
             return services;
+        }
+
+        public static void AddApplicationLayer(this IServiceCollection services)
+        {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         }
 
         internal static IServiceCollection AddAutomationServices(this IServiceCollection services)

@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.DTO.Automation;
-using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;

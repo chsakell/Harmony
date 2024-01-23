@@ -1,6 +1,7 @@
 ﻿using Algolia.Search.Clients;
 using Harmony.Api.Services;
 using Harmony.Application.Configurations;
+using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services;
@@ -24,7 +25,9 @@ using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson.Serialization;
 using System.Net;
@@ -49,6 +52,17 @@ namespace Harmony.Api.Extensions
             return applicationSettingsConfiguration.Get<AppConfiguration>();
         }
 
+        internal static IServiceCollection AddConfigurations(this IServiceCollection services,
+           IConfiguration configuration)
+        {
+            var endpointConfiguration = configuration
+                .GetSection(nameof(AppEndpointConfiguration));
+
+            services.Configure<AppEndpointConfiguration>(endpointConfiguration);
+            
+            return services;
+        }
+
         internal static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IRoleClaimService, RoleClaimService>();
@@ -64,6 +78,21 @@ namespace Harmony.Api.Extensions
             services.AddScoped<IMemberSearchService, MemberSearchService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ISprintService, SprintService>();
+
+            return services;
+        }
+
+        internal static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient(EndpointConstants.Automation, (provider , httpClient) =>
+            {
+                var endpointConfiguration = provider.GetService<IOptions<AppEndpointConfiguration>> ();
+                var automationEndpoint = endpointConfiguration.Value.AutomationEndpoint;
+
+                httpClient.BaseAddress = new Uri(automationEndpoint);
+
+                httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");                
+            });
 
             return services;
         }

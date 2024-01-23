@@ -1,8 +1,8 @@
 using Harmony.Application.Configurations;
 using Harmony.Automations.Extensions;
+using Harmony.Automations.Services.Hosted;
 using Harmony.Infrastructure.Extensions;
-using Harmony.Notifications.Services.Hosted;
-
+using System.Reflection;
 namespace Harmony.Automations
 {
     public class Program
@@ -16,8 +16,10 @@ namespace Harmony.Automations
             builder.Services.AddHarmonyDatabase(builder.Configuration);
             //builder.Services.AddNotificationDatabase(builder.Configuration);
 
+            builder.Services.AddSwaggerGen();
             builder.Services.AddRepositories();
             builder.Services.AddApplicationServices();
+            builder.Services.AddApplicationLayer();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
             builder.Services.AddAutomationServices();
 
@@ -38,7 +40,7 @@ namespace Harmony.Automations
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -61,6 +63,8 @@ namespace Harmony.Automations
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.ConfigureSwagger();
 
             app.Run();
         }

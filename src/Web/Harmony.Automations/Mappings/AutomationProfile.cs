@@ -2,7 +2,7 @@
 using Harmony.Application.DTO.Automation;
 using Harmony.Domain.Automation;
 
-namespace Harmony.Application.Mappings.Management
+namespace Harmony.Automations.Mappings
 {
     public class AutomationProfile : Profile
     {

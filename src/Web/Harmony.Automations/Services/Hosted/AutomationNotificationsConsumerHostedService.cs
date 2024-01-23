@@ -10,7 +10,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
-namespace Harmony.Notifications.Services.Hosted
+namespace Harmony.Automations.Services.Hosted
 {
     public class AutomationNotificationsConsumerHostedService : BackgroundService
     {

@@ -2,7 +2,6 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.DTO.Automation;
-using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

@@ -32,10 +32,12 @@ builder.Services.AddInfrastructureMappings();
 builder.Services.AddRepositories();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));
+builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddSignalR();
 builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplicationServices();
+builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddMongoDb(builder.Configuration);
 

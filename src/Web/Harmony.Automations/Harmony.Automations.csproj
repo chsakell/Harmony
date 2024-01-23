@@ -8,12 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Harmony.Application\Harmony.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Infrastructure\Harmony.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Messaging\Harmony.Messaging.csproj" />
+    <ProjectReference Include="..\..\Shared\Harmony.Shared\Harmony.Shared.csproj" />
   </ItemGroup>
 
 </Project>
