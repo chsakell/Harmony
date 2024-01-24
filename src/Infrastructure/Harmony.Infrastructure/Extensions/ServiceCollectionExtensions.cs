@@ -13,7 +13,7 @@ namespace Harmony.Infrastructure.Extensions
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        public static IServiceCollection AddSqlServerRepositories(this IServiceCollection services)
         {
             return services
                 .AddScoped<IWorkspaceRepository, WorkspaceRepository>()
@@ -32,8 +32,13 @@ namespace Harmony.Infrastructure.Extensions
                 .AddScoped<ISprintRepository, SprintRepository>()
                 .AddScoped<IUserNotificationRepository, UserNotificationRepository>()
                 .AddScoped<ICommentRepository, CommentRepository>()
-                .AddScoped<IAutomationRepository, AutomationRepository>()
                 .AddScoped<IAttachmentRepository, AttachmentRepository>();
+        }
+
+        public static IServiceCollection AddMongoDbRepositories(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<IAutomationRepository, AutomationRepository>();
         }
     }
 }

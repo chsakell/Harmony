@@ -11,15 +11,10 @@ namespace Harmony.Automations
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add DbContexts
-            builder.Services.AddIdentityServices();
-            builder.Services.AddHarmonyDatabase(builder.Configuration);
-            //builder.Services.AddNotificationDatabase(builder.Configuration);
-
             builder.Services.AddSwaggerGen();
-            builder.Services.AddRepositories();
+            builder.Services.AddMongoDbRepositories();
             builder.Services.AddDbSeed();
-            builder.Services.AddApplicationServices();
+            builder.Services.AddEndpointConfiguration(builder.Configuration);
             builder.Services.AddApplicationLayer();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
             builder.Services.AddAutomationServices();

@@ -34,6 +34,17 @@ namespace Harmony.Automations.Extensions
             return services;
         }
 
+        internal static IServiceCollection AddEndpointConfiguration(this IServiceCollection services,
+           IConfiguration configuration)
+        {
+            var endpointConfiguration = configuration
+                .GetSection(nameof(AppEndpointConfiguration));
+
+            services.Configure<AppEndpointConfiguration>(endpointConfiguration);
+
+            return services;
+        }
+
         internal static IServiceCollection AddDbSeed(
             this IServiceCollection services)
             => services.AddScoped<IDatabaseSeeder, MongoDbSeeder>();
@@ -69,47 +80,5 @@ namespace Harmony.Automations.Extensions
 
             return services;
         }
-
-        internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
-        {
-            services
-                .AddIdentity<HarmonyUser, HarmonyRole>(options =>
-                {
-                    options.Password.RequiredLength = 6;
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.User.RequireUniqueEmail = true;
-                })
-                .AddEntityFrameworkStores<HarmonyContext>()
-                .AddDefaultTokenProviders();
-
-            return services;
-        }
-
-        internal static IServiceCollection AddHarmonyDatabase(
-            this IServiceCollection services,
-            IConfiguration configuration)
-            => services
-                .AddDbContext<HarmonyContext>(options =>
-                {
-                    options.UseSqlServer(configuration.GetConnectionString("HarmonyConnection"));
-                    options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
-                    options.EnableDetailedErrors(true);
-                    options.EnableSensitiveDataLogging(true);
-                });
-
-        //internal static IServiceCollection AddNotificationDatabase(
-        //    this IServiceCollection services,
-        //    IConfiguration configuration)
-        //    => services
-        //        .AddDbContext<NotificationContext>(options =>
-        //        {
-        //            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-        //            options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
-        //            options.EnableDetailedErrors(true);
-        //            options.EnableSensitiveDataLogging(true);
-        //        });
     }
 }

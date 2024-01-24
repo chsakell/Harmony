@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option csharp_namespace = "Harmony.Api.Protos";
+
+import "google/protobuf/any.proto";
+
+message CardFilterRequest {
+	string cardId = 1;
+	bool Attachments  = 2;
+    bool BoardList  = 3;
+    bool Board  = 4;
+    bool IssueType = 5;
+    bool Children = 6;
+}
+
+message MoveCardToListRequest {
+    string cardId = 1;
+    string boardListId = 2;
+}
+
+message MoveCardToListResponse {
+    bool success = 1;
+    int32 newPosition = 2;
+    string error = 3;
+}
+
+message Card {
+	string cardId = 1;
+    string boardListId = 2;
+    int32 position = 3;
+    repeated Card children = 4;
+}
+
+service CardService {
+  // returns a Card
+  rpc GetCard (CardFilterRequest) returns (Card);
+  rpc MoveCardToList (MoveCardToListRequest) returns (MoveCardToListResponse);
+}

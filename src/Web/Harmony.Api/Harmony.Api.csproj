@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Algolia.Search" Version="6.16.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
         <PrivateAssets>all</PrivateAssets>
@@ -31,6 +32,10 @@
     <ProjectReference Include="..\..\Infrastructure\Harmony.Infrastructure\Harmony.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Messaging\Harmony.Messaging.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Persistence\Harmony.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <Target Name="CreateFilesFolder" AfterTargets="AfterPublish">

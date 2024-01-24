@@ -3,6 +3,7 @@ using Harmony.Application.Extensions;
 using Harmony.Infrastructure.Extensions;
 using Harmony.Application.Enums;
 using Harmony.Api.Extensions;
+using Harmony.Api.Services.gRPC;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +30,10 @@ builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddCurrentUserService();
 builder.Services.RegisterSwagger();
 builder.Services.AddInfrastructureMappings();
-builder.Services.AddRepositories();
+builder.Services.AddSqlServerRepositories();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));
-builder.Services.AddConfigurations(builder.Configuration);
+builder.Services.AddEndpointConfiguration(builder.Configuration);
 builder.Services.AddSignalR();
 builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
@@ -40,6 +41,9 @@ builder.Services.AddApplicationServices();
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddMongoDb(builder.Configuration);
+
+// gRPC services
+builder.Services.AddGrpc();
 
 // Configure your Search Engine
 builder.Services.AddSearching(SearchEngine.Database, builder.Configuration);
@@ -74,7 +78,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapGrpcService<CardService>();
 app.UseEndpoints();
 app.ConfigureSwagger();
 await app.InitializeDatabase(builder.Configuration);

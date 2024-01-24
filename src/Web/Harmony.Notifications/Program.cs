@@ -19,7 +19,7 @@ namespace Harmony.Notifications
             builder.Services.AddHarmonyDatabase(builder.Configuration);
             builder.Services.AddNotificationDatabase(builder.Configuration);
 
-            builder.Services.AddRepositories();
+            builder.Services.AddSqlServerRepositories();
             builder.Services.AddApplicationServices();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
 

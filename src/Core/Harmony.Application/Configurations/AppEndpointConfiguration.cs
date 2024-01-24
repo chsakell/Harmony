@@ -8,6 +8,7 @@ namespace Harmony.Application.Configurations
     public class AppEndpointConfiguration
     {
         public string AutomationEndpoint { get; set; }
+        public string HarmonyApiEndpoint { get; set; }
         public string FrontendUrls { get; set; }
 
         public string[] GetFrontEndUrls()

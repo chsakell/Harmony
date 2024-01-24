@@ -52,7 +52,7 @@ namespace Harmony.Api.Extensions
             return applicationSettingsConfiguration.Get<AppConfiguration>();
         }
 
-        internal static IServiceCollection AddConfigurations(this IServiceCollection services,
+        internal static IServiceCollection AddEndpointConfiguration(this IServiceCollection services,
            IConfiguration configuration)
         {
             var endpointConfiguration = configuration
