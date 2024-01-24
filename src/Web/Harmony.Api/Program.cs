@@ -4,6 +4,7 @@ using Harmony.Infrastructure.Extensions;
 using Harmony.Application.Enums;
 using Harmony.Api.Extensions;
 using Harmony.Api.Services.gRPC;
+using Harmony.Application.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,11 +15,16 @@ builder.Services.AddLocalization(options =>
 });
 
 
-var frontEndUrls = builder.Configuration["FrontendUrls"].Split(",");
+builder.Services.AddEndpointConfiguration(builder.Configuration);
+
+var endpointConfiguration =
+    builder.Configuration.GetSection(nameof(AppEndpointConfiguration))
+    .Get<AppEndpointConfiguration>();
+
 builder.Services.AddCors(
     options => options.AddPolicy(
         "wasm",
-        policy => policy.WithOrigins(frontEndUrls)
+        policy => policy.WithOrigins(endpointConfiguration.FrontendUrls.Split(","))
             .AllowAnyMethod()
             .SetIsOriginAllowed(pol => true)
             .AllowAnyHeader()
@@ -33,7 +39,7 @@ builder.Services.AddInfrastructureMappings();
 builder.Services.AddSqlServerRepositories();
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(builder.Configuration));
-builder.Services.AddEndpointConfiguration(builder.Configuration);
+
 builder.Services.AddSignalR();
 builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
