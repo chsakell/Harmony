@@ -8,12 +8,25 @@ message GetUsersForNotificationTypeRequest {
 	int32 type = 2;
 }
 
+message UserIsRegisterForNotificationRequest {
+	string userId = 1;
+	int32 type = 2;
+}
+
 message GetUsersForNotificationTypeResponse {
 	repeated string users = 1;
 }
 
+message UserIsRegisterForNotificationResponse {
+	bool isRegistered = 1;
+}
+
 service UserNotificationService {
-  // returns a User
+  // returns a users registered for notification type
   rpc GetUsersForNotificationType (GetUsersForNotificationTypeRequest) 
 	returns (GetUsersForNotificationTypeResponse);
+
+  // checks if user is registered for notification type
+  rpc UserIsRegisterForNotification (UserIsRegisterForNotificationRequest) 
+	returns (UserIsRegisterForNotificationResponse);
 }

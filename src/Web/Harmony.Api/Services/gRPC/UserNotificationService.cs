@@ -31,5 +31,16 @@ namespace Harmony.Api.Services.gRPC
 
             return response;
         }
+
+        public override async Task<Protos.UserIsRegisterForNotificationResponse> UserIsRegisterForNotification(Protos.UserIsRegisterForNotificationRequest request, ServerCallContext context)
+        {
+            var notificationRegistration = await _userNotificationRepository
+                .GetForUser(request.UserId, (EmailNotificationType)request.Type);
+
+            return new Protos.UserIsRegisterForNotificationResponse()
+            {
+                 IsRegistered = notificationRegistration != null
+            };
+        }
     }
 }

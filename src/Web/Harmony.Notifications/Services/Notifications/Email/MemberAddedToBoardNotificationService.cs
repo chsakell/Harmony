@@ -1,50 +1,32 @@
 ﻿using Hangfire;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Notifications.Persistence;
-using Harmony.Application.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
+using Grpc.Net.Client;
+using Harmony.Api.Protos;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class MemberAddedToBoardNotificationService : BaseNotificationService, IMemberAddedToBoardNotificationService
     {
         private readonly IEmailService _emailNotificationService;
-        private readonly IUserService _userService;
-        private readonly IUserNotificationRepository _userNotificationRepository;
-        private readonly IBoardService _boardService;
-        private readonly IBoardRepository _boardRepository;
+        private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberAddedToBoardNotificationService(
             IEmailService emailNotificationService,
-            IUserService userService,
-            IUserNotificationRepository userNotificationRepository,
-            IBoardService boardService,
             NotificationContext notificationContext,
-            IBoardRepository boardRepository) : base(notificationContext)
+            IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
-            _userService = userService;
-            _userNotificationRepository = userNotificationRepository;
-            _boardService = boardService;
-            _boardRepository = boardRepository;
+            _endpointConfiguration = endpointsConfiguration.Value;
         }
 
         public async Task Notify(MemberAddedToBoardNotification notification)
         {
             await RemovePendingCardJobs(notification.BoardId, EmailNotificationType.MemberAddedToBoard);
-
-            var board = await _boardRepository.GetAsync(notification.BoardId);
-
-            if (board == null)
-            {
-                return;
-            }
 
             var jobId = BackgroundJob.Enqueue(() => Notify(notification.BoardId, notification.UserId, notification.BoardUrl));
 
@@ -66,39 +48,56 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid boardId, string userId, string boardUrl)
         {
-            var filter = new BoardFilterSpecification(boardId, new BoardIncludes()
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var boardServiceClient = new BoardService.BoardServiceClient(channel);
+
+            var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
             {
+                BoardId = boardId.ToString(),
                 Workspace = true
             });
 
-            var board = await _boardRepository
-                .Entities.Specify(filter)
-                .FirstOrDefaultAsync();
-
-            if (board == null)
+            if (!boardResponse.Found)
             {
                 return;
             }
 
-            var userResult = await _userService.GetAsync(userId);
+            var board= boardResponse.Board;
 
-            if (!userResult.Succeeded || !userResult.Data.IsActive)
+            var userServiceClient = new UserService.UserServiceClient(channel);
+            var userResponse = await userServiceClient.GetUserAsync(
+                              new UserFilterRequest
+                              {
+                                  UserId = userId
+                              });
+
+            if (!userResponse.Found)
             {
                 return;
             }
-            var user = userResult.Data;
+            var user = userResponse.User;
 
-            var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, EmailNotificationType.MemberAddedToBoard);
+            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
+            var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
+                              new UserIsRegisterForNotificationRequest()
+                              {
+                                  UserId = userId,
+                                  Type = (int)EmailNotificationType.MemberAddedToBoard
+                              });
 
-            if (notificationRegistration == null)
+            if (!userIsRegisteredResponse.IsRegistered)
             {
                 return;
             }
 
-            var userHasAccessToBoard = await _boardService.HasUserAccessToBoard(userId, boardId);
+            var userBoardAccessResponse = await boardServiceClient
+                .HasUserAccessToBoardAsync(new UserBoardAccessRequest()
+                {
+                    UserId= userId,
+                    BoardId = boardId.ToString(),
+                });
 
-            if (!userHasAccessToBoard)
+            if (!userBoardAccessResponse.HasAccess)
             {
                 return;
             }

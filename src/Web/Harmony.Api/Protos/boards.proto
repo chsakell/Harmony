@@ -14,6 +14,11 @@ message Board {
 	Workspace workspace = 3;
 }
 
+message BoardResponse {
+    bool found = 1;
+    Board board = 2;
+}
+
 message WorkspaceFilterRequest {
 	string workspaceId = 1;
 }
@@ -23,9 +28,19 @@ message Workspace {
     string name = 2;
 }
 
+message UserBoardAccessRequest {
+	string boardId = 1;
+	string userId = 2;
+}
+
+message AccessResponse {
+	bool hasAccess = 1;
+}
+
 service BoardService {
   // returns a Board
-  rpc GetBoard (BoardFilterRequest) returns (Board);
+  rpc GetBoard (BoardFilterRequest) returns (BoardResponse);
+  rpc HasUserAccessToBoard (UserBoardAccessRequest) returns (AccessResponse);
 }
 
 service WorkspaceService {

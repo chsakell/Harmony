@@ -79,15 +79,17 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var filter = new BoardFilterSpecification(notification.BoardId, new BoardIncludes());
 
-            var board = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
+            var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
             {
                 BoardId = notification.BoardId.ToString()
             });
 
-            if (board == null)
+            if (!boardResponse.Found)
             {
                 return;
             }
+
+            var board = boardResponse.Board;
 
             var cardServiceClient = new CardService.CardServiceClient(channel);
             var cardResponse = await cardServiceClient.GetCardAsync(

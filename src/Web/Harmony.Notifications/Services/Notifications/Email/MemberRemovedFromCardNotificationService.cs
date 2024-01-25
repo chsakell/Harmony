@@ -1,16 +1,11 @@
 ﻿using Hangfire;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Notifications.Persistence;
-using Harmony.Application.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;
 using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Server.Kestrel;
 using Grpc.Net.Client;
 using Harmony.Api.Protos;
 
@@ -74,15 +69,17 @@ namespace Harmony.Notifications.Services.Notifications.Email
             using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
             var boardServiceClient = new BoardService.BoardServiceClient(channel);
 
-            var board = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
+            var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
             {
                 BoardId = notification.BoardId.ToString()
             });
 
-            if (board == null)
+            if (!boardResponse.Found)
             {
                 return;
             }
+
+            var board = boardResponse.Board;
 
             var cardServiceClient = new CardService.CardServiceClient(channel);
             var cardResponse = await cardServiceClient.GetCardAsync(
