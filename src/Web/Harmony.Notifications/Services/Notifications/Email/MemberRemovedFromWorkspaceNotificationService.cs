@@ -1,50 +1,32 @@
 ﻿using Hangfire;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Notifications.Persistence;
-using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;
+using Grpc.Net.Client;
+using Harmony.Api.Protos;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class MemberRemovedFromWorkspaceNotificationService : BaseNotificationService, IMemberRemovedFromWorkspaceNotificationService
     {
         private readonly IEmailService _emailNotificationService;
-        private readonly IUserService _userService;
-        private readonly IWorkspaceRepository _workspaceRepository;
-        private readonly IUserNotificationRepository _userNotificationRepository;
-        private readonly IBoardService _boardService;
-        private readonly IBoardRepository _boardRepository;
+        private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberRemovedFromWorkspaceNotificationService(
             IEmailService emailNotificationService,
-            IUserService userService,
-            IWorkspaceRepository workspaceRepository,
-            IUserNotificationRepository userNotificationRepository,
-            IBoardService boardService,
             NotificationContext notificationContext,
-            IBoardRepository boardRepository) : base(notificationContext)
+            IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
-            _userService = userService;
-            _workspaceRepository = workspaceRepository;
-            _userNotificationRepository = userNotificationRepository;
-            _boardService = boardService;
-            _boardRepository = boardRepository;
+            _endpointConfiguration = endpointsConfiguration.Value;
         }
 
         public async Task Notify(MemberRemovedFromWorkspaceNotification notification)
         {
             await RemovePendingWorkspaceJobs(notification.WorkspaceId, notification.UserId, EmailNotificationType.MemberRemovedFromWorkspace);
-
-            var workspace = await _workspaceRepository.GetAsync(notification.WorkspaceId);
-
-            if (workspace == null)
-            {
-                return;
-            }
 
             var jobId = BackgroundJob.Enqueue(() =>
                 Notify(notification.WorkspaceId, notification.UserId, notification.WorkspaceUrl));
@@ -68,26 +50,43 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid workspaceId, string userId, string workspaceUrl)
         {
-            var workspace = await _workspaceRepository.GetAsync(workspaceId);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
 
-            if (workspace == null)
+            var workspaceServiceClient = new WorkspaceService.WorkspaceServiceClient(channel);
+            var workspaceResponse = await workspaceServiceClient.GetWorkspaceAsync(new WorkspaceFilterRequest
+            {
+                WorkspaceId = workspaceId.ToString()
+            });
+
+            if (!workspaceResponse.Found)
             {
                 return;
             }
 
-            var userResult = await _userService.GetAsync(userId);
+            var workspace = workspaceResponse.Workspace;
 
-            if (!userResult.Succeeded || !userResult.Data.IsActive)
+            var userServiceClient = new UserService.UserServiceClient(channel);
+            var userResponse = await userServiceClient.GetUserAsync(new UserFilterRequest
+            {
+                UserId = userId
+            });
+
+            if (!userResponse.Found)
             {
                 return;
             }
 
-            var user = userResult.Data;
+            var user = userResponse.User;
 
-            var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, EmailNotificationType.MemberRemovedFromWorkspace);
+            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
+            var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
+                              new UserIsRegisterForNotificationRequest()
+                              {
+                                  UserId = user.Id,
+                                  Type = (int)EmailNotificationType.MemberRemovedFromWorkspace
+                              });
 
-            if (notificationRegistration == null)
+            if (!userIsRegisteredResponse.IsRegistered)
             {
                 return;
             }

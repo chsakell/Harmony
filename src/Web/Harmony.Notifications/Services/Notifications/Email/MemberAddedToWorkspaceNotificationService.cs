@@ -81,11 +81,6 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var user = userResponse.User;
 
-            if (!userResponse.Found)
-            {
-                return;
-            }
-
             var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
             var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
                               new UserIsRegisterForNotificationRequest()

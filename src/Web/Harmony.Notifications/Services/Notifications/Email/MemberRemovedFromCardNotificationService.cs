@@ -1,5 +1,4 @@
 ﻿using Hangfire;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Notifications.Persistence;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
@@ -14,37 +13,20 @@ namespace Harmony.Notifications.Services.Notifications.Email
     public class MemberRemovedFromCardNotificationService : BaseNotificationService, IMemberRemovedFromCardNotificationService
     {
         private readonly IEmailService _emailNotificationService;
-        private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberRemovedFromCardNotificationService(
             IEmailService emailNotificationService,
             NotificationContext notificationContext,
-            IUserNotificationRepository userNotificationRepository,
             IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
-            _userNotificationRepository = userNotificationRepository;
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
         public async Task Notify(MemberRemovedFromCardNotification notification)
         {
             await RemovePendingCardJobs(notification.CardId, notification.UserId, EmailNotificationType.MemberRemovedFromCard);
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
-            var client = new UserCardService.UserCardServiceClient(channel);
-
-            var userCard = await client.GetUserCardAsync(new UserCardFilterRequest()
-            {
-                CardId = notification.CardId.ToString(),
-                UserId = notification.UserId
-            });
-
-            if (userCard.Found)
-            {
-                return;
-            }
 
             var jobId = BackgroundJob.Enqueue(() => SendEmail(notification));
 
@@ -67,6 +49,19 @@ namespace Harmony.Notifications.Services.Notifications.Email
         public async Task SendEmail(MemberRemovedFromCardNotification notification)
         {
             using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var client = new UserCardService.UserCardServiceClient(channel);
+
+            var userCard = await client.GetUserCardAsync(new UserCardFilterRequest()
+            {
+                CardId = notification.CardId.ToString(),
+                UserId = notification.UserId
+            });
+
+            if (userCard.Found)
+            {
+                return;
+            }
+
             var boardServiceClient = new BoardService.BoardServiceClient(channel);
 
             var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
@@ -108,10 +103,15 @@ namespace Harmony.Notifications.Services.Notifications.Email
             }
             var user = userResponse.User;
 
-            var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, EmailNotificationType.MemberRemovedFromCard);
+            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
+            var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
+                              new UserIsRegisterForNotificationRequest()
+                              {
+                                  UserId = user.Id,
+                                  Type = (int)EmailNotificationType.MemberRemovedFromCard
+                              });
 
-            if (notificationRegistration == null)
+            if (!userIsRegisteredResponse.IsRegistered)
             {
                 return;
             }
