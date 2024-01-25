@@ -1,9 +1,5 @@
 ﻿using Hangfire;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Notifications.Persistence;
-using Harmony.Application.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
@@ -12,27 +8,20 @@ using Grpc.Net.Client;
 using Harmony.Api.Protos;
 using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Server.Kestrel;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class MemberAddedToCardNotificationService : BaseNotificationService, IMemberAddedToCardNotificationService
     {
         private readonly IEmailService _emailNotificationService;
-        private readonly IUserService _userService;
-        private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberAddedToCardNotificationService(
             IEmailService emailNotificationService,
-            IUserService userService,
             NotificationContext notificationContext,
-            IUserNotificationRepository userNotificationRepository,
             IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
-            _userService = userService;
-            _userNotificationRepository = userNotificationRepository;
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
@@ -105,18 +94,30 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var card = cardResponse.Card;
 
-            var userResult = await _userService.GetAsync(notification.UserId);
 
-            if (!userResult.Succeeded || !userResult.Data.IsActive)
+            var userServiceClient = new UserService.UserServiceClient(channel);
+            var userResponse = await userServiceClient.GetUserAsync(
+            new UserFilterRequest
+            {
+                UserId = notification.UserId
+            });
+
+            if (!userResponse.Found)
             {
                 return;
             }
-            var user = userResult.Data;
 
-            var notificationRegistration = await _userNotificationRepository
-                .GetForUser(user.Id, EmailNotificationType.MemberAddedToCard);
+            var user = userResponse.User;
 
-            if (notificationRegistration == null)
+            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
+            var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
+                              new UserIsRegisterForNotificationRequest()
+                              {
+                                  UserId = notification.UserId,
+                                  Type = (int)EmailNotificationType.MemberAddedToCard
+                              });
+
+            if (!userIsRegisteredResponse.IsRegistered)
             {
                 return;
             }
