@@ -26,9 +26,10 @@ message MoveCardToListResponse {
 
 message Card {
 	string cardId = 1;
-    string boardListId = 2;
-    int32 position = 3;
-    repeated Card children = 4;
+    string title = 2;
+    string boardListId = 3;
+    int32 position = 4;
+    repeated Card children = 5;
 }
 
 service CardService {

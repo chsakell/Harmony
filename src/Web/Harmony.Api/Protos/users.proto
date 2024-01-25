@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "Harmony.Api.Protos";
+
+message UserFilterRequest {
+	string userId = 1;
+}
+
+message User {
+	string id = 1;
+    string firstName = 2;
+	string lastName = 3;
+	string email = 4;
+	string userName = 5;
+}
+
+message UserResponse {
+	bool found = 1;
+    User user = 2;
+}
+
+service UserService {
+  // returns a User
+  rpc GetUser (UserFilterRequest) returns (UserResponse);
+}

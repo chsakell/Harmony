@@ -38,6 +38,12 @@
     <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="protos\boards.proto" />
+    <None Remove="protos\userCards.proto" />
+    <None Remove="Protos\users.proto" />
+  </ItemGroup>
+
   <Target Name="CreateFilesFolder" AfterTargets="AfterPublish">
      <MakeDir Directories="$(PublishDir)Files" Condition="!Exists('$(PublishDir)Files')" />
   </Target>

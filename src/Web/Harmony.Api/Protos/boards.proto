@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "Harmony.Api.Protos";
+
+message BoardFilterRequest {
+	string boardId = 1;
+	bool workspace = 2;
+    bool lists = 3;
+}
+
+message Board {
+	string id = 1;
+    string title = 2;
+	Workspace workspace = 3;
+}
+
+message WorkspaceFilterRequest {
+	string workspaceId = 1;
+}
+
+message Workspace {
+	string id = 1;
+    string name = 2;
+}
+
+service BoardService {
+  // returns a Board
+  rpc GetBoard (BoardFilterRequest) returns (Board);
+}
+
+service WorkspaceService {
+  // returns a Board
+  rpc GetWorkspace (WorkspaceFilterRequest) returns (Workspace);
+}

@@ -14,6 +14,8 @@ namespace Harmony.Notifications
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddEndpointConfiguration(builder.Configuration);
+
             // Add DbContexts
             builder.Services.AddIdentityServices();
             builder.Services.AddHarmonyDatabase(builder.Configuration);

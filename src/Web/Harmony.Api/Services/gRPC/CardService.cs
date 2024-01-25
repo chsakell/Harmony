@@ -81,6 +81,7 @@ namespace Harmony.Api.Services.gRPC
             var protoCard = new Protos.Card()
             {
                 CardId = card.Id.ToString(),
+                Title = card.Title,
                 Position = card.Position,
                 BoardListId = card.BoardListId?.ToString()
             };

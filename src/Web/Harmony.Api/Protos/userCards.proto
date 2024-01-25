@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "Harmony.Api.Protos";
+
+message UserCardFilterRequest {
+	string cardId = 1;
+	string userId  = 2;
+}
+
+message UserCardResponse {
+	bool found = 1;
+    UserCard userCard = 2;
+}
+
+message UserCard {
+	string cardId = 1;
+    string userId = 2;
+}
+
+service UserCardService {
+  // returns a User Card
+  rpc GetUserCard (UserCardFilterRequest) returns (UserCardResponse);
+}

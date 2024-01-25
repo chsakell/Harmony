@@ -31,6 +31,17 @@ namespace Harmony.Notifications.Extensions
             return services;
         }
 
+        internal static IServiceCollection AddEndpointConfiguration(this IServiceCollection services,
+           IConfiguration configuration)
+        {
+            var endpointConfiguration = configuration
+                .GetSection(nameof(AppEndpointConfiguration));
+
+            services.Configure<AppEndpointConfiguration>(endpointConfiguration);
+
+            return services;
+        }
+
         internal static IServiceCollection AddEmailNotificationServices(this IServiceCollection services)
         {
             services.AddScoped<ICardDueDateNotificationService, CardDueDateNotificationService>();

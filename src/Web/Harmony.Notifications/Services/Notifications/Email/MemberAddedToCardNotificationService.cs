@@ -8,6 +8,11 @@ using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;
+using Grpc.Net.Client;
+using Harmony.Api.Protos;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Server.Kestrel;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -15,36 +20,36 @@ namespace Harmony.Notifications.Services.Notifications.Email
     {
         private readonly IEmailService _emailNotificationService;
         private readonly IUserService _userService;
-        private readonly ICardRepository _cardRepository;
-        private readonly IUserCardRepository _userCardRepository;
         private readonly IUserNotificationRepository _userNotificationRepository;
-        private readonly IBoardRepository _boardRepository;
+        private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberAddedToCardNotificationService(
             IEmailService emailNotificationService,
             IUserService userService,
-            ICardRepository cardRepository,
-            IUserCardRepository userCardRepository,
             NotificationContext notificationContext,
             IUserNotificationRepository userNotificationRepository,
-            IBoardRepository boardRepository) : base(notificationContext)
+            IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
             _userService = userService;
-            _cardRepository = cardRepository;
-            _userCardRepository = userCardRepository;
             _userNotificationRepository = userNotificationRepository;
-            _boardRepository = boardRepository;
+            _endpointConfiguration = endpointsConfiguration.Value;
         }
 
         public async Task Notify(MemberAddedToCardNotification notification)
         {
             await RemovePendingCardJobs(notification.CardId, notification.UserId, EmailNotificationType.MemberAddedToCard);
 
-            var userCard = await _userCardRepository
-                .GetUserCard(notification.CardId, notification.UserId);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var client = new UserCardService.UserCardServiceClient(channel);
 
-            if (userCard == null)
+            var userCard = await client.GetUserCardAsync(new UserCardFilterRequest()
+            {
+                CardId = notification.CardId.ToString(),
+                UserId = notification.UserId
+            });
+
+            if (!userCard.Found)
             {
                 return;
             }
@@ -67,21 +72,29 @@ namespace Harmony.Notifications.Services.Notifications.Email
             await _notificationContext.SaveChangesAsync();
         }
 
-
         public async Task SendEmail(MemberAddedToCardNotification notification)
         {
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var boardServiceClient = new BoardService.BoardServiceClient(channel);
+
             var filter = new BoardFilterSpecification(notification.BoardId, new BoardIncludes());
 
-            var board = await _boardRepository
-                .Entities.Specify(filter)
-                .FirstOrDefaultAsync();
+            var board = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
+            {
+                BoardId = notification.BoardId.ToString()
+            });
 
             if (board == null)
             {
                 return;
             }
 
-            var card = await _cardRepository.Get(notification.CardId);
+            var cardServiceClient = new CardService.CardServiceClient(channel);
+            var card = await cardServiceClient.GetCardAsync(
+                              new CardFilterRequest
+                              {
+                                  CardId = notification.CardId.ToString()
+                              });
 
             if (card == null)
             {
