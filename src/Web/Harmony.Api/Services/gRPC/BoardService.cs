@@ -78,7 +78,7 @@ namespace Harmony.Api.Services.gRPC
 
             if (board.Workspace != null)
             {
-                proto.Workspace = new Protos.Workspace()
+                proto.Workspace = new Protos.BoardWorkspace()
                 {
                     Id = board.Workspace.Id.ToString(),
                     Name = board.Workspace.Name

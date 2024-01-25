@@ -88,6 +88,7 @@ app.UseAuthorization();
 app.MapGrpcService<CardService>();
 app.MapGrpcService<UserCardService>();
 app.MapGrpcService<BoardService>();
+app.MapGrpcService<WorkspaceService>();
 app.MapGrpcService<UserService>();
 app.MapGrpcService<UserNotificationService>();
 

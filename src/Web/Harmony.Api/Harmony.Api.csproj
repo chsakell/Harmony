@@ -43,6 +43,7 @@
     <None Remove="protos\userCards.proto" />
     <None Remove="Protos\userNotifications.proto" />
     <None Remove="Protos\users.proto" />
+    <None Remove="protos\workspaces.proto" />
   </ItemGroup>
 
   <Target Name="CreateFilesFolder" AfterTargets="AfterPublish">

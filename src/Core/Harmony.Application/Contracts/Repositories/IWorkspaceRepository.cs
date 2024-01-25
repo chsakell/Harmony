@@ -1,4 +1,5 @@
 ﻿using Harmony.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Application.Contracts.Repositories
 {
@@ -7,6 +8,7 @@ namespace Harmony.Application.Contracts.Repositories
     /// </summary>
     public interface IWorkspaceRepository
     {
+        IQueryable<Workspace> Entities { get; }
         Task<Workspace> GetAsync(Guid workspaceId);
         Task AddAsync(Workspace workspace);
         /// <summary>

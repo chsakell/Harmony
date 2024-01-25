@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "Harmony.Api.Protos";
+
+message Workspace {
+	string id = 1;
+    string name = 2;
+}
+
+message WorkspaceResponse {
+    bool found = 1;
+    Workspace workspace = 2;
+}
+
+message WorkspaceFilterRequest {
+	string workspaceId = 1;
+}
+
+service WorkspaceService {
+  // returns a workspace
+  rpc GetWorkspace (WorkspaceFilterRequest) returns (WorkspaceResponse);
+}
