@@ -3,9 +3,8 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Specifications.Cards;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Extensions;
-using Harmony.Domain.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Harmony.Api.Protos;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Api.Services.gRPC
 {
@@ -20,7 +19,7 @@ namespace Harmony.Api.Services.gRPC
             _cardRepository = cardRepository;
         }
 
-        public override async Task<Protos.CardResponse> GetCard(CardFilterRequest request,
+        public override async Task<CardResponse> GetCard(CardFilterRequest request,
             ServerCallContext context)
         {
             var includes = new CardIncludes()
@@ -46,7 +45,7 @@ namespace Harmony.Api.Services.gRPC
 
         public override async Task<MoveCardToListResponse> MoveCardToList(Protos.MoveCardToListRequest request, ServerCallContext context)
         {
-            var includes = new CardIncludes() {};
+            var includes = new CardIncludes() { };
             var cardId = Guid.Parse(request.CardId);
 
             var filter = new CardFilterSpecification(cardId, includes);
@@ -67,7 +66,7 @@ namespace Harmony.Api.Services.gRPC
             var result = new Protos.MoveCardToListResponse()
             {
                 Success = updateResult > 0,
-                NewPosition  = card.Position
+                NewPosition = card.Position
             };
 
             return result;
@@ -99,20 +98,41 @@ namespace Harmony.Api.Services.gRPC
                 Position = card.Position,
                 BoardListId = card.BoardListId?.ToString(),
                 BoardTitle = card.BoardList?.Board?.Title,
+                DueDateReminderType = card.DueDateReminderType.HasValue ? (int)card.DueDateReminderType.Value : null,
                 IsCompleted = card?.BoardList?.CardStatus == Domain.Enums.BoardListCardStatus.DONE
             };
+
+            protoCard.DueDate = GetDate(card.DueDate);
+            protoCard.StartDate = GetDate(card.StartDate);
 
             if (card.Children != null && card.Children.Any())
             {
                 protoCard.Children.AddRange(card.Children.Select(MapToProtoCard));
             }
 
-            if(card.Members != null && card.Members.Any()) 
-            { 
+            if (card.Members != null && card.Members.Any())
+            {
                 protoCard.Members.AddRange(card.Members.Select(m => m.UserId));
             }
 
             return protoCard;
+        }
+
+        private Google.Protobuf.WellKnownTypes.Timestamp GetDate(DateTime? date)
+        {
+            if (date.HasValue)
+            {
+                var utcKind = DateTime.SpecifyKind(date.Value, DateTimeKind.Utc);
+                return Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(utcKind);
+            }
+            else
+            {
+                var emptyTimestamp = new Google.Protobuf.WellKnownTypes.Timestamp();
+                emptyTimestamp.Nanos = 0;
+                emptyTimestamp.Seconds = 0;
+
+                return emptyTimestamp;
+            }
         }
     }
 }

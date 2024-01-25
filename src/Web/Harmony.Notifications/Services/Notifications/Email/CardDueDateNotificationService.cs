@@ -1,34 +1,28 @@
 ﻿using Hangfire;
-using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Specifications.Cards;
 using Harmony.Notifications.Persistence;
-using Harmony.Application.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Helpers;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
+using Grpc.Net.Client;
+using Harmony.Api.Protos;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class CardDueDateNotificationService : BaseNotificationService, ICardDueDateNotificationService
     {
         private readonly IEmailService _emailNotificationService;
-        private readonly IUserService _userService;
-        private readonly IUserNotificationRepository _userNotificationRepository;
-        private readonly ICardRepository _cardRepository;
+        private readonly AppEndpointConfiguration _endpointConfiguration;
 
-        public CardDueDateNotificationService(IEmailService emailNotificationService,
-            IUserService userService,
-            IUserNotificationRepository userNotificationRepository,
+        public CardDueDateNotificationService(
+            IEmailService emailNotificationService,
             NotificationContext notificationContext,
-            ICardRepository cardRepository) : base(notificationContext)
+            IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
-            _userService = userService;
-            _userNotificationRepository = userNotificationRepository;
-            _cardRepository = cardRepository;
+            _endpointConfiguration = endpointsConfiguration.Value;
         }
 
         public async Task Notify(CardDueTimeUpdatedNotification notification)
@@ -37,18 +31,33 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             await RemovePendingCardJobs(cardId, EmailNotificationType.CardDueDateUpdated);
 
-            var card = await _cardRepository.Get(cardId);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var cardServiceClient = new CardService.CardServiceClient(channel);
+            var cardResponse = await cardServiceClient.GetCardAsync(
+                              new CardFilterRequest
+                              {
+                                  CardId = cardId.ToString(),
+                                  Board = false
+                              });
 
-            if (card == null || !card.DueDate.HasValue || !card.DueDateReminderType.HasValue
-                || card.DueDateReminderType.HasValue
-                && card.DueDateReminderType == DueDateReminderType.None)
+            if (!cardResponse.Found)
             {
                 return;
             }
 
-            var delay = card.DueDate.Value - DateTime.Now;
+            var card = cardResponse.Card;
+            var dueDateIsNull = card.DueDate.Nanos == 0 && card.DueDate.Seconds == 0;
+            
+            if (dueDateIsNull || !card.DueDateReminderType.HasValue
+                || card.DueDateReminderType.HasValue
+                && (DueDateReminderType)card.DueDateReminderType == DueDateReminderType.None)
+            {
+                return;
+            }
 
-            switch (card.DueDateReminderType)
+            var delay = card.DueDate.ToDateTime() - DateTime.Now;
+
+            switch ((DueDateReminderType)card.DueDateReminderType)
             {
                 case DueDateReminderType.FiveMinutesBefore:
                     delay = delay.Add(TimeSpan.FromMinutes(-5));
@@ -95,30 +104,51 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid cardId)
         {
-            var filter = new CardNotificationSpecification(cardId);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var cardServiceClient = new CardService.CardServiceClient(channel);
+            var cardResponse = await cardServiceClient.GetCardAsync(
+                              new CardFilterRequest
+                              {
+                                  CardId = cardId.ToString(),
+                                  Board = true,
+                                  Members = true
+                              });
 
-            var card = await _cardRepository
-                .Entities.Specify(filter)
-                .FirstOrDefaultAsync();
+            var card = cardResponse.Card;
+            var dueDateIsNull = card.DueDate.Nanos == 0 && card.DueDate.Seconds == 0;
 
-            if (card == null || !card.DueDate.HasValue || card.BoardList.CardStatus == BoardListCardStatus.DONE)
+            if (!cardResponse.Found || dueDateIsNull || card.IsCompleted || 
+                (card.DueDateReminderType.HasValue && (DueDateReminderType)card.DueDateReminderType == DueDateReminderType.None))
             {
                 return;
             }
 
-            var subject = $"{card.Title} in {card.BoardList.Board.Title} is due {GetDueMessage(card.DueDateReminderType.Value)}";
-            var cardMembers = (await _userService.GetAllAsync(card.Members.Select(m => m.UserId))).Data;
+            var reminderType = (DueDateReminderType)card.DueDateReminderType;
+            var subject = $"{card.Title} in {card.BoardTitle} is due {GetDueMessage(reminderType)}";
 
-            var registeredUsers = await _userNotificationRepository
-                .GetUsersForType(cardMembers.Select(m => m.Id).ToList(), EmailNotificationType.CardDueDateUpdated);
+            var userServiceClient = new UserService.UserServiceClient(channel);
+            var usersFilterRequest = new UsersFilterRequest() { };
 
-            foreach (var member in cardMembers.Where(m => registeredUsers.Contains(m.Id)))
+            usersFilterRequest.Users.AddRange(card.Members);
+
+            var usersResponse = await userServiceClient.GetUsersAsync(usersFilterRequest);
+            var cardMembers = usersResponse.Users;
+
+            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
+            var userNotificationsFilterRequest = new GetUsersForNotificationTypeRequest() { };
+
+            userNotificationsFilterRequest.Users.AddRange(card.Members);
+            userNotificationsFilterRequest.Type = (int)EmailNotificationType.CardDueDateUpdated;
+
+            var registeredUsersResponse = await userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
+
+            var startDateIsNull = card.StartDate.Nanos == 0 && card.StartDate.Seconds == 0;
+            foreach (var member in cardMembers.Where(m => registeredUsersResponse.Users.Contains(m.Id)))
             {
-                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} is due {GetDueMessage(card.DueDateReminderType.Value)}. " +
-                    $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(card.StartDate, card.DueDate)}";
+                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} is due {GetDueMessage(reminderType)}. " +
+                    $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(startDateIsNull ? null : card.StartDate.ToDateTime(), card.DueDate.ToDateTime())}";
                 await _emailNotificationService.SendEmailAsync(member.Email, subject, content);
             }
-
         }
 
         private string GetDueMessage(DueDateReminderType type)
