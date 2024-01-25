@@ -41,6 +41,7 @@
   <ItemGroup>
     <None Remove="protos\boards.proto" />
     <None Remove="protos\userCards.proto" />
+    <None Remove="Protos\userNotifications.proto" />
     <None Remove="Protos\users.proto" />
   </ItemGroup>
 

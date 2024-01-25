@@ -35,21 +35,35 @@ namespace Harmony.Api.Services.gRPC
             return MapToProto(user);
         }
 
+        public async override Task<Protos.UsersResponse> GetUsers(Protos.UsersFilterRequest request, ServerCallContext context)
+        {
+            var users = (await _userService.GetAllAsync(request.Users));
+
+            var response = new Protos.UsersResponse() { };
+
+            response.Users.AddRange(users.Data.Select(MapToProtoUser));
+
+            return response;
+        }
+
         private Protos.UserResponse MapToProto(UserResponse user)
         {
-            var proto = new Protos.User()
+            return new Protos.UserResponse()
+            {
+                Found = true,
+                User = MapToProtoUser(user)
+            };
+        }
+
+        private Protos.User MapToProtoUser(UserResponse user)
+        {
+            return new Protos.User()
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
                 UserName = user.UserName
-            };
-
-            return new Protos.UserResponse()
-            {
-                Found = true,
-                User = proto
             };
         }
     }

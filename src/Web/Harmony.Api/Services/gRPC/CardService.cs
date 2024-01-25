@@ -20,7 +20,7 @@ namespace Harmony.Api.Services.gRPC
             _cardRepository = cardRepository;
         }
 
-        public override async Task<Protos.CardResponse> GetCard(Protos.CardFilterRequest request,
+        public override async Task<Protos.CardResponse> GetCard(CardFilterRequest request,
             ServerCallContext context)
         {
             var includes = new CardIncludes()
@@ -29,7 +29,8 @@ namespace Harmony.Api.Services.gRPC
                 Board = request.Board,
                 BoardList = request.BoardList,
                 IssueType = request.IssueType,
-                Children = request.Children
+                Children = request.Children,
+                Members = request.Members
             };
 
             var cardId = Guid.Parse(request.CardId);
@@ -43,7 +44,7 @@ namespace Harmony.Api.Services.gRPC
             return MapToProto(card);
         }
 
-        public override async Task<Protos.MoveCardToListResponse> MoveCardToList(Protos.MoveCardToListRequest request, ServerCallContext context)
+        public override async Task<MoveCardToListResponse> MoveCardToList(Protos.MoveCardToListRequest request, ServerCallContext context)
         {
             var includes = new CardIncludes() {};
             var cardId = Guid.Parse(request.CardId);
@@ -72,7 +73,7 @@ namespace Harmony.Api.Services.gRPC
             return result;
         }
 
-        private Protos.CardResponse MapToProto(Domain.Entities.Card card)
+        private CardResponse MapToProto(Domain.Entities.Card card)
         {
             if (card == null)
             {
@@ -96,12 +97,19 @@ namespace Harmony.Api.Services.gRPC
                 CardId = card.Id.ToString(),
                 Title = card.Title,
                 Position = card.Position,
-                BoardListId = card.BoardListId?.ToString()
+                BoardListId = card.BoardListId?.ToString(),
+                BoardTitle = card.BoardList?.Board?.Title,
+                IsCompleted = card?.BoardList?.CardStatus == Domain.Enums.BoardListCardStatus.DONE
             };
 
             if (card.Children != null && card.Children.Any())
             {
                 protoCard.Children.AddRange(card.Children.Select(MapToProtoCard));
+            }
+
+            if(card.Members != null && card.Members.Any()) 
+            { 
+                protoCard.Members.AddRange(card.Members.Select(m => m.UserId));
             }
 
             return protoCard;

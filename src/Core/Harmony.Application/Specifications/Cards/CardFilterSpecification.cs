@@ -17,9 +17,19 @@ namespace Harmony.Application.Specifications.Cards
                 Includes.Add(card => card.BoardListId);
             }
 
+            if (includes.Board)
+            {
+                Includes.Add(card => card.BoardList.Board);
+            }
+
             if (includes.Children)
             {
                 Includes.Add(card => card.Children);
+            }
+
+            if (includes.Members)
+            {
+                Includes.Add(card => card.Members);
             }
 
             if (cardId.HasValue)
@@ -71,7 +81,12 @@ namespace Harmony.Application.Specifications.Cards
                 Includes.Add(card => card.BoardList);
             }
 
-            if(filters.CombineCriteria)
+            if (includes.Members)
+            {
+                Includes.Add(card => card.Members);
+            }
+
+            if (filters.CombineCriteria)
             {
                 if (!string.IsNullOrEmpty(filters.Title))
                 {

@@ -6,6 +6,10 @@ message UserFilterRequest {
 	string userId = 1;
 }
 
+message UsersFilterRequest {
+	repeated string users = 1;
+}
+
 message User {
 	string id = 1;
     string firstName = 2;
@@ -19,7 +23,12 @@ message UserResponse {
     User user = 2;
 }
 
+message UsersResponse {
+	repeated User users = 1;
+}
+
 service UserService {
   // returns a User
   rpc GetUser (UserFilterRequest) returns (UserResponse);
+  rpc GetUsers (UsersFilterRequest) returns (UsersResponse);
 }

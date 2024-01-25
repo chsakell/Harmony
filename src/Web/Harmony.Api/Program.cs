@@ -84,10 +84,13 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapGrpcService<CardService>();
 app.MapGrpcService<UserCardService>();
 app.MapGrpcService<BoardService>();
 app.MapGrpcService<UserService>();
+app.MapGrpcService<UserNotificationService>();
+
 app.UseEndpoints();
 app.ConfigureSwagger();
 await app.InitializeDatabase(builder.Configuration);

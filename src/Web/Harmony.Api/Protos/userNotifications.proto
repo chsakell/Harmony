@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "Harmony.Api.Protos";
+
+
+message GetUsersForNotificationTypeRequest {
+	repeated string users = 1;
+	int32 type = 2;
+}
+
+message GetUsersForNotificationTypeResponse {
+	repeated string users = 1;
+}
+
+service UserNotificationService {
+  // returns a User
+  rpc GetUsersForNotificationType (GetUsersForNotificationTypeRequest) 
+	returns (GetUsersForNotificationTypeResponse);
+}

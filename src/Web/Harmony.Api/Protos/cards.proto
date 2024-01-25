@@ -11,6 +11,7 @@ message CardFilterRequest {
     bool Board  = 4;
     bool IssueType = 5;
     bool Children = 6;
+    bool Members = 7;
 }
 
 message MoveCardToListRequest {
@@ -29,7 +30,10 @@ message Card {
     string title = 2;
     string boardListId = 3;
     int32 position = 4;
-    repeated Card children = 5;
+    string boardTitle = 5;
+    bool isCompleted = 6;
+    repeated Card children = 7;
+    repeated string members = 8;
 }
 
 message CardResponse {

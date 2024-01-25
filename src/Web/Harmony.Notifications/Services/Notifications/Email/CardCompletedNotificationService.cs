@@ -1,33 +1,26 @@
 ﻿using Hangfire;
-using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Specifications.Cards;
 using Harmony.Notifications.Persistence;
-using Harmony.Application.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
+using Harmony.Api.Protos;
+using Grpc.Net.Client;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
     public class CardCompletedNotificationService : BaseNotificationService, ICardCompletedNotificationService
     {
         private readonly IEmailService _emailNotificationService;
-        private readonly IUserService _userService;
-        private readonly IUserNotificationRepository _userNotificationRepository;
-        private readonly ICardRepository _cardRepository;
+        private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public CardCompletedNotificationService(IEmailService emailNotificationService,
-            IUserService userService,
-            IUserNotificationRepository userNotificationRepository,
             NotificationContext notificationContext,
-            ICardRepository cardRepository) : base(notificationContext)
+            IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
-            _userService = userService;
-            _userNotificationRepository = userNotificationRepository;
-            _cardRepository = cardRepository;
+            _endpointConfiguration = endpointsConfiguration.Value;
         }
 
         public async Task Notify(CardCompletedNotification notification)
@@ -35,13 +28,6 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var cardId = notification.Id;
 
             await RemovePendingCardJobs(cardId, EmailNotificationType.CardCompleted);
-
-            var card = await _cardRepository.Get(cardId);
-
-            if (card == null)
-            {
-                return;
-            }
 
             var jobId = BackgroundJob.Schedule(() => Notify(cardId), TimeSpan.FromSeconds(10));
 
@@ -61,27 +47,44 @@ namespace Harmony.Notifications.Services.Notifications.Email
             await _notificationContext.SaveChangesAsync();
         }
 
-
         public async Task Notify(Guid cardId)
         {
-            var filter = new CardNotificationSpecification(cardId);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var cardServiceClient = new CardService.CardServiceClient(channel);
+            var cardResponse = await cardServiceClient.GetCardAsync(
+                              new CardFilterRequest
+                              {
+                                  CardId = cardId.ToString(),
+                                  Board = true,
+                                  Members = true
+                              });
 
-            var card = await _cardRepository
-                .Entities.Specify(filter)
-                .FirstOrDefaultAsync();
-
-            if (card == null || card.BoardList.CardStatus != BoardListCardStatus.DONE)
+            if (!cardResponse.Found || !cardResponse.Card.IsCompleted)
             {
                 return;
             }
 
-            var subject = $"{card.Title} in {card.BoardList.Board.Title} completed";
-            var cardMembers = (await _userService.GetAllAsync(card.Members.Select(m => m.UserId))).Data;
+            var card = cardResponse.Card;
 
-            var registeredUsers = await _userNotificationRepository
-                .GetUsersForType(cardMembers.Select(m => m.Id).ToList(), EmailNotificationType.CardCompleted);
+            var subject = $"{card.Title} in {card.BoardTitle} completed";
 
-            foreach (var member in cardMembers.Where(m => registeredUsers.Contains(m.Id)))
+            var userServiceClient = new UserService.UserServiceClient(channel);
+            var usersFilterRequest = new UsersFilterRequest() {};
+
+            usersFilterRequest.Users.AddRange(card.Members);
+
+            var usersResponse = await userServiceClient.GetUsersAsync(usersFilterRequest);
+            var cardMembers = usersResponse.Users;
+
+            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
+            var userNotificationsFilterRequest = new GetUsersForNotificationTypeRequest() { };
+
+            userNotificationsFilterRequest.Users.AddRange(card.Members);
+            userNotificationsFilterRequest.Type = (int)EmailNotificationType.CardCompleted;
+
+            var registeredUsersResponse = await userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
+
+            foreach (var member in cardMembers.Where(m => registeredUsersResponse.Users.Contains(m.Id)))
             {
                 var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} has been completed. ";
 
