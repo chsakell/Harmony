@@ -17,12 +17,8 @@ namespace Harmony.Notifications
             builder.Services.AddEndpointConfiguration(builder.Configuration);
 
             // Add DbContexts
-            builder.Services.AddIdentityServices();
-            builder.Services.AddHarmonyDatabase(builder.Configuration);
             builder.Services.AddNotificationDatabase(builder.Configuration);
 
-            builder.Services.AddSqlServerRepositories();
-            builder.Services.AddApplicationServices();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
 
             // Email service providers
