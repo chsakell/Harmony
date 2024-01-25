@@ -6,6 +6,8 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Harmony.Application.Features.Boards.Commands.RemoveUserBoard
 {
@@ -18,18 +20,21 @@ namespace Harmony.Application.Features.Boards.Commands.RemoveUserBoard
         private readonly ICurrentUserService _currentUserService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IBoardRepository _boardRepository;
+        private readonly IOptions<AppEndpointConfiguration> _endpointsConfiguration;
         private readonly IStringLocalizer<RemoveUserBoardCommandHandler> _localizer;
 
         public RemoveUserBoardCommandHandler(IUserBoardRepository userBoardRepository,
             ICurrentUserService currentUserService,
             INotificationsPublisher notificationsPublisher,
             IBoardRepository boardRepository,
+            IOptions<AppEndpointConfiguration> endpointsConfiguration,
             IStringLocalizer<RemoveUserBoardCommandHandler> localizer)
         {
             _userBoardRepository = userBoardRepository;
             _currentUserService = currentUserService;
             _notificationsPublisher = notificationsPublisher;
             _boardRepository = boardRepository;
+            _endpointsConfiguration = endpointsConfiguration;
             _localizer = localizer;
         }
         public async Task<Result<RemoveUserBoardResponse>> Handle(RemoveUserBoardCommand request, CancellationToken cancellationToken)
@@ -56,7 +61,7 @@ namespace Harmony.Application.Features.Boards.Commands.RemoveUserBoard
 
                 var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
-                var boardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/";
+                var boardUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/boards/{board.Id}/{slug}/";
 
                 _notificationsPublisher
                     .PublishEmailNotification(new MemberRemovedFromBoardNotification(request.BoardId, request.UserId, boardUrl));

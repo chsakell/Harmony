@@ -9,6 +9,8 @@ using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Notifications.Email;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
 {
@@ -21,6 +23,7 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IBoardRepository _boardRepository;
+        private readonly IOptions<AppEndpointConfiguration> _endpointsConfiguration;
         private readonly ISender _sender;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<AddUserBoardCommandHandler> _localizer;
@@ -29,6 +32,7 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
             IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
             IBoardRepository boardRepository,
+            IOptions<AppEndpointConfiguration> endpointsConfiguration,
             ISender sender,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<AddUserBoardCommandHandler> localizer)
@@ -37,6 +41,7 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
             _userWorkspaceRepository = userWorkspaceRepository;
             _currentUserService = currentUserService;
             _boardRepository = boardRepository;
+            _endpointsConfiguration = endpointsConfiguration;
             _sender = sender;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
@@ -86,7 +91,7 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
 
                 var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
-                var boardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/";
+                var boardUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/boards/{board.Id}/{slug}/";
 
                 _notificationsPublisher
                     .PublishEmailNotification(new MemberAddedToBoardNotification(request.BoardId, request.UserId, boardUrl));

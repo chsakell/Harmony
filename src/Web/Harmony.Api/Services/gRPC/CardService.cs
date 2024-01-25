@@ -91,13 +91,14 @@ namespace Harmony.Api.Services.gRPC
 
         private Protos.Card MapToProtoCard(Domain.Entities.Card card)
         {
+
             var protoCard = new Protos.Card()
             {
                 CardId = card.Id.ToString(),
                 Title = card.Title,
                 Position = card.Position,
                 BoardListId = card.BoardListId?.ToString(),
-                BoardTitle = card.BoardList?.Board?.Title,
+                BoardTitle = card.BoardList?.Board?.Title ?? card.IssueType?.Board?.Title,
                 DueDateReminderType = card.DueDateReminderType.HasValue ? (int)card.DueDateReminderType.Value : null,
                 IsCompleted = card?.BoardList?.CardStatus == Domain.Enums.BoardListCardStatus.DONE
             };

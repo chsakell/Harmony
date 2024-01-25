@@ -15,5 +15,7 @@ namespace Harmony.Application.Configurations
         {
             return FrontendUrls.Split(",");
         }
+
+        public string FrontendUrl => GetFrontEndUrls().FirstOrDefault().TrimEnd('/');
     }
 }

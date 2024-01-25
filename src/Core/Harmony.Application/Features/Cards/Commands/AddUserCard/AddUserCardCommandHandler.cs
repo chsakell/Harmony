@@ -16,6 +16,8 @@ using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
@@ -29,6 +31,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
         private readonly IMapper _mapper;
         private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly IOptions<AppEndpointConfiguration> _endpointsConfiguration;
         private readonly IStringLocalizer<AddUserCardCommandHandler> _localizer;
 
         public AddUserCardCommandHandler(IUserBoardRepository userBoardRepository,
@@ -38,6 +41,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             IUserService userService, IMapper mapper,
             IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
+            IOptions<AppEndpointConfiguration> endpointsConfiguration,
             IStringLocalizer<AddUserCardCommandHandler> localizer)
         {
             _userBoardRepository = userBoardRepository;
@@ -48,6 +52,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             _mapper = mapper;
             _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
+            _endpointsConfiguration = endpointsConfiguration;
             _localizer = localizer;
         }
         public async Task<Result<AddUserCardResponse>> Handle(AddUserCardCommand request, CancellationToken cancellationToken)
@@ -102,7 +107,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 
                     var slug = StringUtilities.SlugifyString(userBoard.Board.Title.ToString());
 
-                    var cardUrl = $"{request.HostUrl}boards/{userBoard.Board.Id}/{slug}/{request.CardId}";
+                    var cardUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/boards/{userBoard.Board.Id}/{slug}/{request.CardId}";
                     
                     _notificationsPublisher.PublishEmailNotification(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
 

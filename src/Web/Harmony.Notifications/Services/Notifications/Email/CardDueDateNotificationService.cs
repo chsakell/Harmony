@@ -111,6 +111,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
                               {
                                   CardId = cardId.ToString(),
                                   Board = true,
+                                  IssueType = true,
                                   Members = true
                               });
 

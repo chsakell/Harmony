@@ -127,8 +127,6 @@ namespace Harmony.Api.Controllers.Management
         [HttpPost("{id:guid}/members")]
         public async Task<IActionResult> GetMembers(AddUserCardCommand command)
         {
-            command.HostUrl = Request.BaseUrl();
-
             return Ok(await _mediator.Send(command));
         }
 
@@ -137,7 +135,6 @@ namespace Harmony.Api.Controllers.Management
         {
             var command = new RemoveUserCardCommand(id, userId)
             {
-                HostUrl = Request.BaseUrl(),
                 BoardId = boardId
             };
 

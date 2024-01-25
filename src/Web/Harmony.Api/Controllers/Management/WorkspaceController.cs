@@ -59,16 +59,12 @@ namespace Harmony.Api.Controllers.Management
         [HttpPost("{id:guid}/members/add")]
         public async Task<IActionResult> AddMember(AddWorkspaceMemberCommand request)
         {
-            request.HostUrl = Request.BaseUrl();
-
             return Ok(await _mediator.Send(request));
         }
 
         [HttpPost("{id:guid}/members/remove")]
         public async Task<IActionResult> DeleteMember(RemoveWorkspaceMemberCommand request)
         {
-            request.HostUrl = Request.BaseUrl();
-
             return Ok(await _mediator.Send(request));
         }
     }

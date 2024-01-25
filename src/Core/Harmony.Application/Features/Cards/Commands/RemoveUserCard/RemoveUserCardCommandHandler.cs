@@ -17,6 +17,8 @@ using Harmony.Application.Notifications;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Harmony.Application.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 {
@@ -28,6 +30,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
         private readonly IUserService _userService;
         private readonly IBoardService _boardService;
         private readonly IMapper _mapper;
+        private readonly IOptions<AppEndpointConfiguration> _endpointsConfiguration;
         private readonly IStringLocalizer<RemoveUserCardCommandHandler> _localizer;
 
         public RemoveUserCardCommandHandler(ICurrentUserService currentUserService,
@@ -35,7 +38,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
             IUserCardRepository userCardRepository,
             IUserService userService,
             IBoardService boardService,
-            IMapper mapper,
+            IMapper mapper, IOptions<AppEndpointConfiguration> endpointsConfiguration,
             IStringLocalizer<RemoveUserCardCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
@@ -44,6 +47,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
             _userService = userService;
             _boardService = boardService;
             _mapper = mapper;
+            _endpointsConfiguration = endpointsConfiguration;
             _localizer = localizer;
         }
         public async Task<Result<RemoveUserCardResponse>> Handle(RemoveUserCardCommand request, CancellationToken cancellationToken)
@@ -81,7 +85,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                     var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
-                    var cardUrl = $"{request.HostUrl}boards/{board.Id}/{slug}/{request.CardId}";
+                    var cardUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/boards/{board.Id}/{slug}/{request.CardId}";
 
                     _notificationsPublisher.PublishEmailNotification(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
                     

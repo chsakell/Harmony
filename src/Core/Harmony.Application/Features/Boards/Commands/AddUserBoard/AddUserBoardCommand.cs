@@ -20,6 +20,5 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
         public Guid BoardId { get; set; }
         public string UserId { get; set; }
         public UserBoardAccess Access { get; set; }
-        public string HostUrl { get; set; }
     }
 }

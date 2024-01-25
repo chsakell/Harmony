@@ -16,7 +16,5 @@ namespace Harmony.Application.Features.Workspaces.Commands.AddMember
 
         public string UserId { get; set; }
         public Guid WorkspaceId { get; set; }
-
-        public string HostUrl { get; set; }
     }
 }

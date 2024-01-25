@@ -29,7 +29,7 @@ message MoveCardToListResponse {
 message Card {
 	string cardId = 1;
     string title = 2;
-    string boardListId = 3;
+    google.protobuf.StringValue boardListId = 3;
     int32 position = 4;
     google.protobuf.StringValue boardTitle = 5;
     bool isCompleted = 6;
