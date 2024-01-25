@@ -90,16 +90,18 @@ namespace Harmony.Notifications.Services.Notifications.Email
             }
 
             var cardServiceClient = new CardService.CardServiceClient(channel);
-            var card = await cardServiceClient.GetCardAsync(
+            var cardResponse = await cardServiceClient.GetCardAsync(
                               new CardFilterRequest
                               {
                                   CardId = notification.CardId.ToString()
                               });
 
-            if (card == null)
+            if (!cardResponse.Found)
             {
                 return;
             }
+
+            var card = cardResponse.Card;
 
             var userResult = await _userService.GetAsync(notification.UserId);
 

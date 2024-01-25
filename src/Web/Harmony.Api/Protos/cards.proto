@@ -32,8 +32,13 @@ message Card {
     repeated Card children = 5;
 }
 
+message CardResponse {
+    bool found = 1;
+    Card card = 2;
+}
+
 service CardService {
   // returns a Card
-  rpc GetCard (CardFilterRequest) returns (Card);
+  rpc GetCard (CardFilterRequest) returns (CardResponse);
   rpc MoveCardToList (MoveCardToListRequest) returns (MoveCardToListResponse);
 }

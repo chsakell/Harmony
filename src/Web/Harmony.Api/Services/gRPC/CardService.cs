@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Extensions;
 using Harmony.Domain.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Harmony.Api.Protos;
 
 namespace Harmony.Api.Services.gRPC
 {
@@ -19,7 +20,7 @@ namespace Harmony.Api.Services.gRPC
             _cardRepository = cardRepository;
         }
 
-        public override async Task<Protos.Card> GetCard(Protos.CardFilterRequest request,
+        public override async Task<Protos.CardResponse> GetCard(Protos.CardFilterRequest request,
             ServerCallContext context)
         {
             var includes = new CardIncludes()
@@ -71,13 +72,25 @@ namespace Harmony.Api.Services.gRPC
             return result;
         }
 
-        private Protos.Card MapToProto(Card card)
+        private Protos.CardResponse MapToProto(Domain.Entities.Card card)
         {
             if (card == null)
             {
-                return null;
+                return new CardResponse()
+                {
+                    Found = false
+                };
             }
 
+            return new CardResponse()
+            {
+                Found = true,
+                Card = MapToProtoCard(card)
+            };
+        }
+
+        private Protos.Card MapToProtoCard(Domain.Entities.Card card)
+        {
             var protoCard = new Protos.Card()
             {
                 CardId = card.Id.ToString(),
@@ -88,7 +101,7 @@ namespace Harmony.Api.Services.gRPC
 
             if (card.Children != null && card.Children.Any())
             {
-                protoCard.Children.AddRange(card.Children.Select(MapToProto));
+                protoCard.Children.AddRange(card.Children.Select(MapToProtoCard));
             }
 
             return protoCard;

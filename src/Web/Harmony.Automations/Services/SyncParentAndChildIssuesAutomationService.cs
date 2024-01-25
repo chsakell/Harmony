@@ -35,16 +35,18 @@ namespace Harmony.Automations.Services
             using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
             var client = new CardService.CardServiceClient(channel);
 
-            var card = await client.GetCardAsync(
+            var cardResponse = await client.GetCardAsync(
                               new CardFilterRequest { 
                                   CardId = notification.ParentCardId.ToString(),
                                   Children = true
                               });
 
-            if (card == null)
+            if (!cardResponse.Found)
             {
                 return;
             }
+
+            var card = cardResponse.Card;
 
             if (notification.MovedToListId.ToString() != card.BoardListId)
             {
