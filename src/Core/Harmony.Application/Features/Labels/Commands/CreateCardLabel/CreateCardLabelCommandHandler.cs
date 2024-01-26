@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Domain.Entities;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 

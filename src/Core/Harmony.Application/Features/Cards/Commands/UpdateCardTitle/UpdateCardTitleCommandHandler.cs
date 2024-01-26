@@ -5,14 +5,12 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Search;
 using AutoMapper;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
-using Harmony.Application.Events;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardTitle;
 

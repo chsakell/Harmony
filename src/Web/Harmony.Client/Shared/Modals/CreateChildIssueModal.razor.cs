@@ -1,8 +1,5 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
+﻿using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
-using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;

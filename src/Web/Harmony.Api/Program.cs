@@ -50,7 +50,6 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly(), typeof(Automatio
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddApplicationServices();
-builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddMongoDb(builder.Configuration);
 

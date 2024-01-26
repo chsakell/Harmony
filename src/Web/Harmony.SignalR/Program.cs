@@ -1,4 +1,3 @@
-using Harmony.Application.Configurations;
 using Harmony.Shared.Constants.Application;
 using Harmony.SignalR.Extensions;
 using Harmony.SignalR.Hubs;

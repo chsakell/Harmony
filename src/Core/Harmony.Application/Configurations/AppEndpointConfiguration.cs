@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Harmony.Application.Configurations
+﻿namespace Harmony.Application.Configurations
 {
     /// <summary>
     /// Application endpoints

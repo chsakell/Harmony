@@ -1,16 +1,9 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.DTO.Automation;
-using Harmony.Application.Features.Boards.Commands.AddUserBoard;
-using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
 {

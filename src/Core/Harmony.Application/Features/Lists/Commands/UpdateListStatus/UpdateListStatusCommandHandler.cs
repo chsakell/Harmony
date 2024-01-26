@@ -5,12 +5,10 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
-using Harmony.Application.Events;
 using static Harmony.Application.Notifications.BoardListArchivedMessage;
 
 namespace Harmony.Application.Features.Lists.Commands.ArchiveList

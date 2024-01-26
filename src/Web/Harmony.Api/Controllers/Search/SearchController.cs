@@ -1,5 +1,4 @@
-﻿using Harmony.Api.Controllers;
-using Harmony.Application.Features.Search.Commands.AdvancedSearch;
+﻿using Harmony.Application.Features.Search.Commands.AdvancedSearch;
 using Harmony.Application.Features.Search.Queries.GlobalSearch;
 using Harmony.Application.Features.Search.Queries.InitAdvancedSearch;
 using Microsoft.AspNetCore.Mvc;

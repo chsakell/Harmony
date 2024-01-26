@@ -4,7 +4,6 @@ using Harmony.Application.Specifications.Cards;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Extensions;
 using Harmony.Api.Protos;
-using Harmony.Domain.Entities;
 
 namespace Harmony.Api.Services.gRPC
 {

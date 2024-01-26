@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.DTO;
 using AutoMapper;
 using Harmony.Application.Contracts.Messaging;
@@ -14,9 +13,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
 

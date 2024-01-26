@@ -1,18 +1,11 @@
 ﻿using AutoMapper;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Contracts.Services;
-using Harmony.Application.DTO;
 using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Queries.GetAutomationTemplates;
-using Harmony.Application.Models;
-using Harmony.Application.Specifications.Boards;
-using Harmony.Domain.Entities;
-using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Cards.Queries.GetLabels
 {

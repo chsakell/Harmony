@@ -3,13 +3,10 @@ using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Client.Shared.Dialogs;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using System;
 using System.Text.Json;
 
 namespace Harmony.Client.Shared.Components.Automation

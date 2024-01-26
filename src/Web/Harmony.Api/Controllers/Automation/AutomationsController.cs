@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Azure;
 using Grpc.Net.Client;
-using Harmony.Api.Controllers;
 using Harmony.Api.Controllers.Management;
 using Harmony.Application.Configurations;
-using Harmony.Application.Constants;
 using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
@@ -19,15 +16,12 @@ namespace Harmony.Api.Controllers.Automation
 {
     public class AutomationsController : BaseApiController<CardsController>
     {
-        private readonly HttpClient? _httpClient;
         private readonly AppEndpointConfiguration _endpointConfiguration;
         private readonly IMapper _mapper;
 
-        public AutomationsController(IHttpClientFactory httpClientFactory,
-            IOptions<AppEndpointConfiguration> endpointConfiguration,
+        public AutomationsController(IOptions<AppEndpointConfiguration> endpointConfiguration,
             IMapper mapper)
         {
-            _httpClient = httpClientFactory.CreateClient(EndpointConstants.Automation);
             _endpointConfiguration = endpointConfiguration.Value;
             _mapper = mapper;
         }

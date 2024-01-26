@@ -1,22 +1,13 @@
-﻿using AutoMapper.Execution;
-using Harmony.Application.Configurations;
+﻿using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Services.Hubs;
-using Harmony.Application.DTO;
 using Harmony.Application.Notifications;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
-using Harmony.Shared.Wrapper;
-using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Channels;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.SignalR.Services.Hosted
 {

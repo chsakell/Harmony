@@ -1,6 +1,4 @@
-﻿using Harmony.Api.Controllers;
-using Harmony.Api.Extensions;
-using Harmony.Application.Features.Boards.Commands.AddUserBoard;
+﻿using Harmony.Application.Features.Boards.Commands.AddUserBoard;
 using Harmony.Application.Features.Boards.Commands.Create;
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;

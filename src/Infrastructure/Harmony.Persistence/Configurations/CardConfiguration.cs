@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
-using System.Reflection.Emit;
-using Harmony.Domain.Contracts;
 
 namespace Harmony.Persistence.Configurations
 {

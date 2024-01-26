@@ -1,8 +1,5 @@
 ﻿using Hangfire;
-using Harmony.Application.Contracts.Repositories;
 using Harmony.Notifications.Persistence;
-using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Contracts.Services.Management;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Application.Notifications.Email;

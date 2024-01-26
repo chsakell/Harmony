@@ -7,8 +7,6 @@ using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
-using Harmony.Api.Extensions;
-using Harmony.Api.Controllers;
 
 namespace Harmony.Api.Controllers.Management
 {

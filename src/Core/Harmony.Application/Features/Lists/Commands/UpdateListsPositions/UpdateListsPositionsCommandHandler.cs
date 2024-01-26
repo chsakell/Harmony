@@ -5,12 +5,10 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Features.Boards.Commands.Create;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
-using System.Collections.Generic;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListsPositions
 {

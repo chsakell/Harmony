@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
@@ -11,7 +9,6 @@ using Harmony.Application.Features.Automations.Queries.GetAutomationTemplates;
 using Harmony.Automations.Protos;
 using Harmony.Domain.Enums;
 using MediatR;
-using System.Diagnostics;
 using System.Text.Json;
 
 namespace Harmony.Automations.Services

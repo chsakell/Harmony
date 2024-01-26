@@ -1,5 +1,4 @@
-﻿using Harmony.Api.Controllers;
-using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
+﻿using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Microsoft.AspNetCore.Mvc;

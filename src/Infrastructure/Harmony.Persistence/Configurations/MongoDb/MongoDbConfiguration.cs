@@ -1,15 +1,8 @@
-﻿using Harmony.Application.DTO.Automation;
-using Harmony.Domain.Automation;
-using MongoDB.Bson;
+﻿using Harmony.Domain.Automation;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Harmony.Persistence.Configurations.MongoDb
 {

@@ -1,10 +1,6 @@
 using Grpc.Core;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.Responses;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
-using Harmony.Infrastructure.Repositories;
 
 namespace Harmony.Api.Services.gRPC
 {

@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.Contracts.Services;
-using Harmony.Application.DTO;
 using Harmony.Application.DTO.Automation;
-using Harmony.Domain.Automation;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Automations.Queries.GetAutomations
 {

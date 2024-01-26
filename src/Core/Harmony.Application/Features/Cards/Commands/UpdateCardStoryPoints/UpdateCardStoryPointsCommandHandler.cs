@@ -5,10 +5,8 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
-using Harmony.Application.DTO;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 

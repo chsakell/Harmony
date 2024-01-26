@@ -1,5 +1,4 @@
-﻿using Algolia.Search.Clients;
-using Harmony.Application.Configurations;
+﻿using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Automation;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
@@ -12,10 +11,6 @@ using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
 using Harmony.Messaging;
-using Harmony.Persistence.DbContext;
-using Harmony.Persistence.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Harmony.Automations.Extensions

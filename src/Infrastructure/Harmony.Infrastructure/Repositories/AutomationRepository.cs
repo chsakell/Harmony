@@ -4,20 +4,10 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.DTO.Automation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Bogus.DataSets.Name;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Infrastructure.Repositories
 {

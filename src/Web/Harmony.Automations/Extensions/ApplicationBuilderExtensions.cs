@@ -1,6 +1,4 @@
 ﻿using Harmony.Application.Contracts.Persistence;
-using Harmony.Persistence.DbContext;
-using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Automations.Extensions
 {

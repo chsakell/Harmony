@@ -1,5 +1,4 @@
-﻿using Harmony.Api.Controllers;
-using Harmony.Application.Features.Cards.Commands.UploadCardFile;
+﻿using Harmony.Application.Features.Cards.Commands.UploadCardFile;
 using Harmony.Application.Features.Users.Commands.UploadProfilePicture;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

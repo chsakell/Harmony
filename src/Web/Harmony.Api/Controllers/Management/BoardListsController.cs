@@ -1,5 +1,4 @@
-﻿using Harmony.Api.Controllers;
-using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
+﻿using Harmony.Application.Features.Lists.Commands.UpdateListTitle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Api.Controllers.Management

@@ -1,5 +1,4 @@
-﻿using Harmony.Api.Extensions;
-using Harmony.Application.Features.Cards.Commands.AddUserCard;
+﻿using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;

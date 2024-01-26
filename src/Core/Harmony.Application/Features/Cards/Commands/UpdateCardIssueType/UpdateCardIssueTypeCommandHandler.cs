@@ -3,7 +3,6 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Hubs;
 using AutoMapper;
 using Harmony.Application.DTO;
 using Harmony.Application.Contracts.Messaging;

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Harmony.Application.Contracts.Services;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Extensions;
 using Harmony.Shared.Wrapper;

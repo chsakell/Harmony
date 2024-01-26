@@ -1,5 +1,4 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.DTO.Automation;
+﻿using Harmony.Application.DTO.Automation;
 using Harmony.Shared.Wrapper;
 using MediatR;
 

@@ -1,6 +1,5 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
-using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
@@ -22,11 +21,9 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Helpers;
-using Harmony.Client.Infrastructure.Configuration;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;

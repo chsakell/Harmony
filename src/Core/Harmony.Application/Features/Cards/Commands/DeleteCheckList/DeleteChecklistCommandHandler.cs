@@ -4,8 +4,6 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using AutoMapper;
-using Harmony.Application.Contracts.Services.Management;
-using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Domain.Enums;
 using Harmony.Application.Notifications;
