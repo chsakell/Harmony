@@ -1,6 +1,8 @@
 ﻿using Grpc.Core;
 using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
+using Harmony.Application.Features.Automations.Commands.RemoveAutomation;
+using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Application.Features.Automations.Queries.GetAutomationTemplates;
 using Harmony.Automations.Protos;
 using Harmony.Domain.Enums;
@@ -45,6 +47,34 @@ namespace Harmony.Automations.Services
             {
                 Success = result.Succeeded,
                 AutomationId = result.Data,
+            };
+
+            response.Messages.AddRange(result.Messages);
+
+            return response;
+        }
+
+        public async override Task<ToggleAutomationResponse> ToggleAutomation(ToggleAutomationRequest request, ServerCallContext context)
+        {
+            var result = await _mediator.Send(new ToggleAutomationCommand(request.AutomationId, request.Enabled));
+
+            var response = new ToggleAutomationResponse()
+            {
+                Success = result.Succeeded,
+            };
+
+            response.Messages.AddRange(result.Messages);
+
+            return response;
+        }
+
+        public async override Task<RemoveAutomationResponse> RemoveAutomation(RemoveAutomationRequest request, ServerCallContext context)
+        {
+            var result = await _mediator.Send(new RemoveAutomationCommand(request.AutomationId));
+
+            var response = new RemoveAutomationResponse()
+            {
+                Success = result.Succeeded,
             };
 
             response.Messages.AddRange(result.Messages);

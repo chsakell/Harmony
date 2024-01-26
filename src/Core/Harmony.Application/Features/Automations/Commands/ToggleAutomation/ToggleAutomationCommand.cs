@@ -14,7 +14,5 @@ namespace Harmony.Application.Features.Automations.Commands.ToggleAutomation
 
         public string AutomationId { get; set; }
         public bool Enabled { get; set; }
-
-
     }
 }

@@ -10,25 +10,6 @@ namespace Harmony.Automations.Controllers
 {
     public class AutomationsController : BaseApiController<AutomationsController>
     {
-
-        [HttpGet("templates")]
-        public async Task<IActionResult> GetTemplates()
-        {
-            return Ok(await _mediator.Send(new GetAutomationTemplatesQuery()));
-        }
-
-        [HttpPut("{id}/toggle")]
-        public async Task<IActionResult> Update(string id, ToggleAutomationCommand request)
-        {
-            return Ok(await _mediator.Send(request));
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            return Ok(await _mediator.Send(new RemoveAutomationCommand(id)));
-        }
-
         [HttpGet("{boardId:guid}/types/{type:int}")]
         public async Task<IActionResult> GetAutomations(Guid boardId, AutomationType type)
         {

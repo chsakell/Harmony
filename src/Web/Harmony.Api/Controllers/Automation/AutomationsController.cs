@@ -13,9 +13,6 @@ using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace Harmony.Api.Controllers.Automation
 {
@@ -72,25 +69,36 @@ namespace Harmony.Api.Controllers.Automation
         [HttpPut("{id}/toggle")]
         public async Task<IActionResult> Update(string id, ToggleAutomationCommand command)
         {
-            var responseMessage = await _httpClient
-                .PutAsJsonAsync($"/api/Automations/{id}/toggle", command);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            var client = new AutomationService.AutomationServiceClient(channel);
 
-            var result = await responseMessage.Content
-                .ReadFromJsonAsync<Shared.Wrapper.Result<bool>>();
+            var toggleAutomationResult = await client.ToggleAutomationAsync(
+                              new ToggleAutomationRequest()
+                              {
+                                  AutomationId = command.AutomationId,
+                                  Enabled = command.Enabled
+                              });
 
-            return Ok(result);
+            return Ok(toggleAutomationResult.Success ?
+             Result<bool>.Success(true, toggleAutomationResult?.Messages?.FirstOrDefault())
+             : Result.Fail(toggleAutomationResult.Messages.ToList()));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var responseMessage = await _httpClient
-                .DeleteAsync($"/api/Automations/{id}");
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            var client = new AutomationService.AutomationServiceClient(channel);
 
-            var result = await responseMessage.Content
-                .ReadFromJsonAsync<Shared.Wrapper.Result<bool>>();
+            var removeAutomationResult = await client.RemoveAutomationAsync(
+                              new RemoveAutomationRequest()
+                              {
+                                  AutomationId = id
+                              });
 
-            return Ok(result);
+            return Ok(removeAutomationResult.Success ?
+             Result<bool>.Success(true, removeAutomationResult?.Messages?.FirstOrDefault())
+             : Result.Fail(removeAutomationResult.Messages.ToList()));
         }
 
         [HttpGet("{boardId:guid}/types/{type:int}")]

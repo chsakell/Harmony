@@ -29,7 +29,28 @@ message CreateAutomationResponse {
 	repeated string messages = 3;
 }
 
+message ToggleAutomationRequest {
+	string automationId = 1;
+    bool enabled = 2;
+}
+
+message ToggleAutomationResponse {
+	bool success = 1;
+	repeated string messages = 2;
+}
+
+message RemoveAutomationRequest {
+	string automationId = 1;
+}
+
+message RemoveAutomationResponse {
+	bool success = 1;
+	repeated string messages = 2;
+}
+
 service AutomationService {
   rpc GetAutomationTemplates (GetAutomationTemplatesRequest) returns (GetAutomationTemplatesResponse);
   rpc CreateAutomation (CreateAutomationRequest) returns (CreateAutomationResponse);
+  rpc ToggleAutomation (ToggleAutomationRequest) returns (ToggleAutomationResponse);
+  rpc RemoveAutomation (RemoveAutomationRequest) returns (RemoveAutomationResponse);
 }
