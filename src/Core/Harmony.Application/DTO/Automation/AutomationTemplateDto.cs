@@ -14,6 +14,5 @@ namespace Harmony.Application.DTO.Automation
         public string Summary { get; set; }
         public AutomationType Type { get; set; }
         public bool Enabled { get; set; }
-        public List<NotificationType> NotificationTypes { get; set; }
     }
 }

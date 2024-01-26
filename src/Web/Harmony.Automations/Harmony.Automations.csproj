@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.25.2" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />
     <PackageReference Include="Grpc.Core" Version="2.46.6" />
     <PackageReference Include="Grpc.Net.Client" Version="2.60.0" />
     <PackageReference Include="Grpc.Tools" Version="2.60.0">
@@ -26,6 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-      <Protobuf Include="../Harmony.Api/protos/*.proto"></Protobuf>
+      <Protobuf Include="../Harmony.Api/protos/*.proto" GrpcServices="Client"></Protobuf>
+      <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Protos\" />
   </ItemGroup>
 </Project>

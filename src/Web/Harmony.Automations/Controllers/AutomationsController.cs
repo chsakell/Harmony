@@ -17,12 +17,6 @@ namespace Harmony.Automations.Controllers
             return Ok(await _mediator.Send(new GetAutomationTemplatesQuery()));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateAutomationCommand command)
-        {
-            return Ok(await _mediator.Send(command));
-        }
-
         [HttpPut("{id}/toggle")]
         public async Task<IActionResult> Update(string id, ToggleAutomationCommand request)
         {

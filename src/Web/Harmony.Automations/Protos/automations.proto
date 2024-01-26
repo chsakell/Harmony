@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option csharp_namespace = "Harmony.Automations.Protos";
+
+message GetAutomationTemplatesRequest { }
+
+message AutomationTemplate {
+	string id = 1;
+    string name = 2;
+    string summary = 3;
+    int32 type = 4;
+    bool enabled = 5;
+}
+
+message GetAutomationTemplatesResponse {
+	bool success = 1;
+	repeated AutomationTemplate templates = 2;
+	repeated string messages = 3;
+}
+
+message CreateAutomationRequest {
+	string automation = 1;
+	int32 Type = 2;
+}
+
+message CreateAutomationResponse {
+	bool success = 1;
+	string automationId = 2;
+	repeated string messages = 3;
+}
+
+service AutomationService {
+  rpc GetAutomationTemplates (GetAutomationTemplatesRequest) returns (GetAutomationTemplatesResponse);
+  rpc CreateAutomation (CreateAutomationRequest) returns (CreateAutomationResponse);
+}

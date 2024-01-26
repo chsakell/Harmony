@@ -1,5 +1,6 @@
 using Harmony.Application.Configurations;
 using Harmony.Automations.Extensions;
+using Harmony.Automations.Services;
 using Harmony.Automations.Services.Hosted;
 using Harmony.Infrastructure.Extensions;
 using System.Reflection;
@@ -34,6 +35,9 @@ namespace Harmony.Automations
             builder.Services.AddHostedService<AutomationNotificationsConsumerHostedService>();
             builder.Services.AddMemoryCache();
 
+            // gRPC services
+            builder.Services.AddGrpc();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -55,6 +59,8 @@ namespace Harmony.Automations
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.MapGrpcService<AutomationService>();
 
             app.MapControllerRoute(
                 name: "default",

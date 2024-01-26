@@ -8,7 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="Algolia.Search" Version="6.16.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.25.2" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.60.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.60.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
         <PrivateAssets>all</PrivateAssets>
@@ -36,6 +40,7 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
+    <Protobuf Include="../Harmony.Automations/protos/*.proto" GrpcServices="Client"></Protobuf>
   </ItemGroup>
 
   <ItemGroup>
