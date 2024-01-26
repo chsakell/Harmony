@@ -13,6 +13,7 @@ using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace Harmony.Api.Controllers.Automation
 {
@@ -104,10 +105,29 @@ namespace Harmony.Api.Controllers.Automation
         [HttpGet("{boardId:guid}/types/{type:int}")]
         public async Task<IActionResult> GetAutomations(Guid boardId, AutomationType type)
         {
-            var result = await _httpClient.GetFromJsonAsync<
-                    Shared.Wrapper.Result<IEnumerable<SyncParentAndChildIssuesAutomationDto>>>($"/api/Automations/{boardId}/types/{(int)type}");
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            var client = new AutomationService.AutomationServiceClient(channel);
 
-            return Ok(result);
+            var getAutomationsResult = await client
+                .GetAutomationsAsync(new GetAutomationsRequest()
+                {
+                    AutomationType = (int)type,
+                    BoardId = boardId.ToString()
+                });
+
+
+            var list = getAutomationsResult.Automations.Select(auto =>
+            {
+                switch (type)
+                {
+                    case AutomationType.SyncParentAndChildIssues:
+                        return JsonSerializer.Deserialize<SyncParentAndChildIssuesAutomationDto>(auto);
+                    default:
+                        return null;
+                }
+            }).ToList();
+
+            return Ok(Result<List<SyncParentAndChildIssuesAutomationDto>>.Success(list));
         }
     }
 }

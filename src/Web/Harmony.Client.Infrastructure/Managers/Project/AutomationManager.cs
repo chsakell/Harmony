@@ -5,6 +5,7 @@ using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
@@ -30,6 +31,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             where T : IAutomationDto
         {
             var response = await _httpClient.GetAsync(Routes.AutomationEndpoints.Automations(boardId, type));
+
             return await response.ToResult<List<T>>();
         }
 

@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
+    <Protobuf Include="..//Harmony.Automations/protos/*.proto" GrpcServices="Client"></Protobuf>
   </ItemGroup>
 
   <ItemGroup>

@@ -10,8 +10,6 @@ namespace Harmony.Application.Extensions
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            //services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         }
     }
 }

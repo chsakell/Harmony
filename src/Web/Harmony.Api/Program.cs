@@ -5,6 +5,8 @@ using Harmony.Application.Enums;
 using Harmony.Api.Extensions;
 using Harmony.Api.Services.gRPC;
 using Harmony.Application.Configurations;
+using System.Reflection;
+using Harmony.Api.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +45,10 @@ builder.Services.AddJwtAuthentication(builder.Services.GetApplicationSettings(bu
 builder.Services.AddSignalR();
 builder.Services.AddClientNotificationService();
 builder.Services.AddApplicationLayer();
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly(), typeof(AutomationProfile).Assembly);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
 builder.Services.AddApplicationServices();
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddMessaging(builder.Configuration);

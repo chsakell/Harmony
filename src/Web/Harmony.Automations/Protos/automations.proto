@@ -2,9 +2,12 @@ syntax = "proto3";
 
 option csharp_namespace = "Harmony.Automations.Protos";
 
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
 message GetAutomationTemplatesRequest { }
 
-message AutomationTemplate {
+message AutomationTemplateProto {
 	string id = 1;
     string name = 2;
     string summary = 3;
@@ -14,7 +17,7 @@ message AutomationTemplate {
 
 message GetAutomationTemplatesResponse {
 	bool success = 1;
-	repeated AutomationTemplate templates = 2;
+	repeated AutomationTemplateProto templates = 2;
 	repeated string messages = 3;
 }
 
@@ -48,9 +51,21 @@ message RemoveAutomationResponse {
 	repeated string messages = 2;
 }
 
+message GetAutomationsRequest {
+	int32 automationType = 1;
+    string boardId = 2;
+}
+
+message GetAutomationsResponse {
+	bool success = 1;
+	int32 type = 2;
+    repeated string automations = 3;
+}
+
 service AutomationService {
   rpc GetAutomationTemplates (GetAutomationTemplatesRequest) returns (GetAutomationTemplatesResponse);
   rpc CreateAutomation (CreateAutomationRequest) returns (CreateAutomationResponse);
   rpc ToggleAutomation (ToggleAutomationRequest) returns (ToggleAutomationResponse);
   rpc RemoveAutomation (RemoveAutomationRequest) returns (RemoveAutomationResponse);
+  rpc GetAutomations (GetAutomationsRequest) returns (GetAutomationsResponse);
 }
