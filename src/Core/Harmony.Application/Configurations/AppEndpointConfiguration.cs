@@ -7,13 +7,12 @@
     {
         public string AutomationEndpoint { get; set; }
         public string HarmonyApiEndpoint { get; set; }
-        public string FrontendUrls { get; set; }
 
-        public string[] GetFrontEndUrls()
+        private string _frontendUrl;
+        public string FrontendUrl
         {
-            return FrontendUrls.Split(",");
+            get { return _frontendUrl; }
+            set { _frontendUrl = value.TrimEnd('/'); }
         }
-
-        public string FrontendUrl => GetFrontEndUrls().FirstOrDefault().TrimEnd('/');
     }
 }

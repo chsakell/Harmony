@@ -26,7 +26,7 @@ var endpointConfiguration =
 builder.Services.AddCors(
     options => options.AddPolicy(
         "wasm",
-        policy => policy.WithOrigins(endpointConfiguration.FrontendUrls.Split(","))
+        policy => policy.WithOrigins(endpointConfiguration.FrontendUrl)
             .AllowAnyMethod()
             .SetIsOriginAllowed(pol => true)
             .AllowAnyHeader()

@@ -13,6 +13,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
     {
         [Required]
         [MaxLength(300)]
+        [MinLength(5)]
         public string Title { get; set; }
 
         [Required]

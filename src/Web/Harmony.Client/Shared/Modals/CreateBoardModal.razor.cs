@@ -63,9 +63,12 @@ namespace Harmony.Client.Shared.Modals
 
         private void SetTitle(string title)
         {
-            _createBoardModel.Title = title;
+            _createBoardModel.Title = title.Trim();
 
-            _createBoardModel.Key = title.Substring(0, 4).ToUpper();
+            if(!string.IsNullOrEmpty(_createBoardModel.Title) && _createBoardModel.Title.Length > 3)
+            {
+                _createBoardModel.Key = title.Substring(0, 4).ToUpper();
+            }
         }
 
         Func<WorkspaceDto, string> converter = p => p?.Name;

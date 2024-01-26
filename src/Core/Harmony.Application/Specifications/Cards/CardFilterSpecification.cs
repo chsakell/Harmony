@@ -19,6 +19,7 @@ namespace Harmony.Application.Specifications.Cards
 
             if (includes.Board)
             {
+                Includes.Add(card => card.BoardList);
                 Includes.Add(card => card.IssueType.Board);
             }
 
