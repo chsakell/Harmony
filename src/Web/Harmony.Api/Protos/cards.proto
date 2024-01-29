@@ -38,6 +38,7 @@ message Card {
     google.protobuf.Int32Value dueDateReminderType = 9;
     repeated Card children = 10;
     repeated string members = 11;
+    google.protobuf.StringValue boardId = 12;
 }
 
 message CardResponse {

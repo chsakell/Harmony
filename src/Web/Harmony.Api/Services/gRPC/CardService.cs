@@ -99,7 +99,8 @@ namespace Harmony.Api.Services.gRPC
                 BoardListId = card.BoardListId?.ToString(),
                 BoardTitle = card.BoardList?.Board?.Title ?? card.IssueType?.Board?.Title,
                 DueDateReminderType = card.DueDateReminderType.HasValue ? (int)card.DueDateReminderType.Value : null,
-                IsCompleted = card?.BoardList?.CardStatus == Domain.Enums.BoardListCardStatus.DONE
+                IsCompleted = card?.BoardList?.CardStatus == Domain.Enums.BoardListCardStatus.DONE,
+                BoardId = card.IssueType?.BoardId.ToString()
             };
 
             protoCard.DueDate = GetDate(card.DueDate);

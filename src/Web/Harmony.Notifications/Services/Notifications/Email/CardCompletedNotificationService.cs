@@ -7,6 +7,7 @@ using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
 using Harmony.Api.Protos;
 using Grpc.Net.Client;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -84,9 +85,20 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var registeredUsersResponse = await userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
 
+            var slug = StringUtilities.SlugifyString(card.BoardTitle);
+
+            var boardLink = $"{_endpointConfiguration.FrontendUrl}/boards/{card.BoardId}/{slug}";
+
             foreach (var member in cardMembers.Where(m => registeredUsersResponse.Users.Contains(m.Id)))
             {
-                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} has been completed. ";
+                var content = EmailTemplates.EmailTemplates
+                    .BuildFromGenericTemplate(_endpointConfiguration.FrontendUrl,
+                    title: $"ISSUE COMPLETED",
+                    firstName: member.FirstName,
+                    emailNotification: $"<strong>{card.Title}</strong> has been completed.",
+                    customerAction: "You can continue working on the board",
+                    buttonText: "VIEW BOARD",
+                    buttonLink: boardLink);
 
                 await _emailNotificationService.SendEmailAsync(member.Email, subject, content);
             }
