@@ -8,6 +8,7 @@ using Grpc.Net.Client;
 using Harmony.Api.Protos;
 using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
+using Harmony.Application.Helpers;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -124,8 +125,14 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var subject = $"Assigned to {card.Title} in {board.Title}";
 
-            var content = $"Dear {user.FirstName} {user.LastName},<br/><br/>" +
-                $"You have been assigned to <a href='{notification.CardUrl}' target='_blank'>{card.Title}</a> on {board.Title}.";
+            var content = EmailTemplates.EmailTemplates
+                    .BuildFromGenericTemplate(_endpointConfiguration.FrontendUrl,
+                    title: $"ISSUE ASSIGNMENT",
+                    firstName: user.FirstName,
+                    emailNotification: $"You have been assigned to <strong>{card.Title}</strong> on {board.Title}.",
+                    customerAction: $"You can open the card by clicking the following link.",
+                buttonText: "VIEW CARD",
+                    buttonLink: notification.CardUrl);
 
             await _emailNotificationService.SendEmailAsync(user.Email, subject, content);
         }

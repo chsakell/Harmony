@@ -7,6 +7,7 @@ using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
 using Grpc.Net.Client;
 using Harmony.Api.Protos;
+using Harmony.Application.Helpers;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -104,8 +105,14 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var subject = $"Access {board.Title} in {board.Workspace.Name}";
 
-            var content = $"Dear {user.FirstName} {user.LastName},<br/><br/>" +
-                $"You can now access <a href='{boardUrl}' target='_blank'>{board.Title}</a> on {board.Workspace.Name} workspace.";
+            var content = EmailTemplates.EmailTemplates
+                    .BuildFromGenericTemplate(_endpointConfiguration.FrontendUrl,
+                    title: $"ACCESS TO BOARD GRANTED",
+                    firstName: user.FirstName,
+                    emailNotification: $"Accesss to <strong>{board.Title}</strong> granted.",
+                    customerAction: $"You have permission to access {board.Title}.",
+                buttonText: "VIEW BOARD",
+                    buttonLink: boardUrl);
 
             await _emailNotificationService.SendEmailAsync(user.Email, subject, content);
         }

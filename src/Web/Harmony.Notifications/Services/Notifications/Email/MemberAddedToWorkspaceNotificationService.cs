@@ -93,8 +93,14 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var subject = $"Access {workspace.Name}";
 
-            var content = $"Dear {user.FirstName} {user.LastName},<br/><br/>" +
-                $"You can now access <a href='{workspaceUrl}' target='_blank'>{workspace.Name}</a> workspace.";
+            var content = EmailTemplates.EmailTemplates
+                    .BuildFromGenericTemplate(_endpointConfiguration.FrontendUrl,
+                    title: $"WORKSPACE PERMISSION GRANTED",
+                    firstName: user.FirstName,
+                    emailNotification: $"You can now access <strong>{workspace.Name}</strong>.",
+                    customerAction: $"View the workspace by clicking the following link.",
+                buttonText: "VIEW WORKSPACE",
+                    buttonLink: workspaceUrl);
 
             await _emailNotificationService.SendEmailAsync(user.Email, subject, content);
         }

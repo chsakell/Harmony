@@ -8,6 +8,8 @@ using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
 using Grpc.Net.Client;
 using Harmony.Api.Protos;
+using Harmony.Domain.Entities;
+using Harmony.Shared.Utilities;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {
@@ -30,7 +32,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var cardId = notification.Id;
 
             await RemovePendingCardJobs(cardId, EmailNotificationType.CardDueDateUpdated);
-
+            
             using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
             var cardServiceClient = new CardService.CardServiceClient(channel);
             var cardResponse = await cardServiceClient.GetCardAsync(
@@ -144,10 +146,21 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var registeredUsersResponse = await userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
 
             var startDateIsNull = card.StartDate.Nanos == 0 && card.StartDate.Seconds == 0;
+
+            var slug = StringUtilities.SlugifyString(card.BoardTitle);
+            var cardLink = $"{_endpointConfiguration.FrontendUrl}/boards/{card.BoardId}/{slug}/{card.CardId}";
+
             foreach (var member in cardMembers.Where(m => registeredUsersResponse.Users.Contains(m.Id)))
             {
-                var content = $"Dear {member.FirstName} {member.LastName}, {card.Title} is due {GetDueMessage(reminderType)}. " +
-                    $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(startDateIsNull ? null : card.StartDate.ToDateTime(), card.DueDate.ToDateTime())}";
+                var content = EmailTemplates.EmailTemplates
+                    .BuildFromGenericTemplate(_endpointConfiguration.FrontendUrl,
+                    title: $"ISSUE IS DUE",
+                    firstName: member.FirstName,
+                    emailNotification: $"<strong>{card.Title}</strong> is due {GetDueMessage(reminderType)}.",
+                    customerAction: $"<br/> <strong>Card due date</strong>: {CardHelper.DisplayDates(startDateIsNull ? null : card.StartDate.ToDateTime(), card.DueDate.ToDateTime())}",
+                buttonText: "VIEW CARD",
+                    buttonLink: cardLink);
+
                 await _emailNotificationService.SendEmailAsync(member.Email, subject, content);
             }
         }

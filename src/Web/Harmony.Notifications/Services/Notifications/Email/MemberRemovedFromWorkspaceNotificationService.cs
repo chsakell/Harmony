@@ -93,8 +93,12 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var subject = $"Access to {workspace.Name} workspace revoked";
 
-            var content = $"Dear {user.FirstName} {user.LastName},<br/><br/>" +
-                $"Your access to <strong>{workspace.Name}</strong> workspace has been revoked.";
+            var content = EmailTemplates.EmailTemplates
+                    .BuildFromNoActionGenericTemplate(_endpointConfiguration.FrontendUrl,
+                    title: $"WORKSPACE PERMISSION REVOKED",
+                    firstName: user.FirstName,
+                    emailNotification: $"Your access to <strong>{workspace.Name}</strong> has been revoked.",
+                    customerAction: $"Contact the administrator if this happened for no reason.");
 
             await _emailNotificationService.SendEmailAsync(user.Email, subject, content);
         }

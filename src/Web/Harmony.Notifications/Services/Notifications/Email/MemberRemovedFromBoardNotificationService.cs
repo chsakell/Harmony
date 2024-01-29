@@ -91,10 +91,14 @@ namespace Harmony.Notifications.Services.Notifications.Email
                 return;
             }
 
-            var subject = $"Access {board.Title} in {board.Workspace.Name} is revoked";
+            var subject = $"Access {board.Title} in {board.Workspace.Name} revoked";
 
-            var content = $"Dear {user.FirstName} {user.LastName},<br/><br/>" +
-                $"Your access to <strong>{board.Title}</strong> on {board.Workspace.Name} workspace is now revoked.";
+            var content = EmailTemplates.EmailTemplates
+                    .BuildFromNoActionGenericTemplate(_endpointConfiguration.FrontendUrl,
+                    title: $"ACCESS TO BOARD GRANTED",
+                    firstName: user.FirstName,
+                    emailNotification: $"Accesss to <strong>{board.Title}</strong> has been revoked.",
+                    customerAction: $"You have no longer permission to access {board.Title}.");
 
             await _emailNotificationService.SendEmailAsync(user.Email, subject, content);
         }
