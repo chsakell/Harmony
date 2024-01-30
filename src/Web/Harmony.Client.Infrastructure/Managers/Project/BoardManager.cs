@@ -6,6 +6,7 @@ using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
@@ -129,6 +130,15 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                      request.SearchTerm, request.OrderBy));
 
             return await response.ToPaginatedResult<GetBacklogItemResponse>();
+        }
+
+        public async Task<PaginatedResult<GetArchivedItemResponse>> GetArchivedItems(GetArchivedItemsQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints
+                .ArchivedItems(request.BoardId.ToString(), request.PageNumber, request.PageSize,
+                     request.SearchTerm, request.OrderBy));
+
+            return await response.ToPaginatedResult<GetArchivedItemResponse>();
         }
 
         public async Task<PaginatedResult<GetSprintCardResponse>> GetSprintCards(GetSprintCardsQuery request)

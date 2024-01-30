@@ -455,6 +455,11 @@ namespace Harmony.Client.Pages.Management
             _navigationManager.NavigateTo($"/projects/{Id}/sprints");
         }
 
+        private void ViewArchivedItems()
+        {
+            _navigationManager.NavigateTo($"/projects/{Id}/archived-items");
+        }
+
         private async Task OpenShareBoardModal()
         {
             var parameters = new DialogParameters<BoardMembersModal>

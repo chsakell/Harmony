@@ -1,0 +1,103 @@
+﻿@page "/projects/{id}/archived-items"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<ArchivedItems> _localizer
+@using Harmony.Application.DTO
+@using Harmony.Application.Features.Boards.Queries.GetArchivedItems
+@using Harmony.Client.Infrastructure.Helper
+
+<MudPaper Style="height:calc(100vh - 100px);overflow:auto">
+    <MudTable Hover="true" Elevation="25"
+              CommitEditTooltip="Update item"
+              CanCancelEdit="true"
+              RowEditCommit="UpdateItem"
+              RowEditCancel="CancelEdit"
+              RowEditPreview="BackupItem"
+              EditButtonPosition="TableEditButtonPosition.End"
+              EditTrigger="TableEditTrigger.EditButton"
+              T="GetArchivedItemResponse"
+              MultiSelection="true"
+              @bind-SelectedItems="_selectedCards"
+              ServerData="@(new Func<TableState, Task<TableData<GetArchivedItemResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center ml-2">
+                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
+                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
+                         AnchorOrigin="Origin.BottomLeft">
+                    <MudButton StartIcon="@Icons.Material.Filled.AddTask" Class="mt-2"
+                               Variant="Variant.Outlined" FullWidth="true"
+                               Color="Color.Tertiary">RE-ACTIVATE</MudButton>
+                </MudMenu>
+            </div>
+            <MudSpacer />
+            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search archived list.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetArchivedItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<GetArchivedItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+            <MudTh>Type</MudTh>
+            <MudTh Style="width:160px">Story Points</MudTh>
+            <MudTh Style="text-align:right"></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="SerialKey">
+                <MudTooltip Text="Click for full editing" Delay="2500">
+                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@context.SerialKey</MudChip>
+                    </MudTooltip>
+                </MudTd>
+                <MudTd DataLabel="Title">
+                    <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+                </MudTd>
+                <MudTd DataLabel="Type">
+                    <MudStack Row="true">
+                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                 Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                        <MudText>@context.IssueType.Summary</MudText>
+                    </MudStack>
+                </MudTd>
+                <MudTd Style="width:160px" DataLabel="StoryPoints">
+                    <MudChip Variant="Variant.Text" Color="Color.Primary">
+                        @(context.StoryPoints?.ToString() ?? "-")
+                    </MudChip>
+                </MudTd>
+                <MudTd Style="text-align:right">
+                </MudTd>
+            </RowTemplate>
+            <RowEditingTemplate>
+                <MudTd DataLabel="SerialKey">@context.SerialKey</MudTd>
+                <MudTd DataLabel="Title">
+                    <MudTextField T="string" For="@(() => context.Title)" @bind-Value="context.Title" Label="Title"></MudTextField>
+                </MudTd>
+                <MudTd DataLabel="Type">
+                    <MudStack Row="true">
+                        @if (_issueTypes != null)
+                    {
+                        <MudSelect T="IssueTypeDto" @bind-Value="context.IssueType"
+                                   For="@(() => context.IssueType)"
+                                   Placeholder="Select issue type"
+                                   ToStringFunc="convertFunc"
+                                   Label="Type" AnchorOrigin="Origin.BottomCenter"
+                                   Variant="Variant.Outlined">
+                            @foreach (var type in _issueTypes)
+                            {
+                                <MudSelectItem Value="type">
+                                    <MudStack Row="true">
+                                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
+                                                 Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
+                                        <MudText>@type.Summary</MudText>
+                                        </MudStack>
+                                    </MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+                </MudStack>
+            </MudTd>
+            <MudTd DataLabel="StoryPoints">
+                <MudNumericField T="short?" Clearable="true" @bind-Value="@context.StoryPoints" Min="0" />
+            </MudTd>
+            <MudTd Style="text-align:right">
+            </MudTd>
+        </RowEditingTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</MudPaper>

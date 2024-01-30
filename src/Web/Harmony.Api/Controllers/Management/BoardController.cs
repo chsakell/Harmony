@@ -4,6 +4,7 @@ using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetUserBoards;
@@ -88,10 +89,18 @@ namespace Harmony.Api.Controllers.Management
 
         [HttpGet("{id:guid}/backlog")]
         public async Task<IActionResult> GetBacklog(Guid id, int pageNumber, int pageSize,
-            string searchTerm = null, string orderBy = null, bool membersOnly = false)
+            string searchTerm = null, string orderBy = null)
         {
             return Ok(await _mediator.Send(new
                 GetBacklogQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+        }
+
+        [HttpGet("{id:guid}/archived-items")]
+        public async Task<IActionResult> ArchivedItems(Guid id, int pageNumber, int pageSize,
+            string searchTerm = null, string orderBy = null)
+        {
+            return Ok(await _mediator.Send(new
+                GetArchivedItemsQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
         }
 
         [HttpGet("{id:guid}/issuetypes")]

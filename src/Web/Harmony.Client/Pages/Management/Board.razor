@@ -71,7 +71,10 @@ else
             }
             <MudSpacer />
             <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
-            <MudIconButton Icon="@Icons.Material.Outlined.Notifications" />
+            <MudMenu AnchorOrigin="Origin.BottomRight" Size="Size.Small" TransformOrigin="Origin.TopRight" Icon="@Icons.Material.Filled.MoreVert" IconColor="Color.Secondary">
+                <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
+                           OnClick="ViewArchivedItems">ARCHIVED ITEMS</MudButton>
+            </MudMenu>
         </MudToolBar>
 
     </MudPaper>

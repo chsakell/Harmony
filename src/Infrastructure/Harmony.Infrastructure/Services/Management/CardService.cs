@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
@@ -264,5 +265,42 @@ namespace Harmony.Infrastructure.Services.Management
 				_cardRepository.UpdateEntry(cardToReorder);
 			}
 		}
-	}
+
+        public async Task<List<GetArchivedItemResponse>> SearchArchivedItems(Guid boardId, string term, int pageNumber, int pageSize)
+        {
+            IQueryable<GetArchivedItemResponse> query = null;
+
+            query = from card in _cardRepository.Entities
+                    join issueType in _issueTypeRepository.Entities
+                        on card.IssueTypeId equals issueType.Id
+                    join board in _boardRepository.Entities
+                        on issueType.BoardId equals board.Id
+                    where (board.Id == boardId
+                        && card.Status == CardStatus.Archived &&
+                        (string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)))
+                    orderby card.Position
+                    select new GetArchivedItemResponse()
+                    {
+                        Id = card.Id,
+                        Title = card.Title,
+                        StartDate = card.StartDate,
+                        DueDate = card.DueDate,
+                        BoardKey = $"{board.Key}",
+                        SerialKey = $"{board.Key}-{card.SerialNumber}",
+                        Position = card.Position,
+                        IssueType = new Application.DTO.IssueTypeDto()
+                        {
+                            Id = issueType.Id,
+                            Summary = issueType.Summary
+                        },
+                        StoryPoints = card.StoryPoints
+                    };
+
+
+            var result = await query.Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize).ToListAsync();
+
+            return result;
+        }
+    }
 }

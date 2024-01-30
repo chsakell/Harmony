@@ -154,7 +154,7 @@ else
                                                 {
                                                     <MudElement HtmlTag="a" href="@ServerUrl(attachment.Url)" Class="spotlight">
                                                         <MudElement Class="mud-avatar mud-avatar-large mud-avatar-square mud-avatar-filled mud-avatar-filled-default mud-elevation-0"
-                                                                                    HtmlTag="img" src="@ServerUrl(attachment.Url)"></MudElement>
+                                                                    HtmlTag="img" src="@ServerUrl(attachment.Url)"></MudElement>
                                                     </MudElement>
                                                 }
                                                 else
@@ -204,11 +204,11 @@ else
                                                         <MudSelectItem Value="list.Id">@list.Title</MudSelectItem>
                                                     }
                                                 </MudSelect>
-                                                </MudTd>
-                                            </RowTemplate>
-                                        </MudTable>
-                                    </MudPaper>
-                                </MudItem>
+                                            </MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                </MudPaper>
+                            </MudItem>
                         }
                         <MudItem xs="12">
                             @foreach (var checkList in _card.CheckLists)
@@ -427,22 +427,31 @@ else
                                    Variant="Variant.Outlined" FullWidth="true"
                                    Color="Color.Primary">ADD CHILD ISSUE</MudButton>
                     }
-                    <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
-                               Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
-                               Color="Color.Error">ARCHIVE CARD</MudButton>
-                    <MudMenu AnchorOrigin="Origin.BottomLeft" FullWidth="true" Class="close-edit-card my-2" Label="Close Edit And" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary">
-                        @if (_card.Status == CardStatus.Active)
-                        {
-                            <MudMenuItem OnClick="@(() => ViewBoard(_card.BoardId, _card.BoardTitle))"
-                                         IconSize="Size.Small" IconColor="Color.Primary"
-                                         Icon="@Icons.Material.Filled.Dashboard">View board</MudMenuItem>
-                        }
-                        else if (_card.Status == CardStatus.Backlog)
-                        {
-                            <MudMenuItem OnClick="@(() => ViewBacklog(BoardId))" IconSize="Size.Small" IconColor="Color.Primary" Icon="@Icons.Material.Filled.FormatListBulleted">View backlog</MudMenuItem>
-                        }
-                    </MudMenu>
-                </MudItem>
+                    @if (_card.Status != CardStatus.Archived)
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
+                                   Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
+                        Color="Color.Error">ARCHIVE CARD</MudButton>
+                        <MudMenu AnchorOrigin="Origin.BottomLeft" FullWidth="true" Class="close-edit-card my-2" Label="Close Edit And" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary">
+                            @if (_card.Status == CardStatus.Active)
+                            {
+                                <MudMenuItem OnClick="@(() => ViewBoard(_card.BoardId, _card.BoardTitle))"
+                                             IconSize="Size.Small" IconColor="Color.Primary"
+                                             Icon="@Icons.Material.Filled.Dashboard">View board</MudMenuItem>
+                            }
+                            else if (_card.Status == CardStatus.Backlog)
+                            {
+                                <MudMenuItem OnClick="@(() => ViewBacklog(BoardId))" IconSize="Size.Small" IconColor="Color.Primary" Icon="@Icons.Material.Filled.FormatListBulleted">View backlog</MudMenuItem>
+                            }
+                        </MudMenu>
+                    }
+                    else
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.AddTask" Class="mt-2"
+                                   Variant="Variant.Outlined" FullWidth="true"
+                                   Color="Color.Tertiary">RE-ACTIVATE</MudButton>
+                    }
+                    </MudItem>
             </MudGrid>
         </DialogContent>
     </MudDialog>
