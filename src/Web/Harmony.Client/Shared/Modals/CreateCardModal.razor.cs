@@ -46,7 +46,7 @@ namespace Harmony.Client.Shared.Modals
             _processing = true;
 
             CreateCardCommandModel.SprintId = _selectedSprint?.Id;
-
+            
             var result = await _cardManager.CreateCardAsync(CreateCardCommandModel);
 
             MudDialog.Close(result.Data);

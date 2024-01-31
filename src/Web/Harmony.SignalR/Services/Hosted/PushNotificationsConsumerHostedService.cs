@@ -102,6 +102,18 @@ namespace Harmony.SignalR.Services.Hosted
 
                         switch (notificationType)
                         {
+                            case NotificationType.CardCreated:
+                                {
+                                    var notification = JsonSerializer
+                                                        .Deserialize<CardCreatedMessage>(ea.Body.Span);
+                                    if (notification != null &&
+                                        notification.Card.Status == CardStatus.Active)
+                                    {
+                                        await hubClientNotifierService
+                                                .AddCardToBoard(notification);
+                                    }
+                                }
+                                break;
                             case NotificationType.CardMoved:
                                 {
                                     var notification = JsonSerializer

@@ -119,6 +119,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
             _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
             _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
+            _hubSubscriptionManager.OnCardCreated += OnCardCreated;
 
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
         }
@@ -144,6 +145,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
             _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
             _hubSubscriptionManager.OnCheckListRemoved -= OnCheckListRemoved;
+            _hubSubscriptionManager.OnCardCreated -= OnCardCreated;
 
             if (stopListening)
             {
@@ -155,6 +157,17 @@ namespace Harmony.Client.Pages.Management
         {
             KanbanStore.ReduceCardProgress(e.CardId, e.TotalItems, e.TotalItemsCompleted);
             _dropContainer.Refresh();
+        }
+
+        private void OnCardCreated(object? sender, CardCreatedEvent e)
+        {
+            var boardList = KanbanStore.KanbanLists.FirstOrDefault(l => l.Id == e.Message.Card.BoardListId);
+
+            if (boardList != null)
+            {
+                KanbanStore.AddCardToList(e.Message.Card, boardList);
+                _dropContainer.Refresh();
+            }
         }
 
         private void OnCardMemberAdded(object? sender, CardMemberAddedEvent e)

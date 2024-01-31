@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Notifications;
 using static Harmony.Application.Notifications.BoardListArchivedMessage;
 
 namespace Harmony.Application.Contracts.Services.Hubs
@@ -27,6 +28,7 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task RemoveCheckList(Guid boardId, Guid checkListId, Guid cardId, int totalItems, int totalItemsCompleted);
         Task UpdateCardPosition(Guid boardId, Guid cardId, Guid previousBoardListId, Guid nextBoardListId,
             short previousPosition, short newPosition, Guid updateId);
+        Task AddCardToBoard(CardCreatedMessage messsage);
         Task UpdateCardIssueType(Guid boardId, Guid cardId, IssueTypeDto issueType);
     }
 }

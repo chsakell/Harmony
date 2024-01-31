@@ -11,6 +11,8 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateCard
 {
@@ -84,6 +86,12 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                     }, board.IndexName);
 
                 var result = _mapper.Map<CardDto>(card);
+
+                var cardCreatedNotification = new CardCreatedMessage(board.Id, result);
+
+                _notificationsPublisher.PublishMessage(cardCreatedNotification,
+                    NotificationType.CardCreated, routingKey: BrokerConstants.RoutingKeys.SignalR);
+
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Card Created"]);
             }
 

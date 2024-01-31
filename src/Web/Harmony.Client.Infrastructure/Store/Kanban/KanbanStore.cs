@@ -39,7 +39,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         {
             var boardList = _board.Lists.Find(l => l.Id == list.Id);
 
-            if (boardList == null)
+            if (boardList == null || boardList.Cards.Any(c => c.Id == card.Id))
             {
                 return;
             }

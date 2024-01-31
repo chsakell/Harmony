@@ -146,6 +146,13 @@ namespace Harmony.SignalR.Services
                     newBoardListId, previousPosition, newPosition, updateId));
         }
 
+        public async Task AddCardToBoard(CardCreatedMessage message)
+        {
+            await _hubContext.Clients.Group(message.BoardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardCreated,
+                    new CardCreatedEvent(message));
+        }
+
         public async Task UpdateCardIssueType(Guid boardId, Guid cardId, IssueTypeDto issueType)
         {
             await _hubContext.Clients.Group(boardId.ToString())

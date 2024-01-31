@@ -8,6 +8,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
+using Harmony.Application.Notifications;
 using Harmony.Application.Responses;
 using Harmony.Domain.Entities;
 
@@ -51,6 +52,7 @@ namespace Harmony.Application.Mappings.Management
                     opt.MapFrom(c => c.Children != null ? c.Children.Count : 0));
 
             CreateMap<Card, GetBacklogItemResponse>();
+            CreateMap<CardDto, CardCreatedMessage>();
 
             CreateMap<CheckList, CheckListDto>();
             CreateMap<CheckListItem, CheckListItemDto>();
