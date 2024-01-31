@@ -153,6 +153,12 @@ namespace Harmony.SignalR.Services
                     new CardCreatedEvent(message));
         }
 
+        public async Task ChangeCardStatus(CardStatusChangedMessage message)
+        {
+            await _hubContext.Clients.Group(message.BoardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardStatusChanged, message);
+        }
+
         public async Task UpdateCardIssueType(Guid boardId, Guid cardId, IssueTypeDto issueType)
         {
             await _hubContext.Clients.Group(boardId.ToString())

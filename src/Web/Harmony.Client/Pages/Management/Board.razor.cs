@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using MudBlazor;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Client.Pages.Management
 {
@@ -120,6 +121,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
             _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
             _hubSubscriptionManager.OnCardCreated += OnCardCreated;
+            _hubSubscriptionManager.OnCardStatusChanged += OnCardStatusChanged;
 
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
         }
@@ -146,6 +148,7 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
             _hubSubscriptionManager.OnCheckListRemoved -= OnCheckListRemoved;
             _hubSubscriptionManager.OnCardCreated -= OnCardCreated;
+            _hubSubscriptionManager.OnCardStatusChanged -= OnCardStatusChanged;
 
             if (stopListening)
             {
@@ -157,6 +160,15 @@ namespace Harmony.Client.Pages.Management
         {
             KanbanStore.ReduceCardProgress(e.CardId, e.TotalItems, e.TotalItemsCompleted);
             _dropContainer.Refresh();
+        }
+
+        private void OnCardStatusChanged(object? sender, CardStatusChangedMessage e)
+        {
+            if (e.Status == Domain.Enums.CardStatus.Archived)
+            {
+                KanbanStore.ArchiveCard(e.CardId);
+                _dropContainer.Refresh();
+            }
         }
 
         private void OnCardCreated(object? sender, CardCreatedEvent e)

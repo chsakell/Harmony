@@ -29,6 +29,7 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task UpdateCardPosition(Guid boardId, Guid cardId, Guid previousBoardListId, Guid nextBoardListId,
             short previousPosition, short newPosition, Guid updateId);
         Task AddCardToBoard(CardCreatedMessage messsage);
+        Task ChangeCardStatus(CardStatusChangedMessage messsage);
         Task UpdateCardIssueType(Guid boardId, Guid cardId, IssueTypeDto issueType);
     }
 }

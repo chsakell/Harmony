@@ -7,34 +7,33 @@ using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 
 public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCommand, Result<bool>>
 {
-	private readonly ICardService _cardService;
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IBoardService _boardService;
     private readonly IStringLocalizer<UpdateCardStatusCommandHandler> _localizer;
-	private readonly IMapper _mapper;
 
-	public UpdateCardStatusCommandHandler(ICardService cardService,
+	public UpdateCardStatusCommandHandler(
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
 		INotificationsPublisher notificationsPublisher,
 		IBoardService boardService,
-		IStringLocalizer<UpdateCardStatusCommandHandler> localizer,
-		IMapper mapper)
+		IStringLocalizer<UpdateCardStatusCommandHandler> localizer)
 	{
-		_cardService = cardService;
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _notificationsPublisher = notificationsPublisher;
         _boardService = boardService;
         _localizer = localizer;
-		_mapper = mapper;
 	}
 	public async Task<Result<bool>> Handle(UpdateCardStatusCommand request, CancellationToken cancellationToken)
 	{
@@ -62,6 +61,11 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
                         ObjectID = card.Id.ToString(),
                         Status = card.Status.ToString()
                     }, board.IndexName);
+
+            var message = new CardStatusChangedMessage(request.BoardId, request.CardId, card.Status);
+
+            _notificationsPublisher.PublishMessage(message,
+                NotificationType.CardStatusChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Status updated"]);
 		}

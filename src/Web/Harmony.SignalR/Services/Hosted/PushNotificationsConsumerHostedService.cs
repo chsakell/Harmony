@@ -114,6 +114,15 @@ namespace Harmony.SignalR.Services.Hosted
                                     }
                                 }
                                 break;
+                            case NotificationType.CardStatusChanged:
+                                {
+                                    var notification = JsonSerializer
+                                                        .Deserialize<CardStatusChangedMessage>(ea.Body.Span);
+
+                                    await hubClientNotifierService
+                                            .ChangeCardStatus(notification);
+                                }
+                                break;
                             case NotificationType.CardMoved:
                                 {
                                     var notification = JsonSerializer

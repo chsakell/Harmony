@@ -57,6 +57,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public event EventHandler<CardMemberRemovedEvent> OnCardMemberRemoved;
         public event EventHandler<CheckListRemovedEvent> OnCheckListRemoved;
         public event EventHandler<CardCreatedEvent> OnCardCreated;
+        public event EventHandler<CardStatusChangedMessage> OnCardStatusChanged;
 
         #endregion
 
@@ -194,6 +195,11 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             _hubConnection.On<CardCreatedEvent>(ApplicationConstants.SignalR.OnCardCreated, (@event) =>
             {
                 OnCardCreated?.Invoke(this, @event);
+            });
+
+            _hubConnection.On<CardStatusChangedMessage>(ApplicationConstants.SignalR.OnCardStatusChanged, (@event) =>
+            {
+                OnCardStatusChanged?.Invoke(this, @event);
             });
         }
 

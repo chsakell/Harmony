@@ -22,6 +22,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
+using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Enums;
@@ -633,6 +634,11 @@ namespace Harmony.Client.Shared.Modals
         private Task<IResult<List<CommentDto>>> LoadCommentsTask()
         {
             return _commentManager.GetCardComments(CardId);
+        }
+
+        private void Reactivate()
+        {
+            _navigationManager.NavigateTo($"/projects/{BoardId}/archived-items");
         }
 
         private async Task AddComment(string comment)

@@ -18,6 +18,7 @@
         CardLabelRemoved,
         CardLabelToggled,
         CardStoryPointsChanged,
+        CardStatusChanged,
         CardAttachmentAdded,
         CardAttachmentRemoved,
         CardMemberRemoved,
