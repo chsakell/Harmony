@@ -1,0 +1,71 @@
+﻿@using Harmony.Application.DTO
+@using Harmony.Application.Features.Lists.Queries.GetBoardLists
+@using Harmony.Client.Infrastructure.Helper
+@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<ReactivateCardsModal> _localizer
+
+<style>
+    .mud-toolbar {
+        margin-bottom: 15px;
+    }
+</style>
+
+<MudDialog>
+    <TitleContent>
+        @{
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Class="mr-3 mb-n1" />
+                @_localizer["Reactivate cards"]
+            </MudText>
+        }
+    </TitleContent>
+    <DialogContent>
+        <MudStack>
+            <MudExpansionPanels Class="mb-4">
+                <MudExpansionPanel Text="Cards to reactivate" MaxHeight="450">
+                    <MudTable Items="@Items.AsEnumerable()" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+                        <HeaderContent>
+                            <MudTh>Title</MudTh>
+                            <MudTh>Type</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Title">@context.Title</MudTd>
+                                <MudTd DataLabel="Type">
+                                    <MudStack Row="true">
+                                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                                 Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                                        <MudText>@context.IssueType.Summary</MudText>
+                                    </MudStack>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+                <MudSelect @bind-Value="_selectedBoardList"
+                           ToStringFunc="@converter"
+                           HelperText="Items will be moved at the end of this list in the board"
+                           T="GetBoardListResponse" Label="Select a list" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var list in _boardLists)
+                {
+                    <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                }
+            </MudSelect>
+        </MudStack>
+        
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
+            <MudButton OnClick="Reactivate"
+                       ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary">
+                @if (_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">@_localizer["Processing"]</MudText>
+            }
+            else
+            {
+                <MudText>@_localizer["Confirm"]</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>

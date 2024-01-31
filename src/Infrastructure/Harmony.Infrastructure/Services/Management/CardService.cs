@@ -83,6 +83,35 @@ namespace Harmony.Infrastructure.Services.Management
 			return await Result<List<Card>>.FailAsync("Failed to move cards");
 		}
 
+        public async Task<IResult<List<Card>>> ReactivateCards(List<Guid> cardIds, Guid boardListId)
+        {
+            var cards = await _cardRepository
+                .Entities.Where(card => cardIds.Contains(card.Id))
+                .ToListAsync();
+
+            if (cards.Any())
+            {
+                // Get the last index in the board list id
+                var totalCards = await _cardRepository.CountActiveCards(boardListId);
+
+                foreach (var card in cards.OrderBy(c => c.Position))
+                {
+                    card.BoardListId = boardListId;
+                    card.Position = (short)totalCards++;
+                    card.Status = CardStatus.Active;
+                }
+
+                var result = await _cardRepository.UpdateRange(cards);
+
+                if (result > 0)
+                {
+                    return await Result<List<Card>>.SuccessAsync(cards);
+                }
+            }
+
+            return await Result<List<Card>>.FailAsync("Failed to move cards");
+        }
+
         public async Task<IResult<List<Card>>> MoveCardsToBacklog(Guid boardId, List<Guid> cardsToMove)
         {
             var cards = await _cardRepository
@@ -293,7 +322,8 @@ namespace Harmony.Infrastructure.Services.Management
                             Id = issueType.Id,
                             Summary = issueType.Summary
                         },
-                        StoryPoints = card.StoryPoints
+                        StoryPoints = card.StoryPoints,
+                        BoardType = board.Type
                     };
 
 

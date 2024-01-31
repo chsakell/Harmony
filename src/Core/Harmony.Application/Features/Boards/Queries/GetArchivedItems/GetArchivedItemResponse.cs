@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Boards.Queries.GetArchivedItems
 {
@@ -13,5 +14,6 @@ namespace Harmony.Application.Features.Boards.Queries.GetArchivedItems
         public IssueTypeDto IssueType { get; set; }
         public short Position { get; set; }
         public short? StoryPoints { get; set; }
+        public BoardType BoardType { get; set; }
     }
 }

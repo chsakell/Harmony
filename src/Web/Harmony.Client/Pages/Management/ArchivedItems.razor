@@ -22,9 +22,8 @@
                 <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
                          EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
                          AnchorOrigin="Origin.BottomLeft">
-                    <MudButton StartIcon="@Icons.Material.Filled.AddTask" Class="mt-2"
-                               Variant="Variant.Outlined" FullWidth="true"
-                               Color="Color.Tertiary">RE-ACTIVATE</MudButton>
+                    <MudMenuItem Icon="@Icons.Material.Filled.AddTask" 
+                    OnClick="Reactivate" IconColor="Color.Tertiary">RE-ACTIVATE</MudMenuItem>
                 </MudMenu>
             </div>
             <MudSpacer />

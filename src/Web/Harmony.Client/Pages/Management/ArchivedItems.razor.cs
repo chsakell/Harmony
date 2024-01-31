@@ -49,26 +49,58 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async Task MoveToSprint()
+        private async Task Reactivate()
         {
-            //var parameters = new DialogParameters<MoveToSprintModal>
-            //{
-            //    {
-            //        modal => modal.BoardId,Guid.Parse(Id)
-            //    },
-            //    {
-            //        modal => modal.Items, _selectedCards
-            //    }
-            //};
+            if(!_selectedCards.Any()) 
+            { 
+                return; 
+            }
 
-            //var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
-            //var dialog = _dialogService.Show<MoveToSprintModal>(_localizer["Move to sprint"], parameters, options);
-            //var result = await dialog.Result;
+            var boardType = _selectedCards.FirstOrDefault().BoardType;
+            switch (boardType)
+            {
+                case Domain.Enums.BoardType.Kanban:
+                    var parameters = new DialogParameters<ReactivateCardsModal>
+                    {
+                        {
+                            modal => modal.BoardId,Guid.Parse(Id)
+                        },
+                        {
+                            modal => modal.Items, _selectedCards
+                        }
+                    };
 
-            //if (!result.Canceled)
-            //{
-            //    await _table.ReloadServerData();
-            //}
+                    var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+                    var dialog = _dialogService.Show<ReactivateCardsModal>(_localizer["Reactivate cards"], parameters, options);
+                    var result = await dialog.Result;
+
+                    if (!result.Canceled)
+                    {
+                        await _table.ReloadServerData();
+                    }
+                    break;
+                        case Domain.Enums.BoardType.Scrum:
+                    //var parameters = new DialogParameters<MoveToSprintModal>
+                    //{
+                    //    {
+                    //        modal => modal.BoardId,Guid.Parse(Id)
+                    //    },
+                    //    {
+                    //        modal => modal.Items, _selectedCards.Select(c )
+                    //    }
+                    //};
+
+                    //var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+                    //var dialog = _dialogService.Show<MoveToSprintModal>(_localizer["Move to sprint"], parameters, options);
+                    //var result = await dialog.Result;
+
+                    //if (!result.Canceled)
+                    //{
+                    //    await _table.ReloadServerData();
+                    //}
+                    break;
+            }
+            
         }
 
         private async Task<TableData<GetArchivedItemResponse>> ReloadData(TableState state)

@@ -14,6 +14,7 @@ using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
+using Harmony.Application.Features.Cards.Commands.ReactivateCards;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
@@ -194,6 +195,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PutAsJsonAsync(Routes.BoardEndpoints
                 .MoveCardsToSprint(request.BoardId.ToString()), request);
+
+            return await response.ToResult<List<CardDto>>();
+        }
+
+        public async Task<IResult<List<CardDto>>> ReactivateCards(ReactivateCardsCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.BoardEndpoints
+                .ReactivateCards(request.BoardId.ToString()), request);
 
             return await response.ToResult<List<CardDto>>();
         }

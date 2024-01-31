@@ -11,6 +11,7 @@ using Harmony.Application.Features.Boards.Queries.GetUserBoards;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
+using Harmony.Application.Features.Cards.Commands.ReactivateCards;
 using Harmony.Application.Features.Lists.Commands.UpdateListsPositions;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
@@ -165,6 +166,12 @@ namespace Harmony.Api.Controllers.Management
 
         [HttpPut("{id:guid}/movecardstosprint")]
         public async Task<IActionResult> MoveCardsToSprint(Guid id, MoveToSprintCommand request)
+        {
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPut("{id:guid}/reactivatecards")]
+        public async Task<IActionResult> ReactivateCards(Guid id, ReactivateCardsCommand request)
         {
             return Ok(await _mediator.Send(request));
         }
