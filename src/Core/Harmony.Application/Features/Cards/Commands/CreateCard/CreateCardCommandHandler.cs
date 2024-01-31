@@ -51,7 +51,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 return await Result<CardDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var totalCards = await _cardRepository.CountActiveCards(request.ListId);
+            var maxActivePosition = await _cardRepository.GetMaxActivePosition(request.ListId);
             var nextSerialNumber = await _cardRepository.GetNextSerialNumber(request.BoardId);
 
             var card = new Card()
@@ -59,7 +59,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 Title = request.Title,
                 UserId = userId,
                 BoardListId = request.ListId,
-                Position = (short)totalCards,
+                Position = ++maxActivePosition,
                 SerialNumber = nextSerialNumber,
                 IssueTypeId = request.IssueType.Id,
                 SprintId = request.SprintId,
