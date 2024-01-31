@@ -17,6 +17,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<List<Card>> GetPendingSprintCards(Guid sprintId);
         Task<int> CountCards(Guid listId);
         Task<int> CountActiveCards(Guid listId);
+        Task<short> GetMaxActivePosition(Guid listId);
         Task<int> CreateAsync(Card card);
 		Task<int> Update(Card card);
         Task<int> UpdateRange(List<Card> cards);

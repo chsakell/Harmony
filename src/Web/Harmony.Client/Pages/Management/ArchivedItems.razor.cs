@@ -80,24 +80,24 @@ namespace Harmony.Client.Pages.Management
                     }
                     break;
                         case Domain.Enums.BoardType.Scrum:
-                    //var parameters = new DialogParameters<MoveToSprintModal>
-                    //{
-                    //    {
-                    //        modal => modal.BoardId,Guid.Parse(Id)
-                    //    },
-                    //    {
-                    //        modal => modal.Items, _selectedCards.Select(c )
-                    //    }
-                    //};
+                    var moveSprintParams = new DialogParameters<ReactivateScrumCardsModal>
+                    {
+                        {
+                            modal => modal.BoardId,Guid.Parse(Id)
+                        },
+                        {
+                            modal => modal.Items, _selectedCards
+                        }
+                    };
 
-                    //var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
-                    //var dialog = _dialogService.Show<MoveToSprintModal>(_localizer["Move to sprint"], parameters, options);
-                    //var result = await dialog.Result;
+                    var moveSprintOptions = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+                    var moveSprintOptionsDialog = _dialogService.Show<ReactivateScrumCardsModal>(_localizer["Reactivate cards"], moveSprintParams, moveSprintOptions);
+                    var moveSprintResult = await moveSprintOptionsDialog.Result;
 
-                    //if (!result.Canceled)
-                    //{
-                    //    await _table.ReloadServerData();
-                    //}
+                    if (!moveSprintResult.Canceled)
+                    {
+                        await _table.ReloadServerData();
+                    }
                     break;
             }
             

@@ -62,14 +62,14 @@ namespace Harmony.Infrastructure.Services.Management
 			if(cards.Any())
 			{
                 // Get the last index in the board list id
-                var totalCards = await _cardRepository.CountCards(boardListId);
+                var currentMaxPosition = await _cardRepository.GetMaxActivePosition(boardListId);
 
 				foreach(var card in cards.OrderBy(c => c.Position))
 				{
 					card.BoardListId = boardListId;
-					card.Position = (short)totalCards++;
+					card.Position = ++currentMaxPosition;
 					card.SprintId = sprintId;
-					card.Status = Domain.Enums.CardStatus.Active;
+					card.Status = CardStatus.Active;
 				}
 
 				var result = await _cardRepository.UpdateRange(cards);
