@@ -237,6 +237,20 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
+        public async Task ReorderCardsAfterArchive(Guid listId, short archivedCardPositionn)
+        {
+            List<Card> cardsToReOrder = await _cardRepository.Entities
+                    .Where(c => c.Position > archivedCardPositionn
+                    && c.Status == CardStatus.Active && c.BoardListId == listId).ToListAsync();
+
+
+            foreach (var cardToReorder in cardsToReOrder)
+            {
+                cardToReorder.Position = (short)(cardToReorder.Position - 1);
+                _cardRepository.UpdateEntry(cardToReorder);
+            }
+        }
+
         private async Task ReorderCardsInBacklog(Guid cardId, short previousPosition, short newPosition)
         {
             var offSet = newPosition < previousPosition ? 1 : -1;

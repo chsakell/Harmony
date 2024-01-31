@@ -18,6 +18,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 {
 	private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
+    private readonly ICardService _cardService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IBoardService _boardService;
     private readonly IStringLocalizer<UpdateCardStatusCommandHandler> _localizer;
@@ -25,12 +26,14 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 	public UpdateCardStatusCommandHandler(
 		ICardRepository cardRepository,
 		ICurrentUserService currentUserService,
+		ICardService cardService,
 		INotificationsPublisher notificationsPublisher,
 		IBoardService boardService,
 		IStringLocalizer<UpdateCardStatusCommandHandler> localizer)
 	{
 		_cardRepository = cardRepository;
 		_currentUserService = currentUserService;
+        _cardService = cardService;
         _notificationsPublisher = notificationsPublisher;
         _boardService = boardService;
         _localizer = localizer;
@@ -48,6 +51,10 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 
 		card.Status = request.Status;
 
+		if (card.BoardListId.HasValue)
+		{
+			await _cardService.ReorderCardsAfterArchive(card.BoardListId.Value, card.Position);
+		}
         // commit all the changes
 		var updateResult = await _cardRepository.Update(card);
 

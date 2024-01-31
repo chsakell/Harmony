@@ -141,10 +141,18 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 
             if (card != null)
             {
+                var archivedCardPosistion = card.Position;
+
                 var list = _board.Lists.FirstOrDefault(l => l.Id == card.BoardListId);
                 if (list != null)
                 {
                     list.Cards.Remove(card);
+                }
+
+                var listCardsToReposition = list.Cards.Where(c => c.Position > archivedCardPosistion);
+                foreach(var listCard in listCardsToReposition)
+                {
+                    listCard.Position -= 1;
                 }
             }
         }

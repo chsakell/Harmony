@@ -416,6 +416,31 @@ namespace Harmony.Client.Pages.Management
             });
         }
 
+        private short ValidateNewPosition(short newPosition, Guid listId)
+        {
+            // check is there's already a card with that position
+            var currentCardInNewPosition = KanbanStore.KanbanCards
+                .FirstOrDefault(c => c.Position == newPosition && c.BoardListId == listId);
+
+            // all good here, you may proceed
+            if (currentCardInNewPosition == null)
+            {
+                return newPosition;
+            }
+
+            // something is broken, maybe due to archive
+            // let's try to fix that
+
+            var cardPositionsInList = KanbanStore.KanbanCards
+                .Where(c => c.BoardListId == listId)
+                .Select(c => (int)c.Position).ToList();
+
+            var previousPositionAvailable = !cardPositionsInList.Contains(newPosition - 1);
+            
+
+            return newPosition;
+        }
+
         private async Task OpenCreateBoardListModal()
         {
             var parameters = new DialogParameters<CreateBoardListModal>
