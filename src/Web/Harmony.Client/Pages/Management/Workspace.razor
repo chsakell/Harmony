@@ -76,7 +76,7 @@ else
                                 <MudTimelineItem Size="Size.Medium" Color="@(list.CardStatus == Domain.Enums.BoardListCardStatus.DONE ? Color.Tertiary : Color.Info)" Elevation="25">
                                     <MudCard Outlined="false" Elevation="25">
                                         <MudCardContent>
-                                            <MudText Typo="Typo.h6">@list.Title</MudText>
+                                            <MudText Color="Color.Secondary" Typo="Typo.h6">@list.Title</MudText>
                                                 @if (list.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
                                             {
                                                 <MudText Typo="Typo.body2">There are <strong>@list.Cards.Count</strong> completed issues.</MudText>
