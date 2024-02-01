@@ -81,6 +81,16 @@ namespace Harmony.Infrastructure.Services.Management
             return result;
         }
 
+        public async Task<List<Board>> GetStatusForBoards(List<Guid> boardIds)
+        {
+            
+            return await _boardRepository.Entities.AsNoTracking()
+                            .Include(b => b.Lists)
+                                .ThenInclude(l => l.Cards.Where(c => c.Status == CardStatus.Active))
+                            .Where(b => boardIds.Contains(b.Id))
+                            .ToListAsync();
+        }
+
         public async Task<List<Board>> GetUserBoardsWithLists(Guid? workspaceId, string userId)
         {
             var userWorkspaceBoardsQuery = _userWorkspaceRepository

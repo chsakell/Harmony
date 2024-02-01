@@ -49,7 +49,7 @@ else if (!_userBoards.Any())
 }
 else
 {
-    <MudGrid Style="height: calc(100vh - 90px);overflow: auto;">
+    <MudGrid>
         @foreach (var board in _userBoards)
         {
             <MudItem xs="12" sm="6" Class="cursor-pointer" @onclick="() => NavigateToBoard(board)">
@@ -61,33 +61,35 @@ else
                                     <MudText Color="Color.Info" Typo="Typo.body1">[@board.Key]</MudText>
                                 </MudStack>
                             </CardHeaderContent>
-                            <CardHeaderActions>
-                                <MudStack Row="true">
-                                    <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
-                                    <MudChip Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
-                                </MudStack>
-                            </CardHeaderActions>
                         </MudCardHeader>
                         <MudCardContent>
                             <MudText Typo="Typo.h6">@board.Description</MudText>
+                            <MudStack Row="true" Justify="Justify.FlexEnd">
+                                <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
+                                <MudChip Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
+                            </MudStack>
                             <MudDivider />
-                            @if (_boardActivities != null && _boardActivities.Where(a => a.BoardId == board.Id).Any())
-                        {
                             <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
-                                         TimelinePosition="TimelinePosition.Start" Reverse="false">
-                                @foreach (var activity in _boardActivities.Where(a => a.BoardId == board.Id).OrderByDescending(a => a.DateCreated))
-                                {
-                                    <MudTimelineItem Class="pb-0" Color="Color.Success" Size="Size.Small" Variant="Variant.Outlined">
-                                        <ItemContent>
-                                            <MudAlert Severity="Severity.Normal"><b>@activity.Actor</b> @((MarkupString)activity.Activity)</MudAlert>
-                                        </ItemContent>
-                                        <ItemOpposite>
-                                            <MudText Color="Color.Default">@activity.DateCreated.ToShortDateString()</MudText>
-                                            </ItemOpposite>
-                                        </MudTimelineItem>
-                                }
-                            </MudTimeline>
-                        }
+                                         TimelinePosition="TimelinePosition.Start">
+                                @foreach (var list in board.Lists)
+                            {
+                                <MudTimelineItem Size="Size.Medium" Color="@(list.CardStatus == Domain.Enums.BoardListCardStatus.DONE ? Color.Tertiary : Color.Info)" Elevation="25">
+                                    <MudCard Outlined="false" Elevation="25">
+                                        <MudCardContent>
+                                            <MudText Typo="Typo.h6">@list.Title</MudText>
+                                                @if (list.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
+                                            {
+                                                <MudText Typo="Typo.body2">There are <strong>@list.Cards.Count</strong> completed issues.</MudText>
+                                            }
+                                            else
+                                            {
+                                                <MudText Typo="Typo.body2">There are <strong>@list.Cards.Count</strong> active issues.</MudText>
+                                            }
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudTimelineItem>
+                            }
+                        </MudTimeline>
                     </MudCardContent>
                 </MudCard>
             </MudItem>

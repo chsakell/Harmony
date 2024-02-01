@@ -16,7 +16,6 @@ namespace Harmony.Client.Pages.Management
         public string Name { get; set; }
 
         private List<BoardDto> _userBoards = new List<BoardDto>();
-        private List<BoardActivityDto> _boardActivities = new List<BoardActivityDto>();
         private bool _userBoardsLoading = true;
 
         protected override void OnInitialized()
@@ -59,6 +58,13 @@ namespace Harmony.Client.Pages.Management
             _navigationManager.NavigateTo($"boards/{board.Id}/{slug}");
         }
 
+        private string GetBoardUrl(BoardDto board)
+        {
+            var slug = StringUtilities.SlugifyString(board.Title.ToString());
+
+            return $"boards/{board.Id}/{slug}";
+        }
+
         protected async override Task OnParametersSetAsync()
         {
             _userBoardsLoading = true;
@@ -68,8 +74,7 @@ namespace Harmony.Client.Pages.Management
             if (result.Succeeded)
             {
                 await _workspaceManager.SelectWorkspace(Guid.Parse(Id));
-                _userBoards = result.Data.Boards;
-                _boardActivities = result.Data.Activities;
+                _userBoards = result.Data;
             }
 
             _userBoardsLoading = false;

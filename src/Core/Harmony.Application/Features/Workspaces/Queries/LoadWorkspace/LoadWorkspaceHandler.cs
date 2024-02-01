@@ -9,7 +9,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
 {
-    public class LoadWorkspaceHandler : IRequestHandler<LoadWorkspaceQuery, IResult<LoadWorkspaceResponse>>
+    public class LoadWorkspaceHandler : IRequestHandler<LoadWorkspaceQuery, IResult<List<BoardDto>>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
@@ -36,31 +36,23 @@ namespace Harmony.Application.Features.Workspaces.Queries.LoadWorkspace
             _mapper = mapper;
         }
 
-        public async Task<IResult<LoadWorkspaceResponse>> Handle(LoadWorkspaceQuery request, CancellationToken cancellationToken)
+        public async Task<IResult<List<BoardDto> >> Handle(LoadWorkspaceQuery request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return await Result<LoadWorkspaceResponse>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<List<BoardDto> >.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var userBoards = await _boardService.GetUserBoards(request.WorkspaceId, userId);
 
-            var boards = _mapper.Map<List<BoardDto>>(userBoards);
+            var boardInfos = await _boardService
+                .GetStatusForBoards(userBoards.Select(b => b.Id).ToList());
 
-            var result = new LoadWorkspaceResponse()
-            {
-                Boards = boards
-            };
+            var result = _mapper.Map<List<BoardDto>>(boardInfos);
 
-            if(boards.Any())
-            {
-                result.Activities = await _cardActivityService
-                    .GetBoardsActivities(boards.Select(x => x.Id).ToList());
-            }
-
-            return await Result<LoadWorkspaceResponse>.SuccessAsync(result);
+            return await Result<List<BoardDto> >.SuccessAsync(result);
         }
     }
 }

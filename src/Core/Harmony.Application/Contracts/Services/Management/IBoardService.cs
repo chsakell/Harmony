@@ -17,5 +17,6 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList);
         Task<List<GetSprintCardResponse>> SearchSprints(Guid boardId, string term, int pageNumber, int pageSize, SprintStatus? status);
         Task<BoardInfo?> GetBoardInfo(Guid boardId);
+        Task<List<Board>> GetStatusForBoards(List<Guid> boardIds);
     }
 }
