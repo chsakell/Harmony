@@ -50,10 +50,10 @@ namespace Harmony.Infrastructure.Repositories
                 .CountAsync() > 0;
         }
 
-        public async Task<bool> Exists(string key)
+        public async Task<bool> Exists(Guid workspaceId, string key)
         {
             return await _context.Boards
-                .Where(b => b.Key == key)
+                .Where(b => b.Key == key && b.WorkspaceId == workspaceId)
                 .CountAsync() > 0;
         }
 

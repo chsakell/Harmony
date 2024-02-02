@@ -51,7 +51,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 return await Result<BoardDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var boardWithSameKeyExists = await _boardRepository.Exists(request.Key);
+            var boardWithSameKeyExists = await _boardRepository
+                .Exists(Guid.Parse(request.WorkspaceId), request.Key);
 
             if (boardWithSameKeyExists)
             {

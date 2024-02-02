@@ -39,7 +39,7 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(b => b.Type).IsRequired();
 
-            builder.HasIndex(b => b.Key).IsUnique();
+            builder.HasIndex(b => new { b.WorkspaceId, b.Key }).IsUnique();
         }
     }
 }
