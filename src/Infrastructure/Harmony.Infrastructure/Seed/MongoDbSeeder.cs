@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 
 namespace Harmony.Infrastructure.Seed
 {
@@ -37,6 +38,7 @@ namespace Harmony.Infrastructure.Seed
                         Name = "Smart auto-assign",
                         Summary = "When an issue is created without an assignee, automatically assign it. Go one better and assign it based on skillset or in a balanced workload.",
                         Type = AutomationType.SmartAutoAssign,
+                        Enabled = true,
                         NotificationTypes = new List<NotificationType>() { NotificationType.CardCreated }
                     },
                     new AutomationTemplate()

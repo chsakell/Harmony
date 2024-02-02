@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Protobuf.Collections;
 using Grpc.Net.Client;
 using Harmony.Api.Controllers.Management;
 using Harmony.Application.Configurations;
@@ -6,7 +7,7 @@ using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Automations.Protos;
-using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -33,7 +34,7 @@ namespace Harmony.Api.Controllers.Automation
             var client = new AutomationService.AutomationServiceClient(channel);
 
             var getAutomationTemplatesResult = await client
-                .GetAutomationTemplatesAsync(new GetAutomationTemplatesRequest());;
+                .GetAutomationTemplatesAsync(new GetAutomationTemplatesRequest()); ;
 
             return Ok(getAutomationTemplatesResult.Success ?
              Result<List<AutomationTemplateDto>>.Success(_mapper
@@ -56,7 +57,7 @@ namespace Harmony.Api.Controllers.Automation
                               });
 
             return Ok(createAutomationResult.Success ?
-             Result<string>.Success(createAutomationResult.AutomationId, 
+             Result<string>.Success(createAutomationResult.AutomationId,
                 createAutomationResult?.Messages?.FirstOrDefault())
              : Result.Fail(createAutomationResult.Messages.ToList()));
         }
@@ -109,19 +110,22 @@ namespace Harmony.Api.Controllers.Automation
                     BoardId = boardId.ToString()
                 });
 
-
-            var list = getAutomationsResult.Automations.Select(auto =>
-            {
-                switch (type)
+            return
+                type switch
                 {
-                    case AutomationType.SyncParentAndChildIssues:
-                        return JsonSerializer.Deserialize<SyncParentAndChildIssuesAutomationDto>(auto);
-                    default:
-                        return null;
-                }
-            }).ToList();
+                    AutomationType.SyncParentAndChildIssues => DeserializeAutomations<SyncParentAndChildIssuesAutomationDto>(getAutomationsResult.Automations),
+                    AutomationType.SmartAutoAssign => DeserializeAutomations<SmartAutoAssignAutomationDto>(getAutomationsResult.Automations),
+                    _ => throw new NotImplementedException()
+                };
+        }
 
-            return Ok(Result<List<SyncParentAndChildIssuesAutomationDto>>.Success(list));
+        private IActionResult DeserializeAutomations<T>(RepeatedField<string> automations)
+                where T : IAutomationDto
+        {
+            var list = automations.Select(auto => JsonSerializer
+            .Deserialize<T>(auto)).ToList();
+
+            return Ok(Result<List<T>>.Success(list));
         }
     }
 }

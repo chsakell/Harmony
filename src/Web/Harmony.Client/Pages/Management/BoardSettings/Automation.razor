@@ -1,4 +1,5 @@
 ﻿@page "/projects/{id}/settings/automation"
+@using Harmony.Domain.Enums.Automations
 
 <MudContainer Style="position:relative;overflow:hidden">
     <AutomationEditor IsOpened="_drawerOpened"
@@ -14,23 +15,23 @@
                     <MudStack Row="true" Class="py-6 mud-theme-primary" Spacing="3" Justify="Justify.Center" AlignItems="AlignItems.Center">
                         @switch(template.Type)
                         {
-                            case Domain.Enums.AutomationType.SyncParentAndChildIssues:
+                            case AutomationType.SyncParentAndChildIssues:
                                 <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Filled.AccountTree" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Filled.TaskAlt" Size="Size.Large" />
                                 break;
-                            case Domain.Enums.AutomationType.SmartAutoAssign:
+                            case AutomationType.SmartAutoAssign:
                                 <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Filled.AssignmentInd" Size="Size.Large" />
                                 break;
-                            case Domain.Enums.AutomationType.AutoCreateSubtasks:
+                            case AutomationType.AutoCreateSubtasks:
                                 <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Filled.LibraryAddCheck" Size="Size.Large" />
                                 break;
-                            case Domain.Enums.AutomationType.SumUpStorePoints:
+                            case AutomationType.SumUpStorePoints:
                                 <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Rounded.East" Color="Color.Secondary" Size="Size.Large" />
                                 <MudIcon Icon="@Icons.Material.Filled.AddChart" Size="Size.Large" />

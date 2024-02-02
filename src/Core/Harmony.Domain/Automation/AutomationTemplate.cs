@@ -1,4 +1,5 @@
 ﻿using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 
 namespace Harmony.Domain.Automation
 {

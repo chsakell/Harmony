@@ -14,8 +14,11 @@
     {
         switch(AutomationType)
         {
-            case Domain.Enums.AutomationType.SyncParentAndChildIssues:
+            case Domain.Enums.Automations.AutomationType.SyncParentAndChildIssues:
                 <SyncParentAndChildIssues BoardId="BoardId" AutomationType="AutomationType.Value" />
+                break;
+            case Domain.Enums.Automations.AutomationType.SmartAutoAssign:
+                <SmartAutoAssign BoardId="BoardId" AutomationType="AutomationType.Value" />
                 break;
         }
     }

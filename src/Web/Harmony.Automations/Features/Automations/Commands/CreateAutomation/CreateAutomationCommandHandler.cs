@@ -1,6 +1,6 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.DTO.Automation;
-using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using System.Text.Json;
@@ -19,12 +19,19 @@ namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
 
         public async Task<Result<string>> Handle(CreateAutomationCommand command, CancellationToken cancellationToken)
         {
-            IAutomationDto automation = command.Type switch
+            IAutomationDto? automation = command.Type switch
             {
                 AutomationType.SyncParentAndChildIssues 
                     => JsonSerializer.Deserialize<SyncParentAndChildIssuesAutomationDto>(command.Automation),
-                    _ => throw new NotImplementedException("Automation not supported")
+                AutomationType.SmartAutoAssign
+                => JsonSerializer.Deserialize<SmartAutoAssignAutomationDto>(command.Automation),
+                _ => null
             };
+
+            if(automation == null)
+            {
+                return Result<string>.Fail("Failed to serialize automation");
+            }
 
             if(string.IsNullOrEmpty(automation.Id))
             {

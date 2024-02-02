@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace Harmony.Client.Shared.Components.Automation
 {
-    public partial class SyncParentAndChildIssues
+    public partial class SmartAutoAssign
     {
         [Parameter]
         public AutomationType AutomationType { get; set; }
@@ -24,21 +24,15 @@ namespace Harmony.Client.Shared.Components.Automation
         private bool _toggling = false;
         private bool _removing = false;
 
-        private SyncParentAndChildIssuesAutomationDto _selectedAutomationModel;
-        private SyncParentAndChildIssuesAutomationDto _newAutomationModel;
+        private SmartAutoAssignAutomationDto _selectedAutomationModel;
+        private SmartAutoAssignAutomationDto _newAutomationModel;
 
-        private List<SyncParentAndChildIssuesAutomationDto>? _automations = new List<SyncParentAndChildIssuesAutomationDto>();
-        private List<GetBoardListResponse> _boardLists = new List<GetBoardListResponse>();
-
-        private GetBoardListResponse _fromStatusBoardList;
-        private IEnumerable<GetBoardListResponse> _fromStatusBoardLists { get; set; } = Enumerable.Empty<GetBoardListResponse>();
-        private GetBoardListResponse _toStatusBoardList;
-        private IEnumerable<GetBoardListResponse> _toStatusBoardLists { get; set; } = Enumerable.Empty<GetBoardListResponse>();
+        private List<SmartAutoAssignAutomationDto>? _automations = new List<SmartAutoAssignAutomationDto>();
 
         protected override async Task OnInitializedAsync()
         {
             _newAutomationModel =
-            new SyncParentAndChildIssuesAutomationDto()
+            new SmartAutoAssignAutomationDto()
             {
                 Type = AutomationType,
                 BoardId = BoardId.ToString(),
@@ -46,7 +40,7 @@ namespace Harmony.Client.Shared.Components.Automation
             };
 
             var automationsResult = await _automationManager
-                .GetAutomations<SyncParentAndChildIssuesAutomationDto>(BoardId, AutomationType);
+                .GetAutomations<SmartAutoAssignAutomationDto>(BoardId, AutomationType);
 
             if (automationsResult.Succeeded)
             {
@@ -62,42 +56,14 @@ namespace Harmony.Client.Shared.Components.Automation
                 }
             }
 
-            var boardListsResult = await _boardManager
-                .GetBoardListsAsync(BoardId.ToString());
-
-            if ((boardListsResult.Succeeded))
-            {
-                _boardLists = boardListsResult.Data;
-
-                SelectAutomationBoardLists(_selectedAutomationModel);
-            }
+            SetDescription();
 
             _loaded = true;
         }
 
-        private void SetFromStatusBoardLists(IEnumerable<GetBoardListResponse> statusBoardLists)
-        {
-            _fromStatusBoardLists = statusBoardLists;
-
-            SetDescription();
-        }
-
-        private void SetToStatusBoardLists(IEnumerable<GetBoardListResponse> statusBoardLists)
-        {
-            _toStatusBoardLists = statusBoardLists;
-
-            SetDescription();
-        }
-
         private void SetDescription()
         {
-            var fromListNames = string.Join(",", _fromStatusBoardLists.Select(l => l.Title));
-            var toListText = _toStatusBoardLists.Any() ?
-               $"{(_toStatusBoardLists.Count() == 1 ? $"{_toStatusBoardLists.FirstOrDefault()?.Title}" : $"any of {string.Join(",", _toStatusBoardLists.Select(l => l.Title))} statuses")}" : "any status";
-            var onlyIfText = _fromStatusBoardLists.Any() ? $"only if its current status belongs to [{fromListNames}]" : string.Empty;
-
-            _selectedAutomationModel.Description = $"When all children are moved to {toListText} then " +
-                $"also sync parent {onlyIfText}.";
+            _selectedAutomationModel.Description = $"Smart auto sync";
         }
 
         protected override Task OnParametersSetAsync()
@@ -110,12 +76,9 @@ namespace Harmony.Client.Shared.Components.Automation
             _creating = true;
             var isNewRule = string.IsNullOrEmpty(_selectedAutomationModel.Id);
 
-            _selectedAutomationModel.FromStatuses = _fromStatusBoardLists?.Select(s => s.Id.ToString()) ?? Enumerable.Empty<string>();
-            _selectedAutomationModel.ToStatuses = _toStatusBoardLists?.Select(s => s.Id.ToString()) ?? Enumerable.Empty<string>();
-
             var response = await _automationManager.CreateAutomation
                 (new CreateAutomationCommand(JsonSerializer.Serialize(_selectedAutomationModel),
-                AutomationType.SyncParentAndChildIssues));
+                AutomationType.SmartAutoAssign));
 
             if (response.Succeeded)
             {
@@ -125,7 +88,7 @@ namespace Harmony.Client.Shared.Components.Automation
                     _automations.Add(_selectedAutomationModel);
                 }
 
-                _newAutomationModel = new SyncParentAndChildIssuesAutomationDto()
+                _newAutomationModel = new SmartAutoAssignAutomationDto()
                 {
                     Type = AutomationType,
                     BoardId = BoardId.ToString(),
@@ -186,32 +149,10 @@ namespace Harmony.Client.Shared.Components.Automation
                     _automations.Remove(_selectedAutomationModel);
 
                     _selectedAutomationModel = _automations.Any() ? _automations.First() : _newAutomationModel;
-                    SelectAutomationBoardLists(_selectedAutomationModel);
                 }
 
                 DisplayMessage(removeResult);
             }
-        }
-
-        private void SelectAutomationBoardLists(SyncParentAndChildIssuesAutomationDto automation)
-        {
-            _selectedAutomationModel = automation;
-
-            if (string.IsNullOrEmpty(automation.Id))
-            {
-                _fromStatusBoardLists = Enumerable.Empty<GetBoardListResponse>();
-                _toStatusBoardLists = Enumerable.Empty<GetBoardListResponse>();
-            }
-            else
-            {
-                _fromStatusBoardLists = _boardLists.Where(l => _selectedAutomationModel
-                    .FromStatuses.ToList().Contains(l.Id.ToString())).ToList();
-
-                _toStatusBoardLists = _boardLists.Where(l => _selectedAutomationModel
-                    .ToStatuses.ToList().Contains(l.Id.ToString())).ToList();
-            }
-
-            SetDescription();
         }
 
         private void DisplayMessage(IResult result)
@@ -229,14 +170,35 @@ namespace Harmony.Client.Shared.Components.Automation
             }
         }
 
-        Func<GetBoardListResponse, string> converter = p =>
-        {
-            return p?.Title;
-        };
-
-        Func<SyncParentAndChildIssuesAutomationDto, string> syncParentChildConverter = p =>
+        Func<SmartAutoAssignAutomationDto, string> converter = p =>
         {
             return p?.Name;
+        };
+
+        Func<SmartAutoAssignOption, string> optionConverter = p =>
+        {
+            return p switch
+            {
+                SmartAutoAssignOption.IssueCreator => "Issue creator",
+                SmartAutoAssignOption.SpecificUser => "Specify user",
+                _ => "Assign the issue to"
+            };
+        };
+
+        Func<AutomationTriggerSchedule, string> triggerScheduleConverter = p =>
+        {
+            return p switch
+            {
+                AutomationTriggerSchedule.Instantly => "Instantly",
+                AutomationTriggerSchedule.After_5_Minutes => "After 5 minutes",
+                AutomationTriggerSchedule.After_15_Minutes => "After 15 minutes",
+                AutomationTriggerSchedule.After_30_Minutes => "After 30 minutes",
+                AutomationTriggerSchedule.After_1_Hour => "After 1 hour",
+                AutomationTriggerSchedule.After_3_Hours => "After 3 hours",
+                AutomationTriggerSchedule.After_6_Hours => "After 6 hours",
+                AutomationTriggerSchedule.After_1_Day => "After 1 day",
+                _ => "Run trigger at"
+            };
         };
     }
 }

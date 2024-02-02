@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO.Automation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 
 namespace Harmony.Application.Contracts.Repositories
 {

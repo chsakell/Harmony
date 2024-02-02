@@ -4,6 +4,7 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.DTO.Automation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;

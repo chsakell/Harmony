@@ -1,7 +1,7 @@
 ﻿using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
-using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project

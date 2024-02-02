@@ -1,5 +1,5 @@
 ﻿using Harmony.Application.DTO.Automation;
-using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using Microsoft.AspNetCore.Components;
 
 namespace Harmony.Client.Pages.Management.BoardSettings

@@ -1,4 +1,4 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Domain.Enums.Automations;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 

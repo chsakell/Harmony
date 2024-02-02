@@ -1,4 +1,4 @@
-﻿namespace Harmony.Domain.Enums
+﻿namespace Harmony.Domain.Enums.Automations
 {
     public enum AutomationType
     {

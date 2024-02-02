@@ -4,6 +4,7 @@ using Harmony.Application.DTO.Automation;
 using Harmony.Application.Notifications;
 using Harmony.Automations.Contracts;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 
 namespace Harmony.Automations.Services
 {

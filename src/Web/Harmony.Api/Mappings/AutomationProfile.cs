@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Harmony.Application.DTO.Automation;
 using Harmony.Automations.Protos;
-using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 
 namespace Harmony.Api.Mappings
 {

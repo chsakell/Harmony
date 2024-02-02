@@ -2,7 +2,7 @@
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Client.Infrastructure.Extensions;
-using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
 

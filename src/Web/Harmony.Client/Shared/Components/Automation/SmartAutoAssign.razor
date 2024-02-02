@@ -1,0 +1,136 @@
+﻿@using Harmony.Application.DTO.Automation
+@using Harmony.Application.Features.Lists.Queries.GetBoardLists
+@using Harmony.Domain.Enums.Automations
+@if (_loaded)
+{
+    @if (_automations.Any())
+    {
+        <div class="mb-4">
+            <MudSelect T="SmartAutoAssignAutomationDto"
+                       @bind-Value="_selectedAutomationModel"
+                       Label="Automations" ToStringFunc="converter"
+                       AnchorOrigin="Origin.BottomCenter">
+                @foreach (var automation in _automations)
+                {
+
+                    <MudSelectItem Value="automation">
+                        <MudStack Row="true">
+                            <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                            <MudText>@automation.Name</MudText>
+                            </MudStack>
+                        </MudSelectItem>
+                }
+
+                <MudSelectItem Value="_newAutomationModel">
+                    <MudStack Row="true">
+                        <MudIcon Icon="@Icons.Material.Filled.Add" />
+                        <MudText>Create new..</MudText>
+                    </MudStack>
+                </MudSelectItem>
+
+
+            </MudSelect>
+        </div>
+    }
+
+    <EditForm Model="@_selectedAutomationModel" OnValidSubmit="SubmitAsync">
+        <DataAnnotationsValidator />
+        <MudPaper Class="pa-4">
+            <MudStack Spacing="4">
+                <MudTextField For="@(() => _selectedAutomationModel.Name)"
+                              @bind-Value="_selectedAutomationModel.Name" Label="Name" />
+                <MudTextField Disabled="true" Lines="3" For="@(() => _selectedAutomationModel.Description)"
+                              @bind-Value="_selectedAutomationModel.Description"
+                              Label="Description" />
+
+                <MudSelect T="SmartAutoAssignOption" @bind-Value="_selectedAutomationModel.Option" Label="Assign the issue to"
+                           ToStringFunc="optionConverter"
+                           AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var option in (SmartAutoAssignOption[])Enum.GetValues(typeof(SmartAutoAssignOption)))
+                    {
+                        <MudSelectItem Value="option" />
+                    }
+                </MudSelect>
+
+                <MudSwitch @bind-Value="@_selectedAutomationModel.OverrideAndCopyFromParentIfSubtask"
+                           Label="Override & set parent's if subtask & parent has assignee'"
+                           Color="Color.Success" />
+
+                <MudSelect T="AutomationTriggerSchedule"
+                           @bind-Value="_selectedAutomationModel.RunTriggerAt"
+                           Label="Assign the issue to"
+                           ToStringFunc="triggerScheduleConverter"
+                           AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var option in (AutomationTriggerSchedule[])Enum.GetValues(typeof(AutomationTriggerSchedule)))
+                    {
+                        <MudSelectItem Value="option" />
+                    }
+                </MudSelect>
+
+                @if (string.IsNullOrEmpty(_selectedAutomationModel.Id))
+                {
+                    <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _creating)"
+                               ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                        @if (_creating)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Enable</MudText>
+                        }
+                    </MudButton>
+                }
+                else
+                {
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudButton Disabled="@(!context.Validate() || _creating || _updating || _toggling || _removing)"
+                                       FullWidth="true"
+                                       ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                                @if (_updating)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>UPDATE</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudButton Disabled="@(_creating || _updating || _toggling || _removing)" OnClick="ToggleStatus" FullWidth="true"
+                                       Variant="Variant.Filled" Color="@(_selectedAutomationModel.Enabled ? Color.Default : Color.Default)">
+                                @if (_toggling)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>@(_selectedAutomationModel.Enabled ? "DISABLE" : "ENABLE")</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudButton Disabled="@(_creating || _updating || _removing)" FullWidth="true"
+                                       Variant="Variant.Filled" Color="Color.Error" OnClick="Remove">
+                                @if (_removing)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>REMOVE</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                }
+            </MudStack>
+        </MudPaper>
+    </EditForm>
+}

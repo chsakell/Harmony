@@ -7,7 +7,7 @@ using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
 using Harmony.Application.Features.Automations.Queries.GetAutomations;
 using Harmony.Application.Features.Automations.Queries.GetAutomationTemplates;
 using Harmony.Automations.Protos;
-using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using MediatR;
 using System.Text.Json;
 
