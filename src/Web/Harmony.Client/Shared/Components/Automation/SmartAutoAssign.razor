@@ -1,4 +1,5 @@
 ﻿@using Harmony.Application.DTO.Automation
+@using Harmony.Application.Features.Boards.Queries.SearchBoardUsers
 @using Harmony.Application.Features.Lists.Queries.GetBoardLists
 @using Harmony.Domain.Enums.Automations
 @if (_loaded)
@@ -21,13 +22,14 @@
                         </MudSelectItem>
                 }
 
-                <MudSelectItem Value="_newAutomationModel">
-                    <MudStack Row="true">
-                        <MudIcon Icon="@Icons.Material.Filled.Add" />
-                        <MudText>Create new..</MudText>
-                    </MudStack>
-                </MudSelectItem>
-
+                <MudTooltip Text="This automation doesn't support multiple rules">
+                    <MudSelectItem Value="_newAutomationModel" Disabled="_newAutomationModel.SingleRuleOnly">
+                        <MudStack Row="true">
+                            <MudIcon Icon="@Icons.Material.Filled.Add" />
+                            <MudText>Create new..</MudText>
+                        </MudStack>
+                    </MudSelectItem>
+                </MudTooltip>
 
             </MudSelect>
         </div>
@@ -43,7 +45,10 @@
                               @bind-Value="_selectedAutomationModel.Description"
                               Label="Description" />
 
-                <MudSelect T="SmartAutoAssignOption" @bind-Value="_selectedAutomationModel.Option" Label="Assign the issue to"
+                <MudSelect T="SmartAutoAssignOption"
+                           @bind-Value:get="_selectedAutomationModel.Option"
+                           @bind-Value:set="SetOption"
+                           Label="Assign the issue to"
                            ToStringFunc="optionConverter"
                            AnchorOrigin="Origin.BottomCenter">
                     @foreach (var option in (SmartAutoAssignOption[])Enum.GetValues(typeof(SmartAutoAssignOption)))
@@ -52,13 +57,45 @@
                     }
                 </MudSelect>
 
-                <MudSwitch @bind-Value="@_selectedAutomationModel.OverrideAndCopyFromParentIfSubtask"
-                           Label="Override & set parent's if subtask & parent has assignee'"
+                @if (_selectedAutomationModel.Option == SmartAutoAssignOption.SpecificUser)
+                {
+                    <MudAutocomplete DebounceInterval="300" ShowProgressIndicator="_searching" T="SearchBoardUserResponse"
+                                     Label="Search users" @bind-Value:get="_selectedUser"
+                                     @bind-Value:set="SetUser"
+                                     SearchFunc="@SearchUsers" ToStringFunc="@(e=> e==null?null : $"{e.FullName} ({e.UserName})")">
+                        <ItemTemplate Context="user">
+                            <MudPaper Class="pa-4">
+                                <MudStack Row="true">
+                                    <MudAvatar Color="Color.Secondary">
+                                        @if (string.IsNullOrEmpty(user.ProfilePicture))
+                                        {
+                                            @user.FirstName[0]
+
+                                            @user.LastName[0]
+                                        }
+                                        else
+                                        {
+                                            <MudImage Src="@user.ProfilePicture" />
+                                        }
+                                    </MudAvatar>
+                                    <MudStack Justify="Justify.Center" Spacing="0">
+                                        <MudText Typo="Typo.body1">@user.FullName</MudText>
+                                            <MudText Typo="Typo.body2">@@@user.UserName</MudText>
+                                        </MudStack>
+                                    </MudStack>
+                                </MudPaper>
+                            </ItemTemplate>
+                        </MudAutocomplete>
+                }
+                <MudSwitch @bind-Value:get="@_selectedAutomationModel.SetFromParentIfSubtask"
+                           @bind-Value:set="SetFromParentIfSubtask"
+                           Label="Set from parent for subtasks"
                            Color="Color.Success" />
 
                 <MudSelect T="AutomationTriggerSchedule"
                            @bind-Value="_selectedAutomationModel.RunTriggerAt"
-                           Label="Assign the issue to"
+                           Label="Run trigger"
+                           HelperText="Assignee will change only when no one is already assigned at the time automation is triggered. "
                            ToStringFunc="triggerScheduleConverter"
                            AnchorOrigin="Origin.BottomCenter">
                     @foreach (var option in (AutomationTriggerSchedule[])Enum.GetValues(typeof(AutomationTriggerSchedule)))

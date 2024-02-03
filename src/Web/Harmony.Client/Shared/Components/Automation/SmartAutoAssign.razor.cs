@@ -1,12 +1,14 @@
 ﻿using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
+using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System.Text;
 using System.Text.Json;
 
 namespace Harmony.Client.Shared.Components.Automation
@@ -26,6 +28,9 @@ namespace Harmony.Client.Shared.Components.Automation
 
         private SmartAutoAssignAutomationDto _selectedAutomationModel;
         private SmartAutoAssignAutomationDto _newAutomationModel;
+        
+        private bool _searching;
+        private SearchBoardUserResponse _selectedUser;
 
         private List<SmartAutoAssignAutomationDto>? _automations = new List<SmartAutoAssignAutomationDto>();
 
@@ -49,6 +54,17 @@ namespace Harmony.Client.Shared.Components.Automation
                 if (_automations.Any())
                 {
                     _selectedAutomationModel = _automations.First();
+
+                    if(_selectedAutomationModel.Option == SmartAutoAssignOption.SpecificUser)
+                    {
+                        _selectedUser = new SearchBoardUserResponse()
+                        {
+                            Id = _selectedAutomationModel.UserId,
+                            FirstName = _selectedAutomationModel.FirstName,
+                            LastName = _selectedAutomationModel.LastName,
+                            UserName = _selectedAutomationModel.UserName,
+                        };
+                    }
                 }
                 else
                 {
@@ -61,9 +77,70 @@ namespace Harmony.Client.Shared.Components.Automation
             _loaded = true;
         }
 
+        private void SetFromParentIfSubtask(bool setFromParentIfSubtask)
+        {
+            _selectedAutomationModel.SetFromParentIfSubtask = setFromParentIfSubtask;
+
+            SetDescription();
+        }
+
+        private void SetUser(SearchBoardUserResponse user)
+        {
+            _selectedUser = user;
+
+            SetDescription();
+        }
+
+        private void SetOption(SmartAutoAssignOption option)
+        {
+            _selectedAutomationModel.Option = option;
+
+            SetDescription();
+        }
+
         private void SetDescription()
         {
-            _selectedAutomationModel.Description = $"Smart auto sync";
+            var specificUserText = string.IsNullOrEmpty(_selectedUser?.Id) ? "The selected user" : _selectedUser.FullName;
+            var issueCreatorText = "The user that creates the issue";
+            var overrideIfSubtaskText = "Subtasks will be assigned with parent's assignee if any.";
+
+            var builder = new StringBuilder();
+            if(_selectedAutomationModel.Option == SmartAutoAssignOption.SpecificUser)
+            {
+                builder.Append(specificUserText);
+            }
+            else
+            {
+                builder.Append(issueCreatorText);
+            }
+            builder.AppendLine(" will be the assignee for new issues.");
+
+            if(_selectedAutomationModel.SetFromParentIfSubtask)
+            {
+                builder.Append(overrideIfSubtaskText);
+            }
+
+            _selectedAutomationModel.Description = builder.ToString();
+        }
+
+        private async Task<IEnumerable<SearchBoardUserResponse>> SearchUsers(string value)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length < 4 || _searching)
+            {
+                return Enumerable.Empty<SearchBoardUserResponse>();
+            }
+
+            _searching = true;
+            var searchResult = await _boardManager.SearchBoardMembersAsync(BoardId.ToString(), value);
+
+            if (searchResult.Succeeded)
+            {
+                _searching = false;
+                return searchResult.Data;
+            }
+
+            _searching = false;
+            return Enumerable.Empty<SearchBoardUserResponse>();
         }
 
         protected override Task OnParametersSetAsync()
@@ -74,6 +151,29 @@ namespace Harmony.Client.Shared.Components.Automation
         private async Task SubmitAsync()
         {
             _creating = true;
+
+            if(_selectedAutomationModel.Option == SmartAutoAssignOption.SpecificUser)
+            {
+                if(_selectedUser == null)
+                {
+                    DisplayMessage(Result.Fail("Specify the user to be assigned to new issues."));
+                    _creating = false;
+                    return;
+                }
+
+                _selectedAutomationModel.UserId = _selectedUser.Id;
+                _selectedAutomationModel.FirstName = _selectedUser.FirstName;
+                _selectedAutomationModel.LastName = _selectedUser.LastName;
+                _selectedAutomationModel.UserName = _selectedUser.UserName;
+            }
+            else
+            {
+                _selectedAutomationModel.UserId = null;
+                _selectedAutomationModel.FirstName = null;
+                _selectedAutomationModel.LastName = null;
+                _selectedAutomationModel.UserName = null;
+            }
+
             var isNewRule = string.IsNullOrEmpty(_selectedAutomationModel.Id);
 
             var response = await _automationManager.CreateAutomation

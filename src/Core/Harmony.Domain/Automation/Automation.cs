@@ -16,5 +16,6 @@ namespace Harmony.Domain.Automation
         public AutomationType Type { get; set; }
         public Guid BoardId { get; set; }
         public bool Enabled { get; set; }
+        public virtual bool SingleRuleOnly { get; set; }
     }
 }
