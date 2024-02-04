@@ -39,7 +39,7 @@ namespace Harmony.Api.Services.gRPC
             return new Protos.AddUserCardResponse()
             {
                 Success = result.Succeeded,
-                Error = "Failed to assign user to card"
+                Error = result.Succeeded ? string.Empty : "Failed to assign user to card"
             };
         }
 

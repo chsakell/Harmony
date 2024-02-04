@@ -8,6 +8,8 @@ using Harmony.Api.Protos;
 using Microsoft.Extensions.Options;
 using Harmony.Application.Configurations;
 using Grpc.Core;
+using Hangfire;
+using Harmony.Domain.Enums.Automations;
 
 
 namespace Harmony.Automations.Services
@@ -31,17 +33,57 @@ namespace Harmony.Automations.Services
                 return;
             }
 
-            switch (automation.Option)
-            {
-                case Domain.Enums.Automations.SmartAutoAssignOption.IssueCreator:
-                    await SetCardAssignee(notification.BoardId, notification.Card.Id, notification.UserId);
-                    break;
-                case Domain.Enums.Automations.SmartAutoAssignOption.SpecificUser:
+            var now = DateTime.Now;
+            DateTime delay = now;
 
+            switch (automation.RunTriggerAt)
+            {
+                case AutomationTriggerSchedule.Instantly:
+
+                    break;
+                case AutomationTriggerSchedule.After_5_Minutes:
+                    delay = now.Add(TimeSpan.FromSeconds(5));
+                    break;
+                case AutomationTriggerSchedule.After_15_Minutes:
+                    delay = now.Add(TimeSpan.FromMinutes(15));
+                    break;
+                case AutomationTriggerSchedule.After_30_Minutes:
+                    delay = now.Add(TimeSpan.FromMinutes(30));
+                    break;
+                case AutomationTriggerSchedule.After_1_Hour:
+                    delay = now.Add(TimeSpan.FromHours(1));
+                    break;
+                case AutomationTriggerSchedule.After_3_Hours:
+                    delay = now.Add(TimeSpan.FromHours(3));
+                    break;
+                case AutomationTriggerSchedule.After_6_Hours:
+                    delay = now.Add(TimeSpan.FromHours(6));
+                    break;
+                case AutomationTriggerSchedule.After_1_Day:
+                    delay = now.Add(TimeSpan.FromDays(1));
+                    break;
+                default:
                     break;
             }
 
+            var jobId = BackgroundJob
+                .Schedule(() => ScheduleAssignee(automation, notification), delay);
+
             return;
+        }
+
+        public async Task ScheduleAssignee(SmartAutoAssignAutomationDto automation, 
+            CardCreatedMessage notification)
+        {
+            switch (automation.Option)
+            {
+                case SmartAutoAssignOption.IssueCreator:
+                    await SetCardAssignee(notification.BoardId, notification.Card.Id, notification.UserId);
+                    break;
+                case SmartAutoAssignOption.SpecificUser:
+
+                    break;
+            }
         }
 
         private async Task SetCardAssignee(Guid boardId, Guid cardId, string userId)
