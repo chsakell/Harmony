@@ -7,5 +7,7 @@
     {
         string UserId { get; }
         string FullName { get; }
+        bool IsTrustedClientRequest { get; }
+        string GetHeader(string name);
     }
 }

@@ -124,7 +124,7 @@ namespace Harmony.Api.Controllers.Management
         }
 
         [HttpPost("{id:guid}/members")]
-        public async Task<IActionResult> GetMembers(AddUserCardCommand command)
+        public async Task<IActionResult> AddCardUser(AddUserCardCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

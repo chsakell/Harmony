@@ -1,6 +1,8 @@
 using Grpc.Core;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Domain.Entities;
+using MediatR;
 
 namespace Harmony.Api.Services.gRPC
 {
@@ -8,11 +10,14 @@ namespace Harmony.Api.Services.gRPC
     {
         private readonly ILogger<UserCardService> _logger;
         private readonly IUserCardRepository _userCardRepository;
+        private readonly IMediator _mediator;
 
-        public UserCardService(ILogger<UserCardService> logger, IUserCardRepository userCardRepository)
+        public UserCardService(ILogger<UserCardService> logger, IUserCardRepository userCardRepository,
+            IMediator mediator)
         {
             _logger = logger;
             _userCardRepository = userCardRepository;
+            _mediator = mediator;
         }
 
         public override async Task<Protos.UserCardResponse> GetUserCard(Protos.UserCardFilterRequest request,
@@ -22,6 +27,20 @@ namespace Harmony.Api.Services.gRPC
                 .GetUserCard(Guid.Parse(request.CardId), request.UserId);
 
             return MapToProto(userCard);
+        }
+
+        public override async Task<Protos.AddUserCardResponse> AddUserCard(Protos.AddUserCardRequest request, ServerCallContext context)
+        {
+            var result = await _mediator.Send(new AddUserCardCommand(Guid.Parse(request.CardId), request.UserId)
+            {
+                BoardId = Guid.Parse(request.BoardId)
+            });
+
+            return new Protos.AddUserCardResponse()
+            {
+                Success = result.Succeeded,
+                Error = "Failed to assign user to card"
+            };
         }
 
         private Protos.UserCardResponse MapToProto(UserCard userCard)

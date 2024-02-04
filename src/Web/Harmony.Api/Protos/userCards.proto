@@ -17,7 +17,19 @@ message UserCard {
     string userId = 2;
 }
 
+message AddUserCardRequest {
+    string boardId = 1;
+    string cardId = 2;
+    string userId = 3;
+}
+
+message AddUserCardResponse {
+    bool success = 1;
+    string error = 2;
+}
+
 service UserCardService {
   // returns a User Card
   rpc GetUserCard (UserCardFilterRequest) returns (UserCardResponse);
+  rpc AddUserCard (AddUserCardRequest) returns (AddUserCardResponse);
 }

@@ -87,7 +87,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
 
                 var result = _mapper.Map<CardDto>(card);
 
-                var cardCreatedNotification = new CardCreatedMessage(board.Id, result);
+                var cardCreatedNotification = new CardCreatedMessage(board.Id, result, userId);
 
                 _notificationsPublisher.PublishMessage(cardCreatedNotification,
                     NotificationType.CardCreated, routingKey: BrokerConstants.RoutingKeys.Notifications);

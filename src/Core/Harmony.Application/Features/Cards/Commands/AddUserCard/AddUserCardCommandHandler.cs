@@ -58,7 +58,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
         {
             var userId = _currentUserService.UserId;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId) && !_currentUserService.IsTrustedClientRequest)
             {
                 return await Result<AddUserCardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
@@ -84,7 +84,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
                     {
                         UserId = request.UserId,
                         BoardId = request.BoardId,
-                        Access = Domain.Enums.UserBoardAccess.Member
+                        Access = UserBoardAccess.Member
                     };
 
                     await _userBoardRepository.AddAsync(userBoard);
