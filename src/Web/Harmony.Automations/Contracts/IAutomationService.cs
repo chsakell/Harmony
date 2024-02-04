@@ -2,8 +2,8 @@
 
 namespace Harmony.Automations.Contracts
 {
-    public interface ICardMovedAutomationService
+    public interface IAutomationService<T>
     {
-        Task Run(CardMovedMessage notification);
+        Task Run(T notification);
     }
 }

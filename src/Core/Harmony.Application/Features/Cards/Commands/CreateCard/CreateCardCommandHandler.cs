@@ -90,7 +90,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                 var cardCreatedNotification = new CardCreatedMessage(board.Id, result);
 
                 _notificationsPublisher.PublishMessage(cardCreatedNotification,
-                    NotificationType.CardCreated, routingKey: BrokerConstants.RoutingKeys.SignalR);
+                    NotificationType.CardCreated, routingKey: BrokerConstants.RoutingKeys.Notifications);
 
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Card Created"]);
             }

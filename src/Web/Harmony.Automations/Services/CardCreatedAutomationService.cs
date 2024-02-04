@@ -8,22 +8,22 @@ using Harmony.Domain.Enums.Automations;
 
 namespace Harmony.Automations.Services
 {
-    public class CardMovedAutomationService : IAutomationService<CardMovedMessage>
+    public class CardCreatedAutomationService : IAutomationService<CardCreatedMessage>
     {
         private readonly IAutomationRepository _automationRepository;
-        private readonly ISyncParentAndChildIssuesAutomationService _syncParentAndChildIssuesAutomationService;
+        private readonly ISmartAutoAssignAutomationService _smartAutoAssignAutomationService;
 
-        public CardMovedAutomationService(IAutomationRepository automationRepository,
-            ISyncParentAndChildIssuesAutomationService syncParentAndChildIssuesAutomationService)
+        public CardCreatedAutomationService(IAutomationRepository automationRepository,
+            ISmartAutoAssignAutomationService smartAutoAssignAutomationService)
         {
             _automationRepository = automationRepository;
-            _syncParentAndChildIssuesAutomationService = syncParentAndChildIssuesAutomationService;
+            _smartAutoAssignAutomationService = smartAutoAssignAutomationService;
         }
 
-        public async Task Run(CardMovedMessage notification)
+        public async Task Run(CardCreatedMessage notification)
         {
             var templatesForAutomation = await _automationRepository
-                .GetTemplates(NotificationType.CardMoved);
+                .GetTemplates(NotificationType.CardCreated);
 
             if(templatesForAutomation.Any())
             {
@@ -34,14 +34,14 @@ namespace Harmony.Automations.Services
                 {
                     switch(automationType)
                     {
-                        case AutomationType.SyncParentAndChildIssues:
+                        case AutomationType.SmartAutoAssign:
                             var automations = await _automationRepository
-                                .GetAutomations<SyncParentAndChildIssuesAutomationDto>
-                                (AutomationType.SyncParentAndChildIssues, notification.BoardId);
+                                .GetAutomations<SmartAutoAssignAutomationDto>
+                                (AutomationType.SmartAutoAssign, notification.BoardId);
 
                             foreach(var automation in automations)
                             {
-                                await _syncParentAndChildIssuesAutomationService.Process(automation, notification);
+                                await _smartAutoAssignAutomationService.Process(automation, notification);
                             }
                             break;
                     }

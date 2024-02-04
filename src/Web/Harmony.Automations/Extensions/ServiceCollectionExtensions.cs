@@ -4,6 +4,7 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.Notifications;
 using Harmony.Automations.Contracts;
 using Harmony.Automations.Services;
 using Harmony.Infrastructure.Mappings;
@@ -52,9 +53,11 @@ namespace Harmony.Automations.Extensions
 
         internal static IServiceCollection AddAutomationServices(this IServiceCollection services)
         {
-            services.AddScoped<ICardMovedAutomationService, CardMovedAutomationService>();
-            services.AddScoped<ISyncParentAndChildIssuesAutomationService, SyncParentAndChildIssuesAutomationService>();
+            services.AddScoped<IAutomationService<CardMovedMessage>, CardMovedAutomationService>();
+            services.AddScoped<IAutomationService<CardCreatedMessage>, CardCreatedAutomationService>();
 
+            services.AddScoped<ISyncParentAndChildIssuesAutomationService, SyncParentAndChildIssuesAutomationService>();
+            services.AddScoped<ISmartAutoAssignAutomationService, SmartAutoAssignAutomationService>();
             return services;
         }
 

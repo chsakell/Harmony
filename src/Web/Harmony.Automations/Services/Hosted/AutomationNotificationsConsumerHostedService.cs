@@ -96,23 +96,16 @@ namespace Harmony.Automations.Services.Hosted
                      .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
                      Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
                 {
-                    using (IServiceScope scope = _serviceProvider.CreateScope())
+                    switch (notificationType)
                     {
-                        switch (notificationType)
-                        {
-                            case NotificationType.CardMoved:
-                                var cardMovedAutomationService = scope.ServiceProvider.GetRequiredService<ICardMovedAutomationService>();
-                                var cardMovedAutomationNotification = JsonSerializer
-                                                    .Deserialize<CardMovedMessage>(ea.Body.Span);
-
-                                if (cardMovedAutomationNotification != null)
-                                {
-                                    await cardMovedAutomationService.Run(cardMovedAutomationNotification);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                        case NotificationType.CardMoved:
+                            await RunAutomation<CardMovedMessage>(ea);
+                            break;
+                        case NotificationType.CardCreated:
+                            await RunAutomation<CardCreatedMessage>(ea);
+                            break;
+                        default:
+                            break;
                     }
                 }
             };
@@ -123,6 +116,21 @@ namespace Harmony.Automations.Services.Hosted
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             _channel.BasicConsume(BrokerConstants.AutomationNotificationsQueue, true, consumer);
+        }
+
+        private async Task RunAutomation<T>(BasicDeliverEventArgs eventArgs)
+        {
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                var automationService = scope.ServiceProvider.GetRequiredService<IAutomationService<T>>();
+                var automationNotification = JsonSerializer
+                                    .Deserialize<T>(eventArgs.Body.Span);
+
+                if (automationNotification != null)
+                {
+                    await automationService.Run(automationNotification);
+                }
+            }
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }
