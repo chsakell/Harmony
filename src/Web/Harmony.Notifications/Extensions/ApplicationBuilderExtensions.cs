@@ -1,4 +1,4 @@
-﻿using Harmony.Notifications.Persistence;
+﻿using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Notifications.Extensions
@@ -16,7 +16,6 @@ namespace Harmony.Notifications.Extensions
 
             await notificationContext.Database.MigrateAsync();
             await notificationContext.Database.EnsureCreatedAsync();
-
 
             return app;
         }

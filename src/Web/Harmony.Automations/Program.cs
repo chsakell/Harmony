@@ -1,3 +1,4 @@
+using Hangfire;
 using Harmony.Application.Configurations;
 using Harmony.Automations.Extensions;
 using Harmony.Automations.Services;
@@ -16,6 +17,10 @@ namespace Harmony.Automations
             builder.Services.AddMongoDbRepositories();
             builder.Services.AddDbSeed();
             builder.Services.AddEndpointConfiguration(builder.Configuration);
+
+            // Add DbContexts
+            builder.Services.AddJobsDatabase(builder.Configuration);
+
             builder.Services.AddApplicationLayer();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
             builder.Services.AddAutomationServices();
@@ -24,14 +29,14 @@ namespace Harmony.Automations
             builder.Services.AddMessaging(builder.Configuration);
 
             // Add Hangfire services.
-            //builder.Services.AddHangfire(configuration => configuration
-            //    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-            //    .UseSimpleAssemblyNameTypeSerializer()
-            //    .UseRecommendedSerializerSettings()
-            //    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HarmonyJobsConnection")));
 
-            //// Add the processing server as IHostedService
-            //builder.Services.AddHangfireServer();
+            // Add the processing server as IHostedService
+            builder.Services.AddHangfireServer();
             builder.Services.AddHostedService<AutomationNotificationsConsumerHostedService>();
             builder.Services.AddMemoryCache();
 
@@ -54,7 +59,9 @@ namespace Harmony.Automations
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            // app.UseHangfireDashboard();
+            await app.InitializeDatabase(builder.Configuration);
+
+            app.UseHangfireDashboard();
 
             app.UseRouting();
 

@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using Harmony.Notifications.Persistence;
+using Harmony.Persistence.DbContext;
 using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
@@ -9,6 +9,7 @@ using Harmony.Api.Protos;
 using Harmony.Application.Configurations;
 using Microsoft.Extensions.Options;
 using Harmony.Application.Helpers;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Notifications.Services.Notifications.Email
 {

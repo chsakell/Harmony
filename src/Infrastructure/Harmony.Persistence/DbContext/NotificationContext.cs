@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Harmony.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace Harmony.Notifications.Persistence
+namespace Harmony.Persistence.DbContext
 {
-    public class NotificationContext : DbContext
+    public class NotificationContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public DbSet<Notification> Notifications { get; set; }
 

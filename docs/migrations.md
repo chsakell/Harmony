@@ -31,6 +31,10 @@ Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Notif
 ```
 
 ```
+Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Automations -v
+```
+
+```
 Update-Database -Context NotificationContext -StartUpProject Harmony.Notifications -v
 ```
 

@@ -1,6 +1,6 @@
 ﻿using Hangfire;
 using Harmony.Domain.Enums;
-using Harmony.Notifications.Persistence;
+using Harmony.Persistence.DbContext;
 
 namespace Harmony.Notifications.Services
 {

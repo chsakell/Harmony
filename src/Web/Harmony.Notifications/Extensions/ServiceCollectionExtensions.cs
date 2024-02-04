@@ -7,7 +7,6 @@ using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Contracts.Notifications.SearchIndex;
-using Harmony.Notifications.Persistence;
 using Harmony.Notifications.Services.Notifications.Email;
 using Harmony.Notifications.Services.Notifications.SearchIndex;
 using Harmony.Persistence.DbContext;
@@ -105,13 +104,13 @@ namespace Harmony.Notifications.Extensions
                     options.EnableSensitiveDataLogging(true);
                 });
 
-        internal static IServiceCollection AddNotificationDatabase(
+        internal static IServiceCollection AddJobsDatabase(
             this IServiceCollection services,
             IConfiguration configuration)
             => services
                 .AddDbContext<NotificationContext>(options =>
                 {
-                    options.UseSqlServer(configuration.GetConnectionString("HarmonyNotificationsConnection"));
+                    options.UseSqlServer(configuration.GetConnectionString("HarmonyJobsConnection"));
                     options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
                     options.EnableDetailedErrors(true);
                     options.EnableSensitiveDataLogging(true);

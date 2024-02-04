@@ -16,7 +16,7 @@ namespace Harmony.Notifications
             builder.Services.AddEndpointConfiguration(builder.Configuration);
 
             // Add DbContexts
-            builder.Services.AddNotificationDatabase(builder.Configuration);
+            builder.Services.AddJobsDatabase(builder.Configuration);
 
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
 
@@ -44,7 +44,7 @@ namespace Harmony.Notifications
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HarmonyNotificationsConnection")));
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HarmonyJobsConnection")));
 
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();

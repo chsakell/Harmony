@@ -12,6 +12,8 @@ using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
 using Harmony.Messaging;
+using Harmony.Persistence.DbContext;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Harmony.Automations.Extensions
@@ -40,6 +42,18 @@ namespace Harmony.Automations.Extensions
 
             return services;
         }
+
+        internal static IServiceCollection AddJobsDatabase(
+            this IServiceCollection services,
+            IConfiguration configuration)
+            => services
+                .AddDbContext<NotificationContext>(options =>
+                {
+                    options.UseSqlServer(configuration.GetConnectionString("HarmonyJobsConnection"));
+                    options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
+                    options.EnableDetailedErrors(true);
+                    options.EnableSensitiveDataLogging(true);
+                });
 
         internal static IServiceCollection AddDbSeed(
             this IServiceCollection services)

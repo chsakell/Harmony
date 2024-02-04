@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using Harmony.Notifications.Persistence;
+using Harmony.Persistence.DbContext;
 using Harmony.Application.Helpers;
 using Harmony.Domain.Enums;
 using Harmony.Notifications.Contracts.Notifications.Email;
