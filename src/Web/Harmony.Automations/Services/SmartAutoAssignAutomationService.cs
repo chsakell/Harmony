@@ -26,7 +26,8 @@ namespace Harmony.Automations.Services
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
-        public async Task Process(SmartAutoAssignAutomationDto automation, CardCreatedMessage notification)
+        public async Task Process(SmartAutoAssignAutomationDto automation, 
+            CardCreatedMessage notification)
         {
             if (notification == null)
             {
@@ -75,32 +76,53 @@ namespace Harmony.Automations.Services
         public async Task ScheduleAssignee(SmartAutoAssignAutomationDto automation, 
             CardCreatedMessage notification)
         {
-            switch (automation.Option)
-            {
-                case SmartAutoAssignOption.IssueCreator:
-                    await SetCardAssignee(notification.BoardId, notification.Card.Id, notification.UserId);
-                    break;
-                case SmartAutoAssignOption.SpecificUser:
+            var userId = automation.Option == SmartAutoAssignOption.IssueCreator ? 
+                notification.UserId : automation.UserId;
 
-                    break;
-            }
-        }
-
-        private async Task SetCardAssignee(Guid boardId, Guid cardId, string userId)
-        {
             using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
             var client = new UserCardService.UserCardServiceClient(channel);
 
             Metadata headers = new()
             {
-                { ServiceConstants.TrustedClientHeader, ServiceConstants.HarmonyAutomations }
+                {
+                    ServiceConstants.TrustedClientHeader,
+                    ServiceConstants.HarmonyAutomations
+                }
             };
+
+            if (automation.AssignIfNoneAssigned)
+            {
+                var userAssignedResponse = await client.IsCardAssignedAsync(
+                             new IsCardAssignedRequest
+                             {
+                                 CardId = notification.Card.Id.ToString(),
+                             }, headers);
+
+                if (userAssignedResponse.IsAssigned)
+                {
+                    return;
+                }
+            }
+
+            if (automation.SetFromParentIfSubtask && notification.Card.ParentCardId.HasValue)
+            {
+                var userAssignedResponse = await client.IsCardAssignedAsync(
+                             new IsCardAssignedRequest
+                             {
+                                 CardId = notification.Card.ParentCardId.Value.ToString(),
+                             }, headers);
+
+                if (userAssignedResponse.IsAssigned)
+                {
+                    userId = userAssignedResponse.Users[0];
+                }
+            }
 
             var cardResponse = await client.AddUserCardAsync(
                               new AddUserCardRequest
                               {
-                                  BoardId = boardId.ToString(),
-                                  CardId = cardId.ToString(),
+                                  BoardId = notification.BoardId.ToString(),
+                                  CardId = notification.Card.Id.ToString(),
                                   UserId = userId
                               }, headers);
 

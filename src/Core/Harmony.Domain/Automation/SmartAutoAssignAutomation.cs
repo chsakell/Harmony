@@ -6,6 +6,7 @@ namespace Harmony.Domain.Automation
     {
         public AutomationTriggerSchedule RunTriggerAt { get; set; }
         public bool OverrideAndCopyFromParentIfSubtask { get; set; }
+        public bool  AssignIfNoneAssigned { get; set; }
         public SmartAutoAssignOption  Option { get; set; }
         public string UserId { get; set; }
         public string FirstName { get; set; }

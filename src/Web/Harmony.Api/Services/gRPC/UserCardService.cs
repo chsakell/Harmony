@@ -43,6 +43,24 @@ namespace Harmony.Api.Services.gRPC
             };
         }
 
+        public override async Task<Protos.IsCardAssignedResponse> IsCardAssigned(Protos.IsCardAssignedRequest request, ServerCallContext context)
+        {
+            var cardUsers = await _userCardRepository
+                .GetCardUsers(Guid.Parse(request.CardId));
+
+            var response = new Protos.IsCardAssignedResponse()
+            {
+                IsAssigned = cardUsers.Any()
+            };
+
+            if(cardUsers.Any())
+            {
+                response.Users.AddRange(cardUsers.Select(u => u.Id));
+            }
+
+            return response;
+        }
+
         private Protos.UserCardResponse MapToProto(UserCard userCard)
         {
             if (userCard == null)

@@ -6,6 +6,7 @@ namespace Harmony.Application.DTO.Automation
     {
         public AutomationTriggerSchedule RunTriggerAt { get; set; }
         public bool SetFromParentIfSubtask { get; set; }
+        public bool AssignIfNoneAssigned { get; set; }
         public SmartAutoAssignOption Option { get; set; }
         public string UserId { get; set; }
         public string FirstName { get; set; }

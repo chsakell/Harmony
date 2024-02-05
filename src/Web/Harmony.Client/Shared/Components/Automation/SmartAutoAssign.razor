@@ -89,7 +89,12 @@
                 }
                 <MudSwitch @bind-Value:get="@_selectedAutomationModel.SetFromParentIfSubtask"
                            @bind-Value:set="SetFromParentIfSubtask"
-                           Label="Set from parent for subtasks"
+                           Label="Set from parent if sub-task"
+                           Color="Color.Success" />
+
+                <MudSwitch @bind-Value:get="@_selectedAutomationModel.AssignIfNoneAssigned"
+                           @bind-Value:set="SetAssignIfNoneAssigned"
+                           Label="Run only if no-one has been already assigned"
                            Color="Color.Success" />
 
                 <MudSelect T="AutomationTriggerSchedule"

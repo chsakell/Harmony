@@ -84,6 +84,13 @@ namespace Harmony.Client.Shared.Components.Automation
             SetDescription();
         }
 
+        private void SetAssignIfNoneAssigned(bool assignIfNoneAssigned)
+        {
+            _selectedAutomationModel.AssignIfNoneAssigned = assignIfNoneAssigned;
+
+            SetDescription();
+        }
+
         private void SetUser(SearchBoardUserResponse user)
         {
             _selectedUser = user;
@@ -101,9 +108,9 @@ namespace Harmony.Client.Shared.Components.Automation
         private void SetDescription()
         {
             var specificUserText = string.IsNullOrEmpty(_selectedUser?.Id) ? "The selected user" : _selectedUser.FullName;
-            var issueCreatorText = "The user that creates the issue";
-            var overrideIfSubtaskText = "Subtasks will be assigned with parent's assignee if any.";
-
+            var issueCreatorText = "- The user that creates the issue";
+            var overrideIfSubtaskText = "- Subtasks will be assigned with parent's assignee if any.";
+            var assignOnlyIfNotAlreadyAssignedText = "- Assignement will be skipped if already someone else assigned";
             var builder = new StringBuilder();
             if(_selectedAutomationModel.Option == SmartAutoAssignOption.SpecificUser)
             {
@@ -117,7 +124,12 @@ namespace Harmony.Client.Shared.Components.Automation
 
             if(_selectedAutomationModel.SetFromParentIfSubtask)
             {
-                builder.Append(overrideIfSubtaskText);
+                builder.AppendLine(overrideIfSubtaskText);
+            }
+
+            if(_selectedAutomationModel.AssignIfNoneAssigned)
+            {
+                builder.AppendLine(assignOnlyIfNotAlreadyAssignedText);
             }
 
             _selectedAutomationModel.Description = builder.ToString();

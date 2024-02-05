@@ -25,6 +25,7 @@ namespace Harmony.Application.DTO
         public bool IsUpdating { get; set; }
 		public int TotalComments { get; set; }
 		public int TotalChildren { get; set; }
-		public short? StoryPoints { get; set; }
+        public Guid? ParentCardId { get; set; }
+        public short? StoryPoints { get; set; }
     }
 }

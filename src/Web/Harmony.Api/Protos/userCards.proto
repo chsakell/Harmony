@@ -7,6 +7,15 @@ message UserCardFilterRequest {
 	string userId  = 2;
 }
 
+message IsCardAssignedRequest {
+	string cardId = 1;
+}
+
+message IsCardAssignedResponse {
+	bool isAssigned = 1;
+    repeated string users = 2;
+}
+
 message UserCardResponse {
 	bool found = 1;
     UserCard userCard = 2;
@@ -32,4 +41,5 @@ service UserCardService {
   // returns a User Card
   rpc GetUserCard (UserCardFilterRequest) returns (UserCardResponse);
   rpc AddUserCard (AddUserCardRequest) returns (AddUserCardResponse);
+  rpc IsCardAssigned (IsCardAssignedRequest) returns (IsCardAssignedResponse);
 }

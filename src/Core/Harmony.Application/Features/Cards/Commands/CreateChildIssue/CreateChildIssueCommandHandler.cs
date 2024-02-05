@@ -16,6 +16,8 @@ using Harmony.Application.Specifications.Cards;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Shared.Constants.Application;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 {
@@ -111,6 +113,12 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
                     }, board.IndexName);
 
                 var result = _mapper.Map<CardDto>(childIssue);
+
+                var cardCreatedNotification = new CardCreatedMessage(board.Id, result, userId);
+
+                _notificationsPublisher.PublishMessage(cardCreatedNotification,
+                    NotificationType.CardCreated, routingKey: BrokerConstants.RoutingKeys.Notifications);
+
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Child issue created"]);
             }
 
