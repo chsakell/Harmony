@@ -43,7 +43,7 @@
                 </MudExpansionPanels>
                 <MudSelect @bind-Value="_selectedBoardList"
                            ToStringFunc="@converter"
-                           HelperText="Items will be moved at the end of this list in the board"
+                           HelperText="Items will be moved at the end of this list in the board. Any sub-tasks will be converted to normal tasks. You can convert them back to subtasks from their card view."
                            T="GetBoardListResponse" Label="Select a list" AnchorOrigin="Origin.BottomCenter">
                     @foreach (var list in _boardLists)
                 {

@@ -2,9 +2,11 @@
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
+using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.Services.Management
@@ -15,16 +17,19 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly IBoardRepository _boardRepository;
         private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly IBoardListRepository _boardListRepository;
+        private readonly IMediator _mediator;
 
         public CardService(ICardRepository cardRepository, 
 			IBoardRepository boardRepository,
 			IIssueTypeRepository issueTypeRepository,
-			IBoardListRepository boardListRepository)
+			IBoardListRepository boardListRepository,
+            IMediator mediator)
         {
 			_cardRepository = cardRepository;
             _boardRepository = boardRepository;
             _issueTypeRepository = issueTypeRepository;
             _boardListRepository = boardListRepository;
+            _mediator = mediator;
         }
 
         public async Task<bool> PositionCard(Card card, Guid? newListId, short newPosition, CardStatus status)
@@ -83,10 +88,11 @@ namespace Harmony.Infrastructure.Services.Management
 			return await Result<List<Card>>.FailAsync("Failed to move cards");
 		}
 
-        public async Task<IResult<List<Card>>> ReactivateCards(List<Guid> cardIds, Guid boardListId)
+        public async Task<IResult<List<Card>>> ReactivateCards(Guid boardId, List<Guid> cardIds, Guid boardListId)
         {
             var cards = await _cardRepository
-                .Entities.Where(card => cardIds.Contains(card.Id))
+                .Entities.IgnoreQueryFilters()
+                .Where(card => cardIds.Contains(card.Id))
                 .ToListAsync();
 
             if (cards.Any())
@@ -98,7 +104,21 @@ namespace Harmony.Infrastructure.Services.Management
                 {
                     card.BoardListId = boardListId;
                     card.Position = (short)totalCards++;
+                    
                     card.Status = CardStatus.Active;
+
+                    if(card.ParentCardId.HasValue)
+                    {
+                        var issueTypesResult = await _mediator
+                            .Send(new GetIssueTypesQuery(boardId));
+
+                        card.ParentCardId = null;
+
+                        if (issueTypesResult.Succeeded && issueTypesResult.Data.Any())
+                        {
+                            card.IssueTypeId = issueTypesResult.Data.First().Id;
+                        }
+                    }
                 }
 
                 var result = await _cardRepository.UpdateRange(cards);
@@ -313,7 +333,7 @@ namespace Harmony.Infrastructure.Services.Management
         {
             IQueryable<GetArchivedItemResponse> query = null;
 
-            query = from card in _cardRepository.Entities
+            query = from card in _cardRepository.Entities.IgnoreQueryFilters()
                     join issueType in _issueTypeRepository.Entities
                         on card.IssueTypeId equals issueType.Id
                     join board in _boardRepository.Entities

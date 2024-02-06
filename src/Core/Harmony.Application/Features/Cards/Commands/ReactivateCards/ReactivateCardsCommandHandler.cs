@@ -36,7 +36,7 @@ namespace Harmony.Application.Features.Cards.Commands.ReactivateCards
                 return await Result<List<CardDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var operationResult = await _cardService.ReactivateCards(request.Cards, request.BoardListId);
+            var operationResult = await _cardService.ReactivateCards(request.BoardId, request.Cards, request.BoardListId);
 
             if (operationResult.Succeeded)
             {
