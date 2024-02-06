@@ -177,7 +177,15 @@ namespace Harmony.Client.Pages.Management
 
             if (boardList != null)
             {
-                KanbanStore.AddCardToList(e.Message.Card, boardList);
+                if (!e.Message.Card.ParentCardId.HasValue)
+                {
+                    KanbanStore.AddCardToList(e.Message.Card, boardList);
+                }
+                else
+                {
+                    KanbanStore.UpdateTodalCardChildren(e.Message.Card.ParentCardId.Value, increase: true);
+                }
+                
                 _dropContainer.Refresh();
             }
         }
