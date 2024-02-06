@@ -58,10 +58,11 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-		public async Task<IResult<List<Card>>> MoveCardsToSprint(List<Guid> cardsToMove, Guid sprintId, Guid boardListId)
+		public async Task<IResult<List<Card>>> MoveCardsToSprint(Guid boardId, List<Guid> cardsToMove, Guid sprintId, Guid boardListId)
 		{
 			var cards = await _cardRepository
-				.Entities.Where(card => cardsToMove.Contains(card.Id))
+                .Entities.IgnoreQueryFilters()
+                .Where(card => cardsToMove.Contains(card.Id))
 				.ToListAsync();
 
 			if(cards.Any())
@@ -69,13 +70,26 @@ namespace Harmony.Infrastructure.Services.Management
                 // Get the last index in the board list id
                 var currentMaxPosition = await _cardRepository.GetMaxActivePosition(boardListId);
 
-				foreach(var card in cards.OrderBy(c => c.Position))
+                var issueTypesResult = await _mediator
+                            .Send(new GetIssueTypesQuery(boardId));
+
+                foreach (var card in cards.OrderBy(c => c.Position))
 				{
 					card.BoardListId = boardListId;
 					card.Position = ++currentMaxPosition;
 					card.SprintId = sprintId;
 					card.Status = CardStatus.Active;
-				}
+
+                    if (card.ParentCardId.HasValue)
+                    {
+                        card.ParentCardId = null;
+
+                        if (issueTypesResult.Succeeded && issueTypesResult.Data.Any())
+                        {
+                            card.IssueTypeId = issueTypesResult.Data.First().Id;
+                        }
+                    }
+                }
 
 				var result = await _cardRepository.UpdateRange(cards);
 
@@ -99,6 +113,9 @@ namespace Harmony.Infrastructure.Services.Management
             {
                 // Get the last index in the board list id
                 var totalCards = await _cardRepository.CountActiveCards(boardListId);
+                
+                var issueTypesResult = await _mediator
+                            .Send(new GetIssueTypesQuery(boardId));
 
                 foreach (var card in cards.OrderBy(c => c.Position))
                 {
@@ -109,9 +126,6 @@ namespace Harmony.Infrastructure.Services.Management
 
                     if(card.ParentCardId.HasValue)
                     {
-                        var issueTypesResult = await _mediator
-                            .Send(new GetIssueTypesQuery(boardId));
-
                         card.ParentCardId = null;
 
                         if (issueTypesResult.Succeeded && issueTypesResult.Data.Any())

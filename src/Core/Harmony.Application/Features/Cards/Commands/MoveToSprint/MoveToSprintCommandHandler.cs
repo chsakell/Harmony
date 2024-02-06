@@ -36,7 +36,7 @@ namespace Harmony.Application.Features.Cards.Commands.MoveToSprint
                 return await Result<List<CardDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var operationResult = await _cardService.MoveCardsToSprint(request.Cards, request.SprintId, request.BoardListId);
+            var operationResult = await _cardService.MoveCardsToSprint(request.BoardId, request.Cards, request.SprintId, request.BoardListId);
 
             if (operationResult.Succeeded)
             {

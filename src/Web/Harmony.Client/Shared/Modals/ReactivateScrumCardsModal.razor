@@ -49,7 +49,7 @@
                 <ToolBarContent>
                     <MudSelect @bind-Value="_selectedBoardList"
                                ToStringFunc="@converter"
-                               HelperText="Items will be moved to this list in the board"
+                               HelperText="Items (normal & sub-tasks) will be moved to this list in the board."
                                T="GetBoardListResponse" Label="Select a list" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var list in _boardLists)
                     {
