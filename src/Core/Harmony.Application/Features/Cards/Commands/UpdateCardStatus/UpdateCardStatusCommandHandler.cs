@@ -51,7 +51,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 
 		card.Status = request.Status;
 
-		if (card.BoardListId.HasValue)
+		if (card.BoardListId.HasValue && !card.ParentCardId.HasValue)
 		{
 			await _cardService.ReorderCardsAfterArchive(card.BoardListId.Value, card.Position);
 		}
