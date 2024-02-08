@@ -35,7 +35,7 @@
             }
             else
             {
-                <MudAvatar Image="@ImageDataUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                <MudAvatar Image="@(_clientConfiguration.GetServerResource(ImageDataUrl))" Style="height:50px; width:50px;"> </MudAvatar>
             }
         </ActivatorContent>
         <ChildContent>

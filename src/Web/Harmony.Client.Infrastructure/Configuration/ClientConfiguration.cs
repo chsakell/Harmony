@@ -10,5 +10,10 @@
 
         public string SignalrHostUrl {  get; private set; }
         public string BackendUrl { get; private set;}
+
+        public string GetServerResource(string resource)
+        {
+            return $"{BackendUrl.TrimEnd('/')}/{resource}";
+        }
     }
 }

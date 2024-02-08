@@ -75,7 +75,7 @@
                                         }
                                         else
                                         {
-                                            <MudImage Src="@user.ProfilePicture" />
+                                            <MudImage Src="@(_clientConfiguration.GetServerResource(user.ProfilePicture))" />
                                         }
                                     </MudAvatar>
                                     <MudStack Justify="Justify.Center" Spacing="0">
@@ -94,13 +94,12 @@
 
                 <MudSwitch @bind-Value:get="@_selectedAutomationModel.AssignIfNoneAssigned"
                            @bind-Value:set="SetAssignIfNoneAssigned"
-                           Label="Run only if no-one has been already assigned"
+                           Label="Skip if someone else already assigned"
                            Color="Color.Success" />
 
                 <MudSelect T="AutomationTriggerSchedule"
                            @bind-Value="_selectedAutomationModel.RunTriggerAt"
                            Label="Run trigger"
-                           HelperText="Assignee will change only when no one is already assigned at the time automation is triggered. "
                            ToStringFunc="triggerScheduleConverter"
                            AnchorOrigin="Origin.BottomCenter">
                     @foreach (var option in (AutomationTriggerSchedule[])Enum.GetValues(typeof(AutomationTriggerSchedule)))

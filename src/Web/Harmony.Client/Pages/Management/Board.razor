@@ -251,7 +251,7 @@ else
                                                 else
                                                 {
                                                     <MudAvatar Size="Size.Small" Color="Color.Default">
-                                                        <MudImage Src="@member.ProfilePicture" title="@member.FullName" />
+                                                        <MudImage Src="@(_clientConfiguration.GetServerResource(member.ProfilePicture))" title="@member.FullName" />
                                                     </MudAvatar>
                                                 }
                                             }
