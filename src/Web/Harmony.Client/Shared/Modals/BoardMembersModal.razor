@@ -36,7 +36,7 @@ else
                                         }
                                         else
                                         {
-                                            <MudImage Src="@context.ProfilePicture" />
+                                            <MudImage Src="@(_clientConfiguration.GetServerResource(context.ProfilePicture))" />
                                         }
                                     </MudAvatar>
                                         <MudStack Justify="Justify.Center" Spacing="0">
@@ -80,7 +80,7 @@ else
                                 }
                                 else
                                 {
-                                    <MudImage Src="@member.ProfilePicture" />
+                                    <MudImage Src="@(_clientConfiguration.GetServerResource(member.ProfilePicture))" />
                                 }
                             </MudAvatar>
                                 <MudStack Justify="Justify.Center" Spacing="0">

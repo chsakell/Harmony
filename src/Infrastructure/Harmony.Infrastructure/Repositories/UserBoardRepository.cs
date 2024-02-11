@@ -57,7 +57,8 @@ namespace Harmony.Infrastructure.Repositories
                                         IsActive = user.IsActive,
                                         IsMember = true,
                                         PhoneNumber = user.PhoneNumber,
-                                        Access = userBoard.Access
+                                        Access = userBoard.Access,
+                                        ProfilePicture = user.ProfilePicture
                                     })
                           .ToListAsync();
 
