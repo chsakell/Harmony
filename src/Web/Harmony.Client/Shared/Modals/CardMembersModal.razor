@@ -36,7 +36,7 @@ else
                                         }
                                         else
                                         {
-                                            <MudImage Src="@context.ProfilePicture" />
+                                            <MudImage Src="@(_clientConfiguration.GetServerResource(context.ProfilePicture))" />
                                         }
                                     </MudAvatar>
                                         <MudStack Justify="Justify.Center" Spacing="0">
@@ -67,7 +67,18 @@ else
                 <MudStack>
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
-                            <MudAvatar Color="Color.Secondary">@(member.FirstName[0])</MudAvatar>
+                            <MudAvatar Color="Color.Secondary">
+                                @if (string.IsNullOrEmpty(member.ProfilePicture))
+                                {
+                                    @member.FirstName[0]
+
+                                    @member.LastName[0]
+                                }
+                                else
+                                {
+                                    <MudImage Src="@(_clientConfiguration.GetServerResource(member.ProfilePicture))" />
+                                }
+                            </MudAvatar>
                                 <MudStack Justify="Justify.Center" Spacing="0">
                                     <MudText Typo="Typo.body1">@member.FullName</MudText>
                                     <MudText Typo="Typo.body2">@@@member.UserName</MudText>
