@@ -51,7 +51,14 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid workspaceId, string userId, string workspaceUrl)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
 
             var workspaceServiceClient = new WorkspaceService.WorkspaceServiceClient(channel);
             var workspaceResponse = await workspaceServiceClient.GetWorkspaceAsync(new WorkspaceFilterRequest

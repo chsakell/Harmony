@@ -51,7 +51,14 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid cardId)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
             var cardServiceClient = new CardService.CardServiceClient(channel);
             var cardResponse = await cardServiceClient.GetCardAsync(
                               new CardFilterRequest

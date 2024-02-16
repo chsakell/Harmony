@@ -31,7 +31,15 @@ namespace Harmony.Notifications.Services.Notifications.Email
         {
             await RemovePendingCardJobs(notification.CardId, notification.UserId, EmailNotificationType.MemberAddedToCard);
 
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
+
             var client = new UserCardService.UserCardServiceClient(channel);
 
             var userCard = await client.GetUserCardAsync(new UserCardFilterRequest()
@@ -65,7 +73,15 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task SendEmail(MemberAddedToCardNotification notification)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
+
             var boardServiceClient = new BoardService.BoardServiceClient(channel);
 
             var filter = new BoardFilterSpecification(notification.BoardId, new BoardIncludes());

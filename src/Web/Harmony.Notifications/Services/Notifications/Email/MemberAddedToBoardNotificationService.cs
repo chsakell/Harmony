@@ -50,7 +50,15 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid boardId, string userId, string boardUrl)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
+
             var boardServiceClient = new BoardService.BoardServiceClient(channel);
 
             var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.Runtime.Internal;
+using AutoMapper;
 using Google.Protobuf.Collections;
 using Grpc.Net.Client;
 using Harmony.Api.Controllers.Management;
@@ -19,18 +20,25 @@ namespace Harmony.Api.Controllers.Automation
     {
         private readonly AppEndpointConfiguration _endpointConfiguration;
         private readonly IMapper _mapper;
-
+        private readonly HttpClientHandler _httpHandler;
         public AutomationsController(IOptions<AppEndpointConfiguration> endpointConfiguration,
             IMapper mapper)
         {
             _endpointConfiguration = endpointConfiguration.Value;
             _mapper = mapper;
+
+            _httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
         }
 
         [HttpGet("templates")]
         public async Task<IActionResult> GetTemplates()
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint,
+                new GrpcChannelOptions { HttpHandler = _httpHandler });
             var client = new AutomationService.AutomationServiceClient(channel);
 
             var getAutomationTemplatesResult = await client
@@ -46,7 +54,8 @@ namespace Harmony.Api.Controllers.Automation
         [HttpPost]
         public async Task<IActionResult> Create(CreateAutomationCommand command)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint,
+                new GrpcChannelOptions { HttpHandler = _httpHandler });
             var client = new AutomationService.AutomationServiceClient(channel);
 
             var createAutomationResult = await client.CreateAutomationAsync(
@@ -65,7 +74,8 @@ namespace Harmony.Api.Controllers.Automation
         [HttpPut("{id}/toggle")]
         public async Task<IActionResult> Update(string id, ToggleAutomationCommand command)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint,
+                new GrpcChannelOptions { HttpHandler = _httpHandler });
             var client = new AutomationService.AutomationServiceClient(channel);
 
             var toggleAutomationResult = await client.ToggleAutomationAsync(
@@ -83,7 +93,8 @@ namespace Harmony.Api.Controllers.Automation
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint,
+                new GrpcChannelOptions { HttpHandler = _httpHandler });
             var client = new AutomationService.AutomationServiceClient(channel);
 
             var removeAutomationResult = await client.RemoveAutomationAsync(
@@ -100,7 +111,8 @@ namespace Harmony.Api.Controllers.Automation
         [HttpGet("{boardId:guid}/types/{type:int}")]
         public async Task<IActionResult> GetAutomations(Guid boardId, AutomationType type)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint);
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint,
+                new GrpcChannelOptions { HttpHandler = _httpHandler });
             var client = new AutomationService.AutomationServiceClient(channel);
 
             var getAutomationsResult = await client

@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0792C2B-78C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{15D6F646-4699-488A-95A2-198CE47A5C2C}"
 	ProjectSection(SolutionItems) = preProject
+		docs\docker.md = docs\docker.md
 		docs\documentation.md = docs\documentation.md
 		docs\documentation.pdf = docs\documentation.pdf
 		docs\migrations.md = docs\migrations.md
@@ -46,6 +47,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.SignalR", "src\Web\Harmony.SignalR\Harmony.SignalR.csproj", "{66EE57B8-972B-4ACD-A49B-D9E3CDBDB746}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Client", "src\Web\Harmony.Client\Harmony.Client.csproj", "{0958634A-F44F-4965-97C4-DCE1E31DFE17}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{23B9A799-1D67-413F-A4BF-A8E29ED03B6C}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-      <Protobuf Include="../Harmony.Api/protos/*.proto" GrpcServices="Client"></Protobuf>
+      <Protobuf Include="../Harmony.Api/Protos/*.proto" GrpcServices="Client"></Protobuf>
       <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
   </ItemGroup>
 

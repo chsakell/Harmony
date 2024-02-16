@@ -49,7 +49,15 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task SendEmail(MemberRemovedFromCardNotification notification)
         {
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
+
             var client = new UserCardService.UserCardServiceClient(channel);
 
             var userCard = await client.GetUserCardAsync(new UserCardFilterRequest()

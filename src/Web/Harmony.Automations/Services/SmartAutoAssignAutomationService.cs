@@ -10,6 +10,7 @@ using Harmony.Application.Configurations;
 using Grpc.Core;
 using Hangfire;
 using Harmony.Domain.Enums.Automations;
+using Amazon.Runtime.Internal;
 
 
 namespace Harmony.Automations.Services
@@ -79,7 +80,14 @@ namespace Harmony.Automations.Services
             var userId = automation.Option == SmartAutoAssignOption.IssueCreator ? 
                 notification.UserId : automation.UserId;
 
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint);
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
             var client = new UserCardService.UserCardServiceClient(channel);
 
             Metadata headers = new()
