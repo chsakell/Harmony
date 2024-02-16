@@ -29,12 +29,6 @@ namespace Harmony.Client.Infrastructure.Managers.Identity.Account
             return await response.ToResult();
         }
 
-        public async Task<IResult<string>> GetProfilePictureAsync(string userId)
-        {
-            var response = await _httpClient.GetAsync(AccountEndpoints.GetProfilePicture(userId));
-            return await response.ToResult<string>();
-        }
-
         public async Task<IResult<string>> UpdateProfilePictureAsync(UpdateProfilePictureRequest request, string userId)
         {
             var response = await _httpClient.PostAsJsonAsync(AccountEndpoints.UpdateProfilePicture(userId), request);

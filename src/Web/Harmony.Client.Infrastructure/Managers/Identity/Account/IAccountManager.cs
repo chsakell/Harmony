@@ -8,11 +8,7 @@ namespace Harmony.Client.Infrastructure.Managers.Identity.Account
     public interface IAccountManager : IManager
     {
         Task<IResult<UpdatePasswordResponse>> ChangePasswordAsync(UpdatePasswordCommand model);
-
         Task<IResult> UpdateProfileAsync(UpdateProfileCommand command);
-
-        Task<IResult<string>> GetProfilePictureAsync(string userId);
-
         Task<IResult<string>> UpdateProfilePictureAsync(UpdateProfilePictureRequest request, string userId);
     }
 }

@@ -52,18 +52,6 @@ namespace Harmony.Api.Controllers.Identity
         }
 
         /// <summary>
-        /// Get Profile picture by Id
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns>Status 200 OK </returns>
-        [HttpGet("profile-picture/{userId}")]
-        [ResponseCache(NoStore = false, Location = ResponseCacheLocation.Client, Duration = 60)]
-        public async Task<IActionResult> GetProfilePictureAsync(string userId)
-        {
-            return Ok(await _accountService.GetProfilePictureAsync(userId));
-        }
-
-        /// <summary>
         /// Update Profile Picture
         /// </summary>
         /// <param name="request"></param>

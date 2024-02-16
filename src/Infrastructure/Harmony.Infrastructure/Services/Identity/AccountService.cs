@@ -13,18 +13,15 @@ namespace Harmony.Infrastructure.Services.Identity
         private readonly UserManager<HarmonyUser> _userManager;
         private readonly SignInManager<HarmonyUser> _signInManager;
         private readonly IUploadService _uploadService;
-        //private readonly IStringLocalizer<AccountService> _localizer;
 
         public AccountService(
             UserManager<HarmonyUser> userManager,
             SignInManager<HarmonyUser> signInManager,
             IUploadService uploadService)
-            //IStringLocalizer<AccountService> localizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _uploadService = uploadService;
-            //_localizer = localizer;
         }
 
         public async Task<IResult> ChangePasswordAsync(ChangePasswordRequest model, string userId)
@@ -79,16 +76,6 @@ namespace Harmony.Infrastructure.Services.Identity
             {
                 return await Result.FailAsync(string.Format("Email {0} is already used.", request.Email));
             }
-        }
-
-        public async Task<IResult<string>> GetProfilePictureAsync(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return await Result<string>.FailAsync("User Not Found");
-            }
-            return await Result<string>.SuccessAsync(data: user.ProfilePicture);
         }
 
         public async Task<IResult<string>> UpdateProfilePictureAsync(UpdateProfilePictureRequest request, string userId)

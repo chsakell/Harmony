@@ -81,16 +81,21 @@ namespace Harmony.Client.Shared
                     }
 
                     Email = user.GetEmail();
-                    var imageResponse = await _accountManager.GetProfilePictureAsync(CurrentUserId);
+                    //var imageResponse = await _accountManager.GetProfilePictureAsync(CurrentUserId);
                     
-                    if (imageResponse.Succeeded)
-                    {
-                        ImageDataUrl = imageResponse.Data;
-                        StateHasChanged();
-                    }
+                    //if (imageResponse.Succeeded)
+                    //{
+                    //    ImageDataUrl = imageResponse.Data;
+                    //    StateHasChanged();
+                    //}
 
                     var currentUserResult = await _userManager.GetAsync(CurrentUserId);
-                    if (!currentUserResult.Succeeded || currentUserResult.Data == null)
+                    if (currentUserResult.Succeeded && currentUserResult.Data != null)
+                    {
+                        ImageDataUrl = currentUserResult.Data.ProfilePicture;
+                        StateHasChanged();
+                    }
+                    else if (!currentUserResult.Succeeded || currentUserResult.Data == null)
                     {
                         CurrentUserId = string.Empty;
                         ImageDataUrl = string.Empty;
