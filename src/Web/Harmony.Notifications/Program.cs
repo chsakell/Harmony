@@ -1,5 +1,6 @@
 using Hangfire;
 using Harmony.Application.Configurations;
+using Harmony.Application.Extensions;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Extensions;
 using Harmony.Notifications.Services.EmailProviders;
@@ -32,6 +33,8 @@ namespace Harmony.Notifications
             builder.Services.ConfigureBrevo(builder.Configuration);
 
             builder.Services.AddHttpClient();
+
+            builder.Services.AddRetryPolicies();
 
             // Add services to the container.
             builder.Services.AddRazorPages();

@@ -35,5 +35,10 @@
             public const string OnCardLabelRemoved = "OnCardLabelRemoved";
             public const string OnCheckListRemoved = "OnCheckListRemoved";
         }
+
+        public static class HarmonyRetryPolicy
+        {
+            public const string WaitAndRetry = "wait-and-retry";
+        }
     }
 }

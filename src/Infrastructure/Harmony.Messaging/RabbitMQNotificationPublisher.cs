@@ -7,8 +7,10 @@ using Harmony.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Polly.Registry;
 using RabbitMQ.Client;
 using System.Text;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Messaging
 {
@@ -16,22 +18,41 @@ namespace Harmony.Messaging
     {
         private readonly ILogger<RabbitMQNotificationPublisher> _logger;
         IConnection connection;
+        private readonly BrokerConfiguration? _brokerConfiguration;
         public RabbitMQNotificationPublisher(IOptions<BrokerConfiguration> brokerConfig,
+            ResiliencePipelineProvider<string> resiliencePipelineProvider,
             ILogger<RabbitMQNotificationPublisher> logger)
         {
-            var config = brokerConfig.Value;
+            _brokerConfiguration = brokerConfig.Value;
             _logger = logger;
 
+            try
+            {
+                var pipeline = resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
+                pipeline.Execute(token =>
+                {
+                    InitRabbitMQ();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to connect to RabbitMQ {ex}");
+            }
+        }
+
+        private void InitRabbitMQ()
+        {
             var factory = new ConnectionFactory
             {
-                HostName = config.Host,
-                Port = config.Port,
-                UserName = string.IsNullOrEmpty(config.Username)
-                    ? ConnectionFactory.DefaultUser : config.Username,
-                Password = string.IsNullOrEmpty(config.Password)
-                    ? ConnectionFactory.DefaultPass : config.Password,
-                VirtualHost = string.IsNullOrEmpty(config.VirtualHost) ?
-                    ConnectionFactory.DefaultVHost : config.VirtualHost,
+                HostName = _brokerConfiguration.Host,
+                Port = _brokerConfiguration.Port,
+                UserName = string.IsNullOrEmpty(_brokerConfiguration.Username)
+                    ? ConnectionFactory.DefaultUser : _brokerConfiguration.Username,
+                Password = string.IsNullOrEmpty(_brokerConfiguration.Password)
+                    ? ConnectionFactory.DefaultPass : _brokerConfiguration.Password,
+                VirtualHost = string.IsNullOrEmpty(_brokerConfiguration.VirtualHost) ?
+                    ConnectionFactory.DefaultVHost : _brokerConfiguration.VirtualHost,
             };
 
             try
@@ -55,13 +76,6 @@ namespace Harmony.Messaging
                     exclusive: false,
                     autoDelete: false,
                     arguments: null);
-
-                //channel.QueueDeclare(
-                //    queue: BrokerConstants.NotificationsQueue,
-                //    durable: true,
-                //    exclusive: false,
-                //    autoDelete: false,
-                //    arguments: null);
             }
             catch (Exception ex)
             {

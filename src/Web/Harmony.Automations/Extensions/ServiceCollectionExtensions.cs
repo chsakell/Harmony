@@ -59,7 +59,7 @@ namespace Harmony.Automations.Extensions
             this IServiceCollection services)
             => services.AddScoped<IDatabaseSeeder, MongoDbSeeder>();
 
-        public static void AddApplicationLayer(this IServiceCollection services)
+        public static void AddAutomationApplicationLayer(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

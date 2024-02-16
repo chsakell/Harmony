@@ -4,10 +4,12 @@ using Harmony.Application.Notifications;
 using Harmony.Automations.Contracts;
 using Harmony.Domain.Enums;
 using Microsoft.Extensions.Options;
+using Polly.Registry;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Automations.Services.Hosted
 {
@@ -21,6 +23,7 @@ namespace Harmony.Automations.Services.Hosted
 
         public AutomationNotificationsConsumerHostedService(ILoggerFactory loggerFactory,
             IOptions<BrokerConfiguration> brokerConfig,
+            ResiliencePipelineProvider<string> resiliencePipelineProvider,
             IServiceProvider serviceProvider)
         {
             _logger = loggerFactory.CreateLogger<AutomationNotificationsConsumerHostedService>();
@@ -28,7 +31,12 @@ namespace Harmony.Automations.Services.Hosted
 
             try
             {
-                InitRabbitMQ();
+                var pipeline = resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
+                pipeline.Execute(token =>
+                {
+                    InitRabbitMQ();
+                });
             }
             catch (Exception ex)
             {

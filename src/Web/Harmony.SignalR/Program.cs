@@ -2,6 +2,7 @@ using Harmony.Shared.Constants.Application;
 using Harmony.SignalR.Extensions;
 using Harmony.SignalR.Hubs;
 using Harmony.SignalR.Services.Hosted;
+using Harmony.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddCors();
 builder.Services.AddSignalR(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddRetryPolicies();
 
 var app = builder.Build();
 

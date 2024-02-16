@@ -1,5 +1,6 @@
 using Hangfire;
 using Harmony.Application.Configurations;
+using Harmony.Application.Extensions;
 using Harmony.Automations.Extensions;
 using Harmony.Automations.Services;
 using Harmony.Automations.Services.Hosted;
@@ -21,10 +22,10 @@ namespace Harmony.Automations
             // Add DbContexts
             builder.Services.AddJobsDatabase(builder.Configuration);
 
-            builder.Services.AddApplicationLayer();
+            builder.Services.AddAutomationApplicationLayer();
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
             builder.Services.AddAutomationServices();
-
+            builder.Services.AddRetryPolicies();
             builder.Services.AddMongoDb(builder.Configuration);
             builder.Services.AddMessaging(builder.Configuration);
 

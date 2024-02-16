@@ -17,6 +17,7 @@ builder.Services.AddLocalization(options =>
 });
 
 
+builder.Services.AddRetryPolicies();
 builder.Services.AddEndpointConfiguration(builder.Configuration);
 
 var endpointConfiguration =
