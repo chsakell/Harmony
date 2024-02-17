@@ -101,7 +101,7 @@ services:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.client
     ports:
-        - "7096:80"
+        - "7096:443"
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=https://+:443;http://+:80

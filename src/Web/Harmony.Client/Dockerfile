@@ -20,6 +20,8 @@ RUN dotnet publish "./Harmony.Client.csproj" -c $BUILD_CONFIGURATION -o /app/pub
 
 FROM nginx:alpine
 WORKDIR /app
-EXPOSE 80
+EXPOSE 443
+COPY src/Web/Harmony.Client/nginx-selfsigned.crt /etc/nginx/ssl/nginx-selfsigned.crt
+COPY src/Web/Harmony.Client/nginx-selfsigned.key /etc/nginx/ssl/nginx-selfsigned.key
 COPY src/Web/Harmony.Client/nginx.conf /etc/nginx/nginx.conf
 COPY --from=publish /app/publish/wwwroot /usr/share/nginx/html
