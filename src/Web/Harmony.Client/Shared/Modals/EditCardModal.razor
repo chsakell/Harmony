@@ -303,7 +303,7 @@ else
                                                     else
                                                     {
                                                         <MudAvatar Size="Size.Medium" Color="Color.Default">
-                                                            <MudImage Src="@comment.User.ProfilePicture" title="@comment.User.FullName" />
+                                                            <MudImage Src="@(_clientConfiguration.GetServerResource(comment.User.ProfilePicture))" title="@comment.User.FullName" />
                                                         </MudAvatar>
                                                     }
                                                     <MudStack Justify="Justify.Center" Spacing="0">
