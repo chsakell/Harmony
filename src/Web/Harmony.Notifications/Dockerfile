@@ -18,6 +18,7 @@ RUN dotnet restore "Web/Harmony.Notifications/Harmony.Notifications.csproj"
 COPY src/ .
 WORKDIR "/src/Web/Harmony.Notifications"
 RUN dotnet build "Harmony.Notifications.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet dev-certs https -ep /https/harmony.pfx -p HarmonyTeamsSecretKey
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
@@ -26,4 +27,5 @@ RUN dotnet publish "Harmony.Notifications.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --chmod=0755 --from=build /https/* /https/
 ENTRYPOINT ["dotnet", "Harmony.Notifications.dll"]

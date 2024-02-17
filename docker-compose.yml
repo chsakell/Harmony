@@ -3,7 +3,7 @@ services:
    api:
     build: 
         context: .
-        dockerfile: src\Web\Harmony.Api\Dockerfile
+        dockerfile: src/Web/Harmony.Api/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.api
@@ -19,14 +19,12 @@ services:
         - ConnectionStrings__HarmonyConnection=Server=harmony_sql_server;database=harmony;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
         - AppEndpointConfiguration__AutomationEndpoint=https://harmony.automations:443/
         - BrokerConfiguration__Host=harmony_rabbitmq
-    volumes:
-        - $USERPROFILE\.aspnet\https:/https/
     depends_on:
         - sql_server
    automations:
     build: 
         context: .
-        dockerfile: src\Web\Harmony.Automations\Dockerfile
+        dockerfile: src/Web/Harmony.Automations/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.automations
@@ -43,8 +41,6 @@ services:
         - BrokerConfiguration__Host=harmony_rabbitmq 
         - ConnectionStrings__HarmonyJobsConnection=Server=harmony_sql_server;database=Harmony.Automations.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
         - MongoDB__ConnectionURI=mongodb://harmony_mongodb_server:27017
-    volumes:
-        - $USERPROFILE\.aspnet\https:/https/
     depends_on:
         - sql_server
         - rabbitmq
@@ -52,7 +48,7 @@ services:
    notifications:
     build: 
         context: .
-        dockerfile: src\Web\Harmony.Notifications\Dockerfile
+        dockerfile: src/Web/Harmony.Notifications/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.notifications
@@ -68,35 +64,32 @@ services:
         - AppEndpointConfiguration__HarmonyApiEndpoint=https://harmony.api:443/
         - BrokerConfiguration__Host=harmony_rabbitmq 
         - ConnectionStrings__HarmonyJobsConnection=Server=harmony_sql_server;database=Harmony.Notifications.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
-    volumes:
-        - $USERPROFILE\.aspnet\https:/https/
     depends_on:
         - sql_server
         - rabbitmq
    signalr:
     build: 
         context: .
-        dockerfile: src\Web\Harmony.SignalR\Dockerfile
+        dockerfile: src/Web/Harmony.SignalR/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.signalr
     ports:
         - "7262:443"
+    restart: always
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=https://+:443;http://+:80
         - ASPNETCORE_HTTPS_PORT=7262
         - BrokerConfiguration__Host=harmony_rabbitmq
         - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
-    volumes:
-        - $USERPROFILE\.aspnet\https:/https/
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
     depends_on:
         - rabbitmq
    client:
     build: 
         context: .
-        dockerfile: src\Web\Harmony.Client\Dockerfile
+        dockerfile: src/Web/Harmony.Client/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.client
@@ -108,8 +101,6 @@ services:
         - ASPNETCORE_HTTPS_PORT=7096
         - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
         - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
-    volumes:
-        - $USERPROFILE\.aspnet\https:/https/
     depends_on:
         - signalr
    rabbitmq:

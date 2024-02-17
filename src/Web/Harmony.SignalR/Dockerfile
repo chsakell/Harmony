@@ -1,5 +1,5 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
+# sudo docker compose up --force-recreate
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
@@ -16,6 +16,7 @@ RUN dotnet restore "Web/Harmony.SignalR/Harmony.SignalR.csproj"
 COPY src/ .
 WORKDIR "/src/Web/Harmony.SignalR"
 RUN dotnet build "Harmony.SignalR.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet dev-certs https -ep /https/harmony.pfx -p HarmonyTeamsSecretKey
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
@@ -24,4 +25,5 @@ RUN dotnet publish "./Harmony.SignalR.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --chmod=0755 --from=build /https/* /https/
 ENTRYPOINT ["dotnet", "Harmony.SignalR.dll"]

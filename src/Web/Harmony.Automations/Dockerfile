@@ -20,6 +20,7 @@ RUN dotnet restore "Web/Harmony.Automations/Harmony.Automations.csproj"
 COPY src/ .
 WORKDIR "/src/Web/Harmony.Automations"
 RUN dotnet build "./Harmony.Automations.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet dev-certs https -ep /https/harmony.pfx -p HarmonyTeamsSecretKey
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
@@ -28,4 +29,5 @@ RUN dotnet publish "Harmony.Automations.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --chmod=0755 --from=build /https/* /https/
 ENTRYPOINT ["dotnet", "Harmony.Automations.dll"]
