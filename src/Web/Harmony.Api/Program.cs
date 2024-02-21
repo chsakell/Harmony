@@ -7,8 +7,17 @@ using Harmony.Api.Services.gRPC;
 using Harmony.Application.Configurations;
 using System.Reflection;
 using Harmony.Api.Mappings;
+using Harmony.Logging;
+using Serilog;
+
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(SeriLogger.Configure);
 
 // Add services to the container.
 builder.Services.AddLocalization(options =>

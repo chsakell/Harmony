@@ -1,10 +1,12 @@
 using Hangfire;
 using Harmony.Application.Configurations;
 using Harmony.Application.Extensions;
+using Harmony.Logging;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Extensions;
 using Harmony.Notifications.Services.EmailProviders;
 using Harmony.Notifications.Services.Hosted;
+using Serilog;
 
 namespace Harmony.Notifications
 {
@@ -13,6 +15,8 @@ namespace Harmony.Notifications
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog(SeriLogger.Configure);
 
             builder.Services.AddEndpointConfiguration(builder.Configuration);
 

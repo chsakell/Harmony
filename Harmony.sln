@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{23B9A7
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Logging", "src\Infrastructure\Harmony.Logging\Harmony.Logging.csproj", "{5A5AB78B-CA5C-48A6-899A-2982770954B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{0958634A-F44F-4965-97C4-DCE1E31DFE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0958634A-F44F-4965-97C4-DCE1E31DFE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0958634A-F44F-4965-97C4-DCE1E31DFE17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A5AB78B-CA5C-48A6-899A-2982770954B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5AB78B-CA5C-48A6-899A-2982770954B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5AB78B-CA5C-48A6-899A-2982770954B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5AB78B-CA5C-48A6-899A-2982770954B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{5B70F331-02A6-48B7-B765-573645A844AA} = {4C18078A-C728-4E4A-A950-395F497181ED}
 		{66EE57B8-972B-4ACD-A49B-D9E3CDBDB746} = {4C18078A-C728-4E4A-A950-395F497181ED}
 		{0958634A-F44F-4965-97C4-DCE1E31DFE17} = {4C18078A-C728-4E4A-A950-395F497181ED}
+		{5A5AB78B-CA5C-48A6-899A-2982770954B3} = {68B5421A-5494-4494-98C3-9BC5BCF02130}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33331015-6B3C-4A49-95BB-1D4FC3983BFD}

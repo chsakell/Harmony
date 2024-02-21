@@ -3,8 +3,12 @@ using Harmony.SignalR.Extensions;
 using Harmony.SignalR.Hubs;
 using Harmony.SignalR.Services.Hosted;
 using Harmony.Application.Extensions;
+using Harmony.Logging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(SeriLogger.Configure);
 
 builder.Services.AddClientNotificationService();
 builder.Services.AddMessaging(builder.Configuration);

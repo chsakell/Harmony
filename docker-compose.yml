@@ -19,6 +19,7 @@ services:
         - ConnectionStrings__HarmonyConnection=Server=harmony_sql_server;database=harmony;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
         - AppEndpointConfiguration__AutomationEndpoint=https://harmony.automations:443/
         - BrokerConfiguration__Host=harmony_rabbitmq
+        - ElasticConfiguration:Uri=http://elasticsearch:9200
     volumes:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
@@ -43,6 +44,7 @@ services:
         - BrokerConfiguration__Host=harmony_rabbitmq 
         - ConnectionStrings__HarmonyJobsConnection=Server=harmony_sql_server;database=Harmony.Automations.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
         - MongoDB__ConnectionURI=mongodb://harmony_mongodb_server:27017
+        - ElasticConfiguration:Uri=http://elasticsearch:9200
     volumes:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
@@ -68,6 +70,7 @@ services:
         - AppEndpointConfiguration__HarmonyApiEndpoint=https://harmony.api:443/
         - BrokerConfiguration__Host=harmony_rabbitmq 
         - ConnectionStrings__HarmonyJobsConnection=Server=harmony_sql_server;database=Harmony.Notifications.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
+        - ElasticConfiguration:Uri=http://elasticsearch:9200
     volumes:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
@@ -88,7 +91,8 @@ services:
         - ASPNETCORE_HTTPS_PORT=7262
         - BrokerConfiguration__Host=harmony_rabbitmq
         - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
+        - ElasticConfiguration:Uri=http://elasticsearch:9200
     volumes:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
@@ -112,6 +116,25 @@ services:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
         - signalr
+   elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+    container_name: elasticsearch
+    environment:
+        - xpack.monitoring.enabled=true
+        - xpack.watcher.enabled=false
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - discovery.type=single-node
+    ports:
+        - "9200:9200"
+   kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.18
+    container_name: kibana
+    environment:
+        - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+        - elasticsearch
+    ports:
+        - "5601:5601" 
    rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: harmony_rabbitmq

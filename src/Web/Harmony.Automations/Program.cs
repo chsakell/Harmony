@@ -5,6 +5,8 @@ using Harmony.Automations.Extensions;
 using Harmony.Automations.Services;
 using Harmony.Automations.Services.Hosted;
 using Harmony.Infrastructure.Extensions;
+using Harmony.Logging;
+using Serilog;
 using System.Reflection;
 namespace Harmony.Automations
 {
@@ -13,6 +15,8 @@ namespace Harmony.Automations
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog(SeriLogger.Configure);
 
             builder.Services.AddSwaggerGen();
             builder.Services.AddMongoDbRepositories();
