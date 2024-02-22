@@ -3,7 +3,7 @@ services:
    api:
     build: 
         context: .
-        dockerfile: src/Web/Harmony.Api/Dockerfile
+        dockerfile: src/Services/Harmony.Api/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.api
@@ -27,7 +27,7 @@ services:
    automations:
     build: 
         context: .
-        dockerfile: src/Web/Harmony.Automations/Dockerfile
+        dockerfile: src/Services/Harmony.Automations/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.automations
@@ -54,7 +54,7 @@ services:
    notifications:
     build: 
         context: .
-        dockerfile: src/Web/Harmony.Notifications/Dockerfile
+        dockerfile: src/Services/Harmony.Notifications/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.notifications
@@ -79,7 +79,7 @@ services:
    signalr:
     build: 
         context: .
-        dockerfile: src/Web/Harmony.SignalR/Dockerfile
+        dockerfile: src/Services/Harmony.SignalR/Dockerfile
         args:
           BUILD_CONFIGURATION: Debug
     container_name: harmony.signalr
@@ -138,9 +138,6 @@ services:
    rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: harmony_rabbitmq
-    ports:
-        - 5672:5672
-        - 15672:15672
    sql_server:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     container_name: harmony_sql_server
