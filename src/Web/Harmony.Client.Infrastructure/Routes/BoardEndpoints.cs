@@ -1,12 +1,13 @@
 ﻿using Harmony.Domain.Enums;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Infrastructure.Routes
 {
     public static class BoardEndpoints
     {
-        public static string Index = "api/board/";
+        public static string Index = $"{GatewayConstants.CoreApiPrefix}/board/";
 
-        public static string UserBoards = "api/board/userboards/";
+        public static string UserBoards = $"{GatewayConstants.CoreApiPrefix}/board/userboards/";
 
         public static string Get(string boardId, int size)
         {

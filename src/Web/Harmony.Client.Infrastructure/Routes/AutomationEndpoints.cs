@@ -1,10 +1,11 @@
 ﻿using Harmony.Domain.Enums.Automations;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Infrastructure.Routes
 {
     public static class AutomationEndpoints
     {
-        public static string Index = "api/automations";
+        public static string Index = $"{GatewayConstants.CoreApiPrefix}/automations";
 
         public static string Templates = $"{Index}/templates/";
 

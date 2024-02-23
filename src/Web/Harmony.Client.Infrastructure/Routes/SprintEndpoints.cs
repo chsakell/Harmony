@@ -1,8 +1,10 @@
-﻿namespace Harmony.Client.Infrastructure.Routes
+﻿using static Harmony.Shared.Constants.Application.ApplicationConstants;
+
+namespace Harmony.Client.Infrastructure.Routes
 {
     public static class SprintEndpoints
     {
-        public static string Index = "api/sprints";
+        public static string Index = $"{GatewayConstants.CoreApiPrefix}/sprints";
 
         public static string Reports(Guid sprintId) => $"{Index}/{sprintId}/reports/";
 

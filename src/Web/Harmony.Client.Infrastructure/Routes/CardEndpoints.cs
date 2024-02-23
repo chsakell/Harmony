@@ -1,16 +1,18 @@
-﻿namespace Harmony.Client.Infrastructure.Routes
+﻿using static Harmony.Shared.Constants.Application.ApplicationConstants;
+
+namespace Harmony.Client.Infrastructure.Routes
 {
     public static class CardEndpoints
     {
-        public static string Index = "api/cards";
+        public static string Index = $"{GatewayConstants.CoreApiPrefix}/cards";
 
-        public static string Backlog => $"api/cards/backlog/";
-        public static string BacklogItem(Guid cardId) => $"api/cards/backlog/{cardId}/";
-        public static string Get(Guid id) => $"api/cards/{id}/";
+        public static string Backlog => $"{GatewayConstants.CoreApiPrefix}/cards/backlog/";
+        public static string BacklogItem(Guid cardId) => $"{GatewayConstants.CoreApiPrefix}/cards/backlog/{cardId}/";
+        public static string Get(Guid id) => $"{GatewayConstants.CoreApiPrefix}/cards/{id}/";
 
-        public static string ChildIssue(Guid id) => $"api/cards/{id}/childissue";
-        public static string GetLabels(Guid id) => $"api/cards/{id}/labels/";
-        public static string GetActivity(Guid id) => $"api/cards/{id}/activity/";
+        public static string ChildIssue(Guid id) => $"{GatewayConstants.CoreApiPrefix}/cards/{id}/childissue";
+        public static string GetLabels(Guid id) => $"{GatewayConstants.CoreApiPrefix}/cards/{id}/labels/";
+        public static string GetActivity(Guid id) => $"{GatewayConstants.CoreApiPrefix}/cards/{id}/activity/";
         public static string Move(Guid cardId) => $"{Index}/{cardId}/move/";
 
         public static string Description(Guid cardId) => $"{Index}/{cardId}/description/";

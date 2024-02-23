@@ -5,6 +5,11 @@
     /// </summary>
     public static class ApplicationConstants
     {
+        public static class GatewayConstants
+        {
+            public const string CoreApiPrefix = "core/api";
+        }
+
         public static class SignalR
         {
             public const string HubUrl = "/signalRHub";

@@ -119,6 +119,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
         public async Task InitAsync()
         {
+            // TODO: Check gateway status first
+
             var workspacesResult = await GetAllAsync();
 
             if (workspacesResult.Succeeded)

@@ -1,8 +1,10 @@
-﻿namespace Harmony.Client.Infrastructure.Routes
+﻿using static Harmony.Shared.Constants.Application.ApplicationConstants;
+
+namespace Harmony.Client.Infrastructure.Routes
 {
     public static class SearchEndpoints
     {
-        public static string Index = "api/search/";
+        public static string Index = $"{GatewayConstants.CoreApiPrefix}/search/";
 
         public static string Search(string text)
         {

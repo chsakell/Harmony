@@ -1,8 +1,10 @@
-﻿namespace Harmony.Client.Infrastructure.Routes
+﻿using static Harmony.Shared.Constants.Application.ApplicationConstants;
+
+namespace Harmony.Client.Infrastructure.Routes
 {
     public static class WorkspaceEndpoints
     {
-        public static string Index = "api/workspace/";
+        public static string Index = $"{GatewayConstants.CoreApiPrefix}/workspace/";
 
         public static string Get(string workspaceId)
         {

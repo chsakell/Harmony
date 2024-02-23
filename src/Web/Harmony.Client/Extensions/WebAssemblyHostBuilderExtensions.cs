@@ -23,7 +23,9 @@ namespace Harmony.Client.Extensions
         {
             var backEndUrl = configuration["backendUrl"];
             var signalrHostUrl = configuration["signalrHostUrl"];
-            var clientConfiguration = new ClientConfiguration(signalrHostUrl, backEndUrl);
+            var gatewayUrl = configuration["gatewayUrl"];
+
+            var clientConfiguration = new ClientConfiguration(signalrHostUrl, backEndUrl, gatewayUrl);
 
             builder.Services.AddSingleton(clientConfiguration);
 
@@ -60,7 +62,7 @@ namespace Harmony.Client.Extensions
                 {
                     client.DefaultRequestHeaders.AcceptLanguage.Clear();
                     client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName);
-                    client.BaseAddress = new Uri(backEndUrl);
+                    client.BaseAddress = new Uri(gatewayUrl);
                 })
                 .AddHttpMessageHandler<AuthenticationHeaderHandler>();
             builder.Services.AddHttpClientInterceptor();
