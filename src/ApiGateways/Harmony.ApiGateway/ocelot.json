@@ -1,0 +1,32 @@
+{
+  "Routes": [
+    {
+      "SwaggerKey": "harmonyapi",
+      "UpstreamPathTemplate": "/core/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamPathTemplate": "/{anything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7097
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7108"
+  },
+  "SwaggerEndPoints": [
+    {
+      "Key": "harmonyapi",
+      "Config": [
+        {
+          "Name": "Core API",
+          "Version": "v1",
+          "Url": "https://localhost:7097/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

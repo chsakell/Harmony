@@ -303,20 +303,6 @@ namespace Harmony.Api.Extensions
         {
             services.AddSwaggerGen(async c =>
             {
-                var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    if (!assembly.IsDynamic)
-                    {
-                        var xmlFile = $"{assembly.GetName().Name}.xml";
-                        var xmlPath = Path.Combine(baseDirectory, xmlFile);
-                        if (File.Exists(xmlPath))
-                        {
-                            c.IncludeXmlComments(xmlPath);
-                        }
-                    }
-                }
-
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",

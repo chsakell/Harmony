@@ -46,6 +46,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddCurrentUserService();
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegisterSwagger();
 builder.Services.AddInfrastructureMappings();
 builder.Services.AddSqlServerRepositories();

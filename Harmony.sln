@@ -57,6 +57,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Notifications", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.SignalR", "src\Services\Harmony.SignalR\Harmony.SignalR.csproj", "{A1071E40-B644-4D46-9C87-D4EF5018C931}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{9D870672-46AF-4962-BEDE-99CE42EE827A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.ApiGateway", "src\ApiGateways\Harmony.ApiGateway\Harmony.ApiGateway.csproj", "{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +119,10 @@ Global
 		{A1071E40-B644-4D46-9C87-D4EF5018C931}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1071E40-B644-4D46-9C87-D4EF5018C931}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1071E40-B644-4D46-9C87-D4EF5018C931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +146,8 @@ Global
 		{9FA97A2E-933F-4443-8172-522A785A3DFA} = {279A9ADB-5ED0-4218-8477-A0CF4EE1D138}
 		{D8A80EC0-EF7F-4826-80B4-4CE5D209E92E} = {279A9ADB-5ED0-4218-8477-A0CF4EE1D138}
 		{A1071E40-B644-4D46-9C87-D4EF5018C931} = {279A9ADB-5ED0-4218-8477-A0CF4EE1D138}
+		{9D870672-46AF-4962-BEDE-99CE42EE827A} = {F0792C2B-78CD-4594-A6EC-0FCD62D4CC9B}
+		{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E} = {9D870672-46AF-4962-BEDE-99CE42EE827A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33331015-6B3C-4A49-95BB-1D4FC3983BFD}
