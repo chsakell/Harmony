@@ -15,7 +15,7 @@
 
         public string GetServerResource(string resource)
         {
-            return $"{BackendUrl.TrimEnd('/')}/{resource}";
+            return $"{GatewayUrl.TrimEnd('/')}/core/{resource}";
         }
     }
 }

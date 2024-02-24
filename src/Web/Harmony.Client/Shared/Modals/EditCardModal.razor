@@ -107,7 +107,7 @@ else
                                             }
                                             else
                                             {
-                                                <MudImage Src="@member.ProfilePicture" title="@member.FullName" />
+                                                <MudImage Src="@(_clientConfiguration.GetServerResource(member.ProfilePicture))" title="@member.FullName" />
                                             }
                                         </MudAvatar>
                                     </MudTooltip>
