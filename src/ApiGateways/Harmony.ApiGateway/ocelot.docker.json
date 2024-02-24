@@ -1,0 +1,71 @@
+{
+  "Routes": [
+    {
+      "SwaggerKey": "harmonyapi",
+      "UpstreamPathTemplate": "/core/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
+      "DownstreamPathTemplate": "/{anything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "harmony.api",
+          "Port": 443
+        }
+      ],
+      "DangerousAcceptAnyServerCertificateValidator": true
+    },
+    {
+      "SwaggerKey": "automationsapi",
+      "UpstreamPathTemplate": "/automations/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
+      "DownstreamPathTemplate": "/{anything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "harmony.automations",
+          "Port": 443
+        }
+      ],
+      "DangerousAcceptAnyServerCertificateValidator": true
+    },
+    {
+      "UpstreamPathTemplate": "/signalRHub/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "DownstreamPathTemplate": "/signalRHub/{everything}",
+      "ReRouteIsCaseSensitive": false,
+      "DownstreamScheme": "wss",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "harmony.signalr",
+          "Port": 443
+        }
+      ],
+      "DangerousAcceptAnyServerCertificateValidator": true
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7108"
+  },
+  "SwaggerEndPoints": [
+    {
+      "Key": "harmonyapi",
+      "Config": [
+        {
+          "Name": "Core API",
+          "Version": "v1",
+          "Url": "https://localhost:7097/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "automationsapi",
+      "Config": [
+        {
+          "Name": "Automations API",
+          "Version": "v1",
+          "Url": "https://localhost:7277/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

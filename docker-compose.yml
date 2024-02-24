@@ -116,6 +116,26 @@ services:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
         - signalr
+        - api
+        - api_gateway
+   api_gateway:
+    build: 
+        context: .
+        dockerfile: src/ApiGateways/Harmony.ApiGateway/Dockerfile
+        args:
+          BUILD_CONFIGURATION: Debug
+    container_name: harmony.apigateway
+    ports:
+        - "7108:443"
+    restart: always
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=https://+:443;http://+:80
+        - ASPNETCORE_HTTPS_PORT=7108
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
+    volumes:
+        - $USERPROFILE/.aspnet/https:/https/
    elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
     container_name: elasticsearch
