@@ -10,7 +10,12 @@ using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Managers.Preferences;
 using Harmony.Shared.Wrapper;
+using Microsoft.AspNetCore.Components;
+using Polly;
+using Polly.Registry;
 using System.Net.Http.Json;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
@@ -21,6 +26,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
     {
         private readonly HttpClient _httpClient;
         private readonly IClientPreferenceManager _clientPreferenceManager;
+
+        private readonly ResiliencePipeline _resiliencePipeline;
 
         public List<WorkspaceDto> UserWorkspaces { get; private set; } = new List<WorkspaceDto>();
 
@@ -43,10 +50,11 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
         public WorkspaceManager(HttpClient client, 
             ClientPreferenceManager clientPreferenceManager,
-            IBoardManager boardManager)
+            ResiliencePipelineProvider<string> resiliencePipelineProvider)
         {
             _httpClient = client;
             _clientPreferenceManager = clientPreferenceManager;
+            _resiliencePipeline = resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
         }
 
         public async Task<IResult<WorkspaceDto>> CreateAsync(CreateWorkspaceCommand request)
@@ -68,8 +76,11 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
         public async Task<IResult<List<WorkspaceDto>>> GetAllAsync()
         {
-            var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Index);
-            return await response.ToResult<List<WorkspaceDto>>();
+            return await _resiliencePipeline.ExecuteAsync(async token =>
+            {
+                var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Index);
+                return await response.ToResult<List<WorkspaceDto>>();
+            });
         }
 
         public async Task<IResult<List<BoardDto>>> LoadWorkspaceAsync(string workspaceId)
@@ -119,8 +130,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
         public async Task InitAsync()
         {
-            // TODO: Check gateway status first
-
             var workspacesResult = await GetAllAsync();
 
             if (workspacesResult.Succeeded)

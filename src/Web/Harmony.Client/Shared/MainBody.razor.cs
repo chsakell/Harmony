@@ -4,6 +4,8 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
+using Polly.Registry;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Shared
 {
@@ -22,7 +24,7 @@ namespace Harmony.Client.Shared
         MudMenu _menu;
         [Inject] private IRoleManager RoleManager { get; set; }
         [Inject] private ClientConfiguration ClientConfiguration { get; set; }
-
+        [Inject] private ResiliencePipelineProvider<string> ResiliencePipelineProvider { get; set; }
         [Inject] private IConfiguration Configuration { get; set; }
         private string CurrentUserId { get; set; }
         private string ImageDataUrl { get; set; }
@@ -40,8 +42,11 @@ namespace Harmony.Client.Shared
         {
             _interceptor.RegisterEvent();
 
+            var pipeline = ResiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
             hubConnection = await _hubSubscriptionManager
-                .StartAsync(_navigationManager, _localStorage, ClientConfiguration.GatewayUrl);
+                .StartAsync(_navigationManager, _localStorage, ClientConfiguration.GatewayUrl,
+                pipeline);
 
             _fileManager.OnUserProfilePictureUpdated += OnUserProfilePictureUpdated;
         }
@@ -84,13 +89,6 @@ namespace Harmony.Client.Shared
                     }
 
                     Email = user.GetEmail();
-                    //var imageResponse = await _accountManager.GetProfilePictureAsync(CurrentUserId);
-                    
-                    //if (imageResponse.Succeeded)
-                    //{
-                    //    ImageDataUrl = imageResponse.Data;
-                    //    StateHasChanged();
-                    //}
 
                     var currentUserResult = await _userManager.GetAsync(CurrentUserId);
                     if (currentUserResult.Succeeded && currentUserResult.Data != null)

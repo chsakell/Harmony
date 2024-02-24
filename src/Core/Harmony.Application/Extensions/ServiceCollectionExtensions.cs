@@ -21,8 +21,8 @@ namespace Harmony.Application.Extensions
                 builder.AddRetry(new()
                 {
                     ShouldHandle = new Polly.PredicateBuilder().Handle<Exception>(),
-                    MaxRetryAttempts = 3,
-                    Delay = TimeSpan.FromMilliseconds(300),
+                    MaxRetryAttempts = 5,
+                    Delay = TimeSpan.FromMilliseconds(500),
                     OnRetry = args =>
                     {
                         var exception = args.Outcome.Exception!;

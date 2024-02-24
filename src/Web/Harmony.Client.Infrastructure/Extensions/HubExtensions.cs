@@ -7,7 +7,7 @@ namespace Harmony.Client.Infrastructure.Extensions
 {
     public static class HubExtensions
     {
-        public static HubConnection TryInitialize(this HubConnection hubConnection, 
+        public static HubConnection Get(this HubConnection hubConnection, 
             NavigationManager navigationManager, ILocalStorageService _localStorage, string signalrHostUrl)
         {
             if (hubConnection == null)

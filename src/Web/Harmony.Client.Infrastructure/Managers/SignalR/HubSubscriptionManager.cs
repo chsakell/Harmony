@@ -5,6 +5,9 @@ using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Polly;
+using Polly.Registry;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {
@@ -18,16 +21,26 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
 
         public async Task<HubConnection> StartAsync(NavigationManager navigationManager, 
-            ILocalStorageService localStorageService, string signalrHostUrl)
+            ILocalStorageService localStorageService, string signalrHostUrl,
+            ResiliencePipeline pipeline)
         {
-            _hubConnection = _hubConnection.TryInitialize(navigationManager, localStorageService, signalrHostUrl);
+            _hubConnection = _hubConnection
+                .Get(navigationManager, localStorageService, signalrHostUrl);
 
-            if (_hubConnection.State == HubConnectionState.Disconnected)
-                await _hubConnection.StartAsync();
+            await pipeline.ExecuteAsync(async token =>
+            {
+                await Start();
+            });
 
             HandleEvents();
 
             return _hubConnection;
+        }
+
+        private async Task Start()
+        {
+            if (_hubConnection.State == HubConnectionState.Disconnected)
+                await _hubConnection.StartAsync();
         }
 
         public async Task StopAsync()

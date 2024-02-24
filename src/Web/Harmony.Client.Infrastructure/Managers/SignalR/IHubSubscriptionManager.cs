@@ -3,6 +3,7 @@ using Harmony.Application.Events;
 using Harmony.Application.Notifications;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Polly;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {
@@ -10,7 +11,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
     {
         Task<HubConnection> StartAsync(NavigationManager navigationManager, 
             ILocalStorageService localStorageService,
-            string signalrHostUrl);
+            string signalrHostUrl, ResiliencePipeline pipeline);
         Task StopAsync();
 
         #region Listeners
