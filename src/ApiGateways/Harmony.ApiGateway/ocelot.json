@@ -3,13 +3,26 @@
     {
       "SwaggerKey": "harmonyapi",
       "UpstreamPathTemplate": "/core/{anything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
       "DownstreamPathTemplate": "/{anything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
           "Port": 7097
+        }
+      ]
+    },
+    {
+      "SwaggerKey": "automationsapi",
+      "UpstreamPathTemplate": "/automations/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
+      "DownstreamPathTemplate": "/{anything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7277
         }
       ]
     }
@@ -25,6 +38,16 @@
           "Name": "Core API",
           "Version": "v1",
           "Url": "https://localhost:7097/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "automationsapi",
+      "Config": [
+        {
+          "Name": "Automations API",
+          "Version": "v1",
+          "Url": "https://localhost:7277/swagger/v1/swagger.json"
         }
       ]
     }

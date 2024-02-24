@@ -25,18 +25,21 @@ namespace Harmony.Application.Features.Automations.Queries.GetAutomations
 
         public async Task<IResult<IEnumerable<IAutomationDto>>> Handle(GetAutomationsQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<IAutomationDto> automations =
+            return
                 request.AutomationType switch
                 {
-                    AutomationType.SyncParentAndChildIssues => await _automationRepository
-                    .GetAutomations<SyncParentAndChildIssuesAutomationDto>(request.AutomationType, request.BoardId),
-                    AutomationType.SmartAutoAssign => await _automationRepository
-                    .GetAutomations<SmartAutoAssignAutomationDto>(request.AutomationType, request.BoardId),
+                    AutomationType.SyncParentAndChildIssues => await 
+                    GetAutomations<SyncParentAndChildIssuesAutomationDto>(request),
+                    AutomationType.SmartAutoAssign => await GetAutomations<SmartAutoAssignAutomationDto>(request),
                         _ => throw new NotImplementedException(),
                 };
+        }
 
-
-            return await Result<IEnumerable<IAutomationDto>>.SuccessAsync(automations);
+        private async Task<IResult<IEnumerable<T>>> GetAutomations<T>(GetAutomationsQuery request)
+        {
+            var automations = await _automationRepository
+                    .GetAutomations<T>(request.AutomationType, request.BoardId);
+            return await Result<IEnumerable<T>>.SuccessAsync(automations);
         }
     }
 }

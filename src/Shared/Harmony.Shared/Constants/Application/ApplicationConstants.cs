@@ -8,6 +8,7 @@
         public static class GatewayConstants
         {
             public const string CoreApiPrefix = "core/api";
+            public const string AutomationsApiPrefix = "automations/api";
         }
 
         public static class SignalR

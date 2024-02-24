@@ -5,7 +5,7 @@ namespace Harmony.Client.Infrastructure.Routes
 {
     public static class AutomationEndpoints
     {
-        public static string Index = $"{GatewayConstants.CoreApiPrefix}/automations";
+        public static string Index = $"{GatewayConstants.AutomationsApiPrefix}/automations";
 
         public static string Templates = $"{Index}/templates/";
 
