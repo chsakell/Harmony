@@ -2,7 +2,6 @@
 
 namespace Harmony.SignalR.Hubs
 {
-    //[Authorize]
     public class SignalRHub : Hub
     {
         public async Task ListenForBoardEvents(string boardId)

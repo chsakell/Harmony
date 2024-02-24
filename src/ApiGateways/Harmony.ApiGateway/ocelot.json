@@ -25,6 +25,19 @@
           "Port": 7277
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/signalRHub/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "DownstreamPathTemplate": "/signalRHub/{everything}",
+      "ReRouteIsCaseSensitive": false,
+      "DownstreamScheme": "wss",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7262
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {

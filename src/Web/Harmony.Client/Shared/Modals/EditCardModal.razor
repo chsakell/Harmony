@@ -152,14 +152,14 @@ else
                                             <MudStack Row="true" Spacing="4" Class="pb-4">
                                                 @if (attachment.Type == AttachmentType.CardImage)
                                                 {
-                                                    <MudElement HtmlTag="a" href="@ServerUrl(attachment.Url)" Class="spotlight">
+                                                    <MudElement HtmlTag="a" href="@(_clientConfiguration.GetServerResource(attachment.Url))" Class="spotlight">
                                                         <MudElement Class="mud-avatar mud-avatar-large mud-avatar-square mud-avatar-filled mud-avatar-filled-default mud-elevation-0"
-                                                                    HtmlTag="img" src="@ServerUrl(attachment.Url)"></MudElement>
+                                                                    HtmlTag="img" src="@(_clientConfiguration.GetServerResource(attachment.Url))"></MudElement>
                                                     </MudElement>
                                                 }
                                                 else
                                                 {
-                                                    <MudElement HtmlTag="a" href="@ServerUrl(attachment.Url)" target="_blank">
+                                                    <MudElement HtmlTag="a" href="@(_clientConfiguration.GetServerResource(attachment.Url))" target="_blank">
                                                         <MudIcon Icon="@Icons.Material.Filled.FileOpen" Style="font-size: 3rem;" />
                                                     </MudElement>
                                                 }

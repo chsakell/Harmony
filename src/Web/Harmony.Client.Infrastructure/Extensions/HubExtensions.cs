@@ -21,6 +21,8 @@ namespace Harmony.Client.Infrastructure.Extensions
                 hubConnection = new HubConnectionBuilder()
                                   .WithUrl(uri, options =>
                                   {
+                                      options.SkipNegotiation = true;
+                                      options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
                                       options.AccessTokenProvider = async () => await _localStorage.GetItemAsync<string>("authToken");
                                   })
                                   .WithAutomaticReconnect()

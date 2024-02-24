@@ -95,12 +95,6 @@ namespace Harmony.Client.Shared.Modals
             });
         }
 
-        private string ServerUrl(string url)
-        {
-            var serverUrl = _clientConfiguration.BackendUrl.TrimEnd('/');
-            var resourcePath = url.TrimStart('/');
-            return $"{serverUrl}/{resourcePath}";
-        }
         private void RegisterEvents()
         {
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;

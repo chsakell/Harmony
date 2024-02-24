@@ -21,11 +21,9 @@ namespace Harmony.Client.Extensions
         private const string ClientName = "Harmony.Client";
         public static WebAssemblyHostBuilder AddClientServices(this WebAssemblyHostBuilder builder, WebAssemblyHostConfiguration configuration)
         {
-            var backEndUrl = configuration["backendUrl"];
-            var signalrHostUrl = configuration["signalrHostUrl"];
             var gatewayUrl = configuration["gatewayUrl"];
 
-            var clientConfiguration = new ClientConfiguration(signalrHostUrl, backEndUrl, gatewayUrl);
+            var clientConfiguration = new ClientConfiguration(gatewayUrl);
 
             builder.Services.AddSingleton(clientConfiguration);
 

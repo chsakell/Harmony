@@ -1,4 +1,5 @@
 ﻿using Harmony.Client.Extensions;
+using Harmony.Client.Infrastructure.Configuration;
 using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -20,6 +21,7 @@ namespace Harmony.Client.Shared
         private bool _drawerOpen = true;
         MudMenu _menu;
         [Inject] private IRoleManager RoleManager { get; set; }
+        [Inject] private ClientConfiguration ClientConfiguration { get; set; }
 
         [Inject] private IConfiguration Configuration { get; set; }
         private string CurrentUserId { get; set; }
@@ -37,8 +39,9 @@ namespace Harmony.Client.Shared
         protected override async Task OnInitializedAsync()
         {
             _interceptor.RegisterEvent();
-            var signalrHostUrl = Configuration["signalrHostUrl"];
-            hubConnection = await _hubSubscriptionManager.StartAsync(_navigationManager, _localStorage, signalrHostUrl);
+
+            hubConnection = await _hubSubscriptionManager
+                .StartAsync(_navigationManager, _localStorage, ClientConfiguration.GatewayUrl);
 
             _fileManager.OnUserProfilePictureUpdated += OnUserProfilePictureUpdated;
         }

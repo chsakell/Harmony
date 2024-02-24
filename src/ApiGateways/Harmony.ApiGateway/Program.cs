@@ -28,6 +28,8 @@ app.UseSwaggerForOcelotUI(option =>
 });
 app.MapControllers();
 
+app.UseWebSockets();
+
 await app.UseOcelot();
 
 await app.RunAsync();
