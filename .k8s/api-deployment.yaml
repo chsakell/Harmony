@@ -2,20 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    io.kompose.service: api
+    app: api
   name: api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: api
+      app: api
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        io.kompose.network/harmony-default: "true"
-        io.kompose.service: api
+        app: api
     spec:
       containers:
         - env:
@@ -32,22 +31,22 @@ spec:
             - name: AppEndpointConfiguration__AutomationEndpoint
               value: https://harmony.automations:443/
             - name: BrokerConfiguration__Host
-              value: harmony_rabbitmq
+              value: harmony-rabbitmq
             - name: ConnectionStrings__HarmonyConnection
-              value: Server=harmony_sql_server;database=harmony;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
-            - name: ElasticConfiguration:Uri
+              value: Server=harmony-sql-server;database=harmony;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
+            - name: ElasticConfiguration__Uri
               value: http://elasticsearch:9200
-          image: api
-          name: harmony.api
+          image: harmony-api:latest
+          imagePullPolicy: IfNotPresent
+          name: harmony-api
           ports:
             - containerPort: 443
-              hostPort: 7097
-              protocol: TCP
           volumeMounts:
-            - mountPath: /https
-              name: api-claim0
+            - mountPath: /https/harmony.pfx
+              subPath: harmony.pfx
+              name: cert-config-map
       restartPolicy: Always
       volumes:
-        - name: api-claim0
-          persistentVolumeClaim:
-            claimName: api-claim0
+        - name: cert-config-map
+          configMap:
+            name: cert-config-map
