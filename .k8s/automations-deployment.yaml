@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: automations
+  name: automations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: automations
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.network/harmony-default: "true"
+        io.kompose.service: automations
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "7277"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: HarmonyTeamsSecretKey
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: /https/harmony.pfx
+            - name: ASPNETCORE_URLS
+              value: https://+:443;http://+:80
+            - name: AppEndpointConfiguration__HarmonyApiEndpoint
+              value: https://harmony.api:443/
+            - name: BrokerConfiguration__Host
+              value: harmony_rabbitmq
+            - name: ConnectionStrings__HarmonyJobsConnection
+              value: Server=harmony_sql_server;database=Harmony.Automations.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
+            - name: ElasticConfiguration:Uri
+              value: http://elasticsearch:9200
+            - name: MongoDB__ConnectionURI
+              value: mongodb://harmony_mongodb_server:27017
+          image: automations
+          name: harmony.automations
+          ports:
+            - containerPort: 443
+              hostPort: 7277
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /https
+              name: automations-claim0
+      restartPolicy: Always
+      volumes:
+        - name: automations-claim0
+          persistentVolumeClaim:
+            claimName: automations-claim0

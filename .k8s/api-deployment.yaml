@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.network/harmony-default: "true"
+        io.kompose.service: api
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "7097"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: HarmonyTeamsSecretKey
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: /https/harmony.pfx
+            - name: ASPNETCORE_URLS
+              value: https://+:443;http://+:80
+            - name: AppEndpointConfiguration__AutomationEndpoint
+              value: https://harmony.automations:443/
+            - name: BrokerConfiguration__Host
+              value: harmony_rabbitmq
+            - name: ConnectionStrings__HarmonyConnection
+              value: Server=harmony_sql_server;database=harmony;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
+            - name: ElasticConfiguration:Uri
+              value: http://elasticsearch:9200
+          image: api
+          name: harmony.api
+          ports:
+            - containerPort: 443
+              hostPort: 7097
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /https
+              name: api-claim0
+      restartPolicy: Always
+      volumes:
+        - name: api-claim0
+          persistentVolumeClaim:
+            claimName: api-claim0

@@ -24,6 +24,7 @@ services:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
         - sql_server
+        - rabbitmq
    automations:
     build: 
         context: .

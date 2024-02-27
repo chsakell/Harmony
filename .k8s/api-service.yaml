@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: api
+  name: api
+spec:
+  ports:
+    - name: "7097"
+      port: 7097
+      targetPort: 443
+  selector:
+    io.kompose.service: api

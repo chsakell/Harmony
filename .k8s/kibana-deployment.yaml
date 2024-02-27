@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: kibana
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: kibana
+  template:
+    metadata:
+      labels:
+        io.kompose.network/harmony-default: "true"
+        io.kompose.service: kibana
+    spec:
+      containers:
+        - env:
+            - name: ELASTICSEARCH_URL
+              value: http://elasticsearch:9200
+          image: docker.elastic.co/kibana/kibana:7.17.18
+          name: kibana
+          ports:
+            - containerPort: 5601
+              hostPort: 5601
+              protocol: TCP
+      restartPolicy: Always

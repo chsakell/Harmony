@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sql-server
+  name: sql-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-server
+  template:
+    metadata:
+      labels:
+        app: sql-server
+    spec:
+      containers:
+        - env:
+            - name: ACCEPT_EULA
+              value: "y"
+            - name: SA_PASSWORD
+              value: '%HarmonyTeams100'
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          name: harmony-sql-server
+      restartPolicy: Always

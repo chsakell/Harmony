@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: signalr
+  name: signalr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: signalr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: signalr
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "7262"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: HarmonyTeamsSecretKey
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: /https/harmony.pfx
+            - name: ASPNETCORE_URLS
+              value: https://+:443;http://+:80
+            - name: BrokerConfiguration__Host
+              value: harmony-rabbitmq
+            - name: ElasticConfiguration__Uri
+              value: http://elasticsearch:9200
+          image: harmony-signalr:latest
+          imagePullPolicy: IfNotPresent
+          name: harmony-signalr
+          ports:
+            - containerPort: 443
+          volumeMounts:
+            - mountPath: /https/harmony.pfx
+              subPath: harmony.pfx
+              name: cert-config-map
+      restartPolicy: Always
+      volumes:
+        - name: cert-config-map
+          configMap:
+            name: cert-config-map

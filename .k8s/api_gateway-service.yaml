@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: api-gateway
+  name: api_gateway
+spec:
+  ports:
+    - name: "7108"
+      port: 7108
+      targetPort: 443
+  selector:
+    io.kompose.service: api-gateway
