@@ -2,12 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    io.kompose.service: client
-  name: client
+    app: client
+  name: harmony-client
 spec:
+  type: LoadBalancer
   ports:
     - name: "7096"
       port: 7096
       targetPort: 80
   selector:
-    io.kompose.service: client
+    app: client
