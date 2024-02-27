@@ -43,6 +43,8 @@ namespace Harmony.Messaging
 
         private void InitRabbitMQ()
         {
+            _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port} ");
+
             var factory = new ConnectionFactory
             {
                 HostName = _brokerConfiguration.Host,
@@ -76,10 +78,12 @@ namespace Harmony.Messaging
                     exclusive: false,
                     autoDelete: false,
                     arguments: null);
+
+                _logger.LogInformation($"Connected to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to connect to RabbitMQ {ex}");
+                _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
             }
         }
 

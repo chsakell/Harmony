@@ -11,6 +11,14 @@
             public const string AutomationsApiPrefix = "automations/api";
         }
 
+        public static class AppServices
+        {
+            public const string Api = "Harmony.Api";
+            public const string Automations = "Harmony.Automations";
+            public const string Notifications = "Harmony.Notifications";
+            public const string SignalR = "Harmony.SignalR";
+        }
+
         public static class SignalR
         {
             public const string HubUrl = "/signalRHub";

@@ -3,8 +3,13 @@ kind: Service
 metadata:
   name: harmony-rabbitmq
 spec:
+  type: LoadBalancer
   selector:
     app: rabbitmq
   ports:
-  - port: 5672
+  - name: "15672"
+    port: 15672
+    targetPort: 15672
+  - name: "5672"
+    port: 5672
     targetPort: 5672

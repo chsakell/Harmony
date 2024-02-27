@@ -41,7 +41,7 @@ namespace Harmony.Notifications.Services.Hosted
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to connect to RabbitMQ {ex}");
+                _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
             }
 
             _serviceProvider = serviceProvider;
@@ -49,6 +49,8 @@ namespace Harmony.Notifications.Services.Hosted
 
         private void InitRabbitMQ()
         {
+            _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
+
             var factory = new ConnectionFactory
             {
                 HostName = _brokerConfiguration.Host,
@@ -63,7 +65,7 @@ namespace Harmony.Notifications.Services.Hosted
             };
 
             // create connection  
-            _connection = factory.CreateConnection();
+            _connection = factory.CreateConnection(AppServices.Notifications);
 
             // create channel  
             _channel = _connection.CreateModel();
@@ -78,6 +80,8 @@ namespace Harmony.Notifications.Services.Hosted
             _channel.BasicQos(0, 1, false);
 
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+
+            _logger.LogInformation($"Connected to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

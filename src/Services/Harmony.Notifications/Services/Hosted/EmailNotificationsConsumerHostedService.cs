@@ -62,7 +62,7 @@ namespace Harmony.Notifications.Services.Hosted
             };
 
             // create connection  
-            _connection = factory.CreateConnection();
+            _connection = factory.CreateConnection(AppServices.Notifications);
 
             // create channel  
             _channel = _connection.CreateModel();
