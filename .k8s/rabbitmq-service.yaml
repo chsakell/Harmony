@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: harmony-rabbitmq
 spec:
-  type: LoadBalancer
   selector:
     app: rabbitmq
   ports:
