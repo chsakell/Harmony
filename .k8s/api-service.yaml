@@ -6,8 +6,8 @@ metadata:
   name: harmony-api
 spec:
   ports:
-    - name: "7097"
-      port: 7097
+    - name: "443"
+      port: 443
       targetPort: 443
   selector:
     app: api

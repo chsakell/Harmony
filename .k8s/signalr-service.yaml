@@ -3,12 +3,11 @@ kind: Service
 metadata:
   labels:
     app: signalr
-  name: signalr
+  name: harmony-signalr
 spec:
-  type: LoadBalancer
   ports:
-    - name: "7262"
-      port: 7262
+    - name: "443"
+      port: 443
       targetPort: 443
   selector:
     app: signalr

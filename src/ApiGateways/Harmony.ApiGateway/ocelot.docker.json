@@ -8,7 +8,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "harmony.api",
+          "Host": "harmony-api",
           "Port": 443
         }
       ],
@@ -22,7 +22,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "harmony.automations",
+          "Host": "harmony-automations",
           "Port": 443
         }
       ],
@@ -36,7 +36,7 @@
       "DownstreamScheme": "wss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "harmony.signalr",
+          "Host": "harmony-signalr",
           "Port": 443
         }
       ],

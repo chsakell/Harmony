@@ -3,11 +3,11 @@ kind: Service
 metadata:
   labels:
     app: automations
-  name: automations
+  name: harmony-automations
 spec:
   ports:
-    - name: "7277"
-      port: 7277
+    - name: "443"
+      port: 443
       targetPort: 443
   selector:
     app: automations

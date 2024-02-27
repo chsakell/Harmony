@@ -29,7 +29,7 @@ spec:
             - name: ASPNETCORE_URLS
               value: https://+:443;http://+:80
             - name: AppEndpointConfiguration__HarmonyApiEndpoint
-              value: https://harmony.api:443/
+              value: https://harmony-api:443/
             - name: BrokerConfiguration__Host
               value: harmony-rabbitmq
             - name: ConnectionStrings__HarmonyJobsConnection
