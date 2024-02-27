@@ -2,20 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    io.kompose.service: api-gateway
+    app: api-gateway
   name: api-gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: api-gateway
+      app: api-gateway
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        io.kompose.network/harmony-default: "true"
-        io.kompose.service: api-gateway
+        app: api-gateway
     spec:
       containers:
         - env:
@@ -29,17 +28,17 @@ spec:
               value: /https/harmony.pfx
             - name: ASPNETCORE_URLS
               value: https://+:443;http://+:80
-          image: api-gateway
-          name: harmony.apigateway
+          image: harmony-api_gateway:latest
+          imagePullPolicy: IfNotPresent
+          name: harmony-apigateway
           ports:
             - containerPort: 443
-              hostPort: 7108
-              protocol: TCP
           volumeMounts:
-            - mountPath: /https
-              name: api-gateway-claim0
+            - mountPath: /https/harmony.pfx
+              subPath: harmony.pfx
+              name: cert-config-map
       restartPolicy: Always
       volumes:
-        - name: api-gateway-claim0
-          persistentVolumeClaim:
-            claimName: api-gateway-claim0
+        - name: cert-config-map
+          configMap:
+            name: cert-config-map
