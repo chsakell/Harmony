@@ -59,7 +59,33 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.SignalR", "src\Serv
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{9D870672-46AF-4962-BEDE-99CE42EE827A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.ApiGateway", "src\ApiGateways\Harmony.ApiGateway\Harmony.ApiGateway.csproj", "{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.ApiGateway", "src\ApiGateways\Harmony.ApiGateway\Harmony.ApiGateway.csproj", "{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{7036FDCD-BD18-46DB-87D3-37BDBABF1B6E}"
+	ProjectSection(SolutionItems) = preProject
+		.k8s\api-deployment.yaml = .k8s\api-deployment.yaml
+		.k8s\api-gateway-deployment.yaml = .k8s\api-gateway-deployment.yaml
+		.k8s\api-gateway-service.yaml = .k8s\api-gateway-service.yaml
+		.k8s\api-service.yaml = .k8s\api-service.yaml
+		.k8s\automations-deployment.yaml = .k8s\automations-deployment.yaml
+		.k8s\automations-service.yaml = .k8s\automations-service.yaml
+		.k8s\client-deployment.yaml = .k8s\client-deployment.yaml
+		.k8s\client-service.yaml = .k8s\client-service.yaml
+		.k8s\elasticsearch-deployment.yaml = .k8s\elasticsearch-deployment.yaml
+		.k8s\elasticsearch-service.yaml = .k8s\elasticsearch-service.yaml
+		.k8s\kibana-deployment.yaml = .k8s\kibana-deployment.yaml
+		.k8s\kibana-service.yaml = .k8s\kibana-service.yaml
+		.k8s\mongodb-deployment.yaml = .k8s\mongodb-deployment.yaml
+		.k8s\mongodb-service.yaml = .k8s\mongodb-service.yaml
+		.k8s\notifications-deployment.yaml = .k8s\notifications-deployment.yaml
+		.k8s\notifications-service.yaml = .k8s\notifications-service.yaml
+		.k8s\rabbitmq-deployment.yaml = .k8s\rabbitmq-deployment.yaml
+		.k8s\rabbitmq-service.yaml = .k8s\rabbitmq-service.yaml
+		.k8s\signalr-deployment.yaml = .k8s\signalr-deployment.yaml
+		.k8s\signalr-service.yaml = .k8s\signalr-service.yaml
+		.k8s\sql-server-deployment.yaml = .k8s\sql-server-deployment.yaml
+		.k8s\sql-server-service.yaml = .k8s\sql-server-service.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +174,7 @@ Global
 		{A1071E40-B644-4D46-9C87-D4EF5018C931} = {279A9ADB-5ED0-4218-8477-A0CF4EE1D138}
 		{9D870672-46AF-4962-BEDE-99CE42EE827A} = {F0792C2B-78CD-4594-A6EC-0FCD62D4CC9B}
 		{D79656FA-B4D6-4A74-BEED-ADF227CF5D7E} = {9D870672-46AF-4962-BEDE-99CE42EE827A}
+		{7036FDCD-BD18-46DB-87D3-37BDBABF1B6E} = {23B9A799-1D67-413F-A4BF-A8E29ED03B6C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33331015-6B3C-4A49-95BB-1D4FC3983BFD}
