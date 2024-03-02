@@ -9,6 +9,8 @@ using System.Reflection;
 using Harmony.Api.Mappings;
 using Harmony.Logging;
 using Serilog;
+using Harmony.Persistence.DbContext;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -72,6 +74,9 @@ builder.Services.AddGrpc();
 builder.Services.AddSearching(SearchEngine.Database, builder.Configuration);
 builder.Services.AddMemoryCache();
 
+builder.Services.AddHealthChecks()
+     .AddDbContextCheck<HarmonyContext>("database", tags: ["ready"]);
+
 var app = builder.Build();
 
 app.UseCors("wasm");
@@ -90,7 +95,6 @@ else
 
 app.UseHttpsRedirection();
 
-//app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -99,6 +103,17 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
+
+app.MapHealthChecks("/healthz/ready", new HealthCheckOptions
+{
+    Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+});
+
+app.MapHealthChecks("/healthz/live", new HealthCheckOptions
+{
+    Predicate = _ => false
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 
