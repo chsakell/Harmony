@@ -38,7 +38,7 @@ namespace Harmony.Notifications.Services.Hosted
             _serviceProvider = serviceProvider;
         }
 
-        private Task InitRabbitMQ()
+        private void InitRabbitMQ()
         {
             _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
 
@@ -73,92 +73,93 @@ namespace Harmony.Notifications.Services.Hosted
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
             _logger.LogInformation($"Connected to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
-
-            return Task.CompletedTask;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
-                var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
-
-                await pipeline.ExecuteAsync(async token =>
+                await Task.Run(() =>
                 {
-                    await InitRabbitMQ();
+                    var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
+                    pipeline.Execute(token =>
+                    {
+                        InitRabbitMQ();
+
+                        if (_channel == null)
+                        {
+                            return;
+                        }
+
+                        stoppingToken.ThrowIfCancellationRequested();
+                        var consumer = new EventingBasicConsumer(_channel);
+                        consumer.Received += async (ch, ea) =>
+                        {
+                            if (ea.BasicProperties.Headers
+                                 .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
+                                 Enum.TryParse<SearchIndexNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType)
+                                 && ea.BasicProperties.Headers.TryGetValue(BrokerConstants.IndexNameHeader, out var indexNameRaw) &&
+                                 (Encoding.UTF8.GetString((byte[])indexNameRaw) is string index))
+                            {
+                                switch (notificationType)
+                                {
+                                    case SearchIndexNotificationType.BoardCreated:
+                                        await Index<BoardCreatedIndexNotification>(ea, SearchIndexOperation.CreateIndex, index);
+                                        break;
+                                    case SearchIndexNotificationType.CardAddedToBoard:
+                                        await Index<CardCreatedIndexNotification>(ea, SearchIndexOperation.AddToIndex, index);
+                                        break;
+
+                                    case SearchIndexNotificationType.CardTitleUpdated:
+                                        await Index<CardTitleUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+
+                                    case SearchIndexNotificationType.CardStatusUpdated:
+                                        await Index<CardStatusUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+
+                                    case SearchIndexNotificationType.CardListUpdated:
+                                        await Index<CardListUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+                                    case SearchIndexNotificationType.CardIssueTypeUpdated:
+                                        await Index<CardIssueTypeUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+
+                                    case SearchIndexNotificationType.CardHasAttachmentsUpdated:
+                                        await Index<CardHasAttachmentsUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+
+                                    case SearchIndexNotificationType.CardMembersUpdated:
+                                        await Index<CardMembersUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+
+                                    case SearchIndexNotificationType.CardDescriptionUpdated:
+                                        await Index<CardDescriptionUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+
+                                    case SearchIndexNotificationType.CardDueDateUpdated:
+                                        await Index<CardDueDateUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
+                                        break;
+                                }
+                            }
+                        };
+
+                        consumer.Shutdown += OnConsumerShutdown;
+                        consumer.Registered += OnConsumerRegistered;
+                        consumer.Unregistered += OnConsumerUnregistered;
+                        consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
+
+                        _channel.BasicConsume(BrokerConstants.SearchIndexNotificationsQueue, true, consumer);
+
+                        _rabbitMqHealthCheck.Connected = true;
+                    });
                 });
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
             }
-
-            if (_channel == null)
-            {
-                return;
-            }
-
-            stoppingToken.ThrowIfCancellationRequested();
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += async (ch, ea) =>
-            {
-                if (ea.BasicProperties.Headers
-                     .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw)  &&
-                     Enum.TryParse<SearchIndexNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType)
-                     && ea.BasicProperties.Headers.TryGetValue(BrokerConstants.IndexNameHeader, out var indexNameRaw) &&
-                     (Encoding.UTF8.GetString((byte[])indexNameRaw) is string index))
-                {
-                    switch (notificationType)
-                    {
-                        case SearchIndexNotificationType.BoardCreated:
-                            await Index<BoardCreatedIndexNotification>(ea, SearchIndexOperation.CreateIndex, index);
-                            break;
-                        case SearchIndexNotificationType.CardAddedToBoard:
-                            await Index<CardCreatedIndexNotification>(ea, SearchIndexOperation.AddToIndex, index);
-                            break;
-
-                        case SearchIndexNotificationType.CardTitleUpdated:
-                            await Index<CardTitleUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-
-                        case SearchIndexNotificationType.CardStatusUpdated:
-                            await Index<CardStatusUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-
-                        case SearchIndexNotificationType.CardListUpdated:
-                            await Index<CardListUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-                        case SearchIndexNotificationType.CardIssueTypeUpdated:
-                            await Index<CardIssueTypeUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-
-                        case SearchIndexNotificationType.CardHasAttachmentsUpdated:
-                            await Index<CardHasAttachmentsUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-
-                        case SearchIndexNotificationType.CardMembersUpdated:
-                            await Index<CardMembersUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-
-                        case SearchIndexNotificationType.CardDescriptionUpdated:
-                            await Index<CardDescriptionUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-
-                        case SearchIndexNotificationType.CardDueDateUpdated:
-                            await Index<CardDueDateUpdatedIndexNotification>(ea, SearchIndexOperation.UpdateObjectInIndex, index);
-                            break;
-                    }
-                }
-            };
-
-            consumer.Shutdown += OnConsumerShutdown;
-            consumer.Registered += OnConsumerRegistered;
-            consumer.Unregistered += OnConsumerUnregistered;
-            consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
-
-            _channel.BasicConsume(BrokerConstants.SearchIndexNotificationsQueue, true, consumer);
-
-            _rabbitMqHealthCheck.Connected = true;
         }
 
         private async Task Index<T>(BasicDeliverEventArgs args, SearchIndexOperation operation, string index) where T : class, ISearchIndexNotification
@@ -219,7 +220,6 @@ namespace Harmony.Notifications.Services.Hosted
         {
             _rabbitMqHealthCheck.Connected = false;
         }
-
         public override void Dispose()
         {
             _channel?.Close();

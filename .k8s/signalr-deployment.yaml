@@ -35,6 +35,19 @@ spec:
           image: harmony-signalr:latest
           imagePullPolicy: IfNotPresent
           name: harmony-signalr
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 120
           ports:
             - containerPort: 443
           volumeMounts:

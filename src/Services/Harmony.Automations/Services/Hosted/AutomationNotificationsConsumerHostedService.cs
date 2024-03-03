@@ -37,7 +37,7 @@ namespace Harmony.Automations.Services.Hosted
             _serviceProvider = serviceProvider;
         }
 
-        private Task InitRabbitMQ()
+        private void InitRabbitMQ()
         {
             _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
 
@@ -83,61 +83,62 @@ namespace Harmony.Automations.Services.Hosted
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
             _logger.LogInformation($"Connected to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
-
-            return Task.CompletedTask;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
-                var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
-
-                await pipeline.ExecuteAsync(async token =>
+                await Task.Run(() =>
                 {
-                    await InitRabbitMQ();
+                    var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
+                    pipeline.Execute(token =>
+                    {
+                        InitRabbitMQ();
+
+                        if (_channel == null)
+                        {
+                            return;
+                        }
+
+                        stoppingToken.ThrowIfCancellationRequested();
+                        var consumer = new EventingBasicConsumer(_channel);
+                        consumer.Received += async (ch, ea) =>
+                        {
+                            if (ea.BasicProperties.Headers
+                                 .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
+                                 Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
+                            {
+                                switch (notificationType)
+                                {
+                                    case NotificationType.CardMoved:
+                                        await RunAutomation<CardMovedMessage>(ea);
+                                        break;
+                                    case NotificationType.CardCreated:
+                                        await RunAutomation<CardCreatedMessage>(ea);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        };
+
+                        consumer.Shutdown += OnConsumerShutdown;
+                        consumer.Registered += OnConsumerRegistered;
+                        consumer.Unregistered += OnConsumerUnregistered;
+                        consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
+
+                        _channel.BasicConsume(BrokerConstants.AutomationNotificationsQueue, true, consumer);
+
+                        _rabbitMqHealthCheck.Connected = true;
+                    });
                 });
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
             }
-
-            if (_channel == null)
-            {
-                return;
-            }
-
-            stoppingToken.ThrowIfCancellationRequested();
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += async (ch, ea) =>
-            {
-                if (ea.BasicProperties.Headers
-                     .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
-                     Enum.TryParse<NotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
-                {
-                    switch (notificationType)
-                    {
-                        case NotificationType.CardMoved:
-                            await RunAutomation<CardMovedMessage>(ea);
-                            break;
-                        case NotificationType.CardCreated:
-                            await RunAutomation<CardCreatedMessage>(ea);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            };
-
-            consumer.Shutdown += OnConsumerShutdown;
-            consumer.Registered += OnConsumerRegistered;
-            consumer.Unregistered += OnConsumerUnregistered;
-            consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
-
-            _channel.BasicConsume(BrokerConstants.AutomationNotificationsQueue, true, consumer);
-
-            _rabbitMqHealthCheck.Connected = true;
         }
 
         private async Task RunAutomation<T>(BasicDeliverEventArgs eventArgs)

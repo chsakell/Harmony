@@ -41,6 +41,19 @@ spec:
           image: harmony-automations:latest
           imagePullPolicy: IfNotPresent
           name: harmony-automations
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 120
           ports:
             - containerPort: 443
           volumeMounts:

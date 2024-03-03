@@ -37,7 +37,7 @@ namespace Harmony.Notifications.Services.Hosted
             _serviceProvider = serviceProvider;
         }
 
-        private Task InitRabbitMQ()
+        private void InitRabbitMQ()
         {
             var factory = new ConnectionFactory
             {
@@ -68,136 +68,137 @@ namespace Harmony.Notifications.Services.Hosted
             _channel.BasicQos(0, 1, false);
 
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
-
-            return Task.CompletedTask;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
-                var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
-
-                await pipeline.ExecuteAsync(async token =>
+                await Task.Run(() =>
                 {
-                    await InitRabbitMQ();
+                    var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
+                    pipeline.Execute(token =>
+                    {
+                        InitRabbitMQ();
+
+                        if (_channel == null)
+                        {
+                            return;
+                        }
+
+                        stoppingToken.ThrowIfCancellationRequested();
+                        var consumer = new EventingBasicConsumer(_channel);
+                        consumer.Received += async (ch, ea) =>
+                        {
+                            if (ea.BasicProperties.Headers
+                                 .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
+                                 Enum.TryParse<EmailNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
+                            {
+                                using (IServiceScope scope = _serviceProvider.CreateScope())
+                                {
+                                    switch (notificationType)
+                                    {
+                                        case EmailNotificationType.MemberAddedToCard:
+                                            var memberAddedToCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToCardNotificationService>();
+                                            var memberAddedToCardNotification = JsonSerializer
+                                                                .Deserialize<MemberAddedToCardNotification>(ea.Body.Span);
+
+                                            if (memberAddedToCardNotification != null)
+                                            {
+                                                await memberAddedToCardNotificationService.Notify(memberAddedToCardNotification);
+                                            }
+                                            break;
+                                        case EmailNotificationType.MemberRemovedFromCard:
+                                            var memberRemovedFromCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromCardNotificationService>();
+                                            var memberRemovedFromCardNotification = JsonSerializer
+                                                                .Deserialize<MemberRemovedFromCardNotification>(ea.Body.Span);
+
+                                            if (memberRemovedFromCardNotification != null)
+                                            {
+                                                await memberRemovedFromCardNotificationService.Notify(memberRemovedFromCardNotification);
+                                            }
+                                            break;
+                                        case EmailNotificationType.CardDueDateUpdated:
+                                            var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
+                                            var dateChangedNotification = JsonSerializer
+                                                                .Deserialize<CardDueTimeUpdatedNotification>(ea.Body.Span);
+
+                                            if (dateChangedNotification != null)
+                                            {
+                                                await _cardDueDateNotificationService.Notify(dateChangedNotification);
+                                            }
+                                            break;
+                                        case EmailNotificationType.CardCompleted:
+                                            var _cardCompletedNotificationService = scope.ServiceProvider.GetRequiredService<ICardCompletedNotificationService>();
+                                            var cardCompletedNotification = JsonSerializer
+                                                                .Deserialize<CardCompletedNotification>(ea.Body.Span);
+
+                                            if (cardCompletedNotification != null)
+                                            {
+                                                await _cardCompletedNotificationService.Notify(cardCompletedNotification);
+                                            }
+                                            break;
+                                        case EmailNotificationType.MemberAddedToBoard:
+                                            var memberAddedToBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToBoardNotificationService>();
+                                            var memberAddedToBoardNotification = JsonSerializer
+                                                                .Deserialize<MemberAddedToBoardNotification>(ea.Body.Span);
+
+                                            if (memberAddedToBoardNotification != null)
+                                            {
+                                                await memberAddedToBoardNotificationService.Notify(memberAddedToBoardNotification);
+                                            }
+                                            break;
+                                        case EmailNotificationType.MemberRemovedFromBoard:
+                                            var memberRemovedFromBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromBoardNotificationService>();
+                                            var memberRemovedFromBoardNotification = JsonSerializer
+                                                                .Deserialize<MemberRemovedFromBoardNotification>(ea.Body.Span);
+
+                                            if (memberRemovedFromBoardNotification != null)
+                                            {
+                                                await memberRemovedFromBoardNotificationService.Notify(memberRemovedFromBoardNotification);
+                                            }
+                                            break;
+                                        case EmailNotificationType.MemberAddedToWorkspace:
+                                            var memberAddedToWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToWorkspaceNotificationService>();
+                                            var memberAddedToWorkspaceNotification = JsonSerializer
+                                                                .Deserialize<MemberAddedToWorkspaceNotification>(ea.Body.Span);
+
+                                            if (memberAddedToWorkspaceNotification != null)
+                                            {
+                                                await memberAddedToWorkspaceNotificationService.Notify(memberAddedToWorkspaceNotification);
+                                            }
+                                            break;
+                                        case EmailNotificationType.MemberRemovedFromWorkspace:
+                                            var memberRemovedFromWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromWorkspaceNotificationService>();
+                                            var memberRemovedFromWorkspaceNotification = JsonSerializer
+                                                                .Deserialize<MemberRemovedFromWorkspaceNotification>(ea.Body.Span);
+
+                                            if (memberRemovedFromWorkspaceNotification != null)
+                                            {
+                                                await memberRemovedFromWorkspaceNotificationService.Notify(memberRemovedFromWorkspaceNotification);
+                                            }
+                                            break;
+                                    }
+                                }
+                            }
+                        };
+
+                        consumer.Shutdown += OnConsumerShutdown;
+                        consumer.Registered += OnConsumerRegistered;
+                        consumer.Unregistered += OnConsumerUnregistered;
+                        consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
+
+                        _channel.BasicConsume(BrokerConstants.EmailNotificationsQueue, true, consumer);
+
+                        _rabbitMqHealthCheck.Connected = true;
+                    });
                 });
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
             }
-
-            if (_channel == null)
-            {
-                return;
-            }
-
-            stoppingToken.ThrowIfCancellationRequested();
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += async (ch, ea) =>
-            {
-                if (ea.BasicProperties.Headers
-                     .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
-                     Enum.TryParse<EmailNotificationType>(Encoding.UTF8.GetString((byte[])notificationTypeRaw), out var notificationType))
-                {
-                    using (IServiceScope scope = _serviceProvider.CreateScope())
-                    {
-                        switch (notificationType)
-                        {
-                            case EmailNotificationType.MemberAddedToCard:
-                                var memberAddedToCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToCardNotificationService>();
-                                var memberAddedToCardNotification = JsonSerializer
-                                                    .Deserialize<MemberAddedToCardNotification>(ea.Body.Span);
-
-                                if (memberAddedToCardNotification != null)
-                                {
-                                    await memberAddedToCardNotificationService.Notify(memberAddedToCardNotification);
-                                }
-                                break;
-                            case EmailNotificationType.MemberRemovedFromCard:
-                                var memberRemovedFromCardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromCardNotificationService>();
-                                var memberRemovedFromCardNotification = JsonSerializer
-                                                    .Deserialize<MemberRemovedFromCardNotification>(ea.Body.Span);
-
-                                if (memberRemovedFromCardNotification != null)
-                                {
-                                    await memberRemovedFromCardNotificationService.Notify(memberRemovedFromCardNotification);
-                                }
-                                break;
-                            case EmailNotificationType.CardDueDateUpdated:
-                                var _cardDueDateNotificationService = scope.ServiceProvider.GetRequiredService<ICardDueDateNotificationService>();
-                                var dateChangedNotification = JsonSerializer
-                                                    .Deserialize<CardDueTimeUpdatedNotification>(ea.Body.Span);
-
-                                if (dateChangedNotification != null)
-                                {
-                                    await _cardDueDateNotificationService.Notify(dateChangedNotification);
-                                }
-                                break;
-                            case EmailNotificationType.CardCompleted:
-                                var _cardCompletedNotificationService = scope.ServiceProvider.GetRequiredService<ICardCompletedNotificationService>();
-                                var cardCompletedNotification = JsonSerializer
-                                                    .Deserialize<CardCompletedNotification>(ea.Body.Span);
-
-                                if (cardCompletedNotification != null)
-                                {
-                                    await _cardCompletedNotificationService.Notify(cardCompletedNotification);
-                                }
-                                break;
-                            case EmailNotificationType.MemberAddedToBoard:
-                                var memberAddedToBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToBoardNotificationService>();
-                                var memberAddedToBoardNotification = JsonSerializer
-                                                    .Deserialize<MemberAddedToBoardNotification>(ea.Body.Span);
-
-                                if (memberAddedToBoardNotification != null)
-                                {
-                                    await memberAddedToBoardNotificationService.Notify(memberAddedToBoardNotification);
-                                }
-                                break;
-                            case EmailNotificationType.MemberRemovedFromBoard:
-                                var memberRemovedFromBoardNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromBoardNotificationService>();
-                                var memberRemovedFromBoardNotification = JsonSerializer
-                                                    .Deserialize<MemberRemovedFromBoardNotification>(ea.Body.Span);
-
-                                if (memberRemovedFromBoardNotification != null)
-                                {
-                                    await memberRemovedFromBoardNotificationService.Notify(memberRemovedFromBoardNotification);
-                                }
-                                break;
-                            case EmailNotificationType.MemberAddedToWorkspace:
-                                var memberAddedToWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberAddedToWorkspaceNotificationService>();
-                                var memberAddedToWorkspaceNotification = JsonSerializer
-                                                    .Deserialize<MemberAddedToWorkspaceNotification>(ea.Body.Span);
-
-                                if (memberAddedToWorkspaceNotification != null)
-                                {
-                                    await memberAddedToWorkspaceNotificationService.Notify(memberAddedToWorkspaceNotification);
-                                }
-                                break;
-                            case EmailNotificationType.MemberRemovedFromWorkspace:
-                                var memberRemovedFromWorkspaceNotificationService = scope.ServiceProvider.GetRequiredService<IMemberRemovedFromWorkspaceNotificationService>();
-                                var memberRemovedFromWorkspaceNotification = JsonSerializer
-                                                    .Deserialize<MemberRemovedFromWorkspaceNotification>(ea.Body.Span);
-
-                                if (memberRemovedFromWorkspaceNotification != null)
-                                {
-                                    await memberRemovedFromWorkspaceNotificationService.Notify(memberRemovedFromWorkspaceNotification);
-                                }
-                                break;
-                        }
-                    }
-                }
-            };
-
-            consumer.Shutdown += OnConsumerShutdown;
-            consumer.Registered += OnConsumerRegistered;
-            consumer.Unregistered += OnConsumerUnregistered;
-            consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
-
-            _channel.BasicConsume(BrokerConstants.EmailNotificationsQueue, true, consumer);
-
-            _rabbitMqHealthCheck.Connected = true;
         }
 
         private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e)
