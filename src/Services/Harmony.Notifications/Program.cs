@@ -2,6 +2,7 @@ using Hangfire;
 using Harmony.Application.Configurations;
 using Harmony.Application.Extensions;
 using Harmony.Logging;
+using Harmony.Messaging;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Extensions;
 using Harmony.Notifications.Services.EmailProviders;
@@ -61,8 +62,10 @@ namespace Harmony.Notifications
             builder.Services.AddHostedService<SearchIndexNotificationsConsumerHostedService>();
             builder.Services.AddMemoryCache();
 
+            builder.Services.AddSingleton<RabbitMqHealthCheck>();
             builder.Services.AddHealthChecks()
-                .AddDbContextCheck<NotificationContext>("database", tags: ["ready"]);
+                .AddDbContextCheck<NotificationContext>("database", tags: ["ready"])
+                .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
 
             var app = builder.Build();
 
@@ -90,7 +93,7 @@ namespace Harmony.Notifications
 
             app.MapHealthChecks("/healthz/live", new HealthCheckOptions
             {
-                Predicate = _ => false
+                Predicate = _ => true
             });
 
             app.UseAuthorization();

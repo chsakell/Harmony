@@ -6,6 +6,7 @@ using Harmony.Automations.Services;
 using Harmony.Automations.Services.Hosted;
 using Harmony.Infrastructure.Extensions;
 using Harmony.Logging;
+using Harmony.Messaging;
 using Harmony.Persistence.DbContext;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
@@ -54,8 +55,10 @@ namespace Harmony.Automations
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+            builder.Services.AddSingleton<RabbitMqHealthCheck>();
             builder.Services.AddHealthChecks()
-                .AddDbContextCheck<NotificationContext>("database", tags: ["ready"]);
+                .AddDbContextCheck<NotificationContext>("database", tags: ["ready"])
+                .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
 
             var app = builder.Build();
 
@@ -83,7 +86,7 @@ namespace Harmony.Automations
 
             app.MapHealthChecks("/healthz/live", new HealthCheckOptions
             {
-                Predicate = _ => false
+                Predicate = _ => true
             });
 
             app.UseAuthorization();

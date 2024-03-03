@@ -13,6 +13,7 @@ COPY ["src/Shared/Harmony.Shared/Harmony.Shared.csproj", "Shared/Harmony.Shared/
 COPY ["src/Core/Harmony.Domain/Harmony.Domain.csproj", "Core/Harmony.Domain/"]
 COPY ["src/Infrastructure/Harmony.Infrastructure/Harmony.Infrastructure.csproj", "Infrastructure/Harmony.Infrastructure/"]
 COPY ["src/Infrastructure/Harmony.Persistence/Harmony.Persistence.csproj", "Infrastructure/Harmony.Persistence/"]
+COPY ["src/Infrastructure/Harmony.Messaging/Harmony.Messaging.csproj", "Infrastructure/Harmony.Messaging/"]
 RUN dotnet restore "Services/Harmony.Notifications/Harmony.Notifications.csproj"
 COPY src/ .
 WORKDIR "/src/Services/Harmony.Notifications"

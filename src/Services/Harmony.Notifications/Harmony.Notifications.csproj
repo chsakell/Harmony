@@ -35,6 +35,7 @@
     <ProjectReference Include="..\..\Core\Harmony.Application\Harmony.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Infrastructure\Harmony.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Logging\Harmony.Logging.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Harmony.Messaging\Harmony.Messaging.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Persistence\Harmony.Persistence.csproj" />
   </ItemGroup>
     

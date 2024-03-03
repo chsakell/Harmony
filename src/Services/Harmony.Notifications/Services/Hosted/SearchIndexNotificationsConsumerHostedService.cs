@@ -3,6 +3,7 @@ using Harmony.Application.Constants;
 using Harmony.Application.Enums;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Domain.Enums;
+using Harmony.Messaging;
 using Harmony.Notifications.Contracts.Notifications.SearchIndex;
 using Microsoft.Extensions.Options;
 using Polly.Registry;
@@ -17,6 +18,8 @@ namespace Harmony.Notifications.Services.Hosted
     public class SearchIndexNotificationsConsumerHostedService : BackgroundService
     {
         private readonly ILogger _logger;
+        private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider;
+        private readonly RabbitMqHealthCheck _rabbitMqHealthCheck;
         private readonly IServiceProvider _serviceProvider;
         private IConnection? _connection;
         private IModel? _channel;
@@ -25,29 +28,17 @@ namespace Harmony.Notifications.Services.Hosted
         public SearchIndexNotificationsConsumerHostedService(ILoggerFactory loggerFactory,
             IOptions<BrokerConfiguration> brokerConfig,
             ResiliencePipelineProvider<string> resiliencePipelineProvider,
+            RabbitMqHealthCheck rabbitMqHealthCheck,
             IServiceProvider serviceProvider)
         {
             _logger = loggerFactory.CreateLogger<SearchIndexNotificationsConsumerHostedService>();
             _brokerConfiguration = brokerConfig.Value;
-
-            try
-            {
-                var pipeline = resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
-
-                pipeline.Execute(token =>
-                {
-                    InitRabbitMQ();
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
-            }
-
+            _resiliencePipelineProvider = resiliencePipelineProvider;
+            _rabbitMqHealthCheck = rabbitMqHealthCheck;
             _serviceProvider = serviceProvider;
         }
 
-        private void InitRabbitMQ()
+        private Task InitRabbitMQ()
         {
             _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
 
@@ -82,10 +73,26 @@ namespace Harmony.Notifications.Services.Hosted
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
             _logger.LogInformation($"Connected to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
+
+            return Task.CompletedTask;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            try
+            {
+                var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
+                await pipeline.ExecuteAsync(async token =>
+                {
+                    await InitRabbitMQ();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
+            }
+
             if (_channel == null)
             {
                 return;
@@ -150,6 +157,8 @@ namespace Harmony.Notifications.Services.Hosted
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             _channel.BasicConsume(BrokerConstants.SearchIndexNotificationsQueue, true, consumer);
+
+            _rabbitMqHealthCheck.Connected = true;
         }
 
         private async Task Index<T>(BasicDeliverEventArgs args, SearchIndexOperation operation, string index) where T : class, ISearchIndexNotification
@@ -186,11 +195,30 @@ namespace Harmony.Notifications.Services.Hosted
             }
         }
 
-        private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }
-        private void OnConsumerUnregistered(object? sender, ConsumerEventArgs e) { }
-        private void OnConsumerRegistered(object? sender, ConsumerEventArgs e) { }
-        private void OnConsumerShutdown(object? sender, ShutdownEventArgs e) { }
-        private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e) { }
+        private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
+
+        private void OnConsumerUnregistered(object? sender, ConsumerEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
+
+        private void OnConsumerRegistered(object? sender, ConsumerEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = true;
+        }
+
+        private void OnConsumerShutdown(object? sender, ShutdownEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
+
+        private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
 
         public override void Dispose()
         {

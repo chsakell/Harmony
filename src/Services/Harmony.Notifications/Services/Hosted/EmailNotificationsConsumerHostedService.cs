@@ -2,6 +2,7 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications.Email;
 using Harmony.Domain.Enums;
+using Harmony.Messaging;
 using Harmony.Notifications.Contracts.Notifications.Email;
 using Microsoft.Extensions.Options;
 using Polly.Registry;
@@ -16,6 +17,8 @@ namespace Harmony.Notifications.Services.Hosted
     public class EmailNotificationsConsumerHostedService : BackgroundService
     {
         private readonly ILogger _logger;
+        private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider;
+        private readonly RabbitMqHealthCheck _rabbitMqHealthCheck;
         private readonly IServiceProvider _serviceProvider;
         private IConnection? _connection;
         private IModel? _channel;
@@ -24,29 +27,17 @@ namespace Harmony.Notifications.Services.Hosted
         public EmailNotificationsConsumerHostedService(ILoggerFactory loggerFactory,
             IOptions<BrokerConfiguration> brokerConfig,
             ResiliencePipelineProvider<string> resiliencePipelineProvider,
+            RabbitMqHealthCheck rabbitMqHealthCheck,
             IServiceProvider serviceProvider)
         {
             _logger = loggerFactory.CreateLogger<EmailNotificationsConsumerHostedService>();
             _brokerConfiguration = brokerConfig.Value;
-
-            try
-            {
-                var pipeline = resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
-
-                pipeline.Execute(token =>
-                {
-                    InitRabbitMQ();
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to connect to RabbitMQ {ex}");
-            }
-
+            _resiliencePipelineProvider = resiliencePipelineProvider;
+            _rabbitMqHealthCheck = rabbitMqHealthCheck;
             _serviceProvider = serviceProvider;
         }
 
-        private void InitRabbitMQ()
+        private Task InitRabbitMQ()
         {
             var factory = new ConnectionFactory
             {
@@ -77,10 +68,26 @@ namespace Harmony.Notifications.Services.Hosted
             _channel.BasicQos(0, 1, false);
 
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+
+            return Task.CompletedTask;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            try
+            {
+                var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
+
+                await pipeline.ExecuteAsync(async token =>
+                {
+                    await InitRabbitMQ();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to connect to RabbitMQ {_brokerConfiguration.Host}:{_brokerConfiguration.Port} {ex}");
+            }
+
             if (_channel == null)
             {
                 return;
@@ -189,13 +196,34 @@ namespace Harmony.Notifications.Services.Hosted
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             _channel.BasicConsume(BrokerConstants.EmailNotificationsQueue, true, consumer);
+
+            _rabbitMqHealthCheck.Connected = true;
         }
 
-        private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e) { }
-        private void OnConsumerUnregistered(object? sender, ConsumerEventArgs e) { }
-        private void OnConsumerRegistered(object? sender, ConsumerEventArgs e) { }
-        private void OnConsumerShutdown(object? sender, ShutdownEventArgs e) { }
-        private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e) { }
+        private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
+
+        private void OnConsumerUnregistered(object? sender, ConsumerEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
+
+        private void OnConsumerRegistered(object? sender, ConsumerEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = true;
+        }
+
+        private void OnConsumerShutdown(object? sender, ShutdownEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
+
+        private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e)
+        {
+            _rabbitMqHealthCheck.Connected = false;
+        }
 
         public override void Dispose()
         {

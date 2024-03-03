@@ -5,6 +5,8 @@ using Harmony.SignalR.Services.Hosted;
 using Harmony.Application.Extensions;
 using Harmony.Logging;
 using Serilog;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Harmony.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,10 @@ builder.Services.AddSignalR(builder.Configuration);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRetryPolicies();
+
+builder.Services.AddSingleton<RabbitMqHealthCheck>();
+builder.Services.AddHealthChecks()
+    .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
 
 var app = builder.Build();
 
@@ -44,6 +50,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.MapHealthChecks("/healthz/ready", new HealthCheckOptions
+{
+    Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+});
+
+app.MapHealthChecks("/healthz/live", new HealthCheckOptions
+{
+    Predicate = _ => true
+});
 
 app.UseAuthorization();
 
