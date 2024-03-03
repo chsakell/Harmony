@@ -6,6 +6,8 @@ using Harmony.Automations.Services;
 using Harmony.Automations.Services.Hosted;
 using Harmony.Infrastructure.Extensions;
 using Harmony.Logging;
+using Harmony.Persistence.DbContext;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using System.Reflection;
 namespace Harmony.Automations
@@ -51,6 +53,10 @@ namespace Harmony.Automations
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            builder.Services.AddHealthChecks()
+                .AddDbContextCheck<NotificationContext>("database", tags: ["ready"]);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -69,6 +75,16 @@ namespace Harmony.Automations
             app.UseHangfireDashboard();
 
             app.UseRouting();
+
+            app.MapHealthChecks("/healthz/ready", new HealthCheckOptions
+            {
+                Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+            });
+
+            app.MapHealthChecks("/healthz/live", new HealthCheckOptions
+            {
+                Predicate = _ => false
+            });
 
             app.UseAuthorization();
 

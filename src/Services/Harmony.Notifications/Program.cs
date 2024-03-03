@@ -6,6 +6,8 @@ using Harmony.Notifications.Contracts.Notifications.Email;
 using Harmony.Notifications.Extensions;
 using Harmony.Notifications.Services.EmailProviders;
 using Harmony.Notifications.Services.Hosted;
+using Harmony.Persistence.DbContext;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 
 namespace Harmony.Notifications
@@ -59,6 +61,9 @@ namespace Harmony.Notifications
             builder.Services.AddHostedService<SearchIndexNotificationsConsumerHostedService>();
             builder.Services.AddMemoryCache();
 
+            builder.Services.AddHealthChecks()
+                .AddDbContextCheck<NotificationContext>("database", tags: ["ready"]);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -69,7 +74,6 @@ namespace Harmony.Notifications
                 app.UseHsts();
             }
 
-
             await app.InitializeDatabase(builder.Configuration);
 
             app.UseHttpsRedirection();
@@ -78,6 +82,16 @@ namespace Harmony.Notifications
             app.UseHangfireDashboard();
 
             app.UseRouting();
+
+            app.MapHealthChecks("/healthz/ready", new HealthCheckOptions
+            {
+                Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+            });
+
+            app.MapHealthChecks("/healthz/live", new HealthCheckOptions
+            {
+                Predicate = _ => false
+            });
 
             app.UseAuthorization();
 
