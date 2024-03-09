@@ -9,10 +9,18 @@
   <ItemGroup>
     <PackageReference Include="Algolia.Search" Version="6.16.0" />
     <PackageReference Include="Bogus" Version="35.4.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.25.2" />
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.60.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.60.0" />
     <PackageReference Include="Dapper" Version="2.1.28" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
     <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="../../Services/Harmony.Automations/Protos/*.proto" GrpcServices="Client"></Protobuf>
   </ItemGroup>
 
   <ItemGroup>

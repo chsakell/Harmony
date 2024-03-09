@@ -1,13 +1,19 @@
-﻿using Harmony.Application.Contracts.Repositories;
+﻿using Grpc.Net.Client;
+using Harmony.Application.Configurations;
+using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
+using Harmony.Automations.Protos;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 using MediatR;
+using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -18,11 +24,13 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly IBoardListRepository _boardListRepository;
         private readonly IMediator _mediator;
+        private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public CardService(ICardRepository cardRepository,
             IBoardRepository boardRepository,
             IIssueTypeRepository issueTypeRepository,
             IBoardListRepository boardListRepository,
+            IOptions<AppEndpointConfiguration> endpointsConfiguration,
             IMediator mediator)
         {
             _cardRepository = cardRepository;
@@ -30,6 +38,7 @@ namespace Harmony.Infrastructure.Services.Management
             _issueTypeRepository = issueTypeRepository;
             _boardListRepository = boardListRepository;
             _mediator = mediator;
+            _endpointConfiguration = endpointsConfiguration.Value;
         }
 
         public async Task<bool> PositionCard(Card card, Guid? newListId, short newPosition, CardStatus status)
@@ -223,7 +232,7 @@ namespace Harmony.Infrastructure.Services.Management
                 return await Result<short?>.FailAsync("Card doesn't exist");
             }
             var childrenQuery = from childCard in _cardRepository.Entities.IgnoreQueryFilters()
-                                where childCard.ParentCardId == parentCardId && card.Status != CardStatus.Archived
+                                where childCard.ParentCardId == parentCardId && childCard.Status != CardStatus.Archived
                                 select childCard;
 
             var children = await childrenQuery.ToListAsync();
@@ -407,6 +416,47 @@ namespace Harmony.Infrastructure.Services.Management
                                     .Take(pageSize).ToListAsync();
 
             return result;
+        }
+
+        public async Task<bool> CanUpdateStoryPoints(Guid boardId, Guid cardId, Guid? issueTypeId)
+        {
+            var hasChildren = await HasActiveChildren(cardId);
+
+            if (!hasChildren || !issueTypeId.HasValue)
+            {
+                return true;
+            }
+
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.AutomationEndpoint,
+                new GrpcChannelOptions { HttpHandler = httpHandler });
+
+            var client = new AutomationService.AutomationServiceClient(channel);
+
+            var hasAutomationResponse = await client
+                .HasSumUpStoryPointsEnabledAutomationAsync(new HasSumUpStoryPointsAutomationRequest()
+                {
+                    BoardId = boardId.ToString(),
+                    IssueType = issueTypeId.ToString()
+                });
+
+            return !hasAutomationResponse.HasAutomation;
+        }
+
+        public async Task<bool> HasActiveChildren(Guid cardId)
+        {
+            var childrenQuery = from childCard in _cardRepository.Entities.IgnoreQueryFilters()
+                                where childCard.ParentCardId == cardId && childCard.Status != CardStatus.Archived
+                                select childCard;
+
+            var children = await childrenQuery.ToListAsync();
+
+            return children.Any();
         }
     }
 }

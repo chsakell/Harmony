@@ -9,12 +9,14 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Grpc.Net.Client;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 
 public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardStoryPointsCommand, Result<bool>>
 {
-	private readonly ICardRepository _cardRepository;
+    private readonly ICardService _cardService;
+    private readonly ICardRepository _cardRepository;
 	private readonly ICurrentUserService _currentUserService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IStringLocalizer<UpdateCardStoryPointsCommandHandler> _localizer;
@@ -27,7 +29,8 @@ public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardSto
 		IStringLocalizer<UpdateCardStoryPointsCommandHandler> localizer,
 		IMapper mapper)
 	{
-		_cardRepository = cardRepository;
+        _cardService = cardService;
+        _cardRepository = cardRepository;
 		_currentUserService = currentUserService;
         _notificationsPublisher = notificationsPublisher;
         _localizer = localizer;
@@ -42,7 +45,17 @@ public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardSto
 			return await Result<bool>.FailAsync(_localizer["Login required to complete this operator"]);
 		}
 
-		var card = await _cardRepository.Get(request.CardId);
+        var card = await _cardRepository.Get(request.CardId);
+
+        var canUpdateStoryPoints = await _cardService
+			.CanUpdateStoryPoints(request.BoardId, request.CardId, card.IssueTypeId);
+
+		if (!canUpdateStoryPoints)
+		{
+            return await Result<bool>
+				.FailAsync($"There's an active 'Sum up story points' automation: {Environment.NewLine}" +
+				$"Set the story points at the subtask level to update the parent story points");
+        }
 
 		card.StoryPoints = request.StoryPoints;
 

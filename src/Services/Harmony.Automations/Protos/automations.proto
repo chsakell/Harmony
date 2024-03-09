@@ -62,10 +62,21 @@ message GetAutomationsResponse {
     repeated string automations = 3;
 }
 
+
+message HasSumUpStoryPointsAutomationRequest {
+	string boardId = 1;
+	string IssueType = 2;
+}
+
+message HasSumUpStoryPointsAutomationResponse {
+	bool HasAutomation = 1;
+}
+
 service AutomationService {
   rpc GetAutomationTemplates (GetAutomationTemplatesRequest) returns (GetAutomationTemplatesResponse);
   rpc CreateAutomation (CreateAutomationRequest) returns (CreateAutomationResponse);
   rpc ToggleAutomation (ToggleAutomationRequest) returns (ToggleAutomationResponse);
   rpc RemoveAutomation (RemoveAutomationRequest) returns (RemoveAutomationResponse);
   rpc GetAutomations (GetAutomationsRequest) returns (GetAutomationsResponse);
+  rpc HasSumUpStoryPointsEnabledAutomation (HasSumUpStoryPointsAutomationRequest) returns (HasSumUpStoryPointsAutomationResponse);
 }

@@ -58,6 +58,33 @@ namespace Harmony.Automations.Services
             return response;
         }
 
+        public async override Task<HasSumUpStoryPointsAutomationResponse> HasSumUpStoryPointsEnabledAutomation(HasSumUpStoryPointsAutomationRequest request, 
+            ServerCallContext context)
+        {
+            var hasActiveAutomationForIssue = false;
+
+            var automationsResult = await _mediator
+                .Send(new GetAutomationsQuery(AutomationType.SumUpStoryPoints, 
+                Guid.Parse(request.BoardId)));
+
+            if(automationsResult.Succeeded && automationsResult.Data.Any())
+            {
+                var automation = (SumUpStoryPointsAutomationDto)automationsResult.Data.First();
+
+                if(!automation.IssueTypes.Any() || automation.IssueTypes.Contains(request.IssueType)) 
+                {
+                    hasActiveAutomationForIssue = true;
+                }
+            }
+
+            var response = new HasSumUpStoryPointsAutomationResponse()
+            {
+                HasAutomation = hasActiveAutomationForIssue
+            };
+
+            return response;
+        }
+
         public async override Task<ToggleAutomationResponse> ToggleAutomation(ToggleAutomationRequest request, ServerCallContext context)
         {
             var result = await _mediator.Send(new ToggleAutomationCommand(request.AutomationId, request.Enabled));

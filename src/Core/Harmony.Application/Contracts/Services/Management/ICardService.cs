@@ -20,5 +20,7 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<IResult<List<Card>>> ReactivateCards(Guid boardId, List<Guid> cardIds, Guid boardListId);
         Task ReorderCardsAfterArchive(Guid listId, short archivedCardPositionn);
         Task<IResult<short?>> SyncParentStoryPoints(Guid parentCardId);
+        Task<bool> CanUpdateStoryPoints(Guid boardId, Guid cardId, Guid? issueTypeId);
+        Task<bool> HasActiveChildren(Guid cardId);
     }
 }
