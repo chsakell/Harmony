@@ -118,6 +118,9 @@ namespace Harmony.Automations.Services.Hosted
                                     case NotificationType.CardCreated:
                                         await RunAutomation<CardCreatedMessage>(ea);
                                         break;
+                                    case NotificationType.CardStoryPointsChanged:
+                                        await RunAutomation<CardStoryPointsChangedMessage>(ea);
+                                        break;
                                     default:
                                         break;
                                 }

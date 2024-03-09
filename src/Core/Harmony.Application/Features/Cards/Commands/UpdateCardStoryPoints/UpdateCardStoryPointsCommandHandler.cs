@@ -51,10 +51,13 @@ public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardSto
 
         if (updateResult > 0)
         {
-            var message = new CardStoryPointsChangedMessage(request.BoardId, card.Id, card.StoryPoints);
+            var message = new CardStoryPointsChangedMessage(
+				request.BoardId, card.Id, 
+				card.StoryPoints,
+				card.ParentCardId);
 
             _notificationsPublisher.PublishMessage(message,
-                NotificationType.CardStoryPointsChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
+                NotificationType.CardStoryPointsChanged, routingKey: BrokerConstants.RoutingKeys.Notifications);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Story points updated"]);
         }

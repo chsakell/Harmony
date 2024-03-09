@@ -69,9 +69,11 @@ namespace Harmony.Automations.Extensions
         {
             services.AddScoped<IAutomationService<CardMovedMessage>, CardMovedAutomationService>();
             services.AddScoped<IAutomationService<CardCreatedMessage>, CardCreatedAutomationService>();
+            services.AddScoped<IAutomationService<CardStoryPointsChangedMessage>, CardStoryPointsChangedAutomationService>();
 
             services.AddScoped<ISyncParentAndChildIssuesAutomationService, SyncParentAndChildIssuesAutomationService>();
             services.AddScoped<ISmartAutoAssignAutomationService, SmartAutoAssignAutomationService>();
+            services.AddScoped<ISumUpStoryPointsAutomationService, SumUpStoryPointsAutomationService>();
             return services;
         }
 

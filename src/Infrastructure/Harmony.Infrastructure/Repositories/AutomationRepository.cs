@@ -5,10 +5,13 @@ using Harmony.Application.DTO.Automation;
 using Harmony.Domain.Automation;
 using Harmony.Domain.Enums;
 using Harmony.Domain.Enums.Automations;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
+using MongoDB.Driver.Core.Events;
 
 namespace Harmony.Infrastructure.Repositories
 {
@@ -16,9 +19,18 @@ namespace Harmony.Infrastructure.Repositories
     {
         private readonly MongoClient _client;
 
-        public AutomationRepository(IOptions<MongoDbConfiguration> mongoConfiguration)
+        public AutomationRepository(IOptions<MongoDbConfiguration> mongoConfiguration,
+            ILogger<AutomationRepository> logger)
         {
-            _client = new MongoClient(mongoConfiguration.Value.ConnectionURI);
+            var mongoConnectionUrl = new MongoUrl(mongoConfiguration.Value.ConnectionURI);
+            var mongoClientSettings = MongoClientSettings.FromUrl(mongoConnectionUrl);
+            mongoClientSettings.ClusterConfigurator = cb => {
+                cb.Subscribe<CommandStartedEvent>(e => {
+                    logger.LogInformation($"{e.CommandName} - {e.Command.ToJson()}");
+                });
+            };
+
+            _client = new MongoClient(mongoClientSettings);
         }
 
         public async Task CreateAsync(IAutomationDto automation)
