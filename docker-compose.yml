@@ -17,7 +17,7 @@ services:
         - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
         - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
         - ConnectionStrings__HarmonyConnection=Server=harmony-sql-server;database=harmony;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
-        - AppEndpointConfiguration__AutomationEndpoint=https://harmony.automations:443/
+        - AppEndpointConfiguration__AutomationEndpoint=https://harmony-automations:443/
         - BrokerConfiguration__Host=harmony-rabbitmq
         - ElasticConfiguration:Uri=http://elasticsearch:9200
     volumes:
@@ -41,7 +41,7 @@ services:
         - ASPNETCORE_HTTPS_PORT=7277
         - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
         - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
-        - AppEndpointConfiguration__HarmonyApiEndpoint=https://harmony.api:443/
+        - AppEndpointConfiguration__HarmonyApiEndpoint=https://harmony-api:443/
         - BrokerConfiguration__Host=harmony-rabbitmq 
         - ConnectionStrings__HarmonyJobsConnection=Server=harmony-sql-server;database=Harmony.Automations.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
         - MongoDB__ConnectionURI=mongodb://harmony-mongodb-server:27017

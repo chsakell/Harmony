@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="../../Services/Harmony.Automations/Protos/*.proto" GrpcServices="Client"></Protobuf>
+    <Protobuf Include="../../Services/Harmony.Automations/Protos/*.proto" Access="internal" GrpcServices="Client"></Protobuf>
   </ItemGroup>
 
   <ItemGroup>
