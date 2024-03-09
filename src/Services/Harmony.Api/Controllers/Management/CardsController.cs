@@ -46,7 +46,7 @@ namespace Harmony.Api.Controllers.Management
         }
 
         [HttpPut("backlog/{id:guid}")]
-        public async Task<IActionResult> CreateBacklog(Guid id, UpdateBacklogCommand command)
+        public async Task<IActionResult> UpdateBacklog(Guid id, UpdateBacklogCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

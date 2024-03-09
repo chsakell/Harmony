@@ -54,7 +54,8 @@ public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardSto
 		{
             return await Result<bool>
 				.FailAsync($"There's an active 'Sum up story points' automation: {Environment.NewLine}" +
-				$"Set the story points at the subtask level to update the parent story points");
+				$"Set the story points at the subtask level to update the parent story points or " +
+				$"remove the specific issue type from the automation");
         }
 
 		card.StoryPoints = request.StoryPoints;
