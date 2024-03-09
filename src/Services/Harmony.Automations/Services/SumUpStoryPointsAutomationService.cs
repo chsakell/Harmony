@@ -9,6 +9,8 @@ using Grpc.Net.Client;
 using Harmony.Api.Protos;
 using Microsoft.Extensions.Options;
 using Harmony.Application.Configurations;
+using Harmony.Domain.Entities;
+using MongoDB.Driver;
 
 
 namespace Harmony.Automations.Services
@@ -54,7 +56,30 @@ namespace Harmony.Automations.Services
                 return;
             }
 
-            var card = parentCardResponse.Card;
+            var parentCard = parentCardResponse.Card;
+
+            if (automation.IssueTypes.Any() && !automation.IssueTypes.Contains(parentCard.IssueType))
+            {
+                return;
+            }
+
+            var syncStoryPointsResponse = await client
+                .SyncParentStoryPointsAsync(new SyncParentCardStoryPointsRequest()
+                {
+                    CardId = parentCard.CardId.ToString()
+                });
+
+            if(syncStoryPointsResponse.Success) 
+            {
+                var message = new
+                    CardStoryPointsChangedMessage(notification.BoardId, 
+                    Guid.Parse(parentCard.CardId),
+                    (short?)syncStoryPointsResponse.TotalStoryPoints, null);
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.CardStoryPointsChanged, 
+                    routingKey: BrokerConstants.RoutingKeys.SignalR);
+            }
 
             return;
         }

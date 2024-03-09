@@ -26,6 +26,16 @@ message MoveCardToListResponse {
     string error = 3;
 }
 
+message SyncParentCardStoryPointsRequest {
+    string cardId = 1;
+}
+
+message SyncParentCardStoryPointsResponse {
+    bool success = 1;
+    int32 totalStoryPoints = 2;
+    string error = 3;
+}
+
 message Card {
 	string cardId = 1;
     string title = 2;
@@ -39,6 +49,7 @@ message Card {
     repeated Card children = 10;
     repeated string members = 11;
     google.protobuf.StringValue boardId = 12;
+    string issueType = 13;
 }
 
 message CardResponse {
@@ -50,4 +61,5 @@ service CardService {
   // returns a Card
   rpc GetCard (CardFilterRequest) returns (CardResponse);
   rpc MoveCardToList (MoveCardToListRequest) returns (MoveCardToListResponse);
+  rpc SyncParentStoryPoints (SyncParentCardStoryPointsRequest) returns (SyncParentCardStoryPointsResponse);
 }

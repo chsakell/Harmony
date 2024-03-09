@@ -4,17 +4,22 @@ using Harmony.Application.Specifications.Cards;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Application.Extensions;
 using Harmony.Api.Protos;
+using Harmony.Application.Contracts.Services.Management;
 
 namespace Harmony.Api.Services.gRPC
 {
     public class CardService : Protos.CardService.CardServiceBase
     {
         private readonly ILogger<CardService> _logger;
+        private readonly ICardService _cardService;
         private readonly ICardRepository _cardRepository;
 
-        public CardService(ILogger<CardService> logger, ICardRepository cardRepository)
+        public CardService(ILogger<CardService> logger, 
+            ICardService cardService,
+            ICardRepository cardRepository)
         {
             _logger = logger;
+            _cardService = cardService;
             _cardRepository = cardRepository;
         }
 
@@ -71,6 +76,18 @@ namespace Harmony.Api.Services.gRPC
             return result;
         }
 
+        public override async Task<SyncParentCardStoryPointsResponse> SyncParentStoryPoints(SyncParentCardStoryPointsRequest request, ServerCallContext context)
+        {
+            var syncResult = await _cardService.SyncParentStoryPoints(Guid.Parse(request.CardId));
+
+            return new SyncParentCardStoryPointsResponse()
+            {
+                Success = syncResult.Succeeded,
+                TotalStoryPoints = syncResult.Data.HasValue ? (int)syncResult.Data : 0,
+                Error = syncResult.Succeeded ? string.Empty : string.Join(",", syncResult.Messages)
+            };
+        }
+
         private CardResponse MapToProto(Domain.Entities.Card card)
         {
             if (card == null)
@@ -100,7 +117,8 @@ namespace Harmony.Api.Services.gRPC
                 BoardTitle = card.BoardList?.Board?.Title ?? card.IssueType?.Board?.Title,
                 DueDateReminderType = card.DueDateReminderType.HasValue ? (int)card.DueDateReminderType.Value : null,
                 IsCompleted = card?.BoardList?.CardStatus == Domain.Enums.BoardListCardStatus.DONE,
-                BoardId = card.IssueType?.BoardId.ToString()
+                BoardId = card.IssueType?.BoardId.ToString(),
+                IssueType = card.IssueTypeId?.ToString()
             };
 
             protoCard.DueDate = GetDate(card.DueDate);
