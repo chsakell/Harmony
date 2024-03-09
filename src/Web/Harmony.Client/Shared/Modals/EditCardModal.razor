@@ -38,7 +38,7 @@ else
                                        Text="@_card.Title" Label="@_localizer["Title"]" />
                     <MudStack Row="true" Class="align-end">
                         <MudChip Label="true" Color="Color.Warning">@BoardKey - @_card.SerialNumber</MudChip>
-                            @if (_card.Sprint != null)
+                        @if (_card.Sprint != null)
                         {
                             <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
                         }
@@ -165,12 +165,12 @@ else
                                                 }
                                                 <MudStack Justify="Justify.Center" Spacing="0">
                                                     <MudText Typo="Typo.body1">@attachment.OriginalFileName</MudText>
-                                                        <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
-                                                    </MudStack>
-                                                    <MudStack Justify="Justify.Center">
-                                                        <MudIconButton Color="Color.Error" OnClick="() => RemoveAttachment(attachment.Id)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
-                                                    </MudStack>
+                                                    <MudText Typo="Typo.body2">Added @attachment.DateCreated.ToString("MM/dd/yyyy h:mm tt")</MudText>
                                                 </MudStack>
+                                                <MudStack Justify="Justify.Center">
+                                                    <MudIconButton Color="Color.Error" OnClick="() => RemoveAttachment(attachment.Id)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                                                </MudStack>
+                                            </MudStack>
                                         }
                                     </div>
                                 </MudStack>
@@ -184,22 +184,28 @@ else
                                         <HeaderContent>
                                             <MudTh>Serial Key</MudTh>
                                             <MudTh>Title</MudTh>
+                                            <MudTh>Story points</MudTh>
                                             <MudTh>Status</MudTh>
                                         </HeaderContent>
                                         <RowTemplate>
                                             <MudTd DataLabel="Serial Key">
                                                 <MudTooltip Text="Click for full editing" Delay="2500">
                                                     <MudChip OnClick="() => EditCard(child)" Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
-                                                    </MudTooltip>
-                                                </MudTd>
-                                                <MudTd DataLabel="Title">@child.Title</MudTd>
-                                                <MudTd DataLabel="Status">
-                                                    <MudSelect @bind-Value:get="child.BoardListId"
-                                                               @bind-Value:set="@((listId) => UpdateChildBoardList(child, listId))"
-                                                               FullWidth="false"
-                                                               ToStringFunc="@((childList) => childBoardListConverter(childList, _card.BoardLists))"
-                                                               T="Guid" AnchorOrigin="Origin.BottomCenter">
-                                                        @foreach (var list in _card.BoardLists)
+                                                </MudTooltip>
+                                            </MudTd>
+                                            <MudTd DataLabel="Title">@child.Title</MudTd>
+                                            <MudTd DataLabel="Title">
+                                                <MudChip Variant="Variant.Text" Color="Color.Primary">
+                                                    @(child.StoryPoints?.ToString() ?? "-")
+                                                </MudChip>
+                                            </MudTd>
+                                            <MudTd DataLabel="Status">
+                                                <MudSelect @bind-Value:get="child.BoardListId"
+                                                           @bind-Value:set="@((listId) => UpdateChildBoardList(child, listId))"
+                                                           FullWidth="false"
+                                                           ToStringFunc="@((childList) => childBoardListConverter(childList, _card.BoardLists))"
+                                                           T="Guid" AnchorOrigin="Origin.BottomCenter">
+                                                    @foreach (var list in _card.BoardLists)
                                                     {
                                                         <MudSelectItem Value="list.Id">@list.Title</MudSelectItem>
                                                     }
@@ -269,9 +275,9 @@ else
                                                 </div>
                                                 <MudPaper Class="d-flex pa-2 justify-end">
                                                     <MudButton Size="Size.Small" StartIcon="@Icons.Material.Filled.Cancel" OnClick="() => checkList.NewItem = null">@_localizer["Cancel"]</MudButton>
-                                                        <MudButton ButtonType="ButtonType.Submit" Disabled="string.IsNullOrEmpty(checkList.NewItem.Description)" Size="Size.Small" StartIcon="@Icons.Material.Filled.Save">@_localizer["Add"]</MudButton>
-                                                    </MudPaper>
-                                                </EditForm>
+                                                    <MudButton ButtonType="ButtonType.Submit" Disabled="string.IsNullOrEmpty(checkList.NewItem.Description)" Size="Size.Small" StartIcon="@Icons.Material.Filled.Save">@_localizer["Add"]</MudButton>
+                                                </MudPaper>
+                                            </EditForm>
                                         }
                                         else
                                         {
@@ -308,7 +314,7 @@ else
                                                     }
                                                     <MudStack Justify="Justify.Center" Spacing="0">
                                                         <MudText Typo="Typo.body1">@comment.User.FullName</MudText>
-                                                            <MudText Typo="Typo.body2"><strong>@@@comment.User.UserName</strong></MudText>
+                                                        <MudText Typo="Typo.body2"><strong>@@@comment.User.UserName</strong></MudText>
                                                     </MudStack>
                                                 </MudStack>
                                                 <MudStack Row="true" AlignItems="AlignItems.Center">
@@ -318,17 +324,17 @@ else
                                                         <MudIconButton OnClick="@(() => RemoveComment(comment.Id))" Color="Color.Error" Size="Size.Medium" Icon="@Icons.Material.Filled.Delete"></MudIconButton>
                                                     }
                                                     <MudText>@String.Format("{0:g}", comment.DateCreated)</MudText>
-                                                    </MudStack>
-
                                                 </MudStack>
 
-                                                <MudText Class="pa-2">
-                                                    @((MarkupString)comment.Text)
-                                                </MudText>
-                                                <MudOverlay Visible="comment.Editing" DarkBackground="true" Absolute="true">
-                                                    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-                                                </MudOverlay>
-                                            </MudPaper>
+                                            </MudStack>
+
+                                            <MudText Class="pa-2">
+                                                @((MarkupString)comment.Text)
+                                            </MudText>
+                                            <MudOverlay Visible="comment.Editing" DarkBackground="true" Absolute="true">
+                                                <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                                            </MudOverlay>
+                                        </MudPaper>
                                     }
                                 </MudTabPanel>
                                 <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">
@@ -342,9 +348,9 @@ else
                                                 <CardHeaderContent>
                                                     <MudText Typo="Typo.body1"><b>@activity.Actor</b></MudText>
                                                     <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
-                                                    </CardHeaderContent>
-                                                </MudCardHeader>
-                                                @if (activity.Type == CardActivityType.ImageAttachmentAdded)
+                                                </CardHeaderContent>
+                                            </MudCardHeader>
+                                            @if (activity.Type == CardActivityType.ImageAttachmentAdded)
                                             {
                                                 <MudCardMedia Image="@activity.Url" Height="250" Class="mt-4" />
                                             }
@@ -431,7 +437,7 @@ else
                     {
                         <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
                                    Variant="Variant.Outlined" FullWidth="true" OnClick="ArchiveCard"
-                        Color="Color.Error">ARCHIVE CARD</MudButton>
+                                   Color="Color.Error">ARCHIVE CARD</MudButton>
                         <MudMenu AnchorOrigin="Origin.BottomLeft" FullWidth="true" Class="close-edit-card my-2" Label="Close Edit And" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary">
                             @if (_card.Status == CardStatus.Active)
                             {
@@ -445,7 +451,7 @@ else
                             }
                         </MudMenu>
                     }
-                    </MudItem>
+                </MudItem>
             </MudGrid>
         </DialogContent>
     </MudDialog>
