@@ -28,10 +28,10 @@ namespace Harmony.Application.Features.Automations.Queries.GetAutomations
             return
                 request.AutomationType switch
                 {
-                    AutomationType.SyncParentAndChildIssues => await 
-                    GetAutomations<SyncParentAndChildIssuesAutomationDto>(request),
+                    AutomationType.SyncParentAndChildIssues => await GetAutomations<SyncParentAndChildIssuesAutomationDto>(request),
                     AutomationType.SmartAutoAssign => await GetAutomations<SmartAutoAssignAutomationDto>(request),
-                        _ => throw new NotImplementedException(),
+                    AutomationType.SumUpStoryPoints => await GetAutomations<SumUpStoryPointsAutomationDto>(request),
+                    _ => throw new NotImplementedException(),
                 };
         }
 

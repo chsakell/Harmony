@@ -52,8 +52,9 @@ namespace Harmony.Infrastructure.Seed
                     {
                         Name = "Sum up story points",
                         Summary = "When a new sub-task is created, sum up its story points to the parent",
-                        Type = AutomationType.SumUpStorePoints,
-                        NotificationTypes = new List<NotificationType>() { NotificationType.SubTaskStoryPoints }
+                        Type = AutomationType.SumUpStoryPoints,
+                        Enabled = true,
+                        NotificationTypes = new List<NotificationType>() { NotificationType.SubTaskStoryPointsChanged }
                     }
                 });
 

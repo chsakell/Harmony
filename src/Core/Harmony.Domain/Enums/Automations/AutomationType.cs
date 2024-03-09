@@ -5,6 +5,6 @@
         SyncParentAndChildIssues,
         SmartAutoAssign,
         AutoCreateSubtasks,
-        SumUpStorePoints
+        SumUpStoryPoints
     }
 }

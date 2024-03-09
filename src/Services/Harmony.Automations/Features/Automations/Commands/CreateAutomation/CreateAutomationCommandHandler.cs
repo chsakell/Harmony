@@ -25,6 +25,8 @@ namespace Harmony.Application.Features.Automations.Commands.CreateAutomation
                     => JsonSerializer.Deserialize<SyncParentAndChildIssuesAutomationDto>(command.Automation),
                 AutomationType.SmartAutoAssign
                 => JsonSerializer.Deserialize<SmartAutoAssignAutomationDto>(command.Automation),
+                AutomationType.SumUpStoryPoints
+                => JsonSerializer.Deserialize<SumUpStoryPointsAutomationDto>(command.Automation),
                 _ => null
             };
 

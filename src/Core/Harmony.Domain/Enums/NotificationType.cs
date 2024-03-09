@@ -12,7 +12,7 @@
         BoardListTitleChanged,
         BoardListsPositionChanged,
         BoardListArchived,
-        SubTaskStoryPoints,
+        SubTaskStoryPointsChanged,
         BoardListCreated,
         CardItemCheckedChanged,
         CardLabelRemoved,
