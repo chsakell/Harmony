@@ -3,12 +3,11 @@ using Harmony.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-
 namespace Harmony.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddInfrastructureMappings(this IServiceCollection services)
+        public static void AddInfrastructureMappings(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
