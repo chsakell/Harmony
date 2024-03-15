@@ -2,19 +2,14 @@
 
 __Always prefer Harmony's [official documentation](https://chsakell.gitbook.io/harmony/) which always contain the latest docs.__
 
-### Set database connection string
-Open __appsettings.json__ and set the connection string to point to your SQL Server instance
-```javascript
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=.;Database=Harmony;Integrated Security=True;TrustServerCertificate=True"
-  },
-```
+### Set database connection strings
+Read the [database](https://docs.harmony-teams.com/overview/setup/databases) guide to set the SQL Server databases
 
 ### Database migrations
 By default, when you start the application, the app will try to run all migrations to your database. You can of course disable this for production environment. You can also run migrations using the command line. Check the __migrations.pdf__ for sample commands.
 
 ### Start application
-Set the `Harmony.Server` project as the startup and fire up the application
+Set the startup projects as described [https://docs.harmony-teams.com/overview/setup/before-running](here) and fire up the application
 
 ### Default users created
 By default two users will be created for you:
