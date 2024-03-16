@@ -79,7 +79,7 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
         public async Task<string> GetSelectedWorkspace()
         {
             var preference = await GetPreference() as ClientPreference;
-            if (preference != null)
+            if (preference != null && !string.IsNullOrEmpty(preference.Workspace))
             {
                 return preference.Workspace;
             }
@@ -93,6 +93,19 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
             if (preference != null)
             {
                 preference.Workspace = workspaceId.ToString();
+                await SetPreference(preference);
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> ClearSelectedWorkspace(Guid workspaceId)
+        {
+            var preference = await GetPreference() as ClientPreference;
+            if (preference != null && preference.Workspace.Equals(workspaceId))
+            {
+                preference.Workspace = null;
                 await SetPreference(preference);
                 return true;
             }

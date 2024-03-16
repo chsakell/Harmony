@@ -31,6 +31,16 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Get(workspaceId)}/members/add/";
         }
 
+        public static string Status(string workspaceId)
+        {
+            return $"{Get(workspaceId)}/status/";
+        }
+
+        public static string Rename(string workspaceId)
+        {
+            return $"{Get(workspaceId)}/rename/";
+        }
+
         public static string GetRemoveMembers(string workspaceId)
         {
             return $"{Get(workspaceId)}/members/remove/";

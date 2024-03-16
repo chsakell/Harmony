@@ -3,6 +3,8 @@ using Harmony.Application.Events;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
+using Harmony.Application.Features.Workspaces.Commands.Rename;
+using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
@@ -11,6 +13,7 @@ using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Managers.Preferences;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+
 using Polly;
 using Polly.Registry;
 using System.Net.Http.Json;
@@ -116,6 +119,22 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.WorkspaceEndpoints
                 .GetAddMembers(request.WorkspaceId.ToString()), request);
+
+            return await response.ToResult<bool>();
+        }
+
+        public async Task<IResult<bool>> UpdateWorkspaceStatus(UpdateWorkspaceStatusCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.WorkspaceEndpoints
+                .Status(request.Id.ToString()), request);
+
+            return await response.ToResult<bool>();
+        }
+
+        public async Task<IResult<bool>> RenameWorkspace(RenameWorkspaceStatusCommand request)
+        {
+            var response = await _httpClient.PutAsJsonAsync(Routes.WorkspaceEndpoints
+                .Rename(request.Id.ToString()), request);
 
             return await response.ToResult<bool>();
         }

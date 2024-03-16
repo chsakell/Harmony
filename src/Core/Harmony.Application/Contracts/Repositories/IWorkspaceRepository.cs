@@ -17,6 +17,8 @@ namespace Harmony.Application.Contracts.Repositories
         /// <returns></returns>
         Task<int> CreateAsync(Workspace workspace);
 
+        Task<int> Update(Workspace workspace);
+
         /// <summary>
         /// Returns workspaces created by userId plus have access to
         /// </summary>

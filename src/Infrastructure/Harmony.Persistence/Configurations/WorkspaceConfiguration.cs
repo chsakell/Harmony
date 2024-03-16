@@ -18,7 +18,9 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(w => w.Description).HasMaxLength(500);
 
-            builder.Property(c => c.Status).IsRequired().HasDefaultValue(WorkspaceStatus.Active);
+            builder.Property(w => w.Status).IsRequired().HasDefaultValue(WorkspaceStatus.Active);
+
+            builder.HasQueryFilter(w => w.Status == WorkspaceStatus.Active);
 
             // A Workspace can have multiple boards and a board belongs to one Workspace (1-M relationship)
             builder.HasMany(w => w.Boards)

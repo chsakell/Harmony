@@ -1,7 +1,10 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
+using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Utilities;
+using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -31,6 +34,44 @@ namespace Harmony.Client.Pages.Management
 
                 StateHasChanged();
             }
+        }
+
+        private async Task Archive()
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to archive this workspace?<br>" +
+                $"You won't be able to view its boards unless it's activated again."},
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var command = new UpdateWorkspaceStatusCommand()
+                {
+                    Id = Guid.Parse(Id),
+                    Status = Domain.Enums.WorkspaceStatus.Archived
+                };
+
+                var result = await _workspaceManager.UpdateWorkspaceStatus(command);
+
+                DisplayMessage(result);
+
+                if (result.Succeeded)
+                {
+                    await _clientPreferenceManager.ClearSelectedWorkspace(Guid.Parse(Id));
+                    _navigationManager.NavigateTo("/", forceLoad: true);
+                }
+            }
+        }
+
+        private async Task Rename()
+        {
+
         }
 
         private async Task OpenCreateBoardModal()
@@ -78,6 +119,21 @@ namespace Harmony.Client.Pages.Management
             }
 
             _userBoardsLoading = false;
+        }
+
+        private void DisplayMessage(IResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var severity = result.Succeeded ? Severity.Success : Severity.Error;
+
+            foreach (var message in result.Messages)
+            {
+                _snackBar.Add(message, severity);
+            }
         }
 
         public void Dispose()

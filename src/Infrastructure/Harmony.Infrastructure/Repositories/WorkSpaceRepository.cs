@@ -37,6 +37,13 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<int> Update(Workspace workspace)
+        {
+            _context.Workspaces.Update(workspace);
+
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task<List<Workspace>> GetAllForUser(string userId)
         {
             var user = await _userService.GetAsync(userId);

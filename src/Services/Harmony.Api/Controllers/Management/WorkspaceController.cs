@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
-using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Queries.GetAllForUser;
 using Microsoft.AspNetCore.Mvc;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
@@ -7,6 +6,8 @@ using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
+using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
+using Harmony.Application.Features.Workspaces.Commands.Rename;
 
 namespace Harmony.Api.Controllers.Management
 {
@@ -16,7 +17,7 @@ namespace Harmony.Api.Controllers.Management
     public class WorkspaceController : BaseApiController<WorkspaceController>
     {
         [HttpPost]
-        public async Task<IActionResult> Post(CreateWorkspaceCommand command)
+        public async Task<IActionResult> Post(UpdateWorkspaceStatusCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
@@ -62,6 +63,18 @@ namespace Harmony.Api.Controllers.Management
 
         [HttpPost("{id:guid}/members/remove")]
         public async Task<IActionResult> DeleteMember(RemoveWorkspaceMemberCommand request)
+        {
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPut("{id:guid}/status/")]
+        public async Task<IActionResult> UpdateStatus(UpdateWorkspaceStatusCommand request)
+        {
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPut("{id:guid}/rename/")]
+        public async Task<IActionResult> Rename(RenameWorkspaceStatusCommand request)
         {
             return Ok(await _mediator.Send(request));
         }

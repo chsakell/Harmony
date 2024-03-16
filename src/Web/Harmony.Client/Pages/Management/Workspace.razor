@@ -17,38 +17,44 @@ else if (!_userBoards.Any())
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h5" Align="Align.Center">@Name</MudText>
-                            </CardHeaderContent>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <div class="d-flex justify-center">
-                                <MudText Typo="Typo.h5" Color="Color.Secondary">Add a Kanban or a Scrum project</MudText>
-                            </div>
-                            <MudList Class="mx-auto mt-4">
-                                <MudListItem Icon="@Icons.Material.Filled.Update">
-                                    If you create a Scrum project, start by creating your <b>backlog</b> and the <b>sprints</b>
-                                </MudListItem>
-                                <MudListItem Icon="@Icons.Material.Filled.List">
-                                    If you create a Kanban project, add some board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
-                                </MudListItem>
-                                <MudListItem Icon="@Icons.Material.Filled.Share">
-                                    Share your board with your team members
-                                </MudListItem>
-                                <MudListItem Icon="@Icons.Material.Filled.Task">
-                                    Add tasks to your lists and start monitor your project!
-                                </MudListItem>
-                            </MudList>
-                        </MudCardContent>
-                        <MudCardActions Class="d-flex justify-center">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;"
-                                       OnClick="OpenCreateBoardModal">Start Now</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-            </MudGrid>
-        </MudContainer>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <div class="d-flex justify-center">
+                            <MudText Typo="Typo.h5" Color="Color.Secondary">Add a Kanban or a Scrum project</MudText>
+                        </div>
+                        <MudList Class="mx-auto mt-4">
+                            <MudListItem Icon="@Icons.Material.Filled.Update">
+                                If you create a Scrum project, start by creating your <b>backlog</b> and the <b>sprints</b>
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.List">
+                                If you create a Kanban project, add some board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Share">
+                                Share your board with your team members
+                            </MudListItem>
+                            <MudListItem Icon="@Icons.Material.Filled.Task">
+                                Add tasks to your lists and start monitor your project!
+                            </MudListItem>
+                        </MudList>
+                    </MudCardContent>
+                    <MudCardActions Class="d-flex justify-center">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;"
+                                   OnClick="OpenCreateBoardModal">Start Now</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
 }
 else
 {
+    <MudPaper Elevation="25" Class="my-2">
+        <MudToolBar>
+            <MudButton Variant="Variant.Text" OnClick="Archive" IconColor="Color.Error" StartIcon="@Icons.Material.Outlined.Archive">ARCHIVE</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="Rename" StartIcon="@Icons.Material.Outlined.Edit">RENAME</MudButton>
+        </MudToolBar>
+    </MudPaper>
     <MudGrid>
         @foreach (var board in _userBoards)
         {
@@ -58,26 +64,26 @@ else
                         <CardHeaderContent>
                             <MudStack Row="true">
                                 <MudText Typo="Typo.h5">@board.Title</MudText>
-                                    <MudText Color="Color.Info" Typo="Typo.body1">[@board.Key]</MudText>
-                                </MudStack>
-                            </CardHeaderContent>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudText Typo="Typo.h6">@board.Description</MudText>
-                            <MudStack Row="true" Justify="Justify.FlexEnd">
-                                <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
-                                <MudChip Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
+                                <MudText Color="Color.Info" Typo="Typo.body1">[@board.Key]</MudText>
                             </MudStack>
-                            <MudDivider />
-                            <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
-                                         TimelinePosition="TimelinePosition.Start">
-                                @foreach (var list in board.Lists)
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6">@board.Description</MudText>
+                        <MudStack Row="true" Justify="Justify.FlexEnd">
+                            <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
+                            <MudChip Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
+                        </MudStack>
+                        <MudDivider />
+                        <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
+                                     TimelinePosition="TimelinePosition.Start">
+                            @foreach (var list in board.Lists)
                             {
                                 <MudTimelineItem Size="Size.Medium" Color="@(list.CardStatus == Domain.Enums.BoardListCardStatus.DONE ? Color.Tertiary : Color.Info)" Elevation="25">
                                     <MudCard Outlined="false" Elevation="25">
                                         <MudCardContent>
                                             <MudText Color="Color.Secondary" Typo="Typo.h6">@list.Title</MudText>
-                                                @if (list.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
+                                            @if (list.CardStatus == Domain.Enums.BoardListCardStatus.DONE)
                                             {
                                                 <MudText Typo="Typo.body2">There are <strong>@list.Cards.Count</strong> completed issues.</MudText>
                                             }
