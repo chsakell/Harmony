@@ -3,23 +3,23 @@
 When running migrations through Visual Studio, open the `Package Manager Console` and set the `Default project` to __src\Infrastructure\Harmony.Persistence__.
 
 ```
-Add-Migration Initial -Context HarmonyContext -StartUpProject Harmony.Api -v
+Add-Migration Initial -Context HarmonyContext -StartUpProject Harmony.Api
 ```
 
 ```
-Add-Migration LoadBoardSp_VX -Context HarmonyContext -StartUpProject Harmony.Api -v
+Add-Migration LoadBoardSp_VX -Context HarmonyContext -StartUpProject Harmony.Api
 ```
 
 ```
-Add-Migration LoadBoardListCardsSp_VX -Context HarmonyContext -StartUpProject Harmony.Api -v
+Add-Migration LoadBoardListCardsSp_VX -Context HarmonyContext -StartUpProject Harmony.Api
 ```
 
 ```
-Remove-Migration PostCommentsInitial -Context HarmonyContext -StartUpProject Harmony.Api -v
+Remove-Migration PostCommentsInitial -Context HarmonyContext -StartUpProject Harmony.Api
 ```
 
 ```
-Update-Database -Context HarmonyContext -StartUpProject Harmony.Api -v
+Update-Database -Context HarmonyContext -StartUpProject Harmony.Api
 ```
 
 ```
@@ -27,15 +27,15 @@ dotnet ef database update --context HarmonyContext --startup-project "../../Web/
 ```
 
 ```
-Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Notifications -v
+Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Notifications
 ```
 
 ```
-Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Automations -v
+Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Automations
 ```
 
 ```
-Update-Database -Context NotificationContext -StartUpProject Harmony.Notifications -v
+Update-Database -Context NotificationContext -StartUpProject Harmony.Notifications
 ```
 
 ```

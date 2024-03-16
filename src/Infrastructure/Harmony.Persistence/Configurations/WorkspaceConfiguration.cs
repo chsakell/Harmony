@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Persistence.Configurations
 {
@@ -16,6 +17,8 @@ namespace Harmony.Persistence.Configurations
             builder.Property(w => w.Name).HasMaxLength(50).IsRequired();
 
             builder.Property(w => w.Description).HasMaxLength(500);
+
+            builder.Property(c => c.Status).IsRequired().HasDefaultValue(WorkspaceStatus.Active);
 
             // A Workspace can have multiple boards and a board belongs to one Workspace (1-M relationship)
             builder.HasMany(w => w.Boards)
