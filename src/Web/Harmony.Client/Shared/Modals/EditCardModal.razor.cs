@@ -14,6 +14,7 @@ using Harmony.Application.Features.Cards.Commands.UploadCardFile;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
 using Harmony.Application.Features.Comments.Commands.CreateComment;
+using Harmony.Application.Features.Comments.Commands.DeleteComment;
 using Harmony.Application.Features.Comments.Commands.UpdateComment;
 using Harmony.Application.Features.Lists.Commands.UpdateCheckListTitle;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemChecked;
@@ -718,7 +719,11 @@ namespace Harmony.Client.Shared.Modals
 
                 StateHasChanged();
 
-                var result = await _commentManager.DeleteComment(commentId);
+                var result = await _commentManager
+                    .DeleteComment(new DeleteCommentCommand(commentId, CardId)
+                    {
+                        BoardId = BoardId
+                    });
 
                 if (result.Succeeded)
                 {

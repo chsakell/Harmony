@@ -23,6 +23,8 @@
         CardAttachmentRemoved,
         CardMemberRemoved,
         CardMemberAdded,
-        CheckListRemoved
+        CheckListRemoved,
+        CardCommentCreated,
+        CardCommentDeleted
     }
 }

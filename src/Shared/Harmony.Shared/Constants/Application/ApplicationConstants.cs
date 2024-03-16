@@ -48,6 +48,8 @@
             public const string OnCardItemChecked = "OnCardItemChecked";
             public const string OnCardLabelRemoved = "OnCardLabelRemoved";
             public const string OnCheckListRemoved = "OnCheckListRemoved";
+            public const string OnCardCommentCreated = "OnCardCommentCreated";
+            public const string OnCardCommentDeleted = "OnCardCommentDeleted";
         }
 
         public static class HarmonyRetryPolicy

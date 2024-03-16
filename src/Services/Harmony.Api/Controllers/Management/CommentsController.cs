@@ -30,10 +30,10 @@ namespace Harmony.Api.Controllers.Management
             return Ok(await _mediator.Send(new GetCardCommentsCommandQuery(cardId)));
         }
 
-        [HttpDelete("{commentId:guid}")]
-        public async Task<IActionResult> Update(Guid commentId)
+        [HttpPost("{commentId:guid}")]
+        public async Task<IActionResult> DeleteComment(DeleteCommentCommand command)
         {
-            return Ok(await _mediator.Send(new DeleteCommentCommand(commentId)));
+            return Ok(await _mediator.Send(command));
         }
     }
 }

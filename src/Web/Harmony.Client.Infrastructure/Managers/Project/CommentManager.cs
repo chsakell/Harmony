@@ -4,6 +4,7 @@ using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
 using Harmony.Application.Features.Comments.Commands.CreateComment;
 using Harmony.Application.Features.Comments.Commands.UpdateComment;
+using Harmony.Application.Features.Comments.Commands.DeleteComment;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
@@ -43,10 +44,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<List<CommentDto>>();
         }
 
-        public async Task<IResult<bool>> DeleteComment(Guid commentId)
+        public async Task<IResult<bool>> DeleteComment(DeleteCommentCommand command)
         {
             var response = await _httpClient
-                .DeleteAsync(Routes.CommentEndpoints.GetComment(commentId));
+                .PostAsJsonAsync(Routes.CommentEndpoints.GetComment(command.CommentId), command);
 
             return await response.ToResult<bool>();
         }

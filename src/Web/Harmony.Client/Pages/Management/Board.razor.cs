@@ -134,6 +134,8 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCheckListRemoved += OnCheckListRemoved;
             _hubSubscriptionManager.OnCardCreated += OnCardCreated;
             _hubSubscriptionManager.OnCardStatusChanged += OnCardStatusChanged;
+            _hubSubscriptionManager.OnCardCommentCreated += OnCardCommentCreated;
+            _hubSubscriptionManager.OnCardCommentDeleted += OnCardCommentDeleted;
 
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
         }
@@ -161,11 +163,25 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCheckListRemoved -= OnCheckListRemoved;
             _hubSubscriptionManager.OnCardCreated -= OnCardCreated;
             _hubSubscriptionManager.OnCardStatusChanged -= OnCardStatusChanged;
+            _hubSubscriptionManager.OnCardCommentCreated -= OnCardCommentCreated;
+            _hubSubscriptionManager.OnCardCommentDeleted -= OnCardCommentDeleted;
 
             if (stopListening)
             {
                 await _hubSubscriptionManager.StopListeningForBoardEvents(_stopListeningBoardId);
             }
+        }
+
+        private void OnCardCommentDeleted(object? sender, CardCommentDeletedMessage e)
+        {
+            KanbanStore.UpdateTotalComments(e.CardId, -1);
+            _dropContainer.Refresh();
+        }
+
+        private void OnCardCommentCreated(object? sender, CardCommentCreatedMessage e)
+        {
+            KanbanStore.UpdateTotalComments(e.CardId, 1);
+            _dropContainer.Refresh();
         }
 
         private void OnCheckListRemoved(object? sender, CheckListRemovedEvent e)

@@ -5,6 +5,9 @@ using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Comments.Commands.DeleteComment
 {
@@ -54,6 +57,16 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
 
             if (dbResult > 0)
             {
+                var cardCommentDeletedMessage = new CardCommentDeletedMessage()
+                {
+                    BoardId = request.BoardId,
+                    CardId = request.CardId,
+                };
+
+                _notificationsPublisher.PublishMessage(cardCommentDeletedMessage,
+                    NotificationType.CardCommentDeleted,
+                    routingKey: BrokerConstants.RoutingKeys.SignalR);
+
                 return await Result<bool>.SuccessAsync(true, _localizer["Comment removed"]);
             }
 

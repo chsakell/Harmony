@@ -251,6 +251,16 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             }
         }
 
+        public void UpdateTotalComments(Guid cardId, int number)
+        {
+            var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                card.TotalComments += number;
+            }
+        }
+
         public void ToggleCardLabel(Guid cardId, LabelDto label)
         {
             var card = _board.Lists.SelectMany(l => l.Cards).FirstOrDefault(c => c.Id == cardId);

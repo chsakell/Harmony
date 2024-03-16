@@ -7,27 +7,27 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.DTO;
 using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Constants;
+using Harmony.Application.Notifications;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Comments.Commands.CreateComment
 {
     public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, Result<CreateCommentResponse>>
     {
         private readonly ICurrentUserService _currentUserService;
-        private readonly ICardRepository _cardRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly IUserService _userService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<CreateCommentCommandHandler> _localizer;
 
         public CreateCommentCommandHandler(ICurrentUserService currentUserService,
-            ICardRepository cardRepository,
             ICommentRepository commentRepository,
             IUserService userService,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<CreateCommentCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
-            _cardRepository = cardRepository;
             _commentRepository = commentRepository;
             _userService = userService;
             _notificationsPublisher = notificationsPublisher;
@@ -55,20 +55,22 @@ namespace Harmony.Application.Features.Comments.Commands.CreateComment
             {
                 var user = (await _userService.GetPublicInfoAsync(userId)).Data;
 
-                var result2 = new CommentDto()
-                {
-                    Id = comment.Id,
-                    Text = comment.Text,
-                    User = user,
-                    DateCreated = comment.DateCreated
-                };
-
                 var result = new CreateCommentResponse()
                 {
                     Id = comment.Id,
                     User = user,
                     DateCreated = comment.DateCreated
                 };
+
+                var cardCommentCreatedMessage = new CardCommentCreatedMessage()
+                {
+                    BoardId = request.BoardId,
+                    CardId = request.CardId,
+                };
+
+                _notificationsPublisher.PublishMessage(cardCommentCreatedMessage,
+                    NotificationType.CardCommentCreated, 
+                    routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<CreateCommentResponse>.SuccessAsync(result, _localizer["Comment added to card"]);
             }

@@ -38,5 +38,6 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 		void RemoveCardMember(Guid cardId, CardMemberDto cardMember);
         void ReduceCardProgress(Guid cardId, int totalItems, int totalItemsCompleted);
 		void UpdateCardIssueType(Guid cardId, IssueTypeDto issueType);
+		void UpdateTotalComments(Guid cardId, int number);
     }
 }

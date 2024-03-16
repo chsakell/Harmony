@@ -298,6 +298,22 @@ namespace Harmony.SignalR.Services.Hosted
                                                     message.CardId, message.TotalItems, message.TotalItemsCompleted);
                                             }
                                             break;
+                                        case NotificationType.CardCommentCreated:
+                                            {
+                                                var message = JsonSerializer
+                                                .Deserialize<CardCommentCreatedMessage>(ea.Body.Span);
+
+                                                await hubClientNotifierService.CommentCreated(message);
+                                            }
+                                            break;
+                                        case NotificationType.CardCommentDeleted:
+                                            {
+                                                var message = JsonSerializer
+                                                .Deserialize<CardCommentDeletedMessage>(ea.Body.Span);
+
+                                                await hubClientNotifierService.CommentDeleted(message);
+                                            }
+                                            break;
                                         default:
                                             break;
                                     }
