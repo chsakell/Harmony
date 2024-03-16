@@ -8,6 +8,7 @@ using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
 using Harmony.Application.Features.Workspaces.Commands.Rename;
+using Harmony.Application.Features.Workspaces.Commands.Create;
 
 namespace Harmony.Api.Controllers.Management
 {
@@ -17,7 +18,7 @@ namespace Harmony.Api.Controllers.Management
     public class WorkspaceController : BaseApiController<WorkspaceController>
     {
         [HttpPost]
-        public async Task<IActionResult> Post(UpdateWorkspaceStatusCommand command)
+        public async Task<IActionResult> Post(CreateWorkspaceCommand command)
         {
             return Ok(await _mediator.Send(command));
         }

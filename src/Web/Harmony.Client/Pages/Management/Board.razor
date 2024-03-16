@@ -10,7 +10,11 @@
 }
 else if (_unauthorisedAccess)
 {
-    <UnauthorisedView Text="You are unauthorised to view this board's content." />
+    <UnauthorisedView Text="@_errorText" />
+}
+else if (_inactiveWorkspace)
+{
+    <InactiveWorkspace Text="@_errorText" />
 }
 else
 {

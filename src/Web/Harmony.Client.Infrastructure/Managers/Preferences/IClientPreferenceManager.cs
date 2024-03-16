@@ -10,5 +10,6 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
         Task<string> GetSelectedWorkspace();
         Task<bool> SetSelectedWorkspace(Guid workspaceId);
         Task<bool> ClearSelectedWorkspace(Guid workspaceId);
+        Task<bool> ClearSelectedWorkspace();
     }
 }

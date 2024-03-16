@@ -8,7 +8,13 @@
 }
 else if (!_userBoards.Any())
 {
-    <MudContainer Class="mt-16">
+    <MudContainer Class="mt-4">
+        <MudPaper Elevation="25" Class="my-2">
+            <MudToolBar>
+                <MudButton Variant="Variant.Text" OnClick="Archive" IconColor="Color.Error" StartIcon="@Icons.Material.Outlined.Archive">ARCHIVE</MudButton>
+            </MudToolBar>
+        </MudPaper>
+
         <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Empty workspace :(</MudText>
         <MudText Align="Align.Center">Looks like this workspace is currently empty. Here's a few suggestions to help you start with.</MudText>
         <MudGrid Class="mt-8 d-flex justify-center">

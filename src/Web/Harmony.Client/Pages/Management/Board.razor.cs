@@ -41,6 +41,9 @@ namespace Harmony.Client.Pages.Management
         private MudDropContainer<CardDto> _dropContainer;
         public bool CardDescriptionVisibility { get; set; }
         private bool _unauthorisedAccess = false;
+        private bool _inactiveWorkspace = false;
+        private string _errorText = string.Empty;
+
         private int _listCardsSize = 10;
         private Guid _moveUpdateId = Guid.NewGuid();
         private string _stopListeningBoardId = string.Empty;
@@ -85,9 +88,18 @@ namespace Harmony.Client.Pages.Management
             else
             {
                 KanbanStore.SetLoading(false);
+
                 _unauthorisedAccess = result.Code == ResultCode.UnauthorisedAccess;
+                _inactiveWorkspace = result.Code == ResultCode.InactiveWorkspace;
+
+                _errorText = result.Messages[0];
 
                 DisplayMessage(result);
+
+                if (result.Code == ResultCode.InactiveWorkspace)
+                {
+                    await _clientPreferenceManager.ClearSelectedWorkspace();
+                }
             }
 
             if (!string.IsNullOrEmpty(CardId) && Guid.TryParse(CardId, out var cardId))

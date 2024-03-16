@@ -6,6 +6,7 @@
     public enum ResultCode
     {
         Ok,
-        UnauthorisedAccess
+        UnauthorisedAccess,
+        InactiveWorkspace
     }
 }

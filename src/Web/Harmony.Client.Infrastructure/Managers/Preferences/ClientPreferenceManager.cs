@@ -112,5 +112,18 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
 
             return false;
         }
+
+        public async Task<bool> ClearSelectedWorkspace()
+        {
+            var preference = await GetPreference() as ClientPreference;
+            if (preference != null)
+            {
+                preference.Workspace = null;
+                await SetPreference(preference);
+                return true;
+            }
+
+            return false;
+        }
     }
 }

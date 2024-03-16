@@ -4,9 +4,12 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
+using Harmony.Application.Extensions;
+using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace Harmony.Application.Features.Boards.Queries.Get
@@ -55,11 +58,23 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var board = await _boardRepository.GetAsync(request.BoardId);
+            var filter = new BoardFilterSpecification(request.BoardId, new BoardIncludes()
+            {
+                Workspace = true,
+            });
+
+            var board = await _boardRepository
+                .Entities.IgnoreQueryFilters()
+                .Specify(filter)
+                .FirstOrDefaultAsync();
 
             if (board == null)
             {
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Board doesn't exist"]);
+            }
+            else if(board.Workspace.Status != Domain.Enums.WorkspaceStatus.Active)
+            {
+                return await Result<GetBoardResponse>.FailAsync($"The board's workspace '{board.Workspace.Name}' is inactive.", ResultCode.InactiveWorkspace);
             }
 
             var userHasAccess = await _boardService.HasUserAccessToBoard(userId, request.BoardId);
