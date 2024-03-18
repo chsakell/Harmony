@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
@@ -27,7 +28,9 @@ namespace Harmony.Client.Shared.Modals
         private int _totalItems;
         private List<GetBoardListResponse> _boardLists = new List<GetBoardListResponse>();
         private GetBoardListResponse _selectedBoardList;
-
+        private MudExpansionPanel _existingSprintsPanel;
+        private MudExpansionPanel _newSprintPanel;
+        private MudTextField<string> _searchField;
         private int selectedRowNumber = -1;
         private void Cancel()
         {
@@ -74,6 +77,37 @@ namespace Harmony.Client.Shared.Modals
             if (result.Succeeded)
             {
                 MudDialog.Close(result.Data);
+            }
+        }
+
+        private async Task CreateSprint()
+        {
+            var parameters = new DialogParameters<CreateEditSprintModal>
+            {
+                {
+                    modal => modal.CreateEditSprintCommandModel,
+                    new CreateEditSprintCommand(BoardId)
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                _newSprintPanel.Collapse();
+                _existingSprintsPanel.Expand();
+
+
+                //await _table.ReloadServerData();
+
+                if (result.Data is SprintDto sprint)
+                {
+                    await _searchField.SetText(sprint.Name);
+                    StateHasChanged();
+                }
+
             }
         }
 
