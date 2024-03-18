@@ -180,7 +180,14 @@ else
                         {
                             <MudItem xs="12">
                                 <MudPaper>
-                                    <MudTable Context="child" Items="@_card.Children" Hover="true">
+                                    <MudTable Context="child" Items="@_card.Children" Hover="true"
+                                              ReadOnly="false"
+                                              CanCancelEdit="true"
+                                              EditButtonPosition="TableEditButtonPosition.End"
+                                              EditTrigger="TableEditTrigger.EditButton"
+                                              RowEditPreview="BackupItem"
+                                              RowEditCancel="ResetItemToOriginalValues"
+                                              RowEditCommit="async (obj) => await UpdateSubTask(obj)">
                                         <HeaderContent>
                                             <MudTh>Serial Key</MudTh>
                                             <MudTh>Title</MudTh>
@@ -194,14 +201,26 @@ else
                                                 </MudTooltip>
                                             </MudTd>
                                             <MudTd DataLabel="Title">@child.Title</MudTd>
-                                            <MudTd DataLabel="Title">
+                                            <MudTd DataLabel="Title" Style="width:110px">
                                                 <MudChip Variant="Variant.Text" Color="Color.Primary">
                                                     @(child.StoryPoints?.ToString() ?? "-")
                                                 </MudChip>
                                             </MudTd>
+                                            <MudTd Style="width:160px" DataLabel="Status">@(GetStatus(child.BoardListId))</MudTd>
+                                        </RowTemplate>
+                                        <RowEditingTemplate>
+                                            <MudTd DataLabel="Serial Key">
+                                                <MudTooltip Text="Click for full editing" Delay="2500">
+                                                    <MudChip OnClick="() => EditCard(child)" Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
+                                                </MudTooltip>
+                                            </MudTd>
+                                            <MudTd DataLabel="Title">@child.Title</MudTd>
+                                            <MudTd DataLabel="Title">
+                                                <MudNumericField Style="width:110px"  T="short?" Clearable="true" @bind-Value="@child.StoryPoints" Min="0" />
+                                            </MudTd>
                                             <MudTd DataLabel="Status">
-                                                <MudSelect @bind-Value:get="child.BoardListId"
-                                                           @bind-Value:set="@((listId) => UpdateChildBoardList(child, listId))"
+                                                <MudSelect @bind-Value="child.BoardListId"
+                                                           Style="width:160px"
                                                            FullWidth="false"
                                                            ToStringFunc="@((childList) => childBoardListConverter(childList, _card.BoardLists))"
                                                            T="Guid" AnchorOrigin="Origin.BottomCenter">
@@ -211,7 +230,7 @@ else
                                                     }
                                                 </MudSelect>
                                             </MudTd>
-                                        </RowTemplate>
+                                        </RowEditingTemplate>
                                     </MudTable>
                                 </MudPaper>
                             </MudItem>

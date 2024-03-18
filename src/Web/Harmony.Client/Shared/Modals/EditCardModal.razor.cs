@@ -26,6 +26,7 @@ using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
@@ -33,6 +34,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using MudBlazor;
+using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {
@@ -49,6 +51,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _historyLoaded = false;
         private bool _updatingStoryPoints;
         private GetBoardListResponse? _cardBoardList;
+        private CardDto subTaskBeforeEdit;
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
@@ -779,12 +782,56 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
-        private async Task UpdateChildBoardList(CardDto card, Guid boardListId)
+        private void BackupItem(object issue)
         {
-            card.BoardListId = boardListId;
+            var originalIssue = (CardDto)issue;
 
+            subTaskBeforeEdit = new CardDto()
+            {
+                Id = originalIssue.Id,
+                BoardListId = originalIssue.BoardListId,
+                Description = originalIssue.Description,
+                DueDate = originalIssue.DueDate,
+                Title = originalIssue.Title,
+                StoryPoints = originalIssue.StoryPoints,
+                SerialNumber = originalIssue.SerialNumber,
+            };
+        }
+
+        private async Task UpdateSubTask(object issue)
+        {
+            if(issue is CardDto subtask && subtask.Id == subTaskBeforeEdit.Id)
+            {
+                if(subtask.BoardListId != subTaskBeforeEdit.BoardListId)
+                {
+                    await UpdateChildBoardList(subtask.Id, subtask.BoardListId);
+                }
+
+                if(subtask.StoryPoints != subTaskBeforeEdit.StoryPoints)
+                {
+                    await _cardManager
+                        .UpdateStoryPointsAsync(new 
+                        UpdateCardStoryPointsCommand(BoardId, subtask.Id, subtask.StoryPoints));
+                }
+            }
+        }
+
+        private void ResetItemToOriginalValues(object issue)
+        {
+            var originalIssue = (CardDto)issue;
+            originalIssue.Id = subTaskBeforeEdit.Id;
+            originalIssue.BoardListId = subTaskBeforeEdit.BoardListId;
+            originalIssue.Description = subTaskBeforeEdit.Description;
+            originalIssue.DueDate = subTaskBeforeEdit.DueDate;
+            originalIssue.Title = subTaskBeforeEdit.Title;
+            originalIssue.StoryPoints = subTaskBeforeEdit.StoryPoints;
+            originalIssue.SerialNumber = subTaskBeforeEdit.SerialNumber;
+        }
+
+        private async Task UpdateChildBoardList(Guid cardId, Guid boardListId)
+        {
             var moveUpdateResult = await _cardManager
-                    .MoveCardAsync(new MoveCardCommand(card.Id, boardListId,
+                    .MoveCardAsync(new MoveCardCommand(cardId, boardListId,
                     null, CardStatus.Active, Guid.NewGuid())
                     {
                         BoardId = BoardId
@@ -818,6 +865,12 @@ namespace Harmony.Client.Shared.Modals
             var boardList = boardLists.FirstOrDefault(l => l.Id == childListId);
             return boardList?.Title ?? "Status";
         };
+
+        private string GetStatus(Guid listId)
+        {
+            var boardList = _card.BoardLists.FirstOrDefault(l => l.Id == listId);
+            return boardList?.Title ?? string.Empty;
+        }
 
         private void ViewBacklog(Guid boardId)
         {
