@@ -69,9 +69,23 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async Task Rename()
+        private async Task Edit()
         {
+            var parameters = new DialogParameters<CreateWorkspaceModal>
+                {
+                    { c => c.WorkspaceId, Guid.Parse(Id) },
+                };
 
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateWorkspaceModal>(_localizer["Edit Workspace"], parameters, options);
+
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            {
+                var workspace = result.Data as WorkspaceDto;
+                var slug = StringUtilities.SlugifyString(workspace.Name);
+                _navigationManager.NavigateTo($"workspaces/{workspace.Id}/{slug}");
+            }
         }
 
         private async Task OpenCreateBoardModal()

@@ -18,7 +18,6 @@ using Polly;
 using Polly.Registry;
 using System.Net.Http.Json;
 using static Harmony.Shared.Constants.Application.ApplicationConstants;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
 {
@@ -51,7 +50,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public event EventHandler<WorkspaceDto> OnSelectedWorkspace;
         public event EventHandler<WorkspaceAddedEvent> OnWorkspaceAdded;
 
-        public WorkspaceManager(HttpClient client, 
+        public WorkspaceManager(HttpClient client,
             ClientPreferenceManager clientPreferenceManager,
             ResiliencePipelineProvider<string> resiliencePipelineProvider)
         {
@@ -60,20 +59,28 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             _resiliencePipeline = resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
         }
 
-        public async Task<IResult<WorkspaceDto>> CreateAsync(CreateWorkspaceCommand request)
+        public async Task<IResult<WorkspaceDto>> CreateOrEdit(CreateOrEditWorkspaceCommand request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.WorkspaceEndpoints.Index, request);
 
             var result = await response.ToResult<WorkspaceDto>();
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
+                if (UserWorkspaces != null & UserWorkspaces.Any(w => w.Id == result.Data.Id))
+                {
+                    var workspace = UserWorkspaces.FirstOrDefault(w => w.Id == result.Data.Id);
+                    workspace.Name = result.Data.Name;
+                    workspace.IsPublic = result.Data.IsPublic;
+                }
+                else
+                {
+                    UserWorkspaces.Add(result.Data);
 
-                UserWorkspaces.Add(result.Data);
-
-                OnWorkspaceAdded?.Invoke(this, new WorkspaceAddedEvent(result.Data));
+                    OnWorkspaceAdded?.Invoke(this, new WorkspaceAddedEvent(result.Data));
+                }
             }
-            
+
             return result;
         }
 
@@ -90,6 +97,12 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.Get(workspaceId));
             return await response.ToResult<List<BoardDto>>();
+        }
+
+        public async Task<IResult<WorkspaceDto>> GetWorkspaceInfoAsync(Guid workspaceId)
+        {
+            var response = await _httpClient.GetAsync(Routes.WorkspaceEndpoints.GetInfo(workspaceId));
+            return await response.ToResult<WorkspaceDto>();
         }
 
         public async Task<IResult<List<GetWorkspaceBoardResponse>>> GetWorkspaceBoards(string workspaceId)
@@ -181,7 +194,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var workspace = UserWorkspaces.FirstOrDefault(w => w.Id == id);
 
-            if(workspace != null)
+            if (workspace != null)
             {
                 SelectedWorkspace = workspace;
                 await _clientPreferenceManager.SetSelectedWorkspace(_selectedWorkspace.Id);

@@ -9,6 +9,7 @@ using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
 using Harmony.Application.Features.Workspaces.Commands.Rename;
 using Harmony.Application.Features.Workspaces.Commands.Create;
+using Harmony.Application.Features.Workspaces.Queries.GetWorkspace;
 
 namespace Harmony.Api.Controllers.Management
 {
@@ -18,7 +19,7 @@ namespace Harmony.Api.Controllers.Management
     public class WorkspaceController : BaseApiController<WorkspaceController>
     {
         [HttpPost]
-        public async Task<IActionResult> Post(CreateWorkspaceCommand command)
+        public async Task<IActionResult> Post(CreateOrEditWorkspaceCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
@@ -33,6 +34,12 @@ namespace Harmony.Api.Controllers.Management
         public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await _mediator.Send(new LoadWorkspaceQuery(id)));
+        }
+
+        [HttpGet("{id:guid}/info")]
+        public async Task<IActionResult> GetInfo(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetWorkspaceQuery(id)));
         }
 
         [HttpGet("{id:guid}/boards")]

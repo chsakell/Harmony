@@ -12,19 +12,19 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
     /// <summary>
     /// Handler for creating workspace
     /// </summary>
-    public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceCommand, Result<WorkspaceDto>>
+    public class CreateOrEditWorkspaceCommandHandler : IRequestHandler<CreateOrEditWorkspaceCommand, Result<WorkspaceDto>>
     {
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IMapper _mapper;
         private readonly IUserWorkspaceRepository _userWorkspaceRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IStringLocalizer<CreateWorkspaceCommandHandler> _localizer;
+        private readonly IStringLocalizer<CreateOrEditWorkspaceCommandHandler> _localizer;
 
-        public CreateWorkspaceCommandHandler(IWorkspaceRepository workspaceRepository,
+        public CreateOrEditWorkspaceCommandHandler(IWorkspaceRepository workspaceRepository,
             IMapper mapper,
             IUserWorkspaceRepository userWorkspaceRepository,
             ICurrentUserService currentUserService,
-            IStringLocalizer<CreateWorkspaceCommandHandler> localizer)
+            IStringLocalizer<CreateOrEditWorkspaceCommandHandler> localizer)
         {
             _workspaceRepository = workspaceRepository;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
             _currentUserService = currentUserService;
             _localizer = localizer;
         }
-        public async Task<Result<WorkspaceDto>> Handle(CreateWorkspaceCommand request, CancellationToken cancellationToken)
+        public async Task<Result<WorkspaceDto>> Handle(CreateOrEditWorkspaceCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
 
@@ -41,10 +41,33 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
                 return await Result<WorkspaceDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
+            if(request.WorkspaceId.HasValue)
+            {
+                var workspaceDb = await _workspaceRepository.GetAsync(request.WorkspaceId.Value);
+
+                if(workspaceDb != null)
+                {
+                    workspaceDb.Name = request.Name.Trim();
+                    workspaceDb.Description = request.Description.Trim();
+                    workspaceDb.IsPublic = request.IsPublic;
+
+                    var updateResult = await _workspaceRepository.Update(workspaceDb);
+
+                    if (updateResult > 0)
+                    {
+                        var result = _mapper.Map<WorkspaceDto>(workspaceDb);
+
+                        return await Result<WorkspaceDto>.SuccessAsync(result, _localizer["Workspace updated"]);
+                    }
+
+                    return await Result<WorkspaceDto>.FailAsync(_localizer["Operation failed"]);
+                }
+            }
+
             var workspace = new Workspace()
             {
-                Name = request.Name,
-                Description = request.Description,
+                Name = request.Name.Trim(),
+                Description = request.Description.Trim(),
                 UserId = userId,
                 IsPublic = request.IsPublic,
             };

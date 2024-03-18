@@ -18,7 +18,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task InitAsync();
         List<WorkspaceDto> UserWorkspaces { get; }
         WorkspaceDto SelectedWorkspace { get; }
-        Task<IResult<WorkspaceDto>> CreateAsync(CreateWorkspaceCommand request);
+        Task<IResult<WorkspaceDto>> CreateOrEdit(CreateOrEditWorkspaceCommand request);
         Task SelectWorkspace(Guid id);
         Task<IResult<List<WorkspaceDto>>> GetAllAsync();
         Task<IResult<List<BoardDto>>> LoadWorkspaceAsync(string workspaceId);
@@ -28,6 +28,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<bool>> RemoveWorkspaceMember(RemoveWorkspaceMemberCommand request);
         Task<IResult<bool>> RenameWorkspace(RenameWorkspaceStatusCommand request);
         Task<IResult<bool>> UpdateWorkspaceStatus(UpdateWorkspaceStatusCommand request);
+        Task<IResult<WorkspaceDto>> GetWorkspaceInfoAsync(Guid workspaceId);
         Task<IResult<List<SearchWorkspaceUserResponse>>> SearchWorkspaceMembers(SearchWorkspaceUsersQuery request);
         event EventHandler<WorkspaceDto> OnSelectedWorkspace;
         event EventHandler<WorkspaceAddedEvent> OnWorkspaceAdded;

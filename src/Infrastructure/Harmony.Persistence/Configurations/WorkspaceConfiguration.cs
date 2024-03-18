@@ -16,6 +16,8 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(w => w.Name).HasMaxLength(50).IsRequired();
 
+            builder.HasIndex(w => new { w.Name }).IsUnique();
+
             builder.Property(w => w.Description).HasMaxLength(500);
 
             builder.Property(w => w.Status).IsRequired().HasDefaultValue(WorkspaceStatus.Active);

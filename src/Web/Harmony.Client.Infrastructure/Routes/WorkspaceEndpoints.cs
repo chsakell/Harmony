@@ -11,6 +11,11 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Index}{workspaceId}";
         }
 
+        public static string GetInfo(Guid workspaceId)
+        {
+            return $"{Index}{workspaceId}/info/";
+        }
+
         public static string GetBoards(string workspaceId)
         {
             return $"{Get(workspaceId)}/boards/";

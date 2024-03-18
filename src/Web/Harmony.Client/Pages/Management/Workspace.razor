@@ -12,6 +12,7 @@ else if (!_userBoards.Any())
         <MudPaper Elevation="25" Class="my-2">
             <MudToolBar>
                 <MudButton Variant="Variant.Text" OnClick="Archive" IconColor="Color.Error" StartIcon="@Icons.Material.Outlined.Archive">ARCHIVE</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="Edit" StartIcon="@Icons.Material.Outlined.Edit">EDIT WORKSPACE</MudButton>
             </MudToolBar>
         </MudPaper>
 
@@ -58,7 +59,7 @@ else
     <MudPaper Elevation="25" Class="my-2">
         <MudToolBar>
             <MudButton Variant="Variant.Text" OnClick="Archive" IconColor="Color.Error" StartIcon="@Icons.Material.Outlined.Archive">ARCHIVE</MudButton>
-            <MudButton Variant="Variant.Text" OnClick="Rename" StartIcon="@Icons.Material.Outlined.Edit">RENAME</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="Edit" StartIcon="@Icons.Material.Outlined.Edit">EDIT WORKSPACE</MudButton>
         </MudToolBar>
     </MudPaper>
     <MudGrid>

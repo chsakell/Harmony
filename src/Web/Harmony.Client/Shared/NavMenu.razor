@@ -106,8 +106,9 @@
         if (_selectedWorkspace == null || (_selectedWorkspace.Id != selectedWorkspace.Id))
         {
             _selectedWorkspace = selectedWorkspace;
-            StateHasChanged();
         }
+
+        StateHasChanged();
     }
 
     private string GetBoardUrl(BoardDto board)
