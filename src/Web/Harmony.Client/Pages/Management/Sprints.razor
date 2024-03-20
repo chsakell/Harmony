@@ -34,6 +34,7 @@
         <MudTh>Date</MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.TotalCards)">Cards</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.StoryPoints)">Story points</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:right"></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">
@@ -49,7 +50,16 @@
             <MudHighlighter Text="@context.TotalCards.ToString()" HighlightedText="@_searchString" />
         </MudTd>
         <MudTd DataLabel="StoryPoints">
+            <MudChip Variant="Variant.Text" Color="Color.Primary">
+                @(context.StoryPoints == 0 ? "-" : context.StoryPoints)
+            </MudChip>
             <MudHighlighter Text="@context.StoryPoints.ToString()" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="Actions" Style="text-align:right">
+            <MudMenu Label="Actions" AnchorOrigin="Origin.BottomLeft" Variant="Variant.Filled">
+                <MudMenuItem OnClick="@(() => EditSprint(context))" IconSize="Size.Small" 
+                    IconColor="Color.Primary" Icon="@Icons.Material.Filled.Edit">EDIT</MudMenuItem>
+            </MudMenu>
         </MudTd>
     </RowTemplate>
     <PagerContent>

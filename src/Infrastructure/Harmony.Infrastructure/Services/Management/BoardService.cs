@@ -379,6 +379,7 @@ namespace Harmony.Infrastructure.Services.Management
                     StartDate = sprint.StartDate,
                     EndDate = sprint.EndDate,
                     Status = sprint.Status,
+                    Goal = sprint.Goal,
                     TotalCards = sprint.Cards.Count,
                     StoryPoints = sprint.Cards.Sum(c => c.StoryPoints) ?? 0
                 });

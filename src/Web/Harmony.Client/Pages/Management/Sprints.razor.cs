@@ -1,9 +1,11 @@
 ﻿
+using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -79,6 +81,33 @@ namespace Harmony.Client.Pages.Management
                 {
                     _snackBar.Add(message, Severity.Error);
                 }
+            }
+        }
+
+        private async Task EditSprint(SprintDetails sprint)
+        {
+            var parameters = new DialogParameters<CreateEditSprintModal>
+            {
+                {
+                    modal => modal.CreateEditSprintCommandModel,
+                    new CreateEditSprintCommand(Guid.Parse(Id))
+                    {
+                        SprintId = sprint.Id,
+                        Name = sprint.Name,
+                        StartDate = sprint.StartDate,
+                        EndDate = sprint.EndDate,
+                        Goal = sprint.Goal
+                    }
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Edit sprint"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                await _table.ReloadServerData();
             }
         }
 
