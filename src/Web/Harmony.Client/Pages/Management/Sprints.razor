@@ -2,6 +2,7 @@
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Sprints> _localizer
 @using Harmony.Application.Features.Boards.Queries.GetBacklog
 @using Harmony.Application.Features.Boards.Queries.GetSprints
+@using Harmony.Application.Features.Boards.Queries.GetSprintsDetails
 @using Harmony.Application.Helpers
 @using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums
@@ -17,119 +18,42 @@
     }
 </style>
 
-<MudPaper Style="height:calc(100vh - 100px);overflow:auto">
-    <MudTable Hover="true" Breakpoint="Breakpoint.Sm" FixedHeader="true"
-              T="GetSprintCardResponse"
-              MultiSelection="true"
-              SelectOnRowClick="true"
-              @bind-SelectedItems="_selectedCards"
-              ServerData="@(new Func<TableState, Task<TableData<GetSprintCardResponse>>>(ReloadData))" Dense="true" Striped="true"
-              GroupBy="@_groupDefinition"
-              GroupHeaderStyle="background-color:var(--mud-palette-background-grey)"
-              GroupFooterClass="mb-4"
-              @ref="_table">
-        <ToolBarContent>
-            <div class="justify-center mud-text-align-center">
-                <MudButton EndIcon="@Icons.Material.Outlined.AddCard" ButtonType="ButtonType.Button"
-                           Variant="Variant.Filled" Color="Color.Default" OnClick="CreateSprint">Create sprint</MudButton>
-            </div>
-            <div class="justify-center mud-text-align-center ml-2">
-                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
-                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any() || !_selectedCards.All(card => card.CardId.HasValue)" IconColor="Color.Secondary"
-                         AnchorOrigin="Origin.BottomLeft">
-                    <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
-                                 OnClick="MoveToBacklog" Icon="@Icons.Material.Filled.ArrowRight">Move to backlog</MudMenuItem>
-                </MudMenu>
+<MudTable Hover="true" Elevation="25"
+          T="SprintDetails"
+          ServerData="@(new Func<TableState, Task<TableData<SprintDetails>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+    <ToolBarContent>
+        <div class="justify-center mud-text-align-center">
+            @* <MudCheckBox @bind-Checked:get="@_filterMembersOnly" @bind-Checked:set="ToggleFilterMembers" Label="Members only"></MudCheckBox> *@
+        </div>
+        <MudSpacer />
+        <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search user.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.Status)">Status</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.StartDate)">Start Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.EndDate)">End Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.TotalCards)"># Cards</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">
+            <MudHighlighter Text="@context.Name" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="Status">
+            <MudHighlighter Text="@context.Status.ToString()" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="StartDate">
+            <MudHighlighter Text="@context.StartDate.ToString()" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="EndDate">
+            <MudHighlighter Text="@context.EndDate.ToString()" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="TotalCards">
+            <MudHighlighter Text="@context.TotalCards.ToString()" HighlightedText="@_searchString" />
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
-            </div>
-            <MudSpacer />
-            <div class="justify-center mud-text-align-center ml-2" style="width: 150px; margin-bottom: 6px; margin-right: 10px;">
-                <MudSelect T="int" @bind-Value:get="_filterSprintStatus" Label=""
-                           @bind-Value:set="FilterSprintStatus" AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem Value="-1">ALL</MudSelectItem>
-                    <MudSelectItem Value="@((int)SprintStatus.Idle)">@(SprintStatus.Idle.ToString())</MudSelectItem>
-                    <MudSelectItem Value="@((int)SprintStatus.Active)">@(SprintStatus.Active.ToString())</MudSelectItem>
-                    <MudSelectItem Value="@((int)SprintStatus.Completed)">@(SprintStatus.Completed.ToString())</MudSelectItem>
-                </MudSelect>
-            </div>
-            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search sprints.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh>Serial Key</MudTh>
-            <MudTh>Title</MudTh>
-            <MudTh>Type</MudTh>
-            <MudTh>Story Points</MudTh>
-            <MudTh Style="text-align:right"></MudTh>
-        </HeaderContent>
-        <GroupHeaderTemplate>
-            <MudTh Class="mud-table-cell-custom-group" colspan="5">@($"{context.GroupName}: {context.Key}") </MudTh>
-        </GroupHeaderTemplate>
-        <RowTemplate>
-            <MudTd DataLabel="Serial Key">
-                <MudStack Row="true">
-                    <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@context.CardSerialKey</MudChip>
-                        @if (context.IsCompleted)
-                    {
-                        <MudTooltip Text="Completed" Delay="2000">
-                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
-                        </MudTooltip>
-                    }
-                </MudStack>
-            </MudTd>
-            <MudTd DataLabel="Title">@context.CardTitle</MudTd>
-                <MudTd DataLabel="Type">
-                    <MudStack Row="true">
-                        @if (context.CardIssueType != null && context.CardId.HasValue)
-                    {
-                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context?.CardIssueType?.Summary)"
-                                 Color="ColorHelper.GetIssueTypeColor(context?.CardIssueType?.Summary)" />
-                        <MudText>@context?.CardIssueType?.Summary</MudText>
-                    }
-                </MudStack>
-            </MudTd>
-            <MudTd DataLabel="StoryPoints">
-                <MudChip Variant="Variant.Text" Color="Color.Primary">
-                    @(context.StoryPoints?.ToString() ?? "-")
-                </MudChip>
-            </MudTd>
-            <MudTd>
-                @if (context.CardId.HasValue)
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default"
-                                   OnClick="() => EditCard(context)"></MudIconButton>
-                }
-            </MudTd>
-        </RowTemplate>
-        <GroupFooterTemplate>
-            <MudTh Class="mud-table-cell-custom-group mud-table-cell-custom-group-footer" colspan="5">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexEnd">
-                    <MudText>Total cards: @context.Items.Count(item => item.CardId.HasValue)</MudText>
-                        @if (context.Items.FirstOrDefault() != null)
-                    {
-                        var firstItem = context.Items.FirstOrDefault();
-                        var sprintStatus = firstItem.SprintStatus;
-
-                        <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(firstItem.SprintStartDate, firstItem.SprintEndDate)</MudChip>
-                        <MudChip Color="@(sprintStatus == SprintStatus.Idle ? Color.Info : sprintStatus == SprintStatus.Active ? Color.Success : Color.Tertiary)">@sprintStatus</MudChip>
-
-                        switch (sprintStatus)
-                        {
-                            case SprintStatus.Idle:
-                                <MudButton ButtonType="ButtonType.Button"
-                                           Variant="Variant.Filled" Color="Color.Default" OnClick="() => StartSprint(firstItem.SprintId, firstItem.Sprint)">Start sprint</MudButton>
-                                break;
-                            case SprintStatus.Active:
-                                <MudButton EndIcon="@Icons.Material.Outlined.Check" ButtonType="ButtonType.Button"
-                                           Variant="Variant.Filled" Color="Color.Default" OnClick="() => CompleteSprint(firstItem.SprintId, firstItem.Sprint)">Complete sprint</MudButton>
-                                break;
-                        }
-                        <MudButton EndIcon="@Icons.Material.Outlined.MultilineChart" ButtonType="ButtonType.Button"
-                                   Variant="Variant.Filled" Color="Color.Default" OnClick="() => ViewReports(firstItem.SprintId)">Reports</MudButton>
-                        <MudIconButton Icon="@Icons.Material.Outlined.Edit" ButtonType="ButtonType.Button"
-                                       Variant="Variant.Filled" Color="Color.Default" OnClick="() => EditSprint(firstItem)"></MudIconButton>
-                    }
-                </MudStack>
-            </MudTh>
-        </GroupFooterTemplate>
-    </MudTable>
-</MudPaper>

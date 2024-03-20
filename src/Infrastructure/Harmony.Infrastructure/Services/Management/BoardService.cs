@@ -15,6 +15,7 @@ using Harmony.Application.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Harmony.Application.Constants;
 using Harmony.Shared.Utilities;
+using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -83,7 +84,7 @@ namespace Harmony.Infrastructure.Services.Management
 
         public async Task<List<Board>> GetStatusForBoards(List<Guid> boardIds)
         {
-            
+
             return await _boardRepository.Entities.AsNoTracking()
                             .Include(b => b.Lists)
                                 .ThenInclude(l => l.Cards.Where(c => c.Status == CardStatus.Active))
@@ -361,7 +362,40 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-        public async Task<List<GetSprintCardResponse>> SearchSprints(Guid boardId, string term,
+        public async Task<List<SprintDetails>> GetSprintsDetails(Guid boardId, string term,
+            int pageNumber, int pageSize, SprintStatus? status)
+        {
+            IQueryable<SprintDetails> query = null;
+
+            query = from sprint in _sprintRepository.Entities
+                    join board in _boardRepository.Entities
+                        on sprint.BoardId equals board.Id
+                    join card in _cardRepository.Entities
+                        on sprint.Id equals card.SprintId
+                    where (board.Id == boardId
+                        && card.Status != CardStatus.Backlog &&
+                        (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term))
+                        && status == null ? true : sprint.Status == status)
+                    orderby sprint.DateCreated
+                    select new SprintDetails()
+                    {
+                        Id = sprint.Id,
+                        BoardId = sprint.BoardId,
+                        Name = sprint.Name,
+                        StartDate = sprint.StartDate,
+                        EndDate = sprint.EndDate,
+                        Status = sprint.Status,
+                        //TotalCards = grouping.ToList().Count(),
+                        //StoryPoints = grouping.Sum(c => c.StoryPoints) ?? 0
+                    };
+
+            var result = await query.Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize).ToListAsync();
+
+            return result;
+        }
+
+        public async Task<List<GetSprintCardResponse>> GetSprints(Guid boardId, string term,
             int pageNumber, int pageSize, SprintStatus? status)
         {
             IQueryable<GetSprintCardResponse> query = null;

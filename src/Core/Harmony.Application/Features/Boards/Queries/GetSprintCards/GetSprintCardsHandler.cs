@@ -30,7 +30,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprints
             var totalSprints = 
                 await _sprintRepository.CountSprints(request.BoardId);
 
-            var result = await _boardService.SearchSprints(request.BoardId,
+            var result = await _boardService.GetSprints(request.BoardId,
                  request.SearchTerm, request.PageNumber, request.PageSize, request.SprintStatus);
 
             return PaginatedResult<GetSprintCardResponse>

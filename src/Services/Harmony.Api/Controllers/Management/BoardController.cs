@@ -7,6 +7,7 @@ using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
+using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
 using Harmony.Application.Features.Boards.Queries.GetUserBoards;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
@@ -148,6 +149,19 @@ namespace Harmony.Api.Controllers.Management
             }
 
             sprintQuery.Statuses = statuses;
+
+            return Ok(await _mediator.Send(sprintQuery));
+        }
+
+        [HttpGet("{id:guid}/sprints/details")]
+        public async Task<IActionResult> GetSprintsDetails(Guid id, int pageNumber, int pageSize,
+            string searchTerm = null, string orderBy = null,
+            SprintStatus? status = null)
+        {
+            var sprintQuery = new
+                GetSprintsDetailsQuery(id, pageNumber, pageSize, searchTerm, orderBy);
+
+            sprintQuery.Status = status;
 
             return Ok(await _mediator.Send(sprintQuery));
         }
