@@ -31,9 +31,9 @@
     <HeaderContent>
         <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.Status)">Status</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.StartDate)">Start Date</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.EndDate)">End Date</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.TotalCards)"># Cards</MudTableSortLabel></MudTh>
+        <MudTh>Date</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.TotalCards)">Cards</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.StoryPoints)">Story points</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">
@@ -42,14 +42,14 @@
         <MudTd DataLabel="Status">
             <MudHighlighter Text="@context.Status.ToString()" HighlightedText="@_searchString" />
         </MudTd>
-        <MudTd DataLabel="StartDate">
-            <MudHighlighter Text="@context.StartDate.ToString()" HighlightedText="@_searchString" />
-        </MudTd>
-        <MudTd DataLabel="EndDate">
-            <MudHighlighter Text="@context.EndDate.ToString()" HighlightedText="@_searchString" />
+        <MudTd DataLabel="Date">
+            <MudHighlighter Text="@($"{context.StartDate?.ToString("MMMM dd")} - {context.EndDate?.ToString("MMMM dd")}")" HighlightedText="@_searchString" />
         </MudTd>
         <MudTd DataLabel="TotalCards">
             <MudHighlighter Text="@context.TotalCards.ToString()" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="StoryPoints">
+            <MudHighlighter Text="@context.StoryPoints.ToString()" HighlightedText="@_searchString" />
         </MudTd>
     </RowTemplate>
     <PagerContent>
