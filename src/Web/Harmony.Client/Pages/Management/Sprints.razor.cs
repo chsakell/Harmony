@@ -2,7 +2,9 @@
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
+using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
+using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
@@ -109,6 +111,101 @@ namespace Harmony.Client.Pages.Management
             {
                 await _table.ReloadServerData();
             }
+        }
+
+        private async Task CreateSprint()
+        {
+            var parameters = new DialogParameters<CreateEditSprintModal>
+            {
+                {
+                    modal => modal.CreateEditSprintCommandModel,
+                    new CreateEditSprintCommand(Guid.Parse(Id))
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                await _table.ReloadServerData();
+            }
+        }
+
+        private async Task StartSprint(SprintDetails sprint)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to start {sprint.Name}? " +
+                $"All of it's cards will be available on the board" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Warning }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var request = new StartSprintCommand(Guid.Parse(Id), sprint.Id);
+
+                var result = await _sprintManager.StartSprint(request);
+
+                if (result.Succeeded)
+                {
+                    await _table.ReloadServerData();
+                }
+
+                DisplayMessage(result);
+            }
+        }
+
+        private async Task CompleteSprint(SprintDetails sprint)
+        {
+            var pendingSprintResult = await _boardManager
+                .GetPendingSprintCards(new GetPendingSprintCardsQuery(Guid.Parse(Id), sprint.Id));
+
+            if (pendingSprintResult.Succeeded)
+            {
+                var pendingCards = pendingSprintResult.Data.PendingCards;
+                var availableSprints = pendingSprintResult.Data.AvailableSprints;
+
+                var parameters = new DialogParameters<CompleteSprintModal>
+                {
+                    { x => x.BoardId, Guid.Parse(Id) },
+                    { x => x.PendingCards, pendingCards },
+                    { x => x.AvailableSprints, availableSprints },
+                    { x => x.SprintId , sprint.Id },
+                };
+
+                var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+                var dialog = _dialogService.Show<CompleteSprintModal>(_localizer["Complete sprint"], parameters, options);
+
+                var result = await dialog.Result;
+
+                if (!result.Canceled && result.Data is bool sprintSucceeded)
+                {
+                    await _table.ReloadServerData();
+                }
+            }
+        }
+
+        private async Task ViewReports(Guid sprintId)
+        {
+            var parameters = new DialogParameters<SprintReportsModal>
+            {
+                {
+                    modal => modal.BoardId, Guid.Parse(Id)
+                },
+                {
+                    modal => modal.SprintId, sprintId
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = false, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<SprintReportsModal>(_localizer["Sprint reports"], parameters, options);
+            var result = await dialog.Result;
         }
 
         private void DisplayMessage(IResult result)

@@ -23,7 +23,7 @@
           ServerData="@(new Func<TableState, Task<TableData<SprintDetails>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
-            @* <MudCheckBox @bind-Checked:get="@_filterMembersOnly" @bind-Checked:set="ToggleFilterMembers" Label="Members only"></MudCheckBox> *@
+            <MudButton ButtonType="ButtonType.Button" OnClick="CreateSprint" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">CREATE NEW</MudButton>
         </div>
         <MudSpacer />
         <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search user.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -53,12 +53,24 @@
             <MudChip Variant="Variant.Text" Color="Color.Primary">
                 @(context.StoryPoints == 0 ? "-" : context.StoryPoints)
             </MudChip>
-            <MudHighlighter Text="@context.StoryPoints.ToString()" HighlightedText="@_searchString" />
         </MudTd>
         <MudTd DataLabel="Actions" Style="text-align:right">
             <MudMenu Label="Actions" AnchorOrigin="Origin.BottomLeft" Variant="Variant.Filled">
-                <MudMenuItem OnClick="@(() => EditSprint(context))" IconSize="Size.Small" 
-                    IconColor="Color.Primary" Icon="@Icons.Material.Filled.Edit">EDIT</MudMenuItem>
+                <MudMenuItem OnClick="@(() => EditSprint(context))" IconSize="Size.Small"
+                             IconColor="Color.Primary" Icon="@Icons.Material.Filled.Edit">EDIT</MudMenuItem>
+                @switch (context.Status)
+                {
+                    case SprintStatus.Idle:
+                        <MudMenuItem OnClick="@(() => StartSprint(context))" IconSize="Size.Small"
+                                     IconColor="Color.Tertiary" Icon="@Icons.Material.Filled.Start">START</MudMenuItem>
+                        break;
+                    case SprintStatus.Active:
+                        <MudMenuItem OnClick="@(() => CompleteSprint(context))" IconSize="Size.Small"
+                                     IconColor="Color.Error" Icon="@Icons.Material.Filled.Close">COMPLETE</MudMenuItem>
+                        break;
+                }
+                <MudMenuItem OnClick="@(() => ViewReports(context.Id))" IconSize="Size.Small"
+                             IconColor="Color.Primary" Icon="@Icons.Material.Filled.MultilineChart">VIEW REPORTS</MudMenuItem>
             </MudMenu>
         </MudTd>
     </RowTemplate>
