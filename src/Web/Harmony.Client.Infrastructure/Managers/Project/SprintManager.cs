@@ -1,5 +1,7 @@
-﻿using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
+using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
@@ -41,6 +43,15 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .GetAsync(Routes.SprintEndpoints.Reports(sprintId));
 
             return await response.ToResult<GetSprintReportsResponse>();
+        }
+
+        public async Task<PaginatedResult<CardDto>> GetSprintCards(GetSprintCardsQuery query)
+        {
+            var response = await _httpClient
+                .GetAsync(Routes.SprintEndpoints.Cards(query.SprintId, query.PageNumber, 
+                query.PageSize, query.SearchTerm, query.OrderBy, query.Status));
+
+            return await response.ToPaginatedResult<CardDto>();
         }
     }
 }

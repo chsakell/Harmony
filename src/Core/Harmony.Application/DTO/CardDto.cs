@@ -8,6 +8,8 @@ namespace Harmony.Application.DTO
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public Guid BoardListId { get; set; }
+		public string BoardList { get; set; }
+		public bool? Completed { get; set; }
 		public short Position { get; set; } // position on the board list
 		public int TotalItems { get; set; }
 		public int TotalItemsCompleted { get; set; }

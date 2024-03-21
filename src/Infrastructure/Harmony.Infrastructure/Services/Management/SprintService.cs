@@ -2,7 +2,10 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
+using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.Services.Management
@@ -25,7 +28,7 @@ namespace Harmony.Infrastructure.Services.Management
         {
             var sprint = await _sprintRepository.GetSprint(sprintId);
 
-            if(sprint == null || !sprint.StartDate.HasValue || !sprint.EndDate.HasValue)
+            if (sprint == null || !sprint.StartDate.HasValue || !sprint.EndDate.HasValue)
             {
                 return null;
             }
@@ -50,7 +53,7 @@ namespace Harmony.Infrastructure.Services.Management
 
             var averageStoryPointsPerDay = (double)totalStoryPoints / (double)(totalWorkDays - 1);
 
-            if(totalStoryPoints == 0)
+            if (totalStoryPoints == 0)
             {
                 return null;
             }
@@ -70,14 +73,14 @@ namespace Harmony.Infrastructure.Services.Management
 
                 remainingStoryPointsSeries.Add(remainingStoryPoints);
 
-                if(firstDay)
+                if (firstDay)
                 {
                     guideLineStoryPointsSeries.Add(guideLineRemainingStoryPoints);
                     firstDay = false;
                     continue;
                 }
 
-                if(day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday)
+                if (day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday)
                 {
                     guideLineRemainingStoryPoints -= averageStoryPointsPerDay;
                 }
@@ -85,7 +88,7 @@ namespace Harmony.Infrastructure.Services.Management
                 guideLineStoryPointsSeries.Add(guideLineRemainingStoryPoints);
             }
 
-            
+
             var burnDownReport = new BurnDownReportDto()
             {
                 Name = "BurnDown chart",
@@ -114,6 +117,21 @@ namespace Harmony.Infrastructure.Services.Management
 
             return result;
         }
+
+        public async Task<List<Card>> GetSprintsCards(Guid sprintId, string term,
+            int pageNumber, int pageSize, CardStatus? status)
+        {
+            var query = _cardRepository.Entities
+                .Where(card => status == null ? true : card.Status == status.Value &&
+                card.SprintId == sprintId &&
+                        (string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)));
+
+            var result = await query.Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize).ToListAsync();
+
+            return result;
+        }
+
 
         private IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
         {

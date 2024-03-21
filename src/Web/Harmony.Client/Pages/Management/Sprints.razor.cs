@@ -8,6 +8,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetSprints;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
@@ -206,6 +207,11 @@ namespace Harmony.Client.Pages.Management
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = false, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<SprintReportsModal>(_localizer["Sprint reports"], parameters, options);
             var result = await dialog.Result;
+        }
+
+        private void ViewSprint(SprintSummary sprint)
+        {
+            _navigationManager.NavigateTo($"/projects/{Id}/sprints/{sprint.Id}");
         }
 
         private void DisplayMessage(IResult result)

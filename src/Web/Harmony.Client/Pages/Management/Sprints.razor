@@ -16,6 +16,7 @@
 
 <MudTable Hover="true" Elevation="25"
           T="SprintSummary"
+          Style="height:calc(100vh - 100px);overflow:auto"
           ServerData="@(new Func<TableState, Task<TableData<SprintSummary>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
@@ -68,7 +69,7 @@
                 <MudMenuItem OnClick="@(() => ViewReports(context.Id))" IconSize="Size.Small"
                              IconColor="Color.Primary" Icon="@Icons.Material.Filled.MultilineChart">VIEW REPORTS</MudMenuItem>
             </MudMenu>
-            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowRight" aria-label="delete"></MudIconButton>
+            <MudIconButton Color="Color.Primary" OnClick="@(() => ViewSprint(context))" Icon="@Icons.Material.Filled.ArrowRight" aria-label="delete"></MudIconButton>
         </MudTd>
     </RowTemplate>
     <PagerContent>

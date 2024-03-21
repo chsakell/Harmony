@@ -111,14 +111,6 @@ namespace Harmony.Api.Controllers.Management
             return Ok(await _mediator.Send(new GetIssueTypesQuery(id)));
         }
 
-        [HttpGet("{id:guid}/sprints/cards")]
-        public async Task<IActionResult> GetSprintCards(Guid id, int pageNumber, int pageSize,
-            string searchTerm = null, string orderBy = null, SprintStatus? status = null)
-        {
-            return Ok(await _mediator.Send(new
-                GetSprintCardsQuery(id, pageNumber, pageSize, searchTerm, orderBy, status)));
-        }
-
         [HttpGet("{id:guid}/sprints/{sprintId:guid}/cards/pending")]
         public async Task<IActionResult> GetPendingItems(Guid id, Guid sprintId)
         {

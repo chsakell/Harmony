@@ -46,6 +46,11 @@ namespace Harmony.Application.Mappings.Management
                         Id = c.IssueType.Id,
                         Summary = c.IssueType.Summary,
                     }))
+                .ForMember(dto => dto.BoardList, opt =>
+                    opt.MapFrom(c => c.BoardList != null ? c.BoardList.Title : string.Empty))
+                .ForMember(dto => dto.Completed, opt =>
+                    opt.MapFrom(c => c.BoardList != null ? 
+                        (bool?)(c.BoardList.CardStatus == Domain.Enums.BoardListCardStatus.DONE) : null))
                 .ForMember(dto => dto.TotalComments, opt =>
                     opt.MapFrom(c => c.Comments != null ? c.Comments.Count : 0))
                 .ForMember(dto => dto.TotalChildren, opt =>

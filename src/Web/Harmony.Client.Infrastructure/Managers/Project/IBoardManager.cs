@@ -38,7 +38,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<CardDto>>> GetBoardListCardsAsync(LoadBoardListQuery request);
         Task<PaginatedResult<GetBacklogItemResponse>> GetBacklog(GetBacklogQuery request);
         Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId);
-        Task<PaginatedResult<GetSprintCardResponse>> GetSprintCards(GetSprintCardsQuery request);
         Task<PaginatedResult<SprintDto>> GetSprints(GetSprintsQuery request);
         Task<PaginatedResult<SprintSummary>> GetSprintsDetails(GetSprintsSummaryQuery request);
         Task<IResult<SprintDto>> CreateSprintAsync(CreateEditSprintCommand request);

@@ -43,7 +43,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprintsSummary
                 .Entities.Specify(filter)
                 .CountAsync();
 
-            var result = await _boardService.GetSprintsDetails(request.BoardId,
+            var result = await _boardService.GetSprintsSummaries(request.BoardId,
                  request.SearchTerm, request.PageNumber, request.PageSize, request.Status);
 
             return PaginatedResult<SprintSummary>

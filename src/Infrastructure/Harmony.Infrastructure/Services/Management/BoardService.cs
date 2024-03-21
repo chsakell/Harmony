@@ -363,14 +363,14 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-        public async Task<List<SprintSummary>> GetSprintsDetails(Guid boardId, string term,
+        public async Task<List<SprintSummary>> GetSprintsSummaries(Guid boardId, string term,
             int pageNumber, int pageSize, SprintStatus? status)
         {
-
             var query = _sprintRepository.Entities
                 .Include(s => s.Cards
                     .Where(c => c.Status != CardStatus.Backlog))
-                .Where(sprint => status == null ? true : sprint.Status == status.Value)
+                .Where(sprint => status == null ? true : sprint.Status == status.Value &&
+                        (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term)))
                 .Select(sprint => new SprintSummary()
                 {
                     Id = sprint.Id,
@@ -383,54 +383,6 @@ namespace Harmony.Infrastructure.Services.Management
                     TotalCards = sprint.Cards.Count,
                     StoryPoints = sprint.Cards.Sum(c => c.StoryPoints) ?? 0
                 });
-
-            var result = await query.Skip((pageNumber - 1) * pageSize)
-                                    .Take(pageSize).ToListAsync();
-
-            return result;
-        }
-
-        public async Task<List<GetSprintCardResponse>> GetSprints(Guid boardId, string term,
-            int pageNumber, int pageSize, SprintStatus? status)
-        {
-            IQueryable<GetSprintCardResponse> query = null;
-
-            query = from sprint in _sprintRepository.Entities
-                    join board in _boardRepository.Entities.Include(b => b.Lists)
-                        on sprint.BoardId equals board.Id
-                    join card in _cardRepository.Entities.Include(c => c.BoardList)
-                        on sprint.Id equals card.SprintId into grouping
-                    from p in grouping.DefaultIfEmpty()
-                    join issueType in _issueTypeRepository.Entities
-                        on p.IssueTypeId equals issueType.Id into issueGrouping
-                    from issue in issueGrouping.DefaultIfEmpty()
-                    where (board.Id == boardId
-                        && p.Status != CardStatus.Backlog &&
-                        (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term))
-                        && status == null ? true : sprint.Status == status)
-                    orderby sprint.DateCreated
-                    select new GetSprintCardResponse()
-                    {
-                        CardId = (Guid?)p.Id,
-                        CardTitle = p != null ? p.Title : null,
-                        CardStartDate = p != null ? p.StartDate : null,
-                        CardDueDate = p != null ? p.DueDate : null,
-                        BoardKey = board.Key,
-                        CardSerialKey = p != null ? $"{board.Key}-{p.SerialNumber}" : null,
-                        Sprint = sprint.Name,
-                        SprintGoal = sprint.Goal,
-                        SprintStatus = sprint.Status,
-                        SprintStartDate = sprint.StartDate,
-                        SprintEndDate = sprint.EndDate,
-                        SprintId = sprint.Id,
-                        IsCompleted = p.BoardList.CardStatus == BoardListCardStatus.DONE,
-                        CardIssueType = new IssueTypeDto()
-                        {
-                            Id = issue != null ? issue.Id : Guid.Empty,
-                            Summary = issue != null ? issue.Summary : null
-                        },
-                        StoryPoints = p.StoryPoints
-                    };
 
             var result = await query.Skip((pageNumber - 1) * pageSize)
                                     .Take(pageSize).ToListAsync();

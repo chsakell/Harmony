@@ -1,0 +1,62 @@
+﻿@page "/projects/{id}/sprints/{sprintId}"
+@using Harmony.Application.DTO
+@using Harmony.Client.Infrastructure.Helper
+@using Harmony.Domain.Enums
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Sprints> _localizer
+
+<style>
+    .mud-table-cell-custom-group {
+        font-weight: 500;
+    }
+
+    .mud-table-cell-custom-group-footer {
+        padding-bottom: 50px;
+        text-align: right;
+    }
+</style>
+
+<MudTable Hover="true" Elevation="25"
+          T="CardDto"
+          Style="height:calc(100vh - 100px);overflow:auto"
+          ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+    <ToolBarContent>
+        <div class="justify-center mud-text-align-center">
+            @* <MudButton ButtonType="ButtonType.Button" OnClick="CreateSprint" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">CREATE NEW</MudButton> *@
+        </div>
+        <MudSpacer />
+        <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search cards.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<CardDto, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CardDto, object>(x => x.IssueType)">Type</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CardDto, object>(x => x.BoardListId)">Status</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CardDto, object>(x => x.StoryPoints)">Story points</MudTableSortLabel></MudTh>
+        <MudTh Style="text-align:right"></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">
+            <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="Type">
+            <MudStack Row="true">
+                <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                         Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                <MudText>@context.IssueType.Summary</MudText>
+            </MudStack>
+        </MudTd>
+        <MudTd DataLabel="Status">
+            <MudHighlighter Text="@context.BoardList" HighlightedText="@_searchString" />
+        </MudTd>
+        <MudTd DataLabel="StoryPoints">
+            <MudChip Variant="Variant.Text" Color="Color.Primary">
+                @(context.StoryPoints.HasValue && context.StoryPoints.Value > 0 ? context.StoryPoints : "-")
+            </MudChip>
+        </MudTd>
+        <MudTd DataLabel="Actions" Style="text-align:right">
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+

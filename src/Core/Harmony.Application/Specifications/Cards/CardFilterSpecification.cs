@@ -1,20 +1,31 @@
 ﻿using Harmony.Application.Specifications.Base;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Specifications.Cards
 {
     public class CardFilterSpecification : HarmonySpecification<Card>
     {
+        public CardFilterSpecification(Guid sprintId, CardIncludes includes = null, CardStatus? status = null) :
+            this(cardId: null, includes ?? new CardIncludes())
+        {
+            Criteria = card => card.SprintId == sprintId;
+
+            if (status.HasValue)
+            {
+                And(card => card.Status == status.Value);
+            }
+        }
         public CardFilterSpecification(Guid? cardId, CardIncludes includes)
         {
-            if(includes.Attachments)
+            if (includes.Attachments)
             {
                 Includes.Add(card => card.Attachments);
             }
 
             if (includes.BoardList)
             {
-                Includes.Add(card => card.BoardListId);
+                Includes.Add(card => card.BoardList);
             }
 
             if (includes.Board)
@@ -33,6 +44,11 @@ namespace Harmony.Application.Specifications.Cards
                 Includes.Add(card => card.Members);
             }
 
+            if (includes.IssueType)
+            {
+                Includes.Add(card => card.IssueType);
+            }
+
             if (cardId.HasValue)
             {
                 Criteria = card => card.Id == cardId;
@@ -46,7 +62,7 @@ namespace Harmony.Application.Specifications.Cards
                 Includes.Add(card => card.Attachments);
             }
 
-            if(includes.IssueType)
+            if (includes.IssueType)
             {
                 Includes.Add(card => card.IssueType.Board);
             }
@@ -146,16 +162,6 @@ namespace Harmony.Application.Specifications.Cards
                     Criteria = And(card => card.IssueType.BoardId == filters.BoardId.Value);
                 }
             }
-        }
-
-        private void SaveOr()
-        {
-
-        }
-
-        private void SafeAnd()
-        {
-
         }
     }
 }
