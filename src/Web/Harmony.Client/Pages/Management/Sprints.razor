@@ -1,11 +1,7 @@
 ﻿@page "/projects/{id}/sprints"
-@inject Microsoft.Extensions.Localization.IStringLocalizer<Sprints> _localizer
-@using Harmony.Application.Features.Boards.Queries.GetBacklog
-@using Harmony.Application.Features.Boards.Queries.GetSprints
-@using Harmony.Application.Features.Boards.Queries.GetSprintsDetails
-@using Harmony.Application.Helpers
-@using Harmony.Client.Infrastructure.Helper
+@using Harmony.Application.Features.Boards.Queries.GetSprintsSummary
 @using Harmony.Domain.Enums
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Sprints> _localizer
 
 <style>
     .mud-table-cell-custom-group {
@@ -19,21 +15,21 @@
 </style>
 
 <MudTable Hover="true" Elevation="25"
-          T="SprintDetails"
-          ServerData="@(new Func<TableState, Task<TableData<SprintDetails>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+          T="SprintSummary"
+          ServerData="@(new Func<TableState, Task<TableData<SprintSummary>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
             <MudButton ButtonType="ButtonType.Button" OnClick="CreateSprint" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">CREATE NEW</MudButton>
         </div>
         <MudSpacer />
-        <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search user.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search sprint.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.Status)">Status</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintSummary, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintSummary, object>(x => x.Status)">Status</MudTableSortLabel></MudTh>
         <MudTh>Date</MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.TotalCards)">Cards</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<SprintDetails, object>(x => x.StoryPoints)">Story points</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintSummary, object>(x => x.TotalCards)">Cards</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SprintSummary, object>(x => x.StoryPoints)">Story points</MudTableSortLabel></MudTh>
         <MudTh Style="text-align:right"></MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -72,6 +68,7 @@
                 <MudMenuItem OnClick="@(() => ViewReports(context.Id))" IconSize="Size.Small"
                              IconColor="Color.Primary" Icon="@Icons.Material.Filled.MultilineChart">VIEW REPORTS</MudMenuItem>
             </MudMenu>
+            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.ArrowRight" aria-label="delete"></MudIconButton>
         </MudTd>
     </RowTemplate>
     <PagerContent>

@@ -3,11 +3,11 @@ using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 
-namespace Harmony.Application.Features.Boards.Queries.GetSprintsDetails
+namespace Harmony.Application.Features.Boards.Queries.GetSprintsSummary
 {
-    public class GetSprintsDetailsQuery : PagedRequest, IRequest<PaginatedResult<SprintDetails>>
+    public class GetSprintsSummaryQuery : PagedRequest, IRequest<PaginatedResult<SprintSummary>>
     {
-        public GetSprintsDetailsQuery(Guid boardId, int pageNumber, int pageSize,
+        public GetSprintsSummaryQuery(Guid boardId, int pageNumber, int pageSize,
             string searchTerm, string orderBy)
         {
             BoardId = boardId;
@@ -21,7 +21,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprintsDetails
             }
         }
 
-        public GetSprintsDetailsQuery(Guid boardId)
+        public GetSprintsSummaryQuery(Guid boardId)
         {
 
         }

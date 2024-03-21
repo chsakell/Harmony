@@ -15,8 +15,8 @@ using Harmony.Application.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Harmony.Application.Constants;
 using Harmony.Shared.Utilities;
-using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
 using System.Linq;
+using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -363,7 +363,7 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-        public async Task<List<SprintDetails>> GetSprintsDetails(Guid boardId, string term,
+        public async Task<List<SprintSummary>> GetSprintsDetails(Guid boardId, string term,
             int pageNumber, int pageSize, SprintStatus? status)
         {
 
@@ -371,7 +371,7 @@ namespace Harmony.Infrastructure.Services.Management
                 .Include(s => s.Cards
                     .Where(c => c.Status != CardStatus.Backlog))
                 .Where(sprint => status == null ? true : sprint.Status == status.Value)
-                .Select(sprint => new SprintDetails()
+                .Select(sprint => new SprintSummary()
                 {
                     Id = sprint.Id,
                     BoardId = sprint.BoardId,

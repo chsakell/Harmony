@@ -10,7 +10,7 @@ using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
+using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
@@ -170,13 +170,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToPaginatedResult<SprintDto>();
         }
 
-        public async Task<PaginatedResult<SprintDetails>> GetSprintsDetails(GetSprintsDetailsQuery request)
+        public async Task<PaginatedResult<SprintSummary>> GetSprintsDetails(GetSprintsSummaryQuery request)
         {
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints
                 .SprintsDetails(request.BoardId.ToString(), request.PageNumber, request.PageSize,
                      request.SearchTerm, request.OrderBy, request.Status));
 
-            return await response.ToPaginatedResult<SprintDetails>();
+            return await response.ToPaginatedResult<SprintSummary>();
         }
 
         public async Task<IResult<List<IssueTypeDto>>> GetIssueTypesAsync(string boardId)

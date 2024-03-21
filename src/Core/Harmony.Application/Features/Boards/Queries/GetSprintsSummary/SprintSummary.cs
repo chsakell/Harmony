@@ -1,8 +1,8 @@
 ﻿using Harmony.Domain.Enums;
 
-namespace Harmony.Application.Features.Boards.Queries.GetSprintsDetails
+namespace Harmony.Application.Features.Boards.Queries.GetSprintsSummary
 {
-    public class SprintDetails
+    public class SprintSummary
     {
         public Guid Id { get; set; }
         public Guid BoardId { get; set; }

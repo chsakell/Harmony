@@ -7,7 +7,7 @@ using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
+using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Features.Boards.Queries.GetUserBoards;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
@@ -159,7 +159,7 @@ namespace Harmony.Api.Controllers.Management
             SprintStatus? status = null)
         {
             var sprintQuery = new
-                GetSprintsDetailsQuery(id, pageNumber, pageSize, searchTerm, orderBy);
+                GetSprintsSummaryQuery(id, pageNumber, pageSize, searchTerm, orderBy);
 
             sprintQuery.Status = status;
 

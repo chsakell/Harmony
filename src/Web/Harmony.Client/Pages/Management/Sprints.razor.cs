@@ -1,7 +1,7 @@
 ﻿
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
+using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
@@ -23,8 +23,8 @@ namespace Harmony.Client.Pages.Management
         [Parameter]
         public string Name { get; set; }
 
-        private List<SprintDetails> _sprints;
-        private MudTable<SprintDetails> _table;
+        private List<SprintSummary> _sprints;
+        private MudTable<SprintSummary> _table;
         private string _searchString = "";
         private int _totalItems;
         public SprintStatus? _status { get; set; } = null;
@@ -32,7 +32,7 @@ namespace Harmony.Client.Pages.Management
         private bool _loading;
 
 
-        private async Task<TableData<SprintDetails>> ReloadData(TableState state)
+        private async Task<TableData<SprintSummary>> ReloadData(TableState state)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {
@@ -40,7 +40,7 @@ namespace Harmony.Client.Pages.Management
             }
             await LoadData(state.Page, state.PageSize, state);
 
-            return new TableData<SprintDetails>
+            return new TableData<SprintSummary>
             {
                 TotalItems = _totalItems,
                 Items = _sprints
@@ -61,7 +61,7 @@ namespace Harmony.Client.Pages.Management
                 orderings = state.SortDirection != SortDirection.None ? new[] { $"{state.SortLabel} {state.SortDirection}" } : new[] { $"{state.SortLabel}" };
             }
 
-            var request = new GetSprintsDetailsQuery(Guid.Parse(Id))
+            var request = new GetSprintsSummaryQuery(Guid.Parse(Id))
             {
                 BoardId = Guid.Parse(Id),
                 PageSize = pageSize,
@@ -86,7 +86,7 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async Task EditSprint(SprintDetails sprint)
+        private async Task EditSprint(SprintSummary sprint)
         {
             var parameters = new DialogParameters<CreateEditSprintModal>
             {
@@ -133,7 +133,7 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async Task StartSprint(SprintDetails sprint)
+        private async Task StartSprint(SprintSummary sprint)
         {
             var parameters = new DialogParameters<Confirmation>
             {
@@ -161,7 +161,7 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async Task CompleteSprint(SprintDetails sprint)
+        private async Task CompleteSprint(SprintSummary sprint)
         {
             var pendingSprintResult = await _boardManager
                 .GetPendingSprintCards(new GetPendingSprintCardsQuery(Guid.Parse(Id), sprint.Id));

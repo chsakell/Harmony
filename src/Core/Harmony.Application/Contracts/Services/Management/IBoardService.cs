@@ -1,5 +1,5 @@
 ﻿using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Boards.Queries.GetSprintsDetails;
+using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Models;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
@@ -18,7 +18,7 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList);
         Task<List<GetSprintCardResponse>> GetSprints(Guid boardId, string term,
             int pageNumber, int pageSize, SprintStatus? status);
-        Task<List<SprintDetails>> GetSprintsDetails(Guid boardId, string term, int pageNumber, int pageSize, SprintStatus? status);
+        Task<List<SprintSummary>> GetSprintsDetails(Guid boardId, string term, int pageNumber, int pageSize, SprintStatus? status);
         Task<BoardInfo?> GetBoardInfo(Guid boardId);
         Task<List<Board>> GetStatusForBoards(List<Guid> boardIds);
     }
