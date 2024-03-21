@@ -1,12 +1,15 @@
-﻿using Harmony.Application.Specifications.Base;
+﻿using Grpc.Core;
+using Harmony.Application.Specifications.Base;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Microsoft.Extensions.Primitives;
 
 namespace Harmony.Application.Specifications.Cards
 {
     public class CardFilterSpecification : HarmonySpecification<Card>
     {
-        public CardFilterSpecification(Guid sprintId, CardIncludes includes = null, CardStatus? status = null) :
+        public CardFilterSpecification(Guid sprintId, CardIncludes includes = null, 
+            CardStatus? status = null, string title = null) :
             this(cardId: null, includes ?? new CardIncludes())
         {
             Criteria = card => card.SprintId == sprintId;
@@ -14,6 +17,11 @@ namespace Harmony.Application.Specifications.Cards
             if (status.HasValue)
             {
                 And(card => card.Status == status.Value);
+            }
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                And(card => card.Title.ToLower().Contains(title));
             }
         }
         public CardFilterSpecification(Guid? cardId, CardIncludes includes)

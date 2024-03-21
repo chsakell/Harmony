@@ -67,7 +67,7 @@ namespace Harmony.Client.Pages.Management
                 BoardId = Guid.Parse(Id),
                 PageSize = pageSize,
                 PageNumber = pageNumber + 1,
-                SearchTerm = _searchString,
+                SearchTerm = _searchString.ToLower().Trim(),
                 OrderBy = orderings,
                 Status = _status
             };

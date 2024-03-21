@@ -369,8 +369,6 @@ namespace Harmony.Infrastructure.Services.Management
             var query = _sprintRepository.Entities
                 .Include(s => s.Cards
                     .Where(c => c.Status != CardStatus.Backlog))
-                .Where(sprint => status == null ? true : sprint.Status == status.Value &&
-                        (string.IsNullOrEmpty(term) ? true : sprint.Name.Contains(term)))
                 .Select(sprint => new SprintSummary()
                 {
                     Id = sprint.Id,
@@ -382,7 +380,9 @@ namespace Harmony.Infrastructure.Services.Management
                     Goal = sprint.Goal,
                     TotalCards = sprint.Cards.Count,
                     StoryPoints = sprint.Cards.Sum(c => c.StoryPoints) ?? 0
-                });
+                })
+                .Where(sprint => (status == null ? true : sprint.Status == status.Value) &&
+                    (string.IsNullOrEmpty(term) ? true : sprint.Name.ToLower().Contains(term)));
 
             var result = await query.Skip((pageNumber - 1) * pageSize)
                                     .Take(pageSize).ToListAsync();

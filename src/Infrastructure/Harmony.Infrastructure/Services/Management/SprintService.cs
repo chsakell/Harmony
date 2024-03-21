@@ -124,7 +124,8 @@ namespace Harmony.Infrastructure.Services.Management
             var query = _cardRepository.Entities
                 .Where(card => status == null ? true : card.Status == status.Value &&
                 card.SprintId == sprintId &&
-                        (string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)));
+                        (string.IsNullOrEmpty(term) ? true : card.Title
+                        .Contains(term, StringComparison.InvariantCultureIgnoreCase)));
 
             var result = await query.Skip((pageNumber - 1) * pageSize)
                                     .Take(pageSize).ToListAsync();

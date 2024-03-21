@@ -53,7 +53,7 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintCards
             var filter = new CardFilterSpecification(
                 sprintId: request.SprintId, 
                 includes, 
-                status: request.Status);
+                status: request.Status, title: request.SearchTerm);
 
             var cards = await _cardRepository
                 .Entities.Specify(filter)
