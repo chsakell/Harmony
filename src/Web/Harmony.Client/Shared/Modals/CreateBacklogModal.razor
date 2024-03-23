@@ -16,10 +16,10 @@
         </TitleContent>
         <DialogContent>
             <MudGrid>
-                <MudItem xs="12" sm="8">
+                <MudItem xs="12">
                     <MudTextField For="@(() => CreateBacklogCommandModel.Title)" @bind-Value="CreateBacklogCommandModel.Title" Label="@_localizer["Name"]" />
                 </MudItem>
-                <MudItem xs="12" sm="4">
+                <MudItem xs="12">
                     <MudSelect T="IssueTypeDto" @bind-Value="CreateBacklogCommandModel.IssueType"
                                Placeholder="Select issue type"
                                Label="Type" AnchorOrigin="Origin.BottomCenter"
