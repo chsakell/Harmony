@@ -20,7 +20,7 @@
           ServerData="@(new Func<TableState, Task<TableData<SprintSummary>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
-            <MudButton ButtonType="ButtonType.Button" OnClick="CreateSprint" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">CREATE NEW</MudButton>
+            <MudButton ButtonType="ButtonType.Button" OnClick="CreateSprint" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">CREATE SPRINT</MudButton>
         </div>
         <MudSpacer />
         <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search sprint.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>

@@ -22,18 +22,18 @@
         </TitleContent>
         <DialogContent>
             <MudGrid>
-                <MudItem xs="12" sm="6">
+                <MudItem xs="12">
                     <MudTextField For="@(() => CreateEditSprintCommandModel.Name)" @bind-Value="CreateEditSprintCommandModel.Name" Label="@_localizer["Name"]" />
                 </MudItem>
-                <MudItem xs="12" sm="6">
+                <MudItem xs="12">
                     <MudTextField For="@(() => CreateEditSprintCommandModel.Goal)" @bind-Value="CreateEditSprintCommandModel.Goal" Label="@_localizer["Goal"]" />
                 </MudItem>
-                <MudItem xs="12" sm="6">
+                <MudItem xs="12">
                     <MudDatePicker Label="Start date"
                                    For="@(() => CreateEditSprintCommandModel.StartDate)"
                                    @bind-Date="CreateEditSprintCommandModel.StartDate" />
                 </MudItem>
-                <MudItem xs="12" sm="6">
+                <MudItem xs="12">
                     <MudDatePicker Label="End date"
                                    For="@(() => CreateEditSprintCommandModel.EndDate)"
                                    @bind-Date="CreateEditSprintCommandModel.EndDate" />
