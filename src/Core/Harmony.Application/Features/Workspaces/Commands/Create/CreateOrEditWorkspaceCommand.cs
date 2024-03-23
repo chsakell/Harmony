@@ -16,6 +16,7 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
         public string Name { get; set; }
 
         [MaxLength(500)]
+        [Required]
         public string Description { get; set; }
         public bool IsPublic { get; set; }
     }

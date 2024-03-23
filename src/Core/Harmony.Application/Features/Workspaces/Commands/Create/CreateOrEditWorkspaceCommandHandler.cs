@@ -67,7 +67,7 @@ namespace Harmony.Application.Features.Workspaces.Commands.Create
             var workspace = new Workspace()
             {
                 Name = request.Name.Trim(),
-                Description = request.Description.Trim(),
+                Description = request?.Description.Trim(),
                 UserId = userId,
                 IsPublic = request.IsPublic,
             };
