@@ -103,21 +103,30 @@ namespace Harmony.Application.Features.Boards.Queries.Get
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);
             
-            if(activeSprints != null && activeSprints.Any())
-            {
-                result.ActiveSprints = _mapper.Map<List<SprintDto>>(activeSprints);
-            }
+            Dictionary<Guid,int> totalCardsPerList = new Dictionary<Guid,int>();
 
-            var totalCardsPerList = await _boardListRepository
-                        .GetTotalCardsForBoardLists(result.Lists.Select(l => l.Id).ToList());
+            if (board.Type == Domain.Enums.BoardType.Scrum)
+            {
+                if (activeSprints != null && activeSprints.Any())
+                {
+                    result.ActiveSprints = _mapper.Map<List<SprintDto>>(activeSprints);
+                    totalCardsPerList = await _boardListRepository
+                            .GetTotalCardsForBoardLists(result.ActiveSprints[0].Id, result.Lists.Select(l => l.Id).ToList());
+                }
+            }
+            else
+            {
+                totalCardsPerList = await _boardListRepository
+                            .GetTotalCardsForBoardLists(result.Lists.Select(l => l.Id).ToList());
+            }
 
             foreach(var list in result.Lists)
             {
-                var totalCards = totalCardsPerList[list.Id];
+                var totalCards = totalCardsPerList.ContainsKey(list.Id) ? totalCardsPerList[list.Id] : 0;
 
-                list.TotalCards = totalCardsPerList[list.Id];
+                list.TotalCards = totalCards;
 
-                list.TotalPages = (int)Math.Ceiling((double)totalCards / request.MaxCardsPerList);
+                list.TotalPages = totalCardsPerList.ContainsKey(list.Id) ? (int)Math.Ceiling((double)totalCards / request.MaxCardsPerList) : 1;
             }
 
             var cards = result.Lists.SelectMany(l => l.Cards);

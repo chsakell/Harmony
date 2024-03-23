@@ -66,6 +66,30 @@ namespace Harmony.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<Dictionary<Guid, int>> GetTotalCardsForBoardLists(Guid sprintId, List<Guid> boardListIds)
+        {
+            var result = new Dictionary<Guid, int>();
+            var totalCardsPerList = await _context.Cards
+                                .Include(c => c.BoardList)
+
+                    .Where(c => c.SprintId == sprintId && c.BoardListId.HasValue && c.Status == Domain.Enums.CardStatus.Active &&
+                    boardListIds.Contains(c.BoardListId.Value) && c.BoardList.Status == Domain.Enums.BoardListStatus.Active)
+                .GroupBy(card => card.BoardList)
+                .Select(group => new
+                {
+                    Id = group.Key.Id,
+                    TotalCards = group.ToList().Count
+                })
+                .ToListAsync();
+
+            foreach (var group in totalCardsPerList)
+            {
+                result[group.Id] = group.TotalCards;
+            }
+
+            return result;
+        }
+
         public void UpdateEntry(BoardList list)
         {
             _context.BoardLists.Update(list);
