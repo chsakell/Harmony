@@ -3,15 +3,22 @@ using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Commands.CreateSprint;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
+using Harmony.Application.Features.Cards.Commands.CreateBacklog;
+using Harmony.Application.Features.Cards.Commands.CreateCard;
+using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
+using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
+using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
+using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using static MudBlazor.CategoryTypes;
 
@@ -33,7 +40,7 @@ namespace Harmony.Client.Pages.Management
 
         private bool _loading;
         private HashSet<CardDto> _selectedCards = new HashSet<CardDto>();
-
+        
         private async Task<TableData<CardDto>> ReloadData(TableState state)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
@@ -47,6 +54,26 @@ namespace Harmony.Client.Pages.Management
                 TotalItems = _totalItems,
                 Items = _cards
             };
+        }
+
+        private async Task CreateIssue()
+        {
+            var parameters = new DialogParameters<CreateSprintIssueModal>
+            {
+                {
+                    modal => modal.CreateSprintIssueCommandModel,
+                    new CreateSprintIssueCommand(Guid.Parse(Id), Guid.Parse(SprintId))
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateSprintIssueModal>(_localizer["Create sprint item"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                await _table.ReloadServerData();
+            }
         }
 
         private async Task MoveToBacklog()

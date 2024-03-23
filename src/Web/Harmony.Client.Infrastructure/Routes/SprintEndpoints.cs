@@ -30,5 +30,6 @@ namespace Harmony.Client.Infrastructure.Routes
         public static string Start(Guid sprintId) => $"{Index}/{sprintId}/start/";
 
         public static string Complete(Guid sprintId) => $"{Index}/{sprintId}/complete/";
+        public static string CreateIssue(Guid sprintId) => $"{Index}/{sprintId}/cards/";
     }
 }

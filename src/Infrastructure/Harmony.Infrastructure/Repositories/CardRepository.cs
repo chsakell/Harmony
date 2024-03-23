@@ -99,6 +99,14 @@ namespace Harmony.Infrastructure.Repositories
                 .MaxAsync(c => (short?)c.Position) ?? -1;
         }
 
+        public async Task<short> GetMaxActivePosition(Guid sprintId, Guid listId)
+        {
+            return await _context.Cards
+                .Where(c => c.SprintId == sprintId && 
+                    c.BoardListId == listId && c.Status == CardStatus.Active)
+                .MaxAsync(c => (short?)c.Position) ?? -1;
+        }
+
         public async Task<int> CountBacklogCards(Guid boardId)
         {
             return await _context.Cards

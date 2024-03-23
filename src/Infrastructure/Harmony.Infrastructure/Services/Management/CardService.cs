@@ -111,6 +111,33 @@ namespace Harmony.Infrastructure.Services.Management
             return await Result<List<Card>>.FailAsync("Failed to move cards");
         }
 
+        public async Task<IResult<Card>> AddCardToSprint(string userId, Guid sprintId, Guid issueTypeId,
+                                                            Guid boardListId, string title)
+        {
+            // Get the last index in the board list id
+            var currentMaxPosition = await _cardRepository.GetMaxActivePosition(sprintId, boardListId);
+
+            var card = new Card
+            {
+                UserId = userId,
+                Title = title.Trim(),
+                BoardListId = boardListId,
+                Position = ++currentMaxPosition,
+                SprintId = sprintId,
+                IssueTypeId = issueTypeId,
+                Status = CardStatus.Active
+            };
+
+            var result = await _cardRepository.CreateAsync(card);
+
+            if (result > 0)
+            {
+                return await Result<Card>.SuccessAsync(card);
+            }
+
+            return await Result<Card>.FailAsync("Failed to create card");
+        }
+
         public async Task<IResult<List<Card>>> ReactivateCards(Guid boardId, List<Guid> cardIds, Guid boardListId)
         {
             var cards = await _cardRepository

@@ -15,6 +15,7 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<List<GetBacklogItemResponse>> SearchBacklog(Guid boardId, string term, int pageNumber, int pageSize);
         Task<List<GetArchivedItemResponse>> SearchArchivedItems(Guid boardId, string term, int pageNumber, int pageSize);
         Task<IResult<List<Card>>> MoveCardsToSprint(Guid boardId, List<Guid> cardsToMove, Guid sprintId, Guid boardListId);
+        Task<IResult<Card>> AddCardToSprint(string userId, Guid sprintId, Guid issueTypeId, Guid boardListId, string title);
         Task<IResult<List<Card>>> MoveCardsToBacklog(Guid boardId, List<Guid> cardsToMove);
         Task<bool> CardCompleted(Guid cardId);
         Task<IResult<List<Card>>> ReactivateCards(Guid boardId, List<Guid> cardIds, Guid boardListId);

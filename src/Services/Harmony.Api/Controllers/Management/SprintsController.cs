@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
+using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
 using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
@@ -39,6 +40,12 @@ namespace Harmony.Api.Controllers.Management
             };
 
             return Ok(await _sender.Send(sprintCardsQuery));
+        }
+
+        [HttpPost("{id:guid}/cards")]
+        public async Task<IActionResult> CreateSprintIssue(CreateSprintIssueCommand command)
+        {
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpPut("{id:guid}/start")]
