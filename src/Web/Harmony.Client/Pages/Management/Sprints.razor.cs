@@ -192,6 +192,21 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private Color GetSprintStatus(SprintSummary sprint)
+        {
+            switch (sprint.Status)
+            {
+                case SprintStatus.Idle:
+                    return Color.Default;
+                case SprintStatus.Active:
+                    return Color.Primary;
+                case SprintStatus.Completed:
+                    return Color.Success;
+                default:
+                    return Color.Default;
+            }
+        }
+
         private async Task ViewReports(Guid sprintId)
         {
             var parameters = new DialogParameters<SprintReportsModal>
