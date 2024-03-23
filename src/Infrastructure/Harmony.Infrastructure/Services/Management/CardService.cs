@@ -77,7 +77,7 @@ namespace Harmony.Infrastructure.Services.Management
             if (cards.Any())
             {
                 // Get the last index in the board list id
-                var currentMaxPosition = await _cardRepository.GetMaxActivePosition(boardListId);
+                var currentMaxPosition = await _cardRepository.GetMaxActivePosition(sprintId, boardListId);
 
                 var issueTypesResult = await _mediator
                             .Send(new GetIssueTypesQuery(boardId));
