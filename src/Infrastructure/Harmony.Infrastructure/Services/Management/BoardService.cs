@@ -381,7 +381,9 @@ namespace Harmony.Infrastructure.Services.Management
                     TotalCards = sprint.Cards.Count,
                     StoryPoints = sprint.Cards.Sum(c => c.StoryPoints) ?? 0
                 })
-                .Where(sprint => (status == null ? true : sprint.Status == status.Value) &&
+                .Where(sprint =>
+                    (sprint.BoardId == boardId) &&
+                    (status == null ? true : sprint.Status == status.Value) &&
                     (string.IsNullOrEmpty(term) ? true : sprint.Name.ToLower().Contains(term)));
 
             var result = await query.Skip((pageNumber - 1) * pageSize)

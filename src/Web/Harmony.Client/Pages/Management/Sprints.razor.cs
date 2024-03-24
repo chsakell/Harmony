@@ -26,12 +26,11 @@ namespace Harmony.Client.Pages.Management
 
         private List<SprintSummary> _sprints;
         private MudTable<SprintSummary> _table;
-        private string _searchString = "";
+        private string _searchString = string.Empty;
         private int _totalItems;
         public SprintStatus? _status { get; set; } = null;
 
         private bool _loading;
-
 
         private async Task<TableData<SprintSummary>> ReloadData(TableState state)
         {
@@ -39,6 +38,7 @@ namespace Harmony.Client.Pages.Management
             {
                 state.Page = 0;
             }
+
             await LoadData(state.Page, state.PageSize, state);
 
             return new TableData<SprintSummary>

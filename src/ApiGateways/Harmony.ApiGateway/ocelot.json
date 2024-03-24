@@ -28,7 +28,7 @@
     },
     {
       "UpstreamPathTemplate": "/signalRHub/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "UpstreamHttpMethod": [],
       "DownstreamPathTemplate": "/signalRHub/{everything}",
       "ReRouteIsCaseSensitive": false,
       "DownstreamScheme": "wss",

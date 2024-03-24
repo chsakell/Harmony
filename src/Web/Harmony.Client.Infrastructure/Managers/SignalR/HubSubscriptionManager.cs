@@ -79,6 +79,11 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #region Listeners
         public async Task ListenForBoardEvents(string boardId)
         {
+            if(_hubConnection == null || _hubConnection.State == HubConnectionState.Disconnected)
+            {
+                await Task.Delay(1000);
+            }
+
             await _hubConnection.SendAsync(ApplicationConstants.SignalR.ListenForBoardEvents, boardId);
         }
 

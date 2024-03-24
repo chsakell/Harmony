@@ -50,10 +50,11 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprintCards
                 BoardList = true
             };
 
-            var filter = new CardFilterSpecification(
+            var filter = new SprintCardFilterSpecification(
                 sprintId: request.SprintId, 
                 includes, 
-                status: request.Status, title: request.SearchTerm);
+                status: request.Status, 
+                title: request.SearchTerm);
 
             var cards = await _cardRepository
                 .Entities.Specify(filter)

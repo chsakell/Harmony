@@ -630,7 +630,7 @@ namespace Harmony.Client.Pages.Management
                 { c => c.BoardKey, $"{KanbanStore.Board.Key}" }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
             var result = await dialog.Result;
 
