@@ -65,7 +65,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 
 builder.Services.AddApplicationServices();
 builder.Services.AddMessaging(builder.Configuration);
-builder.Services.AddMongoDb(builder.Configuration);
 
 // gRPC services
 builder.Services.AddGrpc();

@@ -104,15 +104,6 @@ namespace Harmony.Api.Extensions
             return services;
         }
 
-        internal static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<MongoDbConfiguration>(configuration.GetSection("MongoDb"));
-
-            Persistence.Configurations.MongoDb.MongoDbConfiguration.Configure();
-
-            return services;
-        }
-
         internal static IServiceCollection AddSearching(this IServiceCollection services,
             SearchEngine engine, IConfiguration configuration)
         {
