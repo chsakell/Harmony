@@ -21,6 +21,8 @@ namespace Harmony.Persistence.Migrations
                     BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SprintId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false),
+                    MaxVotesPerUser = table.Column<int>(type: "int", nullable: false),
+                    HideVoteCount = table.Column<bool>(type: "bit", nullable: false),
                     HideCardsInitially = table.Column<bool>(type: "bit", nullable: false),
                     DisableVotingInitially = table.Column<bool>(type: "bit", nullable: false),
                     ShowCardsAuthor = table.Column<bool>(type: "bit", nullable: false),

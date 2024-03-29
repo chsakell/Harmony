@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20240329194450_Retrospective")]
+    [Migration("20240329200218_Retrospective")]
     partial class Retrospective
     {
         /// <inheritdoc />
@@ -480,6 +480,12 @@ namespace Harmony.Persistence.Migrations
 
                     b.Property<bool>("HideCardsInitially")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("HideVoteCount")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxVotesPerUser")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

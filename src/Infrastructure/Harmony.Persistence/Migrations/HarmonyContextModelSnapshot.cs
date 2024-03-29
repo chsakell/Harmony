@@ -478,6 +478,12 @@ namespace Harmony.Persistence.Migrations
                     b.Property<bool>("HideCardsInitially")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("HideVoteCount")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxVotesPerUser")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
