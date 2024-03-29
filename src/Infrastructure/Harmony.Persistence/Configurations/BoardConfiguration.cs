@@ -38,6 +38,10 @@ namespace Harmony.Persistence.Configurations
                 .WithOne(label => label.Board)
                 .HasForeignKey(label => label.BoardId);
 
+            builder.HasMany(board => board.Retrospectives)
+                .WithOne(retro => retro.Board)
+                .HasForeignKey(retro => retro.BoardId);
+
             builder.Property(b => b.Type).IsRequired();
 
             builder.HasIndex(b => new { b.WorkspaceId, b.Key }).IsUnique();

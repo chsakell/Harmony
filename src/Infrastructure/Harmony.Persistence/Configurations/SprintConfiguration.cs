@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Harmony.Domain.Entities;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 
 namespace Harmony.Persistence.Configurations
 {
@@ -22,6 +24,11 @@ namespace Harmony.Persistence.Configurations
             builder.HasMany(sprint => sprint.Cards)
                 .WithOne(c => c.Sprint)
                 .HasForeignKey(card => card.SprintId)
+            .IsRequired(false);
+
+            builder.HasOne(sprint => sprint.Retrospective)
+                .WithOne(retro => retro.Sprint)
+                .HasForeignKey<Retrospective>(retro => retro.SprintId)
                 .IsRequired(false);
         }
     }

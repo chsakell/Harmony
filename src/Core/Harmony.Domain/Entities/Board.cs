@@ -20,5 +20,6 @@ namespace Harmony.Domain.Entities
         public BoardType Type { get; set; }
         public string Key {  get; set; }
         public List<Sprint> Sprints { get; set; }
+        public List<Retrospective> Retrospectives { get; set; }
     }
 }

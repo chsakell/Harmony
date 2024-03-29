@@ -12,5 +12,6 @@ namespace Harmony.Domain.Entities
         public DateTime? EndDate { get; set; }
         public SprintStatus Status { get; set; }
         public List<Card> Cards { get; set; }
+        public Retrospective? Retrospective { get; set; }
     }
 }
