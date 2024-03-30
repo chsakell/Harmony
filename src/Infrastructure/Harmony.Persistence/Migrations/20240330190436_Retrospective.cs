@@ -11,6 +11,12 @@ namespace Harmony.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<Guid>(
+                name: "RetrospectiveId",
+                table: "Boards",
+                type: "uniqueidentifier",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Retrospectives",
                 columns: table => new
@@ -19,6 +25,7 @@ namespace Harmony.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentBoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SprintId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false),
                     MaxVotesPerUser = table.Column<int>(type: "int", nullable: false),
@@ -33,11 +40,10 @@ namespace Harmony.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Retrospectives", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Retrospectives_Boards_BoardId",
-                        column: x => x.BoardId,
+                        name: "FK_Retrospectives_Boards_ParentBoardId",
+                        column: x => x.ParentBoardId,
                         principalTable: "Boards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Retrospectives_Sprints_SprintId",
                         column: x => x.SprintId,
@@ -46,9 +52,16 @@ namespace Harmony.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Retrospectives_BoardId",
+                name: "IX_Boards_RetrospectiveId",
+                table: "Boards",
+                column: "RetrospectiveId",
+                unique: true,
+                filter: "[RetrospectiveId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Retrospectives_ParentBoardId",
                 table: "Retrospectives",
-                column: "BoardId");
+                column: "ParentBoardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Retrospectives_SprintId",
@@ -56,13 +69,32 @@ namespace Harmony.Persistence.Migrations
                 column: "SprintId",
                 unique: true,
                 filter: "[SprintId] IS NOT NULL");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Boards_Retrospectives_RetrospectiveId",
+                table: "Boards",
+                column: "RetrospectiveId",
+                principalTable: "Retrospectives",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Boards_Retrospectives_RetrospectiveId",
+                table: "Boards");
+
             migrationBuilder.DropTable(
                 name: "Retrospectives");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Boards_RetrospectiveId",
+                table: "Boards");
+
+            migrationBuilder.DropColumn(
+                name: "RetrospectiveId",
+                table: "Boards");
         }
     }
 }

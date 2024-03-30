@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20240329200218_Retrospective")]
+    [Migration("20240330190436_Retrospective")]
     partial class Retrospective
     {
         /// <inheritdoc />
@@ -85,6 +85,9 @@ namespace Harmony.Persistence.Migrations
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
+                    b.Property<Guid?>("RetrospectiveId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(300)
@@ -104,6 +107,10 @@ namespace Harmony.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RetrospectiveId")
+                        .IsUnique()
+                        .HasFilter("[RetrospectiveId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -492,6 +499,10 @@ namespace Harmony.Persistence.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
+                    b.Property<Guid?>("ParentBoardId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("ShowCardsAuthor")
                         .HasColumnType("bit");
 
@@ -506,7 +517,7 @@ namespace Harmony.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BoardId");
+                    b.HasIndex("ParentBoardId");
 
                     b.HasIndex("SprintId")
                         .IsUnique()
@@ -943,6 +954,11 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.Board", b =>
                 {
+                    b.HasOne("Harmony.Domain.Entities.Retrospective", "Retrospective")
+                        .WithOne("Board")
+                        .HasForeignKey("Harmony.Domain.Entities.Board", "RetrospectiveId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("Boards")
                         .HasForeignKey("UserId")
@@ -954,6 +970,8 @@ namespace Harmony.Persistence.Migrations
                         .HasForeignKey("WorkspaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Retrospective");
 
                     b.Navigation("Workspace");
                 });
@@ -1114,17 +1132,17 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.Retrospective", b =>
                 {
-                    b.HasOne("Harmony.Domain.Entities.Board", "Board")
+                    b.HasOne("Harmony.Domain.Entities.Board", "ParentBoard")
                         .WithMany("Retrospectives")
-                        .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("ParentBoardId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Harmony.Domain.Entities.Sprint", "Sprint")
                         .WithOne("Retrospective")
                         .HasForeignKey("Harmony.Domain.Entities.Retrospective", "SprintId");
 
-                    b.Navigation("Board");
+                    b.Navigation("ParentBoard");
 
                     b.Navigation("Sprint");
                 });
@@ -1303,6 +1321,11 @@ namespace Harmony.Persistence.Migrations
             modelBuilder.Entity("Harmony.Domain.Entities.Label", b =>
                 {
                     b.Navigation("Labels");
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.Retrospective", b =>
+                {
+                    b.Navigation("Board");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.Sprint", b =>

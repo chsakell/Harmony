@@ -26,6 +26,9 @@
         <div class="justify-center mud-text-align-center">
             <MudButton ButtonType="ButtonType.Button" OnClick="CreateIssue" Variant="Variant.Filled" Color="Color.Primary" Style="width: 100%;">CREATE ISSUE</MudButton>
         </div>
+        <div class="justify-center mud-text-align-center">
+            <MudButton ButtonType="ButtonType.Button" OnClick="CreateRetrospective" Variant="Variant.Filled" Color="Color.Default" Style="width: 100%;">CREATE RETROSPECTIVE</MudButton>
+        </div>
         <div class="justify-center mud-text-align-center ml-2">
             <MudMenu Label="@_localizer["ACTIONS"]" Variant="Variant.Filled" DisableElevation="false"
                      EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()"  IconColor="Color.Secondary"

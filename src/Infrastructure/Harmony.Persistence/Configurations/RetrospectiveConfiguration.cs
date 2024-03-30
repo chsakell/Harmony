@@ -15,7 +15,19 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(b => b.Name).IsRequired().HasMaxLength(300);
 
-            builder.Property(b => b.BoardId).IsRequired();
+            builder.Property(b => b.BoardId).IsRequired();;
+
+            builder.HasOne(retro => retro.ParentBoard)
+                .WithMany(board => board.Retrospectives)
+                .HasForeignKey(retro => retro.ParentBoardId)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(retro => retro.Board)
+                .WithOne(board => board.Retrospective)
+                .HasForeignKey<Board>(board => board.RetrospectiveId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Harmony.Persistence.Configurations
 
             builder.Property(b => b.Visibility).IsRequired();
 
-            builder.Property(b => b.Key).IsRequired().HasMaxLength(5);
+            builder.Property(b => b.Key).IsRequired();
 
             // A board can have multiple lists and a list belongs to one board (1-M relationship)
             builder.HasMany(board => board.Lists)
@@ -37,10 +37,6 @@ namespace Harmony.Persistence.Configurations
             builder.HasMany(board => board.Sprints)
                 .WithOne(label => label.Board)
                 .HasForeignKey(label => label.BoardId);
-
-            builder.HasMany(board => board.Retrospectives)
-                .WithOne(retro => retro.Board)
-                .HasForeignKey(retro => retro.BoardId);
 
             builder.Property(b => b.Type).IsRequired();
 

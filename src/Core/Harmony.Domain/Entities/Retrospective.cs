@@ -9,6 +9,10 @@ namespace Harmony.Domain.Entities
         public string UserId { get; set; }
         public Guid BoardId { get; set; }
         public Board Board { get; set; }
+
+        // Parent board
+        public Guid? ParentBoardId { get; set; }
+        public Board ParentBoard { get; set; }
         public Guid? SprintId { get; set; }
         public Sprint Sprint { get; set; }
         public RetrospectiveType Type { get; set; }

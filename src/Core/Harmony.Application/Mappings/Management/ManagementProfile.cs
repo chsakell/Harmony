@@ -94,6 +94,8 @@ namespace Harmony.Application.Mappings.Management
 
             CreateMap<IssueType, IssueTypeDto>();
             CreateMap<Sprint, SprintDto>();
+
+            CreateMap<Retrospective, RetrospectiveDto>();
         }
     }
 }

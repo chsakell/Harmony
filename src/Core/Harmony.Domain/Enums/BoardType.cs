@@ -3,6 +3,7 @@
     public enum BoardType
     {
         Kanban,
-        Scrum
+        Scrum,
+        Retrospective
     }
 }

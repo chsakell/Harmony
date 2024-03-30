@@ -8,6 +8,7 @@ using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
+using Harmony.Application.Features.Retrospectives.Commands.Create;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
@@ -73,6 +74,33 @@ namespace Harmony.Client.Pages.Management
             if (!result.Canceled)
             {
                 await _table.ReloadServerData();
+            }
+        }
+
+        private async Task CreateRetrospective()
+        {
+            var parameters = new DialogParameters<CreateRetrospectiveModal>
+            {
+                {
+                    modal => modal.CreateRetrospectiveCommandModel,
+                    new CreateRetrospectiveCommand(Guid.Parse(Id))
+                    {
+                        SprintId = Guid.Parse(SprintId),
+                    }
+                }
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateRetrospectiveModal>(_localizer["Create retrospective"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                var retrospective = result.Data as RetrospectiveDto;
+                if(retrospective != null)
+                {
+
+                }
             }
         }
 
