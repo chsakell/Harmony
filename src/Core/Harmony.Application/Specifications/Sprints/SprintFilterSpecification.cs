@@ -7,19 +7,29 @@ namespace Harmony.Application.Specifications.Sprints
     public class SprintFilterSpecification : HarmonySpecification<Sprint>
     {
         public SprintStatus? Status { get; set; }
-        public SprintFilterSpecification(Guid? sprintId = null, Guid? boardId = null)
+        public Guid? SprintId { get; set; }
+        public Guid? BoardId { get; set; }
+
+        public bool IncludeRetrospective { get; set; }
+
+        public void Build()
         {
-            if (sprintId.HasValue)
+            if(IncludeRetrospective)
             {
-                Criteria = And(sprint => sprint.Id == sprintId);
+                Includes.Add(sprint => sprint.Retrospective);
             }
 
-            if (boardId.HasValue)
+            if (SprintId.HasValue)
             {
-                Criteria = And(sprint => sprint.BoardId == boardId);
+                Criteria = And(sprint => sprint.Id == SprintId);
             }
 
-            if(Status.HasValue)
+            if (BoardId.HasValue)
+            {
+                Criteria = And(sprint => sprint.BoardId == BoardId);
+            }
+
+            if (Status.HasValue)
             {
                 Criteria = And(sprint => sprint.Status == sprint.Status);
             }

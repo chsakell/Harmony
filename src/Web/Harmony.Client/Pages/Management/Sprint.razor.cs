@@ -7,6 +7,7 @@ using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
+using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -25,11 +26,22 @@ namespace Harmony.Client.Pages.Management
         private MudTable<CardDto> _table;
         private string _searchString = "";
         private int _totalItems;
+        private SprintDto _sprint;
         public SprintStatus? _status { get; set; } = null;
 
         private bool _loading;
         private HashSet<CardDto> _selectedCards = new HashSet<CardDto>();
-        
+
+        protected override async Task OnInitializedAsync()
+        {
+            var sprintResult = await _sprintManager.GetSprint(Guid.Parse(SprintId));
+
+            if (sprintResult.Succeeded)
+            {
+                _sprint = sprintResult.Data;
+            }
+        }
+
         private async Task<TableData<CardDto>> ReloadData(TableState state)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
@@ -85,11 +97,22 @@ namespace Harmony.Client.Pages.Management
             if (!result.Canceled)
             {
                 var retrospective = result.Data as RetrospectiveDto;
-                if(retrospective != null)
+                if (retrospective != null)
                 {
 
                 }
             }
+        }
+
+        private void OpenRetrospective()
+        {
+            if(_sprint?.Retrospective == null)
+            {
+                return;
+            }
+
+            var slug = StringUtilities.SlugifyString(_sprint.Retrospective.Name);
+            _navigationManager.NavigateTo($"boards/{_sprint.Retrospective.BoardId}/{slug}");
         }
 
         private async Task MoveToBacklog()

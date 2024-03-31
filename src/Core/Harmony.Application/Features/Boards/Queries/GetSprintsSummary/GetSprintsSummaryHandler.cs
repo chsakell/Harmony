@@ -32,10 +32,13 @@ namespace Harmony.Application.Features.Boards.Queries.GetSprintsSummary
             request.PageNumber = request.PageNumber == 0 ? 1 : request.PageNumber;
             request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
 
-            var filter = new SprintFilterSpecification(boardId: request.BoardId)
+            var filter = new SprintFilterSpecification()
             {
+                BoardId = request.BoardId,
                 Status = request.Status
             };
+
+            filter.Build();
 
             var totalSprints = await _sprintRepository
                 .Entities.Specify(filter)

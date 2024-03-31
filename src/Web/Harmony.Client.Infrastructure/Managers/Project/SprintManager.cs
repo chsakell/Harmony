@@ -46,6 +46,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<CardDto>();
         }
 
+        public async Task<IResult<SprintDto>> GetSprint(Guid sprintId)
+        {
+            var response = await _httpClient
+                .GetAsync(Routes.SprintEndpoints.Sprint(sprintId));
+
+            return await response.ToResult<SprintDto>();
+        }
+
         public async Task<IResult<GetSprintReportsResponse>> GetSprintReports(Guid sprintId)
         {
             var response = await _httpClient

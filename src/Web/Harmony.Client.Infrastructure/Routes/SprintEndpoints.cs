@@ -7,6 +7,8 @@ namespace Harmony.Client.Infrastructure.Routes
     {
         public static string Index = $"{GatewayConstants.CoreApiPrefix}/sprints";
 
+        public static string Sprint(Guid sprintId) => $"{GatewayConstants.CoreApiPrefix}/sprints/{sprintId}";
+
         public static string Reports(Guid sprintId) => $"{Index}/{sprintId}/reports/";
 
         public static string Cards(Guid sprintId, int pageNumber, int pageSize, 

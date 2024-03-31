@@ -38,8 +38,15 @@
             <MudMenu Label="@_localizer["ACTIONS"]" Variant="Variant.Filled" DisableElevation="false"
                      EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary"
                      AnchorOrigin="Origin.BottomLeft">
+                @if(_sprint?.Retrospective == null) {
                 <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
-                             OnClick="CreateRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Create retrospective</MudMenuItem>
+                    OnClick="CreateRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Create retrospective</MudMenuItem>
+                }
+                else if(_sprint.Retrospective != null)
+                {
+                    <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
+                                 OnClick="OpenRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Open retrospective</MudMenuItem>
+                }
             </MudMenu>
         </div>
         <MudSpacer />

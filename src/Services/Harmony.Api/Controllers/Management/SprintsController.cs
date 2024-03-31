@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
 using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
+using Harmony.Application.Features.Sprints.Queries.GetSprint;
 using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using Harmony.Domain.Enums;
@@ -19,6 +20,12 @@ namespace Harmony.Api.Controllers.Management
         public SprintsController(ISender sender)
         {
             _sender = sender;
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            return Ok(await _sender.Send(new GetSprintQuery(id)));
         }
 
         [HttpGet("{id:guid}/reports")]
