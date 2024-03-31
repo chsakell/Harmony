@@ -1,7 +1,4 @@
-﻿using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
-using System;
-namespace Harmony.Application.DTO
+﻿namespace Harmony.Application.DTO
 {
     public class RetrospectiveDto
     {

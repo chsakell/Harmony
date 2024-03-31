@@ -10,7 +10,6 @@ using Harmony.Application.Configurations;
 using Grpc.Core;
 using Hangfire;
 using Harmony.Domain.Enums.Automations;
-using Amazon.Runtime.Internal;
 
 
 namespace Harmony.Automations.Services

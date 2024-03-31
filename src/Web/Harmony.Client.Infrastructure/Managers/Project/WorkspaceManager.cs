@@ -7,12 +7,10 @@ using Harmony.Application.Features.Workspaces.Commands.Rename;
 using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
-using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Managers.Preferences;
 using Harmony.Shared.Wrapper;
-using Microsoft.AspNetCore.Components;
 
 using Polly;
 using Polly.Registry;

@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Harmony.Application.Contracts.Repositories;
+﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Extensions;
-using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using Harmony.Application.Specifications.Sprints;
 using Harmony.Shared.Wrapper;

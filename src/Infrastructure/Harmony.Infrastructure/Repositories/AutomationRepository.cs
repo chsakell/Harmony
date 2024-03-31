@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Configuration;
 using MongoDB.Driver.Core.Events;
 
 namespace Harmony.Infrastructure.Repositories

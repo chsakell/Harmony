@@ -1,8 +1,5 @@
-﻿using Grpc.Core;
-using Harmony.Application.Specifications.Base;
+﻿using Harmony.Application.Specifications.Base;
 using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
-using Microsoft.Extensions.Primitives;
 
 namespace Harmony.Application.Specifications.Cards
 {

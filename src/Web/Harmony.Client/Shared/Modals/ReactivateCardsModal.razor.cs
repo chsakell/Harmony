@@ -1,12 +1,9 @@
 ﻿using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
-using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.ReactivateCards;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
-using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {

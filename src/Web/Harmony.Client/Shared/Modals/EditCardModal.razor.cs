@@ -23,10 +23,8 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Helpers;
 using Harmony.Client.Infrastructure.Models.Board;
-using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
@@ -34,7 +32,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using MudBlazor;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {

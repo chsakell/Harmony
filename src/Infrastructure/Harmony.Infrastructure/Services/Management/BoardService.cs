@@ -2,7 +2,6 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Models;
 using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Entities;
@@ -15,7 +14,6 @@ using Harmony.Application.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Harmony.Application.Constants;
 using Harmony.Shared.Utilities;
-using System.Linq;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 
 namespace Harmony.Infrastructure.Services.Management

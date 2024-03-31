@@ -8,10 +8,8 @@ using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Automations.Protos;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
-using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

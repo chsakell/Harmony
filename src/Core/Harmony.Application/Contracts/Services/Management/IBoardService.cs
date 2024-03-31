@@ -1,5 +1,4 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
+﻿using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Models;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;

@@ -1,9 +1,5 @@
-﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
-using Harmony.Application.Features.Lists.Queries.GetBoardLists;
-using Harmony.Application.Features.Retrospectives.Commands.Create;
+﻿using Harmony.Application.Features.Retrospectives.Commands.Create;
 using Harmony.Domain.Enums;
-using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;

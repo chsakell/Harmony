@@ -7,7 +7,6 @@ using Harmony.Application.Features.Workspaces.Commands.Rename;
 using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
-using Harmony.Application.Features.Workspaces.Queries.LoadWorkspace;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;
 using Harmony.Shared.Wrapper;
 

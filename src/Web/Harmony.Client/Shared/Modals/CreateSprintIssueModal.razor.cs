@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Shared.Wrapper;

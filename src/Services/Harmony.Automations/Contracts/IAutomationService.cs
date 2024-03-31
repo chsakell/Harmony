@@ -1,6 +1,4 @@
-﻿using Harmony.Application.Notifications;
-
-namespace Harmony.Automations.Contracts
+﻿namespace Harmony.Automations.Contracts
 {
     public interface IAutomationService<T>
     {

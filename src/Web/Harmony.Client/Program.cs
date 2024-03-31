@@ -8,7 +8,6 @@ using Harmony.Client.Infrastructure.Settings;
 using Harmony.Shared.Constants.Localization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Polly.Registry;
 using System.Globalization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

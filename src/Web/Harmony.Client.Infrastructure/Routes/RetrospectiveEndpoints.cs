@@ -1,5 +1,4 @@
-﻿using Harmony.Domain.Enums;
-using static Harmony.Shared.Constants.Application.ApplicationConstants;
+﻿using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Infrastructure.Routes
 {

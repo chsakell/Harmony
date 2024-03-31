@@ -2,7 +2,6 @@
 using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Commands.CreateAutomation;
 using Harmony.Application.Features.Automations.Commands.ToggleAutomation;
-using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Domain.Enums.Automations;
 using Harmony.Shared.Wrapper;

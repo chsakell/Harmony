@@ -2,7 +2,6 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;

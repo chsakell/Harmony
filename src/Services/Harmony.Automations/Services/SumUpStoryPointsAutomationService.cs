@@ -9,7 +9,6 @@ using Grpc.Net.Client;
 using Harmony.Api.Protos;
 using Microsoft.Extensions.Options;
 using Harmony.Application.Configurations;
-using Harmony.Domain.Entities;
 using MongoDB.Driver;
 
 

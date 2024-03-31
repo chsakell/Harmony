@@ -1,5 +1,4 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
-using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
+﻿using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
 using Harmony.Application.Features.Sprints.Commands.CompleteSprint;
 using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Sprints.Queries.GetSprintCards;

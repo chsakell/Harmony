@@ -1,6 +1,5 @@
 ﻿using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
-using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Shared.Constants.Application
 {

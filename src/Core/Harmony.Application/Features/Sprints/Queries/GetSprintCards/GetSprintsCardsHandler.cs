@@ -5,7 +5,6 @@ using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Sprints.Queries.GetSprintReports;
 using Harmony.Application.Specifications.Cards;
-using Harmony.Application.Specifications.Sprints;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

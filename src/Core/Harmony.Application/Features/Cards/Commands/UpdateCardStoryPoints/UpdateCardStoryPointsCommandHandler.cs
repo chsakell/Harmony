@@ -9,7 +9,6 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
-using Grpc.Net.Client;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStoryPoints;
 

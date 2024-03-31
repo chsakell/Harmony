@@ -1,10 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
-using Harmony.Application.Features.Boards.Queries.GetBacklog;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
-using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
-using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;

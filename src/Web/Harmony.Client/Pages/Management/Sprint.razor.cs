@@ -1,27 +1,15 @@
 ﻿
 using Harmony.Application.DTO;
-using Harmony.Application.Features.Boards.Commands.CreateSprint;
-using Harmony.Application.Features.Boards.Queries.GetSprints;
-using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
-using Harmony.Application.Features.Cards.Commands.CreateBacklog;
-using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.CreateSprintIssue;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
-using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Retrospectives.Commands.Create;
-using Harmony.Application.Features.Sprints.Commands.StartSprint;
 using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
-using Harmony.Application.Features.Workspaces.Commands.AddMember;
-using Harmony.Application.Features.Workspaces.Queries.GetSprints;
-using Harmony.Client.Infrastructure.Store.Kanban;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using MudBlazor;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Pages.Management
 {

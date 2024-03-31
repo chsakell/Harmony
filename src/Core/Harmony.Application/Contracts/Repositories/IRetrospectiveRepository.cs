@@ -1,5 +1,4 @@
 ﻿using Harmony.Domain.Entities;
-using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Contracts.Repositories
 {

@@ -6,8 +6,6 @@ using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Polly;
-using Polly.Registry;
-using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Infrastructure.Managers.SignalR
 {

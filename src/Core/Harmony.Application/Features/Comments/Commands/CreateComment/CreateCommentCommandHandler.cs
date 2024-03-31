@@ -5,7 +5,6 @@ using Harmony.Domain.Entities;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
-using Harmony.Application.DTO;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;

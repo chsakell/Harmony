@@ -3,13 +3,11 @@ using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Harmony.Application.Contracts.Services;
-using AutoMapper;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
-using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
