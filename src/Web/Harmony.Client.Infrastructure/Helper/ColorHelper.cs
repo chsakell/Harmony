@@ -47,6 +47,11 @@ namespace Harmony.Client.Infrastructure.Helper
                 IssueTypesConstants.BUG => Icons.Material.Outlined.BugReport,
                 IssueTypesConstants.STORY => Icons.Material.Outlined.LabelImportant,
                 IssueTypesConstants.TASK => Icons.Material.Outlined.CheckBox,
+                IssueTypesConstants.NEUTRAL => "fa-solid fa-face-meh-blank",
+                IssueTypesConstants.LIKE => "fa-solid fa-thumbs-up",
+                IssueTypesConstants.LOVE => "fa-solid fa-heart",
+                IssueTypesConstants.SAD => "fa-solid fa-face-frown",
+                IssueTypesConstants.ANGRY => "fa-solid fa-face-angry",
                 _ => Icons.Material.Outlined.Task,
             };
         }

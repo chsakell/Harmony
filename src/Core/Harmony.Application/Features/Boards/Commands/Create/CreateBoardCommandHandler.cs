@@ -102,30 +102,7 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
             board.IssueTypes = issueTypes;
 
-            var boardLists = new List<BoardList>
-                {
-                    new BoardList()
-                    {
-                        Title = "TODO",
-                        Position = 0,
-                        UserId = userId,
-                        CardStatus = BoardListCardStatus.TODO
-                    },
-                    new BoardList()
-                    {
-                        Title = "IN PROGRESS",
-                        Position = 1,
-                        UserId = userId,
-                        CardStatus= BoardListCardStatus.IN_PROGRESS
-                    },
-                    new BoardList()
-                    {
-                        Title = "DONE",
-                        Position = 2,
-                        UserId = userId,
-                        CardStatus = BoardListCardStatus.DONE
-                    }
-                };
+            var boardLists = BoardListsConstants.GetDefaultLists(userId);
 
             board.Lists = boardLists;
 

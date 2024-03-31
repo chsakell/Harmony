@@ -77,8 +77,19 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync($"The board's workspace '{board.Workspace.Name}' is inactive.", ResultCode.InactiveWorkspace);
             }
 
-            var userHasAccess = await _boardService.HasUserAccessToBoard(userId, request.BoardId);
+            bool userHasAccess = false;
 
+            if(board.Type == Domain.Enums.BoardType.Retrospective)
+            {
+                await _boardRepository.LoadRetrospectiveEntryAsync(board);
+
+                userHasAccess = await _boardService.HasUserAccessToBoard(userId, board.Retrospective.ParentBoardId.Value);
+            }
+            else
+            {
+                userHasAccess = await _boardService.HasUserAccessToBoard(userId, request.BoardId);
+            }
+            
             if (!userHasAccess)
             {
                 return await Result<GetBoardResponse>.FailAsync(_localizer["You are not authorized to view this board's content."], ResultCode.UnauthorisedAccess);

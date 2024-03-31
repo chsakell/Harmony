@@ -26,17 +26,21 @@
         <div class="justify-center mud-text-align-center">
             <MudButton ButtonType="ButtonType.Button" OnClick="CreateIssue" Variant="Variant.Filled" Color="Color.Primary" Style="width: 100%;">CREATE ISSUE</MudButton>
         </div>
-        <div class="justify-center mud-text-align-center">
-            <MudButton ButtonType="ButtonType.Button" OnClick="CreateRetrospective" Variant="Variant.Filled" Color="Color.Default" Style="width: 100%;">CREATE RETROSPECTIVE</MudButton>
-        </div>
         <div class="justify-center mud-text-align-center ml-2">
-            <MudMenu Label="@_localizer["ACTIONS"]" Variant="Variant.Filled" DisableElevation="false"
+            <MudMenu Label="@_localizer["CARDS"]" Variant="Variant.Filled" DisableElevation="false"
                      EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()"  IconColor="Color.Secondary"
                      AnchorOrigin="Origin.BottomLeft">
                 <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
                              OnClick="MoveToBacklog" Icon="@Icons.Material.Filled.ArrowRight">Move to backlog</MudMenuItem>
             </MudMenu>
-
+        </div>
+        <div class="justify-center mud-text-align-center ml-2">
+            <MudMenu Label="@_localizer["ACTIONS"]" Variant="Variant.Filled" DisableElevation="false"
+                     EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary"
+                     AnchorOrigin="Origin.BottomLeft">
+                <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
+                             OnClick="CreateRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Create retrospective</MudMenuItem>
+            </MudMenu>
         </div>
         <MudSpacer />
         <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search cards.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>

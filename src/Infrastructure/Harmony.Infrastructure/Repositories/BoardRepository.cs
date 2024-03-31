@@ -43,6 +43,11 @@ namespace Harmony.Infrastructure.Repositories
             await _context.Entry(board).Collection(board => board.Lists).LoadAsync();
         }
 
+        public async Task LoadRetrospectiveEntryAsync(Board board)
+        {
+            await _context.Entry(board).Reference(board => board.Retrospective).LoadAsync();
+        }
+
         public async Task<bool> Exists(Guid boardId)
         {
             return await _context.Boards

@@ -6,16 +6,14 @@ namespace Harmony.Application.Specifications.Cards
     public class RetrospectiveFilterSpecification : HarmonySpecification<Retrospective>
     {
         public Guid? SprintId { get; set; }
-        public Guid BoardId { get; set; }
-
-        public RetrospectiveFilterSpecification(Guid boardId)
-        {
-            BoardId = boardId;
-        }
+        public Guid? ParentBoardId { get; set; }
 
         public void Build()
         {
-            Criteria = retro => retro.BoardId == BoardId;
+            if(ParentBoardId.HasValue)
+            {
+                And(retro => retro.ParentBoardId == ParentBoardId);
+            }
 
             if (SprintId.HasValue)
             {

@@ -53,8 +53,9 @@ namespace Harmony.Application.Features.Retrospectives.Commands.Create
             // check if sprint already has a retrospective
             if(request.SprintId.HasValue)
             {
-                var filter = new RetrospectiveFilterSpecification(request.BoardId)
+                var filter = new RetrospectiveFilterSpecification()
                 {
+                    ParentBoardId = request.BoardId,
                     SprintId = request.SprintId.Value
                 };
 
@@ -75,7 +76,7 @@ namespace Harmony.Application.Features.Retrospectives.Commands.Create
             var board = new Board()
             {
                 Title = request.Name,
-                Description = $"Retrospective's Board",
+                Description = $"{request.Name} - retrospective",
                 WorkspaceId = parentBoard.WorkspaceId,
                 UserId = userId,
                 Visibility = BoardVisibility.Private,
@@ -83,28 +84,18 @@ namespace Harmony.Application.Features.Retrospectives.Commands.Create
                 Key = parentBoard.Key + Random.Shared.Next(100),
             };
 
-            var boardLists = new List<BoardList>
+            var issueTypes = new List<IssueType>();
+            foreach (var issueType in IssueTypesConstants.GetRetrospectiveIssueTypes())
+            {
+                issueTypes.Add(new IssueType()
                 {
-                    new BoardList()
-                    {
-                        Title = "WENT WELL",
-                        Position = 0,
-                        UserId = userId
-                    },
-                    new BoardList()
-                    {
-                        Title = "TO IMPROVE",
-                        Position = 1,
-                        UserId = userId
-                    },
-                    new BoardList()
-                    {
-                        Title = "ACTION ITEMS",
-                        Position = 2,
-                        UserId = userId,
-                        CardStatus = BoardListCardStatus.DONE
-                    }
-                };
+                    Summary = issueType
+                });
+            }
+
+            board.IssueTypes = issueTypes;
+
+            var boardLists = BoardListsConstants.GetRetrospectiveLists(request.Type, userId);
 
             board.Lists = boardLists;
 

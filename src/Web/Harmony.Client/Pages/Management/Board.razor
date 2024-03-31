@@ -20,65 +20,68 @@ else
 {
     <MudPaper Elevation="25">
         <MudToolBar>
-            <MudButton Variant="Variant.Text" OnClick="OpenCreateBoardListModal" StartIcon="@Icons.Material.Outlined.Checklist">Create list</MudButton>
-            @if (KanbanStore.KanbanLists.Count() > 1)
+            @if (KanbanStore.Board.Type != Domain.Enums.BoardType.Retrospective)
             {
-                <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">Reorder lists</MudButton>
-            }
-            @if (KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
-            {
-                <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
-
-                <MudTooltip Delay="2000">
-                    <ChildContent>
-                        <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
-                    </ChildContent>
-                    <TooltipContent>
-                        @if (KanbanStore.Board.ActiveSprints.Any())
-                        {
-                            <MudList>
-                                <MudListSubheader>
-                                    Active sprints
-                                </MudListSubheader>
-                                @foreach (var sprint in KanbanStore.Board.ActiveSprints)
-                                {
-                                    <MudListItem Class="mud-tertiary-text">@sprint.Name</MudListItem>
-                                }
-                            </MudList>
-                        }
-                        else
-                        {
-                            <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
-                        }
-                    </TooltipContent>
-                </MudTooltip>
-                @if (AddCardsDisabled)
+                <MudButton Variant="Variant.Text" OnClick="OpenCreateBoardListModal" StartIcon="@Icons.Material.Outlined.Checklist">Create list</MudButton>
+                @if (KanbanStore.KanbanLists.Count() > 1)
                 {
-                    <MudTooltip>
+                    <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">Reorder lists</MudButton>
+                }
+                @if (KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
+                {
+                    <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
+
+                    <MudTooltip Delay="2000">
                         <ChildContent>
-                            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Medium" />
+                            <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
                         </ChildContent>
                         <TooltipContent>
-                            <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
+                            @if (KanbanStore.Board.ActiveSprints.Any())
+                            {
+                                <MudList>
+                                    <MudListSubheader>
+                                        Active sprints
+                                    </MudListSubheader>
+                                    @foreach (var sprint in KanbanStore.Board.ActiveSprints)
+                                    {
+                                        <MudListItem Class="mud-tertiary-text">@sprint.Name</MudListItem>
+                                    }
+                                </MudList>
+                            }
+                            else
+                            {
+                                <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
+                            }
                         </TooltipContent>
                     </MudTooltip>
+                    @if (AddCardsDisabled)
+                    {
+                        <MudTooltip>
+                            <ChildContent>
+                                <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Medium" />
+                            </ChildContent>
+                            <TooltipContent>
+                                <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
+                            </TooltipContent>
+                        </MudTooltip>
+                    }
                 }
+                @if (KanbanStore.KanbanCards.Any())
+                {
+                    <MudTooltip Text="Toggle card's description visibility">
+                        <MudToggleIconButton @bind-Toggled:get="@CardDescriptionVisibility"
+                                             @bind-Toggled:set="@ToggleCardDescriptionVisibility"
+                                             Icon="@Icons.Material.Filled.VisibilityOff" Color="@Color.Error" Title="Off"
+                                             ToggledIcon="@Icons.Material.Filled.Visibility" ToggledColor="@Color.Tertiary" ToggledTitle="On" />
+                    </MudTooltip>
+                }
+                <MudSpacer />
+                <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
+                <MudMenu AnchorOrigin="Origin.BottomRight" Size="Size.Small" TransformOrigin="Origin.TopRight" Icon="@Icons.Material.Filled.MoreVert" IconColor="Color.Secondary">
+                    <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
+                               OnClick="ViewArchivedItems">ARCHIVED ITEMS</MudButton>
+                </MudMenu>
             }
-            @if (KanbanStore.KanbanCards.Any())
-            {
-                <MudTooltip Text="Toggle card's description visibility">
-                    <MudToggleIconButton @bind-Toggled:get="@CardDescriptionVisibility"
-                                         @bind-Toggled:set="@ToggleCardDescriptionVisibility"
-                                         Icon="@Icons.Material.Filled.VisibilityOff" Color="@Color.Error" Title="Off"
-                                         ToggledIcon="@Icons.Material.Filled.Visibility" ToggledColor="@Color.Tertiary" ToggledTitle="On" />
-                </MudTooltip>
-            }
-            <MudSpacer />
-            <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
-            <MudMenu AnchorOrigin="Origin.BottomRight" Size="Size.Small" TransformOrigin="Origin.TopRight" Icon="@Icons.Material.Filled.MoreVert" IconColor="Color.Secondary">
-                <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
-                           OnClick="ViewArchivedItems">ARCHIVED ITEMS</MudButton>
-            </MudMenu>
         </MudToolBar>
 
     </MudPaper>
@@ -93,29 +96,29 @@ else
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h5" Align="Align.Center">@KanbanStore.Board.Title</MudText>
-                                </CardHeaderContent>
-                            </MudCardHeader>
-                            <MudCardContent>
-                                <MudList Class="mx-auto mt-4">
-                                    <MudListItem Icon="@Icons.Material.Filled.List">
-                                        Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
-                                    </MudListItem>
-                                    <MudListItem Icon="@Icons.Material.Filled.Share">
-                                        Click <b>Share board</b> find your team members and share your board with your team members
-                                    </MudListItem>
-                                    <MudListItem Icon="@Icons.Material.Filled.Task">
-                                        Add tasks to your lists and start monitor your project!
-                                    </MudListItem>
-                                </MudList>
-                            </MudCardContent>
-                            <MudCardActions Class="d-flex justify-center">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-                                           Style="width:50%;" OnClick="OpenCreateBoardListModal">Start Now</MudButton>
-                            </MudCardActions>
-                        </MudCard>
-                    </MudItem>
-                </MudGrid>
-            </MudContainer>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudList Class="mx-auto mt-4">
+                                <MudListItem Icon="@Icons.Material.Filled.List">
+                                    Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
+                                </MudListItem>
+                                <MudListItem Icon="@Icons.Material.Filled.Share">
+                                    Click <b>Share board</b> find your team members and share your board with your team members
+                                </MudListItem>
+                                <MudListItem Icon="@Icons.Material.Filled.Task">
+                                    Add tasks to your lists and start monitor your project!
+                                </MudListItem>
+                            </MudList>
+                        </MudCardContent>
+                        <MudCardActions Class="d-flex justify-center">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                                       Style="width:50%;" OnClick="OpenCreateBoardListModal">Start Now</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
     }
     else
     {
@@ -175,10 +178,10 @@ else
                 <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
                     <MudCardHeader Class="pa-0">
                         <MudText Typo="Typo.body1">@context.Title</MudText>
-                        </MudCardHeader>
-                        <MudCardContent Class="pa-0 mt-2">
-                            <MudStack Justify="Justify.SpaceBetween">
-                                @if (context.Labels.Any())
+                    </MudCardHeader>
+                    <MudCardContent Class="pa-0 mt-2">
+                        <MudStack Justify="Justify.SpaceBetween">
+                            @if (context.Labels.Any())
                             {
                                 <MudPaper Class="d-flex flex-wrap" Elevation="0">
                                     @foreach (var label in context.Labels)
@@ -212,7 +215,7 @@ else
                                         <MudTooltip Delay="2500" Text="@($"Card contains {context.TotalChildren} child issues")">
                                             <MudChip Icon="@Icons.Material.Filled.Workspaces" Label="true"
                                                      Size="Size.Small" Variant="Variant.Text" Color="@(Color.Default)">@context.TotalChildren</MudChip>
-                                            </MudTooltip>
+                                        </MudTooltip>
                                     }
                                     @if (context.TotalAttachments > 0)
                                     {

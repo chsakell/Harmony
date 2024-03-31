@@ -19,5 +19,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> Update(Board board);
         Task LoadWorkspaceEntryAsync(Board board);
         Task LoadBoardListEntryAsync(Board board);
+        Task LoadRetrospectiveEntryAsync(Board board);
     }
 }
