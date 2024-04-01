@@ -109,11 +109,12 @@ namespace Harmony.Infrastructure.Services.Management
             return await Result<List<Card>>.FailAsync("Failed to move cards");
         }
 
-        public async Task<IResult<Card>> AddCardToSprint(string userId, Guid sprintId, Guid issueTypeId,
-                                                            Guid boardListId, string title)
+        public async Task<IResult<Card>> AddCardToSprint(Guid boardId, string userId, Guid sprintId, 
+                                                        Guid issueTypeId, Guid boardListId, string title)
         {
             // Get the last index in the board list id
             var currentMaxPosition = await _cardRepository.GetMaxActivePosition(sprintId, boardListId);
+            var nextSerialNumber = await _cardRepository.GetNextSerialNumber(boardId);
 
             var card = new Card
             {
@@ -123,7 +124,8 @@ namespace Harmony.Infrastructure.Services.Management
                 Position = ++currentMaxPosition,
                 SprintId = sprintId,
                 IssueTypeId = issueTypeId,
-                Status = CardStatus.Active
+                Status = CardStatus.Active,
+                SerialNumber = nextSerialNumber
             };
 
             var result = await _cardRepository.CreateAsync(card);

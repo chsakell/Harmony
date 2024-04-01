@@ -32,6 +32,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateSprintIssue
 
             var operationResult = await _cardService
                 .AddCardToSprint(
+                boardId: request.BoardId,
                 userId: userId,
                 sprintId: request.SprintId,
                 issueTypeId: request.IssueType.Id,

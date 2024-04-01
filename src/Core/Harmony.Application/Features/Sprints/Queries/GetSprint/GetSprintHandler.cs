@@ -35,7 +35,8 @@ namespace Harmony.Application.Features.Sprints.Queries.GetSprint
             var filter = new SprintFilterSpecification()
             {
                 SprintId = request.SprintId,
-                IncludeRetrospective = true
+                IncludeRetrospective = true,
+                IncludeBoard = true
             };
 
             filter.Build();

@@ -11,12 +11,18 @@ namespace Harmony.Application.Specifications.Sprints
         public Guid? BoardId { get; set; }
 
         public bool IncludeRetrospective { get; set; }
+        public bool IncludeBoard { get; set; }
 
         public void Build()
         {
             if(IncludeRetrospective)
             {
                 Includes.Add(sprint => sprint.Retrospective);
+            }
+
+            if (IncludeBoard)
+            {
+                Includes.Add(sprint => sprint.Board);
             }
 
             if (SprintId.HasValue)

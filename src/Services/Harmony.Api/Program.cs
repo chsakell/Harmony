@@ -11,6 +11,7 @@ using Harmony.Logging;
 using Serilog;
 using Harmony.Persistence.DbContext;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Text.Json.Serialization;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -44,7 +45,8 @@ builder.Services.AddCors(
             .AllowAnyHeader()
             .AllowCredentials()));
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddRazorPages();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddCurrentUserService();

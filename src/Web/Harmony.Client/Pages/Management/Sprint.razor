@@ -28,7 +28,7 @@
         </div>
         <div class="justify-center mud-text-align-center ml-2">
             <MudMenu Label="@_localizer["CARDS"]" Variant="Variant.Filled" DisableElevation="false"
-                     EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()"  IconColor="Color.Secondary"
+                     EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
                      AnchorOrigin="Origin.BottomLeft">
                 <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
                              OnClick="MoveToBacklog" Icon="@Icons.Material.Filled.ArrowRight">Move to backlog</MudMenuItem>
@@ -38,11 +38,23 @@
             <MudMenu Label="@_localizer["ACTIONS"]" Variant="Variant.Filled" DisableElevation="false"
                      EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary"
                      AnchorOrigin="Origin.BottomLeft">
-                @if(_sprint?.Retrospective == null) {
-                <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
-                    OnClick="CreateRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Create retrospective</MudMenuItem>
+                @switch (_sprint.Status)
+                {
+                    case SprintStatus.Idle:
+                        <MudMenuItem OnClick="StartSprint" IconSize="Size.Small"
+                                     IconColor="Color.Tertiary" Icon="@Icons.Material.Filled.Start">Start sprint</MudMenuItem>
+                        break;
+                    case SprintStatus.Active:
+                        <MudMenuItem OnClick="CompleteSprint" IconSize="Size.Small"
+                                     IconColor="Color.Tertiary" Icon="@Icons.Material.Filled.Close">Complete sprint</MudMenuItem>
+                        break;
                 }
-                else if(_sprint.Retrospective != null)
+                @if (_sprint?.Retrospective == null)
+                {
+                    <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
+                                 OnClick="CreateRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Create retrospective</MudMenuItem>
+                }
+                else if (_sprint.Retrospective != null)
                 {
                     <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
                                  OnClick="OpenRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Open retrospective</MudMenuItem>
@@ -61,7 +73,17 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">
-            <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+            <MudStack Row="true" Class="align-center">
+                <MudChip Label="true" OnClick="() => EditCard(context)" Size="Size.Small" Color="Color.Warning">@($"{_sprint?.Board.Key}-{context.SerialNumber}")</MudChip>
+                @if (context?.Completed == true)
+                {
+                    <MudTooltip Text="Completed" Delay="2000">
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                    </MudTooltip>
+                }
+                <MudText>@context.Title</MudText>
+            </MudStack>
+
         </MudTd>
         <MudTd DataLabel="Type">
             <MudStack Row="true">
