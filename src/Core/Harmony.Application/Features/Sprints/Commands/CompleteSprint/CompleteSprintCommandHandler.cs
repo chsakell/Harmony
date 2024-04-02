@@ -88,7 +88,7 @@ namespace Harmony.Application.Features.Sprints.Commands.CompleteSprint
                 operationResult = await MoveToSprint(board, request, request.MoveToSprintId.Value);
             }
 
-            if (!operationResult.Succeeded)
+            if (operationResult != null && !operationResult.Succeeded)
             {
                 return await Result<bool>.FailAsync(operationResult.Messages);
             }

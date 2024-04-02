@@ -41,11 +41,12 @@ namespace Harmony.Client.Shared.Modals
 
             Guid? moveToSprintId = null;
 
-            var moveToBacklog = _moveToSprint.Id == BackLogSprint;
-            var createNewSprint = _moveToSprint.Id == NewSprint;
+            var moveToBacklog = _moveToSprint?.Id == BackLogSprint;
+            var createNewSprint = _moveToSprint?.Id == NewSprint;
+
             if(!moveToBacklog && !createNewSprint)
             {
-                moveToSprintId = _moveToSprint.Id;
+                moveToSprintId = _moveToSprint?.Id;
             }
 
             var result = await _sprintManager

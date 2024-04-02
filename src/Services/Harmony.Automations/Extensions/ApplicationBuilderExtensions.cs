@@ -24,7 +24,7 @@ namespace Harmony.Automations.Extensions
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
 
-            var notificationContext = serviceScope.ServiceProvider.GetRequiredService<NotificationContext>();
+            var notificationContext = serviceScope.ServiceProvider.GetRequiredService<AutomationContext>();
 
             await notificationContext.Database.MigrateAsync();
             await notificationContext.Database.EnsureCreatedAsync();
