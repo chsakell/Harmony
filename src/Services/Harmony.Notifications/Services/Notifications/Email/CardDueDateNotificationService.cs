@@ -101,11 +101,11 @@ namespace Harmony.Notifications.Services.Notifications.Email
                 return;
             }
 
-            _notificationContext.Notifications.Add(new Notification()
+            _notificationContext.Tasks.Add(new Notification()
             {
                 CardId = cardId,
                 JobId = jobId,
-                Type = EmailNotificationType.CardDueDateUpdated,
+                Type = (int)EmailNotificationType.CardDueDateUpdated,
                 DateCreated = DateTime.Now,
             });
 

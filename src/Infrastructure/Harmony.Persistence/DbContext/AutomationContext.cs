@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Persistence.DbContext
 {
-    public class NotificationContext : Microsoft.EntityFrameworkCore.DbContext
+    public class AutomationContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public DbSet<Notification> Tasks { get; set; }
 
-        public NotificationContext(DbContextOptions<NotificationContext> options) : base(options)
+        public AutomationContext(DbContextOptions<AutomationContext> options) : base(options)
         {
 
         }

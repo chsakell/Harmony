@@ -47,7 +47,7 @@ namespace Harmony.Automations.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
             => services
-                .AddDbContext<NotificationContext>(options =>
+                .AddDbContext<AutomationContext>(options =>
                 {
                     options.UseSqlServer(configuration.GetConnectionString("HarmonyJobsConnection"));
                     options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));

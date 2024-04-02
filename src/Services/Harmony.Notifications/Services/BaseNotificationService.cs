@@ -16,15 +16,15 @@ namespace Harmony.Notifications.Services
         protected async Task RemovePendingCardJobs(Guid cardId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this card and type
-            var jobs = _notificationContext.Notifications
-                .Where(n => n.CardId == cardId && n.Type == type);
+            var jobs = _notificationContext.Tasks
+                .Where(n => n.CardId == cardId && n.Type == (int)type);
 
             if (jobs.Any())
             {
                 foreach (var job in jobs)
                 {
                     BackgroundJob.Delete(job.JobId); // cancels the job
-                    _notificationContext.Notifications.Remove(job);
+                    _notificationContext.Tasks.Remove(job);
                 }
 
                 await _notificationContext.SaveChangesAsync();
@@ -34,15 +34,15 @@ namespace Harmony.Notifications.Services
         protected async Task RemovePendingCardJobs(Guid cardId, string userId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this card and type
-            var jobs = _notificationContext.Notifications
-                .Where(n => n.CardId == cardId && n.Type == type && n.UserId == userId);
+            var jobs = _notificationContext.Tasks
+                .Where(n => n.CardId == cardId && n.Type == (int)type && n.UserId == userId);
 
             if (jobs.Any())
             {
                 foreach (var job in jobs)
                 {
                     BackgroundJob.Delete(job.JobId); // cancels the job
-                    _notificationContext.Notifications.Remove(job);
+                    _notificationContext.Tasks.Remove(job);
                 }
 
                 await _notificationContext.SaveChangesAsync();
@@ -52,15 +52,15 @@ namespace Harmony.Notifications.Services
         protected async Task RemovePendingBoardJobs(Guid boardId, string userId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this board and type
-            var jobs = _notificationContext.Notifications
-                .Where(n => n.BoardId == boardId && n.Type == type && n.UserId == userId);
+            var jobs = _notificationContext.Tasks
+                .Where(n => n.BoardId == boardId && n.Type == (int)type && n.UserId == userId);
 
             if (jobs.Any())
             {
                 foreach (var job in jobs)
                 {
                     BackgroundJob.Delete(job.JobId); // cancels the job
-                    _notificationContext.Notifications.Remove(job);
+                    _notificationContext.Tasks.Remove(job);
                 }
 
                 await _notificationContext.SaveChangesAsync();
@@ -70,15 +70,15 @@ namespace Harmony.Notifications.Services
         protected async Task RemovePendingWorkspaceJobs(Guid workspaceId, string userId, EmailNotificationType type)
         {
             // check if there are already pending jobs for this board and type
-            var jobs = _notificationContext.Notifications
-                .Where(n => n.WorkspaceId == workspaceId && n.Type == type && n.UserId == userId);
+            var jobs = _notificationContext.Tasks
+                .Where(n => n.WorkspaceId == workspaceId && n.Type == (int)type && n.UserId == userId);
 
             if (jobs.Any())
             {
                 foreach (var job in jobs)
                 {
                     BackgroundJob.Delete(job.JobId); // cancels the job
-                    _notificationContext.Notifications.Remove(job);
+                    _notificationContext.Tasks.Remove(job);
                 }
 
                 await _notificationContext.SaveChangesAsync();

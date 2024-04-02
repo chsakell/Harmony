@@ -37,11 +37,11 @@ namespace Harmony.Notifications.Services.Notifications.Email
                 return;
             }
 
-            _notificationContext.Notifications.Add(new Notification()
+            _notificationContext.Tasks.Add(new Notification()
             {
                 WorkspaceId = notification.WorkspaceId,
                 JobId = jobId,
-                Type = EmailNotificationType.MemberRemovedFromWorkspace,
+                Type = (int)EmailNotificationType.MemberRemovedFromWorkspace,
                 DateCreated = DateTime.Now,
             });
 

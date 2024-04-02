@@ -9,7 +9,7 @@ namespace Harmony.Domain.Entities
         public string UserId { get; set; }
         public Guid? BoardId { get; set; }
         public Guid? WorkspaceId { get; set; }
-        public EmailNotificationType Type { get; set; }
+        public int Type { get; set; }
         public string JobId { get; set; }
         public DateTime DateCreated { get; set; }
     }
