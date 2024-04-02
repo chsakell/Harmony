@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -29,6 +30,21 @@ namespace Harmony.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserNotifications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NotificationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserNotifications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -200,6 +216,7 @@ namespace Harmony.Persistence.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsPublic = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -212,39 +229,6 @@ namespace Harmony.Persistence.Migrations
                         principalSchema: "identity",
                         principalTable: "Users",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Boards",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    WorkspaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Visibility = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Key = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Boards", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Boards_Users_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "identity",
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Boards_Workspaces_WorkspaceId",
-                        column: x => x.WorkspaceId,
-                        principalTable: "Workspaces",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,6 +256,24 @@ namespace Harmony.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Attachments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    OriginalFileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Type = table.Column<byte>(type: "tinyint", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attachments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BoardLists",
                 columns: table => new
                 {
@@ -289,17 +291,45 @@ namespace Harmony.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_BoardLists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BoardLists_Boards_BoardId",
-                        column: x => x.BoardId,
-                        principalTable: "Boards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_BoardLists_Users_UserId",
                         column: x => x.UserId,
                         principalSchema: "identity",
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Boards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    WorkspaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Visibility = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RetrospectiveId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Boards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Boards_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "identity",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Boards_Workspaces_WorkspaceId",
+                        column: x => x.WorkspaceId,
+                        principalTable: "Workspaces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -409,10 +439,14 @@ namespace Harmony.Persistence.Migrations
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DueDateReminderType = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     ReminderDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SerialNumber = table.Column<int>(type: "int", nullable: false),
                     IssueTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     SprintId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    StoryPoints = table.Column<short>(type: "smallint", nullable: true),
+                    DateCompleted = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ParentCardId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -424,6 +458,12 @@ namespace Harmony.Persistence.Migrations
                         column: x => x.BoardListId,
                         principalTable: "BoardLists",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Cards_Cards_ParentCardId",
+                        column: x => x.ParentCardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Cards_IssueTypes_IssueTypeId",
                         column: x => x.IssueTypeId,
@@ -443,26 +483,37 @@ namespace Harmony.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attachments",
+                name: "Retrospectives",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    OriginalFileName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<byte>(type: "tinyint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentBoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SprintId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    MaxVotesPerUser = table.Column<int>(type: "int", nullable: false),
+                    HideVoteCount = table.Column<bool>(type: "bit", nullable: false),
+                    HideCardsInitially = table.Column<bool>(type: "bit", nullable: false),
+                    DisableVotingInitially = table.Column<bool>(type: "bit", nullable: false),
+                    ShowCardsAuthor = table.Column<bool>(type: "bit", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attachments", x => x.Id);
+                    table.PrimaryKey("PK_Retrospectives", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Attachments_Cards_CardId",
-                        column: x => x.CardId,
-                        principalTable: "Cards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Retrospectives_Boards_ParentBoardId",
+                        column: x => x.ParentBoardId,
+                        principalTable: "Boards",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Retrospectives_Sprints_SprintId",
+                        column: x => x.SprintId,
+                        principalTable: "Sprints",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -639,10 +690,11 @@ namespace Harmony.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Boards_Key",
+                name: "IX_Boards_RetrospectiveId",
                 table: "Boards",
-                column: "Key",
-                unique: true);
+                column: "RetrospectiveId",
+                unique: true,
+                filter: "[RetrospectiveId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Boards_UserId",
@@ -650,9 +702,10 @@ namespace Harmony.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Boards_WorkspaceId",
+                name: "IX_Boards_WorkspaceId_Key",
                 table: "Boards",
-                column: "WorkspaceId");
+                columns: new[] { "WorkspaceId", "Key" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardActivities_CardId",
@@ -678,6 +731,11 @@ namespace Harmony.Persistence.Migrations
                 name: "IX_Cards_IssueTypeId",
                 table: "Cards",
                 column: "IssueTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cards_ParentCardId",
+                table: "Cards",
+                column: "ParentCardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cards_SprintId",
@@ -723,6 +781,18 @@ namespace Harmony.Persistence.Migrations
                 name: "IX_Labels_BoardId",
                 table: "Labels",
                 column: "BoardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Retrospectives_ParentBoardId",
+                table: "Retrospectives",
+                column: "ParentBoardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Retrospectives_SprintId",
+                table: "Retrospectives",
+                column: "SprintId",
+                unique: true,
+                filter: "[SprintId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -791,14 +861,51 @@ namespace Harmony.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Workspaces_Name",
+                table: "Workspaces",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Workspaces_UserId",
                 table: "Workspaces",
                 column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Attachments_Cards_CardId",
+                table: "Attachments",
+                column: "CardId",
+                principalTable: "Cards",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_BoardLists_Boards_BoardId",
+                table: "BoardLists",
+                column: "BoardId",
+                principalTable: "Boards",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Boards_Retrospectives_RetrospectiveId",
+                table: "Boards",
+                column: "RetrospectiveId",
+                principalTable: "Retrospectives",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Retrospectives_Boards_ParentBoardId",
+                table: "Retrospectives");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Sprints_Boards_BoardId",
+                table: "Sprints");
+
             migrationBuilder.DropTable(
                 name: "Attachments");
 
@@ -833,6 +940,9 @@ namespace Harmony.Persistence.Migrations
                 schema: "identity");
 
             migrationBuilder.DropTable(
+                name: "UserNotifications");
+
+            migrationBuilder.DropTable(
                 name: "UserRoles",
                 schema: "identity");
 
@@ -863,13 +973,16 @@ namespace Harmony.Persistence.Migrations
                 name: "IssueTypes");
 
             migrationBuilder.DropTable(
-                name: "Sprints");
-
-            migrationBuilder.DropTable(
                 name: "Boards");
 
             migrationBuilder.DropTable(
+                name: "Retrospectives");
+
+            migrationBuilder.DropTable(
                 name: "Workspaces");
+
+            migrationBuilder.DropTable(
+                name: "Sprints");
 
             migrationBuilder.DropTable(
                 name: "Users",

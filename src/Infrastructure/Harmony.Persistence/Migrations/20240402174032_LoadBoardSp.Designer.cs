@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20231215102332_LoadBoardSp_V3")]
-    partial class LoadBoardSp_V3
+    [Migration("20240402174032_LoadBoardSp")]
+    partial class LoadBoardSp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -53,6 +53,9 @@ namespace Harmony.Persistence.Migrations
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CardId");
@@ -79,8 +82,10 @@ namespace Harmony.Persistence.Migrations
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("RetrospectiveId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -102,12 +107,14 @@ namespace Harmony.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Key")
-                        .IsUnique();
+                    b.HasIndex("RetrospectiveId")
+                        .IsUnique()
+                        .HasFilter("[RetrospectiveId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WorkspaceId");
+                    b.HasIndex("WorkspaceId", "Key")
+                        .IsUnique();
 
                     b.ToTable("Boards", (string)null);
                 });
@@ -188,6 +195,9 @@ namespace Harmony.Persistence.Migrations
                     b.Property<Guid?>("IssueTypeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ParentCardId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<short>("Position")
                         .HasColumnType("smallint");
 
@@ -225,6 +235,8 @@ namespace Harmony.Persistence.Migrations
                     b.HasIndex("BoardListId");
 
                     b.HasIndex("IssueTypeId");
+
+                    b.HasIndex("ParentCardId");
 
                     b.HasIndex("SprintId");
 
@@ -454,6 +466,65 @@ namespace Harmony.Persistence.Migrations
                     b.ToTable("Labels", (string)null);
                 });
 
+            modelBuilder.Entity("Harmony.Domain.Entities.Retrospective", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BoardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("DisableVotingInitially")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HideCardsInitially")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HideVoteCount")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxVotesPerUser")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<Guid?>("ParentBoardId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("ShowCardsAuthor")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("SprintId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentBoardId");
+
+                    b.HasIndex("SprintId")
+                        .IsUnique()
+                        .HasFilter("[SprintId] IS NOT NULL");
+
+                    b.ToTable("Retrospectives", (string)null);
+                });
+
             modelBuilder.Entity("Harmony.Domain.Entities.Sprint", b =>
                 {
                     b.Property<Guid>("Id")
@@ -592,11 +663,19 @@ namespace Harmony.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -874,6 +953,11 @@ namespace Harmony.Persistence.Migrations
 
             modelBuilder.Entity("Harmony.Domain.Entities.Board", b =>
                 {
+                    b.HasOne("Harmony.Domain.Entities.Retrospective", "Retrospective")
+                        .WithOne("Board")
+                        .HasForeignKey("Harmony.Domain.Entities.Board", "RetrospectiveId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Harmony.Persistence.Identity.HarmonyUser", null)
                         .WithMany("Boards")
                         .HasForeignKey("UserId")
@@ -885,6 +969,8 @@ namespace Harmony.Persistence.Migrations
                         .HasForeignKey("WorkspaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Retrospective");
 
                     b.Navigation("Workspace");
                 });
@@ -916,6 +1002,11 @@ namespace Harmony.Persistence.Migrations
                         .WithMany("Cards")
                         .HasForeignKey("IssueTypeId");
 
+                    b.HasOne("Harmony.Domain.Entities.Card", "ParentCard")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentCardId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Harmony.Domain.Entities.Sprint", "Sprint")
                         .WithMany("Cards")
                         .HasForeignKey("SprintId");
@@ -929,6 +1020,8 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("BoardList");
 
                     b.Navigation("IssueType");
+
+                    b.Navigation("ParentCard");
 
                     b.Navigation("Sprint");
                 });
@@ -1034,6 +1127,23 @@ namespace Harmony.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Board");
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.Retrospective", b =>
+                {
+                    b.HasOne("Harmony.Domain.Entities.Board", "ParentBoard")
+                        .WithMany("Retrospectives")
+                        .HasForeignKey("ParentBoardId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Harmony.Domain.Entities.Sprint", "Sprint")
+                        .WithOne("Retrospective")
+                        .HasForeignKey("Harmony.Domain.Entities.Retrospective", "SprintId");
+
+                    b.Navigation("ParentBoard");
+
+                    b.Navigation("Sprint");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.Sprint", b =>
@@ -1168,6 +1278,8 @@ namespace Harmony.Persistence.Migrations
 
                     b.Navigation("Lists");
 
+                    b.Navigation("Retrospectives");
+
                     b.Navigation("Sprints");
 
                     b.Navigation("Users");
@@ -1185,6 +1297,8 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("Attachments");
 
                     b.Navigation("CheckLists");
+
+                    b.Navigation("Children");
 
                     b.Navigation("Comments");
 
@@ -1208,9 +1322,16 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("Labels");
                 });
 
+            modelBuilder.Entity("Harmony.Domain.Entities.Retrospective", b =>
+                {
+                    b.Navigation("Board");
+                });
+
             modelBuilder.Entity("Harmony.Domain.Entities.Sprint", b =>
                 {
                     b.Navigation("Cards");
+
+                    b.Navigation("Retrospective");
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.Workspace", b =>

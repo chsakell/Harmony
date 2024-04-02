@@ -5,7 +5,7 @@
 namespace Harmony.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class LoadBoardListCardsSp_V4 : Migration
+    public partial class LoadBoardListCardsSp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,15 +34,31 @@ CREATE PROCEDURE [dbo].[LoadBoardListCards] @BoardId uniqueidentifier,
 AS
 BEGIN
 
-	DECLARE @cards Table(Id uniqueidentifier, Title nvarchar(300), Description nvarchar(max), UserId nvarchar(450),
-	BoardListId uniqueidentifier, Position smallint, Status int, StartDate datetime2, DueDate datetime2, ReminderDate datetime2,
-	SerialNumber int, IssueTypeId uniqueidentifier, SprintId uniqueidentifier, DateCreated datetime2, DateUpdated datetime2, 
-	DueDateReminderType int null, StoryPoints smallint null, DateCompleted datetime2 null, ParentCardId uniqueidentifier);
+	DECLARE @cards Table(
+		Id uniqueidentifier, 
+		Title nvarchar(300), 
+		Description nvarchar(max), 
+		UserId nvarchar(450),
+		BoardListId uniqueidentifier, 
+		Position smallint, 
+		Status int, 
+		StartDate datetime2, 
+		DueDate datetime2, 
+		DueDateReminderDate int null,
+		ReminderDate datetime2,
+		SerialNumber int, 
+		IssueTypeId uniqueidentifier, 
+		SprintId uniqueidentifier, 
+		StoryPoints smallint null, 
+		DateCompleted datetime2 null, 
+		ParentCardId uniqueidentifier,
+		DateCreated datetime2, 
+		DateUpdated datetime2);
 
 	DECLARE @BoardType int
     SELECT @BoardType = Type FROM Boards WHERE Id = @BoardId
 
-	IF @BoardType = 0
+	IF @BoardType = 0 OR @BoardType = 2
 	BEGIN
 		INSERT INTO @cards 
 		Select * from Cards

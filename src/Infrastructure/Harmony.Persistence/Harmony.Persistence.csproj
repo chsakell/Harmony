@@ -26,8 +26,4 @@
     <ProjectReference Include="..\..\Core\Harmony.Domain\Harmony.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

@@ -5,7 +5,7 @@
 namespace Harmony.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class LoadBoardSp_V2 : Migration
+    public partial class LoadBoardSp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,15 +34,35 @@ AS
 BEGIN
 	SELECT * FROM Boards WHERE Id = @BoardId
 
+	DECLARE @BoardType int
+    SELECT @BoardType = Type FROM Boards WHERE Id = @BoardId
+
 	SELECT * FROM BoardLists where BoardId = @BoardId AND Status = 0
 
 	declare @boardListIds TABLE(Id uniqueidentifier)
 	INSERT into @boardListIds (Id)
 	select Id from BoardLists  where BoardId = @BoardId AND Status = 0
 
-	DECLARE @cards Table(Id uniqueidentifier, Title nvarchar(300), Description nvarchar(max), UserId nvarchar(450),
-	BoardListId uniqueidentifier, Position smallint, Status int, StartDate datetime2, DueDate datetime2, ReminderDate datetime2,
-	SerialNumber int, IssueTypeId uniqueidentifier, SprintId uniqueidentifier, DateCreated datetime2, DateUpdated datetime2, DueDateReminderType int null);
+	DECLARE @cards Table(
+		Id uniqueidentifier, 
+		Title nvarchar(300), 
+		Description nvarchar(max), 
+		UserId nvarchar(450),
+		BoardListId uniqueidentifier, 
+		Position smallint, 
+		Status int, 
+		StartDate datetime2, 
+		DueDate datetime2, 
+		DueDateReminderDate int null,
+		ReminderDate datetime2,
+		SerialNumber int, 
+		IssueTypeId uniqueidentifier, 
+		SprintId uniqueidentifier, 
+		StoryPoints smallint null, 
+		DateCompleted datetime2 null, 
+		ParentCardId uniqueidentifier,
+		DateCreated datetime2, 
+		DateUpdated datetime2);
 
 	DECLARE @boardListId uniqueidentifier
 
@@ -59,14 +79,29 @@ BEGIN
 
 	WHILE @@FETCH_STATUS = 0
 		BEGIN
-			INSERT INTO @cards 
-			Select * from Cards
-			where BoardListId = @boardListId AND Status = 0 
-			order by Position
-			OFFSET 0 ROWS 
-			FETCH FIRST @cardsPerList ROWS ONLY;
-			FETCH NEXT FROM cursor_boardLists INTO 
-				@boardListId;
+			IF @BoardType = 0 OR @BoardType = 2
+				BEGIN
+					INSERT INTO @cards 
+					Select * from Cards
+					where BoardListId = @boardListId AND Status = 0  AND ParentCardId IS NULL
+					order by Position
+					OFFSET 0 ROWS 
+					FETCH FIRST @cardsPerList ROWS ONLY;
+					FETCH NEXT FROM cursor_boardLists INTO 
+						@boardListId;
+				END
+				ELSE
+				BEGIN
+					INSERT INTO @cards 
+					Select c.* from Cards c
+					JOIN Sprints s on s.Id = c.SprintId
+					where BoardListId = @boardListId AND c.Status = 0 AND s.Status = 1 AND ParentCardId IS NULL
+					order by c.Position
+					OFFSET 0 ROWS 
+					FETCH FIRST @cardsPerList ROWS ONLY;
+					FETCH NEXT FROM cursor_boardLists INTO 
+						@boardListId;
+				END
 		END;
 
 	CLOSE cursor_boardLists;
@@ -95,6 +130,17 @@ BEGIN
 	select * from IssueTypes where BoardId = @BoardId order by DateCreated
 
 	select * from Sprints where BoardId = @BoardId
+
+	select CardId, COUNT(*) as TotalComments
+	from Comments
+	where CardId in (select id from @cards)
+	group by CardId
+
+	select parent.Id CardId, COUNT(*) as TotalChildren
+	from Cards parent
+	join Cards child on child.ParentCardId = parent.Id
+	where child.ParentCardId in (select id from @cards) AND child.Status = 0
+	group by parent.Id
 END
 GO");
         }
