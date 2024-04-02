@@ -138,10 +138,13 @@ else
             <MudGrid>
                 <MudItem sm="9">
                     <MudGrid>
-                        <MudItem xs="12">
-                            <EditableTextEditorField Text="@_card.Description"
-                                                     OnSave="(html) => SaveDescription(html)" />
-                        </MudItem>
+                        @if (_card.BoardType != Domain.Enums.BoardType.Retrospective)
+                        {
+                            <MudItem xs="12">
+                                <EditableTextEditorField Text="@_card.Description"
+                                                         OnSave="(html) => SaveDescription(html)" />
+                            </MudItem>
+                        }
                         <MudItem xs="12" Class="overflow-auto" Style="max-height:315px">
                             @if (_card.Attachments.Any())
                             {
@@ -216,7 +219,7 @@ else
                                             </MudTd>
                                             <MudTd DataLabel="Title">@child.Title</MudTd>
                                             <MudTd DataLabel="Title">
-                                                <MudNumericField Style="width:110px"  T="short?" Clearable="true" @bind-Value="@child.StoryPoints" Min="0" />
+                                                <MudNumericField Style="width:110px" T="short?" Clearable="true" @bind-Value="@child.StoryPoints" Min="0" />
                                             </MudTd>
                                             <MudTd DataLabel="Status">
                                                 <MudSelect @bind-Value="child.BoardListId"

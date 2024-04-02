@@ -561,6 +561,23 @@ namespace Harmony.Client.Pages.Management
 
         private async Task AddCard(BoardListDto list)
         {
+            var result = KanbanStore.Board.Type != Domain.Enums.BoardType.Retrospective ? 
+                await OpenNormalCardModal(list) :
+                await OpenRetrospectiveCardModal(list);
+
+            if (!result.Canceled)
+            {
+                var cardAdded = result.Data as CardDto;
+
+                KanbanStore.AddCardToList(cardAdded, list);
+                _dropContainer.Refresh();
+
+                await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
+            }
+        }
+
+        private async Task<DialogResult?> OpenNormalCardModal(BoardListDto list)
+        {
             var parameters = new DialogParameters<CreateCardModal>
             {
                 {
@@ -580,17 +597,28 @@ namespace Harmony.Client.Pages.Management
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<CreateCardModal>(_localizer["Create card"], parameters, options);
-            var result = await dialog.Result;
+            return await dialog.Result;
+        }
 
-            if (!result.Canceled)
+        private async Task<DialogResult?> OpenRetrospectiveCardModal(BoardListDto list)
+        {
+            var parameters = new DialogParameters<CreateRetrospectiveCardModal>
             {
-                var cardAdded = result.Data as CardDto;
+                {
+                    modal => modal.CreateCardCommandModel,
+                    new CreateCardCommand(null, Guid.Parse(Id), list.Id)
+                },
+                {
+                    modal => modal.ListTitle, list.Title
+                },
+                {
+                    modal => modal.BoardType, KanbanStore.Board.Type
+                }
+            };
 
-                KanbanStore.AddCardToList(cardAdded, list);
-                _dropContainer.Refresh();
-
-                await JSRuntime.InvokeVoidAsync("scrollToElement", cardAdded.Id.ToString());
-            }
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<CreateRetrospectiveCardModal>(_localizer["Create card"], parameters, options);
+            return await dialog.Result;
         }
 
         private async Task ArchiveList(BoardListDto list)

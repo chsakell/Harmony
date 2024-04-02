@@ -20,7 +20,7 @@ else
 {
     <MudPaper Elevation="25">
         <MudToolBar>
-            @if (KanbanStore.Board.Type != Domain.Enums.BoardType.Retrospective)
+            @if (!KanbanStore.IsRetrospective)
             {
                 <MudButton Variant="Variant.Text" OnClick="OpenCreateBoardListModal" StartIcon="@Icons.Material.Outlined.Checklist">Create list</MudButton>
                 @if (KanbanStore.KanbanLists.Count() > 1)
@@ -81,6 +81,10 @@ else
                     <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
                                OnClick="ViewArchivedItems">ARCHIVED ITEMS</MudButton>
                 </MudMenu>
+            }
+            else
+            {
+                <MudChip Icon="@Icons.Filled.Group" Label="true" Color="Color.Warning" Style="color:black;">@KanbanStore.Board.Title</MudChip>
             }
         </MudToolBar>
 
@@ -229,8 +233,12 @@ else
                                     }
                                 </div>
                                 <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
-
-                                    <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
+                                    @if (!KanbanStore.IsRetrospective)
+                                    {
+                                        <MudChip Label="true"
+                                                 Size="Size.Small"
+                                                 Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
+                                    }
                                     @if (context.IssueType != null)
                                     {
                                         <MudStack Row="true" AlignItems="AlignItems.End">

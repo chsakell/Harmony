@@ -14,6 +14,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
         public IEnumerable<BoardListDto> KanbanLists => _board.Lists.OrderBy(l => l.Position);
         public IEnumerable<CardDto> KanbanCards => _board.Lists.SelectMany(l => l.Cards).OrderBy(c => c.Position);
         public bool IsScrum => _board != null && _board.Type == Domain.Enums.BoardType.Scrum;
+        public bool IsRetrospective => _board != null && _board.Type == Domain.Enums.BoardType.Retrospective;
 
         public void LoadBoard(GetBoardResponse board)
         {

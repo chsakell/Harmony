@@ -13,6 +13,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 
         public IEnumerable<BoardListDto> KanbanLists { get; }
 		public bool IsScrum { get; }
+		public bool IsRetrospective { get; }
 		public IEnumerable<CardDto> KanbanCards { get; }
 		void LoadBoard(GetBoardResponse board);
 		void AddListToBoard(BoardListDto list);
