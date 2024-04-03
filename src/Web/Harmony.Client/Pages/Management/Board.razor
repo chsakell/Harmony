@@ -151,11 +151,14 @@ else
                                                        OnClick="@(() => AddCard(item))"
                                                        aria-label="add" Disabled="AddCardsDisabled"></MudIconButton>
                                     }
-                                    <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
-                                             Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-                                        <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
-                                                   Disabled="item.CardStatus == Domain.Enums.BoardListCardStatus.DONE" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
-                                    </MudMenu>
+                                    @if (!KanbanStore.IsRetrospective)
+                                    {
+                                        <MudMenu Style="margin-bottom:10px" Size="Size.Small" Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
+                                                 Class="align-self-end" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
+                                            <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
+                                                       Disabled="item.CardStatus == Domain.Enums.BoardListCardStatus.DONE" OnClick="@( () => ArchiveList(item))">Archive</MudButton>
+                                        </MudMenu>
+                                    }
                                 }
                             </MudToolBar>
                             <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />

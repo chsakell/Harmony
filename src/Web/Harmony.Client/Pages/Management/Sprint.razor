@@ -24,7 +24,10 @@
           ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
-            <MudButton ButtonType="ButtonType.Button" OnClick="CreateIssue" Variant="Variant.Filled" Color="Color.Primary" Style="width: 100%;">CREATE ISSUE</MudButton>
+            <MudChip Icon="@Icons.Filled.Update" Label="true" Size="Size.Large" Color="Color.Default">@_sprint?.Board?.Title</MudChip>
+        </div>
+        <div class="justify-center mud-text-align-center">
+            <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Add" OnClick="CreateIssue" Variant="Variant.Filled" Color="Color.Primary" Style="width: 100%;">CREATE ISSUE</MudButton>
         </div>
         <div class="justify-center mud-text-align-center ml-2">
             <MudMenu Label="@_localizer["CARDS"]" Variant="Variant.Filled" DisableElevation="false"
@@ -51,8 +54,10 @@
                 }
                 @if (_sprint?.Retrospective == null)
                 {
-                    <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
-                                 OnClick="CreateRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Create retrospective</MudMenuItem>
+                    <MudTooltip Text="@(_sprint?.Status == SprintStatus.Idle ? "The sprint must be started or completed to create a retrospective" : string.Empty)" Delay="2500">
+                        <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary" Disabled="_sprint?.Status == SprintStatus.Idle"
+                                     OnClick="CreateRetrospective" Icon="@Icons.Material.Filled.ArrowRight">Create retrospective</MudMenuItem>
+                    </MudTooltip>
                 }
                 else if (_sprint.Retrospective != null)
                 {

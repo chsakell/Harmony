@@ -77,6 +77,12 @@ else
                                 </MudSelect>
                             </div>
                         }
+                        @if(_card.BoardType == BoardType.Retrospective)
+                        {
+                            <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
+                                       Variant="Variant.Outlined" OnClick="ArchiveCard"
+                                       Color="Color.Error">ARCHIVE CARD</MudButton>
+                        }
                         @if (_card.BoardType == BoardType.Scrum)
                         {
                             <MudNumericField Style="width:110px" T="short?" HideSpinButtons="true"
@@ -359,56 +365,59 @@ else
                                         </MudPaper>
                                     }
                                 </MudTabPanel>
-                                <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">
-                                    @foreach (var activity in _card.Activities)
-                                    {
-                                        <MudCard Class="mb-2">
-                                            <MudCardHeader Class="pb-0">
-                                                <CardHeaderAvatar>
-                                                    <MudAvatar Color="Color.Secondary">@(activity.Actor[0])</MudAvatar>
-                                                </CardHeaderAvatar>
-                                                <CardHeaderContent>
-                                                    <MudText Typo="Typo.body1"><b>@activity.Actor</b></MudText>
-                                                    <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
-                                                </CardHeaderContent>
-                                            </MudCardHeader>
-                                            @if (activity.Type == CardActivityType.ImageAttachmentAdded)
-                                            {
-                                                <MudCardMedia Image="@activity.Url" Height="250" Class="mt-4" />
-                                            }
-                                            <MudCardContent>
-                                                <MudStack Row="true">
-                                                    @switch (activity.Type)
-                                                    {
-                                                        case CardActivityType.CardTitleUpdated:
-                                                            <MudIcon Icon="@Icons.Material.Filled.Title" Color="Color.Default" />
-                                                            break;
-                                                        case CardActivityType.CardDescriptionUpdated:
-                                                            <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Default" />
-                                                            break;
-                                                        case CardActivityType.CardDatesUpdated:
-                                                            <MudIcon Icon="@Icons.Material.Filled.DateRange" Color="Color.Default" />
-                                                            break;
-                                                        case CardActivityType.CheckListAdded:
-                                                        case CardActivityType.CheckListItemAdded:
-                                                            <MudIcon Icon="@Icons.Material.Filled.Checklist" Color="Color.Default" />
-                                                            break;
-                                                        case CardActivityType.ImageAttachmentAdded:
-                                                            <MudIcon Icon="@Icons.Material.Filled.AttachFile" Color="Color.Default" />
-                                                            break;
-                                                        case CardActivityType.DocumentAttachmentAdded:
-                                                            <MudIcon Icon="@Icons.Material.Filled.FileOpen" Color="Color.Default" />
-                                                            break;
-                                                        default:
-                                                            <MudIcon Icon="@Icons.Material.Filled.Update" Color="Color.Default" />
-                                                            break;
-                                                    }
-                                                    <MudText Typo="Typo.body2" Style="margin-top:2px">@((MarkupString)activity.Activity)</MudText>
-                                                </MudStack>
-                                            </MudCardContent>
-                                        </MudCard>
-                                    }
-                                </MudTabPanel>
+                                @if (_card.BoardType != BoardType.Retrospective)
+                                {
+                                    <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">
+                                        @foreach (var activity in _card.Activities)
+                                        {
+                                            <MudCard Class="mb-2">
+                                                <MudCardHeader Class="pb-0">
+                                                    <CardHeaderAvatar>
+                                                        <MudAvatar Color="Color.Secondary">@(activity.Actor[0])</MudAvatar>
+                                                    </CardHeaderAvatar>
+                                                    <CardHeaderContent>
+                                                        <MudText Typo="Typo.body1"><b>@activity.Actor</b></MudText>
+                                                        <MudText Typo="Typo.body2">@activity.DateCreated.ToString("ddd, dd MMM yyyy HH:mm")</MudText>
+                                                    </CardHeaderContent>
+                                                </MudCardHeader>
+                                                @if (activity.Type == CardActivityType.ImageAttachmentAdded)
+                                                {
+                                                    <MudCardMedia Image="@activity.Url" Height="250" Class="mt-4" />
+                                                }
+                                                <MudCardContent>
+                                                    <MudStack Row="true">
+                                                        @switch (activity.Type)
+                                                        {
+                                                            case CardActivityType.CardTitleUpdated:
+                                                                <MudIcon Icon="@Icons.Material.Filled.Title" Color="Color.Default" />
+                                                                break;
+                                                            case CardActivityType.CardDescriptionUpdated:
+                                                                <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Default" />
+                                                                break;
+                                                            case CardActivityType.CardDatesUpdated:
+                                                                <MudIcon Icon="@Icons.Material.Filled.DateRange" Color="Color.Default" />
+                                                                break;
+                                                            case CardActivityType.CheckListAdded:
+                                                            case CardActivityType.CheckListItemAdded:
+                                                                <MudIcon Icon="@Icons.Material.Filled.Checklist" Color="Color.Default" />
+                                                                break;
+                                                            case CardActivityType.ImageAttachmentAdded:
+                                                                <MudIcon Icon="@Icons.Material.Filled.AttachFile" Color="Color.Default" />
+                                                                break;
+                                                            case CardActivityType.DocumentAttachmentAdded:
+                                                                <MudIcon Icon="@Icons.Material.Filled.FileOpen" Color="Color.Default" />
+                                                                break;
+                                                            default:
+                                                                <MudIcon Icon="@Icons.Material.Filled.Update" Color="Color.Default" />
+                                                                break;
+                                                        }
+                                                        <MudText Typo="Typo.body2" Style="margin-top:2px">@((MarkupString)activity.Activity)</MudText>
+                                                    </MudStack>
+                                                </MudCardContent>
+                                            </MudCard>
+                                        }
+                                    </MudTabPanel>
+                                }
                             </MudTabs>
 
                         </MudItem>

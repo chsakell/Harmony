@@ -104,7 +104,9 @@ namespace Harmony.Client.Pages.Management
                 var retrospective = result.Data as RetrospectiveDto;
                 if (retrospective != null)
                 {
+                    var slug = StringUtilities.SlugifyString(retrospective.Name);
 
+                    _navigationManager.NavigateTo($"boards/{retrospective.BoardId}/{slug}");
                 }
             }
         }
@@ -156,6 +158,11 @@ namespace Harmony.Client.Pages.Management
                 var request = new StartSprintCommand(Guid.Parse(Id), _sprint.Id);
 
                 var result = await _sprintManager.StartSprint(request);
+
+                if(result.Succeeded)
+                {
+                    _sprint.Status = SprintStatus.Active;
+                }
 
                 DisplayMessage(result);
             }
