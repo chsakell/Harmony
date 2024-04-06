@@ -53,6 +53,12 @@ namespace Harmony.Persistence.Configurations
                 .HasForeignKey(x => x.ParentCardId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(c => c.Links)
+                .WithOne(c => c.SourceCard)
+                .HasForeignKey(c => c.SourceCardId)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
+using Harmony.Application.Features.Cards.Commands.CreateLink;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Features.Cards.Commands.RemoveUserCard;
@@ -145,5 +146,17 @@ namespace Harmony.Api.Controllers.Management
         {
             return Ok(await _mediator.Send(new RemoveCardAttachmentCommand(id, attachmentId)));
         }
+
+        [HttpPost("{id:guid}/links")]
+        public async Task<IActionResult> AddLink(Guid id, CreateLinkCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        //[HttpDelete("{id:guid}/links/{linkId:guid}")]
+        //public async Task<IActionResult> DeleteLink(Guid id, Guid linkId)
+        //{
+        //    return Ok(await _mediator.Send(command));
+        //}
     }
 }

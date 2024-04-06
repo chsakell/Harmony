@@ -37,5 +37,7 @@ namespace Harmony.Domain.Entities
         public Guid? ParentCardId { get; set; }
         public Card ParentCard { get; set; }
         #endregion
+
+        public List<Link> Links { get; set; }
     }
 }

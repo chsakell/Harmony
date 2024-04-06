@@ -32,7 +32,8 @@ namespace Harmony.Infrastructure.Extensions
                 .AddScoped<IUserNotificationRepository, UserNotificationRepository>()
                 .AddScoped<ICommentRepository, CommentRepository>()
                 .AddScoped<IAttachmentRepository, AttachmentRepository>()
-                .AddScoped<IRetrospectiveRepository, RetrospectiveRepository>();
+                .AddScoped<IRetrospectiveRepository, RetrospectiveRepository>()
+                .AddScoped<ILinkRepository, LinkRepository>();
         }
 
         public static IServiceCollection AddMongoDbRepositories(this IServiceCollection services)

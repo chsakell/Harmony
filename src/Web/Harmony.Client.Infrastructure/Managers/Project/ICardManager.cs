@@ -3,6 +3,7 @@ using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
+using Harmony.Application.Features.Cards.Commands.CreateLink;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
@@ -45,5 +46,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<RemoveUserCardResponse>> RemoveCardMemberAsync(RemoveUserCardCommand command);
         Task<IResult<RemoveCardAttachmentResponse>> RemoveCardAttachmentAsync(RemoveCardAttachmentCommand command);
         Task<IResult<SprintDto>> MoveCardsToSprintAsync(MoveToSprintCommand request);
+        Task<IResult<CardDto>> CreateLink(CreateLinkCommand request);
     }
 }

@@ -96,6 +96,7 @@ namespace Harmony.Application.Mappings.Management
             CreateMap<Sprint, SprintDto>();
 
             CreateMap<Retrospective, RetrospectiveDto>();
+            CreateMap<Link, LinkDto>();
         }
     }
 }

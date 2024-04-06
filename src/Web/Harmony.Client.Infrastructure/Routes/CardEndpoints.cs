@@ -37,5 +37,7 @@ namespace Harmony.Client.Infrastructure.Routes
         {
             return $"{Index}/{cardId}/attachments/{attachmentId}/";
         }
+
+        public static string Links(Guid cardId) => $"{Index}/{cardId}/links/";
     }
 }

@@ -27,6 +27,7 @@ namespace Harmony.Persistence.DbContext
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Retrospective> Retrospectives { get; set; }
+        public DbSet<Link> Links { get; set; }
 
         public HarmonyContext(DbContextOptions<HarmonyContext> options) : base(options)
         {

@@ -3,6 +3,7 @@ using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
+using Harmony.Application.Features.Cards.Commands.CreateLink;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
@@ -181,6 +182,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .Sprints(request.BoardId), request);
 
             return await response.ToResult<SprintDto>();
+        }
+
+        public async Task<IResult<CardDto>> CreateLink(CreateLinkCommand request)
+        {
+            var response = await _httpClient
+                .PostAsJsonAsync(Routes.CardEndpoints.Links(request.SourceCardId), request);
+
+            return await response.ToResult<CardDto>();
         }
     }
 }
