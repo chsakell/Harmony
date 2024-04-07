@@ -466,6 +466,9 @@ else
                                        Variant="Variant.Outlined" FullWidth="true"
                                        Color="Color.Primary">ADD CHILD ISSUE</MudButton>
                         }
+                        <MudButton StartIcon="@Icons.Material.Filled.AddLink" OnClick="AddLink" Class="mt-2"
+                                   Variant="Variant.Outlined" FullWidth="true"
+                                   Color="Color.Primary">LINK ISSUE</MudButton>
                         @if (_card.Status != CardStatus.Archived)
                         {
                             <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"

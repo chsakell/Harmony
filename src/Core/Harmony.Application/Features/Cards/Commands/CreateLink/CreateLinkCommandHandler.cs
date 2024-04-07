@@ -80,7 +80,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             {
                 var targetLink = new Link()
                 {
-                    SourceCardId = request.TargetCardId,
+                    SourceCardId = request.TargetCardId.Value,
                     TargetCardId = request.SourceCardId,
                     UserId = userId,
                     Type = counterPartLinkType.Value,
@@ -92,7 +92,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             var sourceLink = new Link()
             {
                 SourceCardId = request.SourceCardId,
-                TargetCardId = request.TargetCardId,
+                TargetCardId = request.TargetCardId.Value,
                 UserId = userId,
                 Type = request.Type,
             };

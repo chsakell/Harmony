@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
+using Harmony.Application.Features.Cards.Commands.CreateLink;
 using Harmony.Application.Features.Cards.Commands.DeleteChecklist;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
@@ -260,6 +261,26 @@ namespace Harmony.Client.Shared.Modals
                 {
                     _card.Children.Add(cardAdded);
                 }
+            }
+        }
+
+        private async Task AddLink()
+        {
+            var parameters = new DialogParameters<AddLinkIssueModal>
+            {
+                {
+                    modal => modal.CreateLinkCommandModel, new CreateLinkCommand(BoardId, CardId)
+                },
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<AddLinkIssueModal>(_localizer["Add link"], parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled)
+            {
+                var linkAdded = result.Data as LinkDto;
+                
             }
         }
 

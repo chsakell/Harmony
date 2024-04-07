@@ -4,20 +4,22 @@ using Harmony.Application.Models;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateLink
 {
     public class CreateLinkCommand : BaseBoardCommand, IRequest<Result<LinkDto>>
     {
-        public CreateLinkCommand(Guid sourceCardId, Guid targetCardId, LinkType type)
+        public CreateLinkCommand(Guid boardId, Guid sourceCardId)
         {
+            BoardId = boardId;
             SourceCardId = sourceCardId;
-            TargetCardId = targetCardId;
-            Type = type;
         }
 
         public Guid SourceCardId { get; set; }
-        public Guid TargetCardId { get; set; }
+
+        [Required(ErrorMessage = "Linked issue is required")]
+        public Guid? TargetCardId { get; set; }
         public LinkType Type { get; set; }
     }
 }

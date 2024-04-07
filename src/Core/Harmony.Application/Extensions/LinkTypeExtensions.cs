@@ -24,5 +24,22 @@ namespace Harmony.Application.Extensions
                 
             };
         }
+
+        public static string GetDescription(this LinkType linkType)
+        {
+            return linkType switch
+            {
+
+                LinkType.IsBlockedBy => "Is blocked by",
+                LinkType.Blocks => "blocks",
+                LinkType.IsClonedBy => "Is cloned by",
+                LinkType.Clones => "Clones",
+                LinkType.IsDuplicatedBy => "Is duplicated by",
+                LinkType.Duplicates => "Duplicates",
+                LinkType.RelatesTo => "Relates",
+                _ => null,
+
+            };
+        }
     }
 }
