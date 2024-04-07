@@ -34,5 +34,6 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public bool IsChild { get; set; }
         public List<IssueTypeDto> IssueTypes { get; set; }
         public List<GetBoardListResponse> BoardLists { get; set; }
+        public List<LinkDto> Links { get; set; }
     }
 }

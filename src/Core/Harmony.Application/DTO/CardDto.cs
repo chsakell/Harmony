@@ -30,5 +30,6 @@ namespace Harmony.Application.DTO
 		public int TotalChildren { get; set; }
         public Guid? ParentCardId { get; set; }
         public short? StoryPoints { get; set; }
+		public List<LinkDto> Links { get; set; }
     }
 }

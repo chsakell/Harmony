@@ -152,6 +152,13 @@ else
                             </MudItem>
                         }
                         <MudItem xs="12" Class="overflow-auto" Style="max-height:315px">
+                            @if(_card.Links.Any())
+                            {
+                                @foreach(var link in _card.Links)
+                                {
+                                    
+                                }
+                            }
                             @if (_card.Attachments.Any())
                             {
                                 <MudStack>

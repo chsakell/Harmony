@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
+using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
@@ -20,6 +21,7 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         private readonly ICurrentUserService _currentUserService;
         private readonly IUserService _userService;
         private readonly ISender _sender;
+        private readonly ILinkService _linkService;
         private readonly IStringLocalizer<LoadCardHandler> _localizer;
         private readonly IMapper _mapper;
 
@@ -27,6 +29,7 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             ICurrentUserService currentUserService,
             IUserService userService,
             ISender sender,
+            ILinkService linkService,
             IStringLocalizer<LoadCardHandler> localizer,
             IMapper mapper)
         {
@@ -34,6 +37,7 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             _currentUserService = currentUserService;
             _userService = userService;
             _sender = sender;
+            _linkService = linkService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -50,6 +54,8 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             var card = await _cardRepository.Load(request.CardId);
 
             var result = _mapper.Map<LoadCardResponse>(card);
+
+            result.Links = await _linkService.GetLinksForCard(request.CardId);
 
             var issueTypesResult = await _sender.Send(new GetIssueTypesQuery(result.BoardId));
 

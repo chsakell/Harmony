@@ -76,6 +76,7 @@ namespace Harmony.Api.Extensions
             services.AddScoped<IMemberSearchService, MemberSearchService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ISprintService, SprintService>();
+            services.AddScoped<ILinkService, LinkService>();
 
             return services;
         }
