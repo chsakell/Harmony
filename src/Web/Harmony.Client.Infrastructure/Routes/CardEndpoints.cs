@@ -1,4 +1,5 @@
-﻿using static Harmony.Shared.Constants.Application.ApplicationConstants;
+﻿using Harmony.Application.Features.Cards.Queries.SearchCards;
+using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Infrastructure.Routes
 {
@@ -39,5 +40,20 @@ namespace Harmony.Client.Infrastructure.Routes
         }
 
         public static string Links(Guid cardId) => $"{Index}/{cardId}/links/";
+
+        public static string Search(SearchCardsQuery request)
+        {
+            var url = $"{Index}/search/?boardId={request.BoardId}&pageNumber={request.PageNumber}&pageSize={request.PageSize}&searchTerm={request.SearchTerm}&skipCardId={request.SkipCardId}&orderBy=";
+
+            if (request.OrderBy?.Any() == true)
+            {
+                foreach (var orderByPart in request.OrderBy)
+                {
+                    url += $"{orderByPart},";
+                }
+                url = url[..^1];
+            }
+            return url;
+        }
     }
 }

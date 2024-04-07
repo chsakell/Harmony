@@ -7,6 +7,7 @@ namespace Harmony.Application.DTO
 		public Guid Id { get; set; }
 		public string Title { get; set; }
 		public string Description { get; set; }
+		public string BoardKey { get; set; }
 		public Guid BoardListId { get; set; }
 		public string BoardList { get; set; }
 		public bool? Completed { get; set; }

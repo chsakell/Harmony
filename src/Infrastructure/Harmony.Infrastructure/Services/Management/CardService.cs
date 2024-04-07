@@ -2,6 +2,7 @@
 using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
@@ -248,6 +249,56 @@ namespace Harmony.Infrastructure.Services.Management
                                     .Take(pageSize).ToListAsync();
 
             return result;
+        }
+
+        public async Task<List<CardDto>> SearchWorkspaceCards(Guid workspaceId, string term, 
+            int pageNumber, int pageSize, Guid? skipCardId = null)
+        {
+            var result = await GetSearchWorkspaceQuery(workspaceId, term, skipCardId)
+                                    .Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize).ToListAsync();
+
+            return result;
+        }
+
+        public async Task<int> CountWorkspaceCards(Guid workspaceId, string term, Guid? skipCardId = null)
+        {
+            var result = await GetSearchWorkspaceQuery(workspaceId, term, skipCardId).CountAsync();
+
+            return result;
+        }
+
+        private IQueryable<CardDto> GetSearchWorkspaceQuery(Guid workspaceId, string term, Guid? skipCardId = null)
+        {
+            var query = from card in _cardRepository.Entities.IgnoreQueryFilters()
+                        join issueType in _issueTypeRepository.Entities
+                            on card.IssueTypeId equals issueType.Id
+                        join board in _boardRepository.Entities
+                            on issueType.BoardId equals board.Id
+                        where (board.WorkspaceId == workspaceId &&
+                            (string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)) &&
+                            card.Status != CardStatus.Archived &&
+                            skipCardId.HasValue ? card.Id != skipCardId.Value : false)
+                        orderby card.Position
+                        select new CardDto()
+                        {
+                            Id = card.Id,
+                            Title = card.Title,
+                            BoardKey = board.Key,
+                            StartDate = card.StartDate,
+                            DueDate = card.DueDate,
+                            SerialNumber = card.SerialNumber,
+                            Position = card.Position,
+                            IssueType = new IssueTypeDto()
+                            {
+                                Id = issueType.Id,
+                                Summary = issueType.Summary
+                            },
+                            StoryPoints = card.StoryPoints,
+                            Status = card.Status,
+                        };
+
+            return query;
         }
 
         public async Task<IResult<short?>> SyncParentStoryPoints(Guid parentCardId)

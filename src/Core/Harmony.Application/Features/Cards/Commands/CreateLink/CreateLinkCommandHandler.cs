@@ -68,8 +68,17 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
                 return Result<LinkDto>.Fail("Target issue not found");
             }
 
+            var link = await _linkRepository.GetLink(request.SourceCardId, request.TargetCardId.Value, request.Type);
+
+            if(link != null)
+            {
+                return Result<LinkDto>.Fail($"{request.Type.GetDescription()} linking already existing for this card");
+            }
+
+            result.SourceCardId = sourceCard.Id;
             result.SourceCardTitle = sourceCard.Title;
             result.SourceCardSerialKey = $"{sourceCard.IssueType.Board.Key}-{sourceCard.SerialNumber}";
+            result.TargetCardId = targetCard.Id;
             result.TargetCardTitle = targetCard.Title;
             result.TargetCardSerialKey = $"{targetCard.IssueType.Board.Key}-{targetCard.SerialNumber}";
             result.Type = result.Type;

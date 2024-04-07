@@ -20,6 +20,7 @@ using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Cards.Queries.SearchCards;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
@@ -47,5 +48,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<RemoveCardAttachmentResponse>> RemoveCardAttachmentAsync(RemoveCardAttachmentCommand command);
         Task<IResult<SprintDto>> MoveCardsToSprintAsync(MoveToSprintCommand request);
         Task<IResult<CardDto>> CreateLink(CreateLinkCommand request);
+        Task<PaginatedResult<CardDto>> Search(SearchCardsQuery request);
     }
 }

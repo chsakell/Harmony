@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
+﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
@@ -23,5 +24,7 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<IResult<short?>> SyncParentStoryPoints(Guid parentCardId);
         Task<bool> CanUpdateStoryPoints(Guid boardId, Guid cardId, Guid? issueTypeId);
         Task<bool> HasActiveChildren(Guid cardId);
+        Task<int> CountWorkspaceCards(Guid workspaceId, string term, Guid? skipCardId = null);
+        Task<List<CardDto>> SearchWorkspaceCards(Guid workspaceId, string term, int pageNumber, int pageSize, Guid? skipCardId = null);
     }
 }

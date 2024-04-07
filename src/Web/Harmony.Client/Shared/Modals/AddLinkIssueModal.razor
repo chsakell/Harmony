@@ -4,6 +4,20 @@
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<AddLinkIssueModal> _localizer
 
+<style>
+    .selected {
+        background-color: #1E88E5 !important;
+    }
+
+        .selected > td {
+            color: white !important;
+        }
+
+            .selected > td .mud-input {
+                color: white !important;
+            }
+</style>
+
 <EditForm Model="@CreateLinkCommandModel" OnValidSubmit="SubmitAsync">
     <DataAnnotationsValidator />
     <MudDialog>
@@ -18,23 +32,64 @@
         <DialogContent>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudSelect T="LinkType" @bind-Value="@CreateLinkCommandModel.Type"
-                               Label="Visibility" AnchorOrigin="Origin.BottomCenter"
-                               ToStringFunc="converter"
-                               Variant="Variant.Outlined" Clearable>
-                        @foreach (var type in Enum.GetValues<LinkType>())
-                        {
-                            <MudSelectItem Value="type" />
-                        }
-                    </MudSelect>
-                    @*  <MudTextField For="@(() => CreateLinkCommand.Title)" @bind-Value="CreateLinkCommand.Title" Label="@_localizer["Title"]" /> *@
-                </MudItem>
 
+                    <style>
+                        .mud-table-cell-custom-group {
+                            font-weight: 500;
+                        }
+
+                        .mud-table-cell-custom-group-footer {
+                            padding-bottom: 50px;
+                            text-align: right;
+                        }
+                    </style>
+
+                    <MudTable Hover="true" Elevation="25"
+                              T="CardDto"
+                              @bind-SelectedItem:get="_selectedCard"
+                              @bind-SelectedItem:set="SelectCard"
+                              RowClass="cursor-pointer" 
+                              RowClassFunc="@SelectedRowClassFunc" 
+                              ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Striped="true" @ref="_table">
+                        <ToolBarContent>
+                            <MudSelect T="LinkType" @bind-Value="@CreateLinkCommandModel.Type"
+                                       Label="Link type" AnchorOrigin="Origin.BottomCenter"
+                                       ToStringFunc="converter"
+                                       Variant="Variant.Outlined" Clearable>
+                                @foreach (var type in Enum.GetValues<LinkType>())
+                                {
+                                    <MudSelectItem Value="type" />
+                                }
+                            </MudSelect>
+                            <MudSpacer />
+                            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search cards.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Title</MudTh>
+                            <MudTh>Type</MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="card">
+                            <MudTd DataLabel="Title">
+                                @card.Title
+                            </MudTd>
+                            <MudTd DataLabel="Type">
+                                <MudStack Row="true">
+                                    <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(card.IssueType.Summary)"
+                                             Color="ColorHelper.GetIssueTypeColor(card.IssueType.Summary)" />
+                                    <MudText>@card.IssueType.Summary</MudText>
+                                </MudStack>
+                            </MudTd>
+                        </RowTemplate>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                    </MudTable>
+                </MudItem>
             </MudGrid>
         </DialogContent>
         <DialogActions>
             <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>
-            <MudButton Disabled="@(!context.IsModified() || !context.Validate() || _processing)"
+            <MudButton Disabled="@(!CreateLinkCommandModel.TargetCardId.HasValue || _processing)"
                        ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
                 @if (_processing)
                 {
@@ -43,7 +98,7 @@
                 }
                 else
                 {
-                    <MudText>@_localizer["Link"]</MudText>
+                    <MudText>@_localizer["LINK"]</MudText>
                 }
             </MudButton>
         </DialogActions>

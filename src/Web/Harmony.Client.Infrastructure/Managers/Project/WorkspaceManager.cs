@@ -1,10 +1,12 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Commands.AddMember;
 using Harmony.Application.Features.Workspaces.Commands.Create;
 using Harmony.Application.Features.Workspaces.Commands.RemoveMember;
 using Harmony.Application.Features.Workspaces.Commands.Rename;
 using Harmony.Application.Features.Workspaces.Commands.UpdateStatus;
+using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceBoards;
 using Harmony.Application.Features.Workspaces.Queries.GetWorkspaceUsers;
 using Harmony.Application.Features.Workspaces.Queries.SearchWorkspaceUsers;

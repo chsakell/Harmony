@@ -18,6 +18,8 @@ using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Cards.Queries.SearchCards;
+using Harmony.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Api.Controllers.Management
@@ -32,6 +34,21 @@ namespace Harmony.Api.Controllers.Management
         public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await _mediator.Send(new LoadCardQuery(id)));
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> GetCards(Guid boardId, int pageNumber, int pageSize,
+            string searchTerm = null, string orderBy = null, CardStatus? status = null, Guid ? skipCardId = null)
+        {
+            var searchCardsQuery = new
+                SearchCardsQuery(pageNumber, pageSize, searchTerm, orderBy)
+            {
+                Status = status,
+                BoardId = boardId,
+                SkipCardId = skipCardId
+            };
+
+            return Ok(await _mediator.Send(searchCardsQuery));
         }
 
         [HttpPost]

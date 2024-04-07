@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Repositories;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,13 @@ namespace Harmony.Infrastructure.Repositories
         {
             return await _context.Links
                 .FirstOrDefaultAsync(Link => Link.Id == linkId);
+        }
+
+        public async Task<Link?> GetLink(Guid sourceCardId, Guid targetCardId, LinkType type)
+        {
+            return await _context.Links
+                .FirstOrDefaultAsync(link => link.SourceCardId == sourceCardId &&
+                link.TargetCardId == targetCardId && link.Type == type);
         }
 
         public async Task AddAsync(Link link)

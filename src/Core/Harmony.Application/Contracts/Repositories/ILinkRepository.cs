@@ -10,6 +10,7 @@ namespace Harmony.Application.Contracts.Repositories
     {
         IQueryable<Link> Entities { get; }
         Task<Link?> GetLink(Guid linkId);
+        Task<Link?> GetLink(Guid sourceCardId, Guid targetCardId, LinkType type);
         Task AddAsync(Link link);
         Task<int> CreateAsync(Link link);
         Task<int> Update(Link link);

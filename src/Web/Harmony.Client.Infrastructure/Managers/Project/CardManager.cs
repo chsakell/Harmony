@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Cards.Commands.AddUserCard;
 using Harmony.Application.Features.Cards.Commands.CreateBacklog;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
@@ -20,6 +21,8 @@ using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.Cards.Queries.GetCardMembers;
 using Harmony.Application.Features.Cards.Queries.GetLabels;
 using Harmony.Application.Features.Cards.Queries.LoadCard;
+using Harmony.Application.Features.Cards.Queries.SearchCards;
+using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -190,6 +193,13 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                 .PostAsJsonAsync(Routes.CardEndpoints.Links(request.SourceCardId), request);
 
             return await response.ToResult<CardDto>();
+        }
+
+        public async Task<PaginatedResult<CardDto>> Search(SearchCardsQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.CardEndpoints.Search(request));
+
+            return await response.ToPaginatedResult<CardDto>();
         }
     }
 }
