@@ -28,7 +28,7 @@ namespace Harmony.Infrastructure.Services.Management
             var result = new List<LinkDto>();
 
             var links = await _linkRepository.Entities
-                .Where(l => l.SourceCardId == cardId || l.TargetCardId == cardId)
+                .Where(l => l.SourceCardId == cardId)
                 .OrderBy(l => l.DateCreated)
                 .ToListAsync();
 
@@ -45,6 +45,7 @@ namespace Harmony.Infrastructure.Services.Management
                         {
                             CardId = card.Id,
                             CardTitle = card.Title,
+                            card.SerialNumber,
                             Board = new BoardDto()
                             {
                                 Id = board.Id,
@@ -56,7 +57,7 @@ namespace Harmony.Infrastructure.Services.Management
             foreach (var link in links)
             {
                 var sourceCard = cards.FirstOrDefault(c => c.CardId == link.SourceCardId);
-                var targetCard = cards.FirstOrDefault(c => c.CardId != link.TargetCardId);
+                var targetCard = cards.FirstOrDefault(c => c.CardId == link.TargetCardId);
 
                 if(sourceCard == null || targetCard == null)
                 {
@@ -69,9 +70,11 @@ namespace Harmony.Infrastructure.Services.Management
                     SourceCardId = sourceCard.CardId,
                     SourceCardTitle = sourceCard.CardTitle,
                     SourceCardBoard = sourceCard.Board,
+                    SourceCardSerialKey = $"{sourceCard.Board.Key}-{sourceCard.SerialNumber}",
                     TargetCardId = targetCard.CardId,
                     TargetCardTitle = targetCard.CardTitle,
                     TargetCardBoard = targetCard.Board,
+                    TargetCardSerialKey = $"{targetCard.Board.Key}-{targetCard.SerialNumber}",
                     Type = link.Type,
                     DateCreated = link.DateCreated,
                 };

@@ -1,4 +1,5 @@
 ﻿@using Harmony.Application.DTO
+@using Harmony.Application.Extensions
 @using Harmony.Application.Features.Lists.Queries.GetBoardLists
 @using Harmony.Application.Helpers;
 @using Harmony.Client.Infrastructure.Helper
@@ -77,7 +78,7 @@ else
                                 </MudSelect>
                             </div>
                         }
-                        @if(_card.BoardType == BoardType.Retrospective)
+                        @if (_card.BoardType == BoardType.Retrospective)
                         {
                             <MudButton StartIcon="@Icons.Material.Filled.Archive" Class="mt-2"
                                        Variant="Variant.Outlined" OnClick="ArchiveCard"
@@ -151,14 +152,30 @@ else
                                                          OnSave="(html) => SaveDescription(html)" />
                             </MudItem>
                         }
-                        <MudItem xs="12" Class="overflow-auto" Style="max-height:315px">
-                            @if(_card.Links.Any())
+                        <MudItem xs="12">
+                            @if (_card.Links.Any())
                             {
-                                @foreach(var link in _card.Links)
-                                {
-                                    
-                                }
+                                <MudPaper Class="pa-2">
+                                    @foreach (var link in _card.Links)
+                                    {
+                                        <MudStack Justify="Justify.SpaceBetween" Row="true">
+                                            <MudStack Row="true">
+                                                <MudChip Variant="Variant.Text" Color="Color.Warning">@link.Type.GetDescription()</MudChip>
+                                                <MudChip Label="true" Variant="Variant.Text" Color="Color.Info">
+                                                    <MudText Class="mr-2" Color="Color.Secondary">@link.TargetCardSerialKey</MudText>
+                                                    <MudText>@link.TargetCardTitle</MudText>
+                                                </MudChip>
+                                            </MudStack>
+                                            <MudStack>
+                                                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                                            </MudStack>
+                                        </MudStack>
+                                    }
+                                </MudPaper>
                             }
+                        </MudItem>
+                        <MudItem xs="12" Class="overflow-auto" Style="max-height:315px">
+
                             @if (_card.Attachments.Any())
                             {
                                 <MudStack>

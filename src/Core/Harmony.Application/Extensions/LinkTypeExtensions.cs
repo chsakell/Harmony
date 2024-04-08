@@ -19,7 +19,7 @@ namespace Harmony.Application.Extensions
                 LinkType.Clones => LinkType.IsClonedBy,
                 LinkType.IsDuplicatedBy => LinkType.Duplicates,
                 LinkType.Duplicates => LinkType.IsDuplicatedBy,
-                LinkType.RelatesTo => null,
+                LinkType.RelatesTo => LinkType.RelatesTo,
                 _ => null,
                 
             };

@@ -78,9 +78,11 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             result.SourceCardId = sourceCard.Id;
             result.SourceCardTitle = sourceCard.Title;
             result.SourceCardSerialKey = $"{sourceCard.IssueType.Board.Key}-{sourceCard.SerialNumber}";
+            result.SourceCardBoard = _mapper.Map<BoardDto>(sourceCard.IssueType.Board);
             result.TargetCardId = targetCard.Id;
             result.TargetCardTitle = targetCard.Title;
             result.TargetCardSerialKey = $"{targetCard.IssueType.Board.Key}-{targetCard.SerialNumber}";
+            result.TargetCardBoard = _mapper.Map<BoardDto>(targetCard.IssueType.Board);
             result.Type = result.Type;
 
             var counterPartLinkType = request.Type.GetCounterPart();

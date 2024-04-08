@@ -56,7 +56,7 @@ namespace Harmony.Client.Shared.Modals
         [Parameter] public string BoardKey { get; set; }
 
         public event EventHandler<EditableCardModel> OnCardUpdated;
-        
+
         protected async override Task OnInitializedAsync()
         {
             _loading = true;
@@ -69,7 +69,7 @@ namespace Harmony.Client.Shared.Modals
                 CreateCommentCommandModel.CardId = CardId;
                 CreateCommentCommandModel.BoardId = BoardId;
 
-                if (_card.BoardList != null) 
+                if (_card.BoardList != null)
                 {
                     _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == _card.BoardList.Id);
                 }
@@ -90,7 +90,7 @@ namespace Harmony.Client.Shared.Modals
                     if (result.Succeeded)
                     {
                         _card.Comments = result.Data;
-                        
+
                         StateHasChanged();
                     }
                 });
@@ -280,7 +280,14 @@ namespace Harmony.Client.Shared.Modals
             if (!result.Canceled)
             {
                 var linkAdded = result.Data as LinkDto;
-                
+
+                if (linkAdded != null && !_card.Links
+                    .Any(link => link.SourceCardId == linkAdded.SourceCardId &&
+                                    link.TargetCardId == linkAdded.TargetCardId &&
+                                    link.Type == linkAdded.Type))
+                {
+                    _card.Links.Add(linkAdded);
+                }
             }
         }
 
@@ -787,13 +794,13 @@ namespace Harmony.Client.Shared.Modals
             _cardBoardList = boardList;
 
             var moveUpdateResult = await _cardManager
-                    .MoveCardAsync(new MoveCardCommand(_card.Id, boardList.Id, 
+                    .MoveCardAsync(new MoveCardCommand(_card.Id, boardList.Id,
                     null, CardStatus.Active, Guid.NewGuid())
                     {
                         BoardId = BoardId
                     });
 
-            if(!moveUpdateResult.Succeeded)
+            if (!moveUpdateResult.Succeeded)
             {
                 _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == currentBoardListId);
                 DisplayMessage(moveUpdateResult);
@@ -818,17 +825,17 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task UpdateSubTask(object issue)
         {
-            if(issue is CardDto subtask && subtask.Id == subTaskBeforeEdit.Id)
+            if (issue is CardDto subtask && subtask.Id == subTaskBeforeEdit.Id)
             {
-                if(subtask.BoardListId != subTaskBeforeEdit.BoardListId)
+                if (subtask.BoardListId != subTaskBeforeEdit.BoardListId)
                 {
                     await UpdateChildBoardList(subtask.Id, subtask.BoardListId);
                 }
 
-                if(subtask.StoryPoints != subTaskBeforeEdit.StoryPoints)
+                if (subtask.StoryPoints != subTaskBeforeEdit.StoryPoints)
                 {
                     await _cardManager
-                        .UpdateStoryPointsAsync(new 
+                        .UpdateStoryPointsAsync(new
                         UpdateCardStoryPointsCommand(BoardId, subtask.Id, subtask.StoryPoints));
                 }
             }
