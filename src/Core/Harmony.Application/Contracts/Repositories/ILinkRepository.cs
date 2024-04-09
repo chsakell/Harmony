@@ -14,6 +14,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task AddAsync(Link link);
         Task<int> CreateAsync(Link link);
         Task<int> Update(Link link);
+        void Remove(Link link);
         Task<int> Delete(Link link);
     }
 }

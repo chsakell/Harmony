@@ -49,6 +49,11 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public void Remove(Link link)
+        {
+            _context.Links.Remove(link);
+        }
+
         public async Task<int> Delete(Link link)
         {
             _context.Links.Remove(link);

@@ -40,8 +40,4 @@
       <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Cards\Commands\DeleteLink\" />
-  </ItemGroup>
-
 </Project>

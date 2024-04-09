@@ -291,6 +291,36 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
+        private async Task DeleteLink(LinkDto link)
+        {
+            var parameters = new DialogParameters<Confirmation>
+            {
+                { x => x.ContentText, $"Are you sure you want to remove this link?" },
+                { x => x.ButtonText, "Yes" },
+                { x => x.Color, Color.Error }
+            };
+
+            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var linkDeleteResult = await _linkManager.DeleteLink(BoardId, link.Id);
+
+                if (linkDeleteResult.Succeeded)
+                {
+                    foreach (var linkId in linkDeleteResult.Data)
+                    {
+                        var linkToRemove = _card.Links.FirstOrDefault(l => l.Id == linkId);
+                        if (linkToRemove != null)
+                        {
+                            _card.Links.Remove(linkToRemove);
+                        }
+                    }
+                }
+            }
+        }
+
         private async Task EditCard(CardDto card)
         {
             var parameters = new DialogParameters<EditCardModal>

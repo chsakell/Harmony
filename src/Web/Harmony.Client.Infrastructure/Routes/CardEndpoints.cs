@@ -40,6 +40,7 @@ namespace Harmony.Client.Infrastructure.Routes
         }
 
         public static string Links(Guid cardId) => $"{Index}/{cardId}/links/";
+        public static string Link(Guid cardId, Guid linkId) => $"{Index}/{cardId}/links/{linkId}";
 
         public static string Search(SearchCardsQuery request)
         {

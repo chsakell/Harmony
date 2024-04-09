@@ -167,7 +167,7 @@ else
                                                 </MudChip>
                                             </MudStack>
                                             <MudStack>
-                                                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                                                <MudIconButton Color="Color.Error" OnClick="@(() => DeleteLink(link))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
                                             </MudStack>
                                         </MudStack>
                                     }

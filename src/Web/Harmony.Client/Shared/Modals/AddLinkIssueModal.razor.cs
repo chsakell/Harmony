@@ -1,15 +1,11 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
-using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.CreateLink;
 using Harmony.Application.Features.Cards.Queries.SearchCards;
-using Harmony.Application.Features.Lists.Queries.GetBoardLists;
-using Harmony.Application.Features.Sprints.Queries.GetSprintCards;
 using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using static MudBlazor.CategoryTypes;
 
 namespace Harmony.Client.Shared.Modals
 {
