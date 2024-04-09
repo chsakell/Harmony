@@ -70,6 +70,7 @@
                         </HeaderContent>
                         <RowTemplate Context="card">
                             <MudTd DataLabel="Title">
+                                <MudChip  Label="true" Size="Size.Small" Color="Color.Warning">@card.BoardKey - @card.SerialNumber</MudChip>
                                 @card.Title
                             </MudTd>
                             <MudTd DataLabel="Type">

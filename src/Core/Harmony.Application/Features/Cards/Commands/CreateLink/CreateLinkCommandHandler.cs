@@ -112,6 +112,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
 
             if (dbResult > 0)
             {
+                result.Id = sourceLink.Id;
 
                 return await Result<LinkDto>.SuccessAsync(result, _localizer["Link created"]);
             }
