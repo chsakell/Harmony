@@ -722,6 +722,13 @@ namespace Harmony.Client.Shared.Modals
             _navigationManager.NavigateTo($"/projects/{BoardId}/archived-items");
         }
 
+        private string GetLinkIssue(LinkDto link)
+        {
+            var slug = StringUtilities.SlugifyString(link.TargetCardBoard.Title.ToString());
+
+            return $"boards/{link.TargetCardBoard.Id}/{slug}/{link.TargetCardId}";
+        }
+
         private async Task AddComment(string comment)
         {
             if (comment.Equals("<p> </p>") || comment.Equals("<p><br></p>"))

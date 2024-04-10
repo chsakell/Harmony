@@ -161,10 +161,12 @@ else
                                         <MudStack Justify="Justify.SpaceBetween" Row="true">
                                             <MudStack Row="true">
                                                 <MudChip Variant="Variant.Text" Color="Color.Warning">@link.Type.GetDescription()</MudChip>
-                                                <MudChip Label="true" Variant="Variant.Text" Color="Color.Info">
-                                                    <MudText Class="mr-2" Color="Color.Secondary">@link.TargetCardSerialKey</MudText>
-                                                    <MudText>@link.TargetCardTitle</MudText>
-                                                </MudChip>
+                                                <MudLink Href="@(GetLinkIssue(link))" Target="_blank">
+                                                    <MudChip Label="true" Variant="Variant.Text" Color="Color.Info" Class="cursor-pointer">
+                                                        <MudText Class="mr-2" Color="Color.Secondary">@link.TargetCardSerialKey</MudText>
+                                                        <MudText>@link.TargetCardTitle</MudText>
+                                                    </MudChip>
+                                                </MudLink>
                                             </MudStack>
                                             <MudStack>
                                                 <MudIconButton Color="Color.Error" OnClick="@(() => DeleteLink(link))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>

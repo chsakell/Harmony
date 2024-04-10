@@ -10,7 +10,7 @@ namespace Harmony.Application.Notifications
             Guid sourceCardId, 
             string sourceCardTitle, 
             string sourceCardSerialKey, 
-            //BoardDto targetCardBoard, 
+            BoardDto targetCardBoard, 
             Guid targetCardId, 
             string targetCardTitle, 
             string targetCardSerialKey, 
@@ -22,7 +22,7 @@ namespace Harmony.Application.Notifications
             SourceCardId = sourceCardId;
             SourceCardTitle = sourceCardTitle;
             SourceCardSerialKey = sourceCardSerialKey;
-            //TargetCardBoard = targetCardBoard;
+            TargetCardBoard = targetCardBoard;
             TargetCardId = targetCardId;
             TargetCardTitle = targetCardTitle;
             TargetCardSerialKey = targetCardSerialKey;
@@ -35,7 +35,7 @@ namespace Harmony.Application.Notifications
         public Guid SourceCardId { get; set; }
         public string SourceCardTitle { get; set; }
         public string SourceCardSerialKey { get; set; }
-        //public BoardDto TargetCardBoard { get; set; }
+        public BoardDto TargetCardBoard { get; set; }
         public Guid TargetCardId { get; set; }
         public string TargetCardTitle { get; set; }
         public string TargetCardSerialKey { get; set; }
