@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
+using Harmony.Application.Notifications;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,24 +24,28 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
         private readonly IStringLocalizer<CreateLinkCommandHandler> _localizer;
         private readonly IMapper _mapper;
         private readonly ICardRepository _cardRepository;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly ICurrentUserService _currentUserService;
 
         public CreateLinkCommandHandler(ILinkRepository linkRepository,
             IStringLocalizer<CreateLinkCommandHandler> localizer,
             IMapper mapper,
             ICardRepository cardRepository,
+            INotificationsPublisher notificationsPublisher,
             ICurrentUserService currentUserService)
         {
             _linkRepository = linkRepository;
             _localizer = localizer;
             _mapper = mapper;
             _cardRepository = cardRepository;
+            _notificationsPublisher = notificationsPublisher;
             _currentUserService = currentUserService;
         }
         public async Task<Result<LinkDto>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
             var result = new LinkDto();
+            var counterPartResult = new LinkDto();
 
             if (string.IsNullOrEmpty(userId) && !_currentUserService.IsTrustedClientRequest)
             {
@@ -85,11 +93,22 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             result.TargetCardBoard = _mapper.Map<BoardDto>(targetCard.IssueType.Board);
             result.Type = request.Type;
 
+            counterPartResult.SourceCardId = targetCard.Id;
+            counterPartResult.SourceCardTitle = targetCard.Title;
+            counterPartResult.SourceCardSerialKey = $"{targetCard.IssueType.Board.Key}-{targetCard.SerialNumber}";
+            counterPartResult.SourceCardBoard = _mapper.Map<BoardDto>(targetCard.IssueType.Board);
+            counterPartResult.TargetCardId = sourceCard.Id;
+            counterPartResult.TargetCardTitle = sourceCard.Title;
+            counterPartResult.TargetCardSerialKey = $"{sourceCard.IssueType.Board.Key}-{sourceCard.SerialNumber}";
+            counterPartResult.TargetCardBoard = _mapper.Map<BoardDto>(sourceCard.IssueType.Board);
+            counterPartResult.Type = request.Type.GetCounterPart() ?? request.Type;
+
             var counterPartLinkType = request.Type.GetCounterPart();
+            Link targetLink = null;
 
             if (counterPartLinkType.HasValue)
             {
-                var targetLink = new Link()
+                targetLink = new Link()
                 {
                     SourceCardId = request.TargetCardId.Value,
                     TargetCardId = request.SourceCardId,
@@ -113,6 +132,18 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             if (dbResult > 0)
             {
                 result.Id = sourceLink.Id;
+                if(targetLink != null)
+                {
+                    counterPartResult.Id = targetLink.Id;
+                }
+                
+                _notificationsPublisher.PublishMessage(LinkMessageExtensions.GetCreateMessageFromLink(result),
+                    NotificationType.CardLinkCreated, 
+                    routingKey: BrokerConstants.RoutingKeys.SignalR);
+
+                _notificationsPublisher.PublishMessage(LinkMessageExtensions.GetCreateMessageFromLink(counterPartResult),
+                    NotificationType.CardLinkCreated,
+                    routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<LinkDto>.SuccessAsync(result, _localizer["Link created"]);
             }

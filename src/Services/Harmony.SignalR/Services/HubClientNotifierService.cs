@@ -177,5 +177,16 @@ namespace Harmony.SignalR.Services
             await _hubContext.Clients.Group(message.BoardId.ToString())
                 .SendAsync(ApplicationConstants.SignalR.OnCardCommentDeleted, message);
         }
+
+        public async Task LinkCreated(CardLinkCreatedMessage messsage)
+        {
+            await _hubContext.Clients.Group(messsage.SourceCardBoard.Id.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardLinkAdded, messsage);
+        }
+        public async Task LinkDeleted(CardLinkDeletedMessage messsage)
+        {
+            await _hubContext.Clients.Group(messsage.BoardId.ToString())
+                .SendAsync(ApplicationConstants.SignalR.OnCardLinkDeleted, messsage);
+        }
     }
 }

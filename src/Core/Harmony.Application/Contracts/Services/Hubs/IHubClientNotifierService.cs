@@ -33,5 +33,7 @@ namespace Harmony.Application.Contracts.Services.Hubs
         Task CommentCreated(CardCommentCreatedMessage messsage);
         Task CommentDeleted(CardCommentDeletedMessage messsage);
         Task UpdateCardIssueType(Guid boardId, Guid cardId, IssueTypeDto issueType);
+        Task LinkCreated(CardLinkCreatedMessage messsage);
+        Task LinkDeleted(CardLinkDeletedMessage messsage);
     }
 }

@@ -313,6 +313,22 @@ namespace Harmony.SignalR.Services.Hosted
                                                 await hubClientNotifierService.CommentDeleted(message);
                                             }
                                             break;
+                                        case NotificationType.CardLinkCreated:
+                                            {
+                                                var message = JsonSerializer
+                                                .Deserialize<CardLinkCreatedMessage>(ea.Body.Span);
+
+                                                await hubClientNotifierService.LinkCreated(message);
+                                            }
+                                            break;
+                                        case NotificationType.CardLinkDeleted:
+                                            {
+                                                var message = JsonSerializer
+                                                .Deserialize<CardLinkDeletedMessage>(ea.Body.Span);
+
+                                                await hubClientNotifierService.LinkDeleted(message);
+                                            }
+                                            break;
                                         default:
                                             break;
                                     }

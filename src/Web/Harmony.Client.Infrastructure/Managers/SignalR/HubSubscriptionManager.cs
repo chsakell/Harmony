@@ -71,6 +71,8 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public event EventHandler<CardStatusChangedMessage> OnCardStatusChanged;
         public event EventHandler<CardCommentCreatedMessage> OnCardCommentCreated;
         public event EventHandler<CardCommentDeletedMessage> OnCardCommentDeleted;
+        public event EventHandler<CardLinkCreatedMessage> OnCardLinkCreated;
+        public event EventHandler<CardLinkDeletedMessage> OnCardLinkDeleted;
 
         #endregion
 
@@ -228,6 +230,16 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             _hubConnection.On<CardCommentDeletedMessage>(ApplicationConstants.SignalR.OnCardCommentDeleted, (@event) =>
             {
                 OnCardCommentDeleted?.Invoke(this, @event);
+            });
+
+            _hubConnection.On<CardLinkCreatedMessage>(ApplicationConstants.SignalR.OnCardLinkAdded, (@event) =>
+            {
+                OnCardLinkCreated?.Invoke(this, @event);
+            });
+
+            _hubConnection.On<CardLinkDeletedMessage>(ApplicationConstants.SignalR.OnCardLinkDeleted, (@event) =>
+            {
+                OnCardLinkDeleted?.Invoke(this, @event);
             });
         }
 

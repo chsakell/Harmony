@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
+using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
+using Harmony.Application.Notifications;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Application.Specifications.Sprints;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,18 +24,21 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
         private readonly ILinkRepository _linkRepository;
         private readonly IStringLocalizer<DeleteLinkCommandHandler> _localizer;
         private readonly IMapper _mapper;
+        private readonly INotificationsPublisher _notificationsPublisher;
         private readonly ICardRepository _cardRepository;
         private readonly ICurrentUserService _currentUserService;
 
         public DeleteLinkCommandHandler(ILinkRepository linkRepository,
             IStringLocalizer<DeleteLinkCommandHandler> localizer,
             IMapper mapper,
+            INotificationsPublisher notificationsPublisher,
             ICardRepository cardRepository,
             ICurrentUserService currentUserService)
         {
             _linkRepository = linkRepository;
             _localizer = localizer;
             _mapper = mapper;
+            _notificationsPublisher = notificationsPublisher;
             _cardRepository = cardRepository;
             _currentUserService = currentUserService;
         }
@@ -79,10 +86,41 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
             {
                 deletedLinks.Add(sourceLink.Id);
 
+                await PublishRemovedLink(sourceLink);
+                await PublishRemovedLink(targetCardLink);
+
                 return await Result<List<Guid>>.SuccessAsync(deletedLinks, _localizer["Link removed"]);
             }
 
             return await Result<List<Guid>>.FailAsync(_localizer["Failed to remove link"]);
+        }
+
+        private async Task PublishRemovedLink(Link link)
+        {
+            if(link == null)
+            {
+                return;
+            }
+
+            var includes = new CardIncludes()
+            {
+                IssueType = true
+            };
+
+            var filter = new CardFilterSpecification(link.SourceCardId, includes);
+
+            var card = await _cardRepository
+               .Entities.Specify(filter)
+               .FirstOrDefaultAsync();
+
+            if(card == null)
+            {
+                return;
+            }
+
+            _notificationsPublisher.PublishMessage(new CardLinkDeletedMessage(link.Id, card.IssueType.BoardId),
+                    NotificationType.CardLinkDeleted,
+                    routingKey: BrokerConstants.RoutingKeys.SignalR);
         }
     }
 }

@@ -25,6 +25,8 @@
         CardMemberAdded,
         CheckListRemoved,
         CardCommentCreated,
-        CardCommentDeleted
+        CardCommentDeleted,
+        CardLinkCreated,
+        CardLinkDeleted,
     }
 }

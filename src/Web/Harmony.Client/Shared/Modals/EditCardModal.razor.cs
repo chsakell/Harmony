@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Extensions;
 using Harmony.Application.Features.Cards.Commands.CreateCheckListItem;
 using Harmony.Application.Features.Cards.Commands.CreateChildIssue;
 using Harmony.Application.Features.Cards.Commands.CreateLink;
@@ -105,6 +106,8 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLabelToggled += OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged += OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
+            _hubSubscriptionManager.OnCardLinkCreated += OnCardLinkCreated;
+            _hubSubscriptionManager.OnCardLinkDeleted += OnCardLinkDeleted;
         }
 
         private void UnRegisterEvents()
@@ -115,6 +118,31 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLabelToggled -= OnCardLabelToggled;
             _hubSubscriptionManager.OnCardDatesChanged -= OnCardDatesChanged;
             _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
+            _hubSubscriptionManager.OnCardLinkCreated -= OnCardLinkCreated;
+            _hubSubscriptionManager.OnCardLinkDeleted -= OnCardLinkDeleted;
+        }
+
+        private void OnCardLinkDeleted(object? sender, Application.Notifications.CardLinkDeletedMessage e)
+        {
+            if(e != null)
+            {
+                var linkToRemove = _card.Links.FirstOrDefault(l => l.Id == e.LinkId);
+
+                if(linkToRemove != null)
+                {
+                    _card.Links.Remove(linkToRemove);
+                    StateHasChanged();
+                }
+            }
+        }
+
+        private void OnCardLinkCreated(object? sender, Application.Notifications.CardLinkCreatedMessage e)
+        {
+            if(e != null && !_card.Links.Any(l => l.Id == e.Id) && _card.Id == e.SourceCardId)
+            {
+                _card.Links.Add(LinkMessageExtensions.GetLinkFromCreateMessage(e));
+                StateHasChanged();
+            }
         }
 
         private void OnCardAttachmentRemoved(object? sender, AttachmentRemovedEvent e)
