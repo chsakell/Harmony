@@ -111,6 +111,11 @@ BEGIN
 	join Cards child on child.ParentCardId = parent.Id
 	where child.ParentCardId in (select id from @cards) AND child.Status = 0
 	group by parent.Id
+
+	select l.Id, l.SourceCardId
+	from Links l
+	join Cards c on c.Id = l.TargetCardId
+	where l.SourceCardId in (select id from @cards)
 END
 GO
 

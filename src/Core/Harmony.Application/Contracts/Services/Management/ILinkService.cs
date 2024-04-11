@@ -4,6 +4,6 @@ namespace Harmony.Application.Contracts.Services.Management
 {
     public interface ILinkService
     {
-        Task<List<LinkDto>> GetLinksForCard(Guid cardId);
+        Task<List<LinkDetailsDto>> GetLinksForCard(Guid cardId);
     }
 }

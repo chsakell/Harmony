@@ -188,12 +188,12 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<SprintDto>();
         }
 
-        public async Task<IResult<LinkDto>> CreateLink(CreateLinkCommand request)
+        public async Task<IResult<LinkDetailsDto>> CreateLink(CreateLinkCommand request)
         {
             var response = await _httpClient
                 .PostAsJsonAsync(Routes.CardEndpoints.Links(request.SourceCardId), request);
 
-            return await response.ToResult<LinkDto>();
+            return await response.ToResult<LinkDetailsDto>();
         }
 
         public async Task<PaginatedResult<CardDto>> Search(SearchCardsQuery request)

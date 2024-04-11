@@ -10,7 +10,7 @@ namespace Harmony.Application.Extensions
 {
     public static class LinkMessageExtensions
     {
-        public static CardLinkCreatedMessage GetCreateMessageFromLink(LinkDto link)
+        public static CardLinkCreatedMessage GetCreateMessageFromLink(LinkDetailsDto link)
         {
             return new CardLinkCreatedMessage(
                     link.Id,
@@ -28,9 +28,9 @@ namespace Harmony.Application.Extensions
                     );
         }
 
-        public static LinkDto GetLinkFromCreateMessage(CardLinkCreatedMessage link)
+        public static LinkDetailsDto GetLinkFromCreateMessage(CardLinkCreatedMessage link)
         {
-            return new LinkDto()
+            return new LinkDetailsDto()
             {
                 Id = link.Id,
                 SourceCardBoard = link.SourceCardBoard,

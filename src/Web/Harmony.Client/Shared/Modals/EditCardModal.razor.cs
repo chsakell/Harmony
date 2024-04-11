@@ -307,7 +307,7 @@ namespace Harmony.Client.Shared.Modals
 
             if (!result.Canceled)
             {
-                var linkAdded = result.Data as LinkDto;
+                var linkAdded = result.Data as LinkDetailsDto;
 
                 if (linkAdded != null && !_card.Links
                     .Any(link => link.SourceCardId == linkAdded.SourceCardId &&
@@ -319,7 +319,7 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
-        private async Task DeleteLink(LinkDto link)
+        private async Task DeleteLink(LinkDetailsDto link)
         {
             var parameters = new DialogParameters<Confirmation>
             {
@@ -722,7 +722,7 @@ namespace Harmony.Client.Shared.Modals
             _navigationManager.NavigateTo($"/projects/{BoardId}/archived-items");
         }
 
-        private string GetLinkIssue(LinkDto link)
+        private string GetLinkIssue(LinkDetailsDto link)
         {
             var slug = StringUtilities.SlugifyString(link.TargetCardBoard.Title.ToString());
 

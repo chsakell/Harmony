@@ -91,7 +91,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                         {
                             cardsToReOrder = currentList.Cards
                                 .Where(c => c.Position >= newPosition
-                                && c.Position < previousPosition 
+                                && c.Position < previousPosition
                                 && c.BoardListId == card.BoardListId
                                 && c.Id != currentCard.Id).ToList();
                         }
@@ -99,7 +99,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                         {
                             cardsToReOrder = currentList.Cards
                                 .Where(c => c.Position <= newPosition
-                                && c.Position > previousPosition 
+                                && c.Position > previousPosition
                                 && c.BoardListId == card.BoardListId
                                 && c.Id != currentCard.Id).ToList();
                         }
@@ -151,7 +151,7 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
                 }
 
                 var listCardsToReposition = list.Cards.Where(c => c.Position > archivedCardPosistion);
-                foreach(var listCard in listCardsToReposition)
+                foreach (var listCard in listCardsToReposition)
                 {
                     listCard.Position -= 1;
                 }
@@ -385,6 +385,35 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
             {
                 card.TotalItems -= totalItems;
                 card.TotalItemsCompleted -= totalItemsCompleted;
+            }
+        }
+
+        public void AddLink(Guid linkId, Guid cardId)
+        {
+            var card = _board.Lists
+                .SelectMany(l => l.Cards)
+                .FirstOrDefault(c => c.Id == cardId);
+
+            if (card != null)
+            {
+                if (card.Links != null && !card.Links.Any(l => l.Id == linkId))
+                {
+                    var link = new LinkDetailsDto() { Id = linkId, SourceCardId = cardId };
+                    card.Links.Add(link);
+                }
+            }
+        }
+
+        public void RemoveLink(Guid linkId)
+        {
+            var card = _board.Lists
+                .SelectMany(l => l.Cards)
+                .FirstOrDefault(c => c.Links.Any(l => l.Id == linkId));
+
+            if (card != null)
+            {
+                var link = card.Links.FirstOrDefault(l => l.Id == linkId);
+                card.Links.Remove(link);
             }
         }
 

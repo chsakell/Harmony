@@ -15,6 +15,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Harmony.Application.Constants;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
+using Google.Protobuf.Collections;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -175,6 +176,7 @@ namespace Harmony.Infrastructure.Services.Management
                         var sprints = (await multi.ReadAsync<Sprint>()).ToList();
                         var comments = (await multi.ReadAsync<CardCommentsDto>()).ToList();
                         var children = (await multi.ReadAsync<CardChildrenDto>()).ToList();
+                        var links = (await multi.ReadAsync<Link>()).ToList();
 
                         foreach (var cardLabel in cardLabels)
                         {
@@ -245,6 +247,8 @@ namespace Harmony.Infrastructure.Services.Management
                                     card.Children.Add(new Card());
                                 }
                             }
+
+                            card.Links = links.Where(l => l.SourceCardId == card.Id).ToList();
                         }
 
                         board.Lists = new List<BoardList>();
@@ -260,7 +264,6 @@ namespace Harmony.Infrastructure.Services.Management
 
                         return board;
                     }
-
                 }
             }
             catch (Exception)
@@ -295,7 +298,10 @@ namespace Harmony.Infrastructure.Services.Management
                     var checkLists = (await multi.ReadAsync<CheckList>()).ToList();
                     var checkListItems = (await multi.ReadAsync<CheckListItem>()).ToList();
                     var issueTypes = (await multi.ReadAsync<IssueType>()).ToList();
+                    var sprints = (await multi.ReadAsync<Sprint>()).ToList();
                     var comments = (await multi.ReadAsync<CardCommentsDto>()).ToList();
+                    var children = (await multi.ReadAsync<CardChildrenDto>()).ToList();
+                    var links = (await multi.ReadAsync<Link>()).ToList();
 
                     foreach (var cardLabel in cardLabels)
                     {
@@ -350,6 +356,8 @@ namespace Harmony.Infrastructure.Services.Management
                                 card.Comments.Add(new Comment());
                             }
                         }
+
+                        card.Links = links.Where(l => l.SourceCardId == card.Id).ToList();
                     }
 
                     return cards;

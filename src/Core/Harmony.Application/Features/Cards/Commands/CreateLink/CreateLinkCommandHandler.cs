@@ -18,7 +18,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateLink
 {
-    public class CreateLinkCommandHandler : IRequestHandler<CreateLinkCommand, Result<LinkDto>>
+    public class CreateLinkCommandHandler : IRequestHandler<CreateLinkCommand, Result<LinkDetailsDto>>
     {
         private readonly ILinkRepository _linkRepository;
         private readonly IStringLocalizer<CreateLinkCommandHandler> _localizer;
@@ -41,15 +41,15 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             _notificationsPublisher = notificationsPublisher;
             _currentUserService = currentUserService;
         }
-        public async Task<Result<LinkDto>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
+        public async Task<Result<LinkDetailsDto>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
-            var result = new LinkDto();
-            var counterPartResult = new LinkDto();
+            var result = new LinkDetailsDto();
+            var counterPartResult = new LinkDetailsDto();
 
             if (string.IsNullOrEmpty(userId) && !_currentUserService.IsTrustedClientRequest)
             {
-                return await Result<LinkDto>.FailAsync(_localizer["Login required to complete this operator"]);
+                return await Result<LinkDetailsDto>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
             var includes = new CardIncludes() { Board = true };
@@ -62,7 +62,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
 
             if (sourceCard == null)
             {
-                return Result<LinkDto>.Fail("Source issue not found");
+                return Result<LinkDetailsDto>.Fail("Source issue not found");
             }
 
             var targetCardFilter = new CardFilterSpecification(request.TargetCardId, includes);
@@ -73,14 +73,14 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
 
             if (targetCard == null)
             {
-                return Result<LinkDto>.Fail("Target issue not found");
+                return Result<LinkDetailsDto>.Fail("Target issue not found");
             }
 
             var link = await _linkRepository.GetLink(request.SourceCardId, request.TargetCardId.Value, request.Type);
 
             if(link != null)
             {
-                return Result<LinkDto>.Fail($"{request.Type.GetDescription()} linking already existing for this card");
+                return Result<LinkDetailsDto>.Fail($"{request.Type.GetDescription()} linking already existing for this card");
             }
 
             result.SourceCardId = sourceCard.Id;
@@ -145,10 +145,10 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
                     NotificationType.CardLinkCreated,
                     routingKey: BrokerConstants.RoutingKeys.SignalR);
 
-                return await Result<LinkDto>.SuccessAsync(result, _localizer["Link created"]);
+                return await Result<LinkDetailsDto>.SuccessAsync(result, _localizer["Link created"]);
             }
 
-            return await Result<LinkDto>.FailAsync(_localizer["Failed to create link"]);
+            return await Result<LinkDetailsDto>.FailAsync(_localizer["Failed to create link"]);
         }
     }
 }

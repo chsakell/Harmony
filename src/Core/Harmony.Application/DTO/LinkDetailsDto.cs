@@ -3,7 +3,7 @@ using Harmony.Domain.Enums;
 
 namespace Harmony.Application.DTO
 {
-    public class LinkDto
+    public class LinkDetailsDto
     {
         public Guid Id { get; set; }
         public BoardDto SourceCardBoard { get; set; }

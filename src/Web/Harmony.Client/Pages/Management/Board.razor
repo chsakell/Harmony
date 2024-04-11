@@ -229,6 +229,11 @@ else
                                         <MudChip Icon="@Icons.Material.Filled.Attachment" Label="true"
                                                  Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalAttachments</MudChip>
                                     }
+                                    @if (context.Links.Any())
+                                    {
+                                        <MudChip Icon="@Icons.Material.Filled.Link" Label="true"
+                                                 Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.Links.Count</MudChip>
+                                    }
                                     @if (context.TotalComments > 0)
                                     {
                                         <MudChip Icon="@Icons.Material.Filled.Comment" Label="true"

@@ -47,7 +47,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<RemoveUserCardResponse>> RemoveCardMemberAsync(RemoveUserCardCommand command);
         Task<IResult<RemoveCardAttachmentResponse>> RemoveCardAttachmentAsync(RemoveCardAttachmentCommand command);
         Task<IResult<SprintDto>> MoveCardsToSprintAsync(MoveToSprintCommand request);
-        Task<IResult<LinkDto>> CreateLink(CreateLinkCommand request);
+        Task<IResult<LinkDetailsDto>> CreateLink(CreateLinkCommand request);
         Task<PaginatedResult<CardDto>> Search(SearchCardsQuery request);
     }
 }

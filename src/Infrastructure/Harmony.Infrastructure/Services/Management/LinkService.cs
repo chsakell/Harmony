@@ -23,9 +23,9 @@ namespace Harmony.Infrastructure.Services.Management
             _cardRepository = cardRepository;
         }
 
-        public async Task<List<LinkDto>> GetLinksForCard(Guid cardId)
+        public async Task<List<LinkDetailsDto>> GetLinksForCard(Guid cardId)
         {
-            var result = new List<LinkDto>();
+            var result = new List<LinkDetailsDto>();
 
             var links = await _linkRepository.Entities
                 .Where(l => l.SourceCardId == cardId)
@@ -64,7 +64,7 @@ namespace Harmony.Infrastructure.Services.Management
                     continue;
                 }
 
-                var dto = new LinkDto()
+                var dto = new LinkDetailsDto()
                 {
                     Id = link.Id,
                     SourceCardId = sourceCard.CardId,

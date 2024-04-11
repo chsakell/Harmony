@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateLink
 {
-    public class CreateLinkCommand : BaseBoardCommand, IRequest<Result<LinkDto>>
+    public class CreateLinkCommand : BaseBoardCommand, IRequest<Result<LinkDetailsDto>>
     {
         public CreateLinkCommand(Guid boardId, Guid sourceCardId)
         {

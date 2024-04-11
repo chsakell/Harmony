@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
+using Harmony.Application.Extensions;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -135,6 +136,8 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardStatusChanged += OnCardStatusChanged;
             _hubSubscriptionManager.OnCardCommentCreated += OnCardCommentCreated;
             _hubSubscriptionManager.OnCardCommentDeleted += OnCardCommentDeleted;
+            _hubSubscriptionManager.OnCardLinkCreated += OnCardLinkCreated;
+            _hubSubscriptionManager.OnCardLinkDeleted += OnCardLinkDeleted;
 
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
         }
@@ -164,11 +167,28 @@ namespace Harmony.Client.Pages.Management
             _hubSubscriptionManager.OnCardStatusChanged -= OnCardStatusChanged;
             _hubSubscriptionManager.OnCardCommentCreated -= OnCardCommentCreated;
             _hubSubscriptionManager.OnCardCommentDeleted -= OnCardCommentDeleted;
+            _hubSubscriptionManager.OnCardLinkCreated -= OnCardLinkCreated;
+            _hubSubscriptionManager.OnCardLinkDeleted -= OnCardLinkDeleted;
 
             if (stopListening)
             {
                 await _hubSubscriptionManager.StopListeningForBoardEvents(_stopListeningBoardId);
             }
+        }
+
+        private void OnCardLinkDeleted(object? sender, CardLinkDeletedMessage e)
+        {
+            if (e != null)
+            {
+                KanbanStore.RemoveLink(e.LinkId);
+                _dropContainer.Refresh();
+            }
+        }
+
+        private void OnCardLinkCreated(object? sender, CardLinkCreatedMessage e)
+        {
+            KanbanStore.AddLink(e.Id, e.SourceCardId);
+            _dropContainer.Refresh();
         }
 
         private void OnCardCommentDeleted(object? sender, CardCommentDeletedMessage e)
