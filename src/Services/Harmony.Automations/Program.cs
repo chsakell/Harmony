@@ -57,7 +57,7 @@ namespace Harmony.Automations
 
             builder.Services.AddSingleton<RabbitMqHealthCheck>();
             builder.Services.AddHealthChecks()
-                .AddDbContextCheck<NotificationContext>("database", tags: ["ready"])
+                .AddDbContextCheck<AutomationContext>("database", tags: ["ready"])
                 .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
 
             var app = builder.Build();

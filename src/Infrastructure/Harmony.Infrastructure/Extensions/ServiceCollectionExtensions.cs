@@ -35,11 +35,5 @@ namespace Harmony.Infrastructure.Extensions
                 .AddScoped<IRetrospectiveRepository, RetrospectiveRepository>()
                 .AddScoped<ILinkRepository, LinkRepository>();
         }
-
-        public static IServiceCollection AddMongoDbRepositories(this IServiceCollection services)
-        {
-            return services
-                .AddScoped<IAutomationRepository, AutomationRepository>();
-        }
     }
 }

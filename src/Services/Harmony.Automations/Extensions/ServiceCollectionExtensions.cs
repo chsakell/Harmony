@@ -2,12 +2,14 @@
 using Harmony.Application.Contracts.Automation;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
+using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Notifications;
 using Harmony.Automations.Contracts;
 using Harmony.Automations.Services;
 using Harmony.Infrastructure.Mappings;
+using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Seed;
 using Harmony.Infrastructure.Services.Identity;
 using Harmony.Infrastructure.Services.Management;
@@ -93,6 +95,12 @@ namespace Harmony.Automations.Extensions
             services.AddSingleton<INotificationsPublisher, RabbitMQNotificationPublisher>();
 
             return services;
+        }
+
+        public static IServiceCollection AddMongoDbRepositories(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<IAutomationRepository, AutomationRepository>();
         }
     }
 }

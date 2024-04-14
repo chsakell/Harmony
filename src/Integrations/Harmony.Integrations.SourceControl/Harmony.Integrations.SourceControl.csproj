@@ -6,4 +6,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Harmony.Application\Harmony.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Harmony.Logging\Harmony.Logging.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Harmony.Messaging\Harmony.Messaging.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Harmony.Persistence\Harmony.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>
