@@ -1,5 +1,7 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Messaging;
+using Harmony.Application.Contracts.Repositories;
+using Harmony.Infrastructure.Repositories;
 using Harmony.Messaging;
 
 namespace Harmony.Automations.Extensions
@@ -40,7 +42,8 @@ namespace Harmony.Automations.Extensions
 
         public static IServiceCollection AddMongoDbRepositories(this IServiceCollection services)
         {
-            return services;
+            return services
+                .AddScoped<ISourceControlRepository, SourceControlRepository>();
         }
     }
 }
