@@ -1,9 +1,12 @@
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
+using Harmony.Application.Features.SourceControl.Commands.DeleteBranch;
 using Harmony.Domain.Enums.SourceControl;
 using Harmony.Domain.SourceControl;
 using Harmony.Integrations.SourceControl.Constants;
 using Harmony.Integrations.SourceControl.Models;
 using Harmony.Integrations.SourceControl.WebhookRequests;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -11,14 +14,14 @@ namespace Harmony.Integrations.SourceControl.Controllers
 {
     public class GithubController : Controller
     {
-        private readonly ISourceControlRepository _sourceControlRepository;
+        private readonly IMediator _mediator;
         private readonly ILogger<GithubController> _logger;
 
         public GithubController(
-            ISourceControlRepository sourceControlRepository,
+            IMediator mediator,
             ILogger<GithubController> logger)
         {
-            _sourceControlRepository = sourceControlRepository;
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -32,23 +35,32 @@ namespace Harmony.Integrations.SourceControl.Controllers
 
             var eventType = Request.Headers[GithubConstants.GitHubEventHeader];
 
+            if(eventType == "ping" || request.ref_type == null)
+            {
+                return Ok();
+            }
+
             if(request.ref_type.Equals("branch"))
             {
                 switch(eventType)
                 {
                     case "create":
-                        var branch = new Branch()
+                        await _mediator.Send(new CreateBranchCommand()
                         {
-                            Id = Guid.NewGuid().ToString(),
                             Name = request.Ref,
+                            Provider = SourceControlProvider.GitHub,
+                            RepositoryId = request.repository.id.ToString(),
+                            RepositoryName = request.repository.name,
+                            RepositoryFullName = request.repository.full_name,
                             RepositoryUrl = request.repository.html_url,
-                            Provider = SourceControlProvider.GitHub
-                        };
-
-                        await _sourceControlRepository.CreateBranch(branch);
+                        });
                         break;
                     case "delete":
-                        await _sourceControlRepository.DeleteBranch(request.Ref);
+                        await _mediator.Send(new DeleteBranchCommand()
+                        {
+                            Name = request.Ref,
+                            RepositoryId = request.repository.id.ToString()
+                        });
                         break;
                     default:
                         break;

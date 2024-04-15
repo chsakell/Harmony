@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Harmony.Application.SourceControl\Harmony.Application.SourceControl.csproj" />
     <ProjectReference Include="..\..\Core\Harmony.Application\Harmony.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Infrastructure\Harmony.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Logging\Harmony.Logging.csproj" />

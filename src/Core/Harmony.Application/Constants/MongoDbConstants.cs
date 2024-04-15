@@ -13,6 +13,7 @@
         #region Source Control
 
         public const string SourceControlDatabase = "harmony_source_control";
+        public const string RepositoriesCollection = "repositories";
         public const string BranchesCollection = "branches";
 
         #endregion

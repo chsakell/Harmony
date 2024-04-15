@@ -1,4 +1,5 @@
 ﻿using Algolia.Search.Models.Analytics;
+using Bogus.DataSets;
 using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
@@ -11,6 +12,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
+using static Harmony.Shared.Constants.Permission.Permissions;
 
 namespace Harmony.Infrastructure.Repositories
 {
@@ -32,6 +34,32 @@ namespace Harmony.Infrastructure.Repositories
             _client = new MongoClient(mongoClientSettings);
         }
 
+        public async Task CreateRepository(Repository repo)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var repositoriesCollection = database
+                .GetCollection<Repository>(MongoDbConstants.RepositoriesCollection);
+
+            await repositoriesCollection.InsertOneAsync(repo);
+        }
+
+        public async Task<Repository> GetRepository(string repositoryId)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var repositoriesCollection = database
+                .GetCollection<Repository>(MongoDbConstants.RepositoriesCollection);
+
+            var filter = Builders<Repository>.Filter
+                    .Eq(repo => repo.Id, repositoryId);
+
+
+            return await repositoriesCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
         public async Task CreateBranch(Branch branch)
         {
             var database = _client
@@ -41,6 +69,27 @@ namespace Harmony.Infrastructure.Repositories
                 .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
 
             await branchesCollection.InsertOneAsync(branch);
+        }
+
+        public async Task<Branch> GetBranch(string name, string repositoryId)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var branchesCollection = database
+                .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
+
+            var repoFilter = Builders<Branch>.Filter
+                .Eq(repo => repo.RepositoryId, repositoryId);
+
+            var nameFilter = Builders<Branch>.Filter
+                    .Eq(branch => branch.Name, name);
+
+            var filter = Builders<Branch>.Filter
+                .And(repoFilter, nameFilter);
+
+
+            return await branchesCollection.Find(filter).FirstOrDefaultAsync();
         }
 
         public async Task<bool> DeleteBranch(string name)

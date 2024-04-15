@@ -1,5 +1,6 @@
 using Harmony.Application.Configurations;
 using Harmony.Application.Extensions;
+using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Automations.Extensions;
 using Harmony.Logging;
 using Harmony.Messaging;
@@ -9,6 +10,13 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog(SeriLogger.Configure);
+
+// Add services to the container.
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
+
 builder.Services.AddRetryPolicies();
 builder.Services.AddSwaggerGen();
 
@@ -21,7 +29,7 @@ builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection
 builder.Services.AddMessaging(builder.Configuration);
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateBranchCommand).Assembly));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
