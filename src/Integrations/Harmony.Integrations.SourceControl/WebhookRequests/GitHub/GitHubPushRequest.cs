@@ -1,8 +1,11 @@
-﻿namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
+﻿using System.Text.Json.Serialization;
+
+namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
 {
 
     public class GitHubPushRequest
     {
+        [JsonPropertyName("ref")]
         public string Ref { get; set; }
         public string before { get; set; }
         public string after { get; set; }
@@ -208,7 +211,7 @@
         public string tree_id { get; set; }
         public bool distinct { get; set; }
         public string message { get; set; }
-        public DateTime timestamp { get; set; }
+        public string timestamp { get; set; }
         public string url { get; set; }
         public Author1 author { get; set; }
         public Committer1 committer { get; set; }

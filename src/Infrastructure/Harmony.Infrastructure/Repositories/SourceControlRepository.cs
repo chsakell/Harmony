@@ -107,5 +107,16 @@ namespace Harmony.Infrastructure.Repositories
 
             return deleteResult.DeletedCount > 0;
         }
+
+        public async Task CreatePush(Push push)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var commitsCollection = database
+                .GetCollection<Push>(MongoDbConstants.CommitsCollection);
+
+            await commitsCollection.InsertOneAsync(push);
+        }
     }
 }
