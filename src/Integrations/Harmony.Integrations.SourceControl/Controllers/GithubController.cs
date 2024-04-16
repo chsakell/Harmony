@@ -6,9 +6,13 @@ using Harmony.Domain.SourceControl;
 using Harmony.Integrations.SourceControl.Constants;
 using Harmony.Integrations.SourceControl.Models;
 using Harmony.Integrations.SourceControl.WebhookRequests;
+using Harmony.Integrations.SourceControl.WebhookRequests.GitHub;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace Harmony.Integrations.SourceControl.Controllers
 {
@@ -26,44 +30,56 @@ namespace Harmony.Integrations.SourceControl.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index([FromBody] GithubWebhookRequest request)
+        public async Task<IActionResult> Index()
         {
-            if(request == null)
-            {
-                return Ok();
-            }
-
             var eventType = Request.Headers[GithubConstants.GitHubEventHeader];
 
-            if(eventType == "ping" || request.ref_type == null)
+            if (eventType == "ping")
             {
                 return Ok();
             }
 
-            if(request.ref_type.Equals("branch"))
+            string postData = null;
+            // Read the post data from the request body
+            using (var reader = new StreamReader(HttpContext.Request.Body))
             {
-                switch(eventType)
+                postData = await reader.ReadToEndAsync();
+
+            }
+
+            if(eventType == "push")
+            {
+                var request = JsonSerializer.Deserialize<GitHubPushRequest>(postData);
+            }
+            else if (eventType == "branch")
+            {
+                var request = JsonSerializer.Deserialize<GitHubBranchRequest>(postData);
+
+                if (request.ref_type.Equals("branch"))
                 {
-                    case "create":
-                        await _mediator.Send(new CreateBranchCommand()
-                        {
-                            Name = request.Ref,
-                            Provider = SourceControlProvider.GitHub,
-                            RepositoryId = request.repository.id.ToString(),
-                            RepositoryName = request.repository.name,
-                            RepositoryFullName = request.repository.full_name,
-                            RepositoryUrl = request.repository.html_url,
-                        });
-                        break;
-                    case "delete":
-                        await _mediator.Send(new DeleteBranchCommand()
-                        {
-                            Name = request.Ref,
-                            RepositoryId = request.repository.id.ToString()
-                        });
-                        break;
-                    default:
-                        break;
+                    switch (eventType)
+                    {
+                        case "create":
+                            await _mediator.Send(new CreateBranchCommand()
+                            {
+                                Name = request.Ref,
+                                Provider = SourceControlProvider.GitHub,
+                                RepositoryId = request.repository.id.ToString(),
+                                RepositoryName = request.repository.name,
+                                RepositoryFullName = request.repository.full_name,
+                                RepositoryUrl = request.repository.html_url,
+                            });
+                            break;
+                        case "delete":
+                            await _mediator.Send(new DeleteBranchCommand()
+                            {
+                                Name = request.Ref,
+                                RepositoryId = request.repository.id.ToString()
+                            });
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 

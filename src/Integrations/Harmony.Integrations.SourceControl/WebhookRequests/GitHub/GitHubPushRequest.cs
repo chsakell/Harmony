@@ -1,23 +1,32 @@
-﻿namespace Harmony.Integrations.SourceControl.WebhookRequests
+﻿namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
 {
 
-    public class GithubWebhookRequest
+    public class GitHubPushRequest
     {
         public string Ref { get; set; }
-        public string ref_type { get; set; }
-        public string pusher_type { get; set; }
-        public GithubRepository repository { get; set; }
-        public GithubSender sender { get; set; }
+        public string before { get; set; }
+        public string after { get; set; }
+        public GitHubPushRepository repository { get; set; }
+        public GitHubPushPusher pusher { get; set; }
+        public Organization organization { get; set; }
+        public GitHubPushSender sender { get; set; }
+        public bool created { get; set; }
+        public bool deleted { get; set; }
+        public bool forced { get; set; }
+        public object base_ref { get; set; }
+        public string compare { get; set; }
+        public Commit[] commits { get; set; }
+        public Head_Commit head_commit { get; set; }
     }
 
-    public class GithubRepository
+    public class GitHubPushRepository
     {
         public int id { get; set; }
         public string node_id { get; set; }
         public string name { get; set; }
         public string full_name { get; set; }
         public bool _private { get; set; }
-        public Owner owner { get; set; }
+        public GitHubPushOwner owner { get; set; }
         public string html_url { get; set; }
         public object description { get; set; }
         public bool fork { get; set; }
@@ -58,9 +67,9 @@
         public string labels_url { get; set; }
         public string releases_url { get; set; }
         public string deployments_url { get; set; }
-        public DateTime created_at { get; set; }
+        public int created_at { get; set; }
         public DateTime updated_at { get; set; }
-        public DateTime pushed_at { get; set; }
+        public int pushed_at { get; set; }
         public string git_url { get; set; }
         public string ssh_url { get; set; }
         public string clone_url { get; set; }
@@ -91,9 +100,58 @@
         public int open_issues { get; set; }
         public int watchers { get; set; }
         public string default_branch { get; set; }
+        public int stargazers { get; set; }
+        public string master_branch { get; set; }
+        public string organization { get; set; }
     }
 
-    public class Owner
+    public class GitHubPushOwner
+    {
+        public string name { get; set; }
+        public object email { get; set; }
+        public string login { get; set; }
+        public int id { get; set; }
+        public string node_id { get; set; }
+        public string avatar_url { get; set; }
+        public string gravatar_id { get; set; }
+        public string url { get; set; }
+        public string html_url { get; set; }
+        public string followers_url { get; set; }
+        public string following_url { get; set; }
+        public string gists_url { get; set; }
+        public string starred_url { get; set; }
+        public string subscriptions_url { get; set; }
+        public string organizations_url { get; set; }
+        public string repos_url { get; set; }
+        public string events_url { get; set; }
+        public string received_events_url { get; set; }
+        public string type { get; set; }
+        public bool site_admin { get; set; }
+    }
+
+    public class GitHubPushPusher
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+    }
+
+    public class Organization
+    {
+        public string login { get; set; }
+        public int id { get; set; }
+        public string node_id { get; set; }
+        public string url { get; set; }
+        public string repos_url { get; set; }
+        public string events_url { get; set; }
+        public string hooks_url { get; set; }
+        public string issues_url { get; set; }
+        public string members_url { get; set; }
+        public string public_members_url { get; set; }
+        public string avatar_url { get; set; }
+        public object description { get; set; }
+    }
+
+    public class GitHubPushSender
     {
         public string login { get; set; }
         public int id { get; set; }
@@ -115,26 +173,62 @@
         public bool site_admin { get; set; }
     }
 
-    public class GithubSender
+    public class Head_Commit
     {
-        public string login { get; set; }
-        public int id { get; set; }
-        public string node_id { get; set; }
-        public string avatar_url { get; set; }
-        public string gravatar_id { get; set; }
+        public string id { get; set; }
+        public string tree_id { get; set; }
+        public bool distinct { get; set; }
+        public string message { get; set; }
+        public DateTime timestamp { get; set; }
         public string url { get; set; }
-        public string html_url { get; set; }
-        public string followers_url { get; set; }
-        public string following_url { get; set; }
-        public string gists_url { get; set; }
-        public string starred_url { get; set; }
-        public string subscriptions_url { get; set; }
-        public string organizations_url { get; set; }
-        public string repos_url { get; set; }
-        public string events_url { get; set; }
-        public string received_events_url { get; set; }
-        public string type { get; set; }
-        public bool site_admin { get; set; }
+        public Author author { get; set; }
+        public Committer committer { get; set; }
+        public object[] added { get; set; }
+        public object[] removed { get; set; }
+        public string[] modified { get; set; }
+    }
+
+    public class Author
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+        public string username { get; set; }
+    }
+
+    public class Committer
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+        public string username { get; set; }
+    }
+
+    public class Commit
+    {
+        public string id { get; set; }
+        public string tree_id { get; set; }
+        public bool distinct { get; set; }
+        public string message { get; set; }
+        public DateTime timestamp { get; set; }
+        public string url { get; set; }
+        public Author1 author { get; set; }
+        public Committer1 committer { get; set; }
+        public object[] added { get; set; }
+        public object[] removed { get; set; }
+        public string[] modified { get; set; }
+    }
+
+    public class Author1
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+        public string username { get; set; }
+    }
+
+    public class Committer1
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+        public string username { get; set; }
     }
 
 }
