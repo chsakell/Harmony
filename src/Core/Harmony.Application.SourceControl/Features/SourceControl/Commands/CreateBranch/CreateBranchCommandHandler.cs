@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
 using Harmony.Domain.SourceControl;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -11,14 +12,17 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
     {
         private readonly ISourceControlRepository _sourceControlRepository;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly IMediator _mediator;
         private readonly IStringLocalizer<CreateBranchCommandHandler> _localizer;
 
         public CreateBranchCommandHandler(ISourceControlRepository sourceControlRepository,
             INotificationsPublisher notificationsPublisher,
+            IMediator mediator,
             IStringLocalizer<CreateBranchCommandHandler> localizer)
         {
             _sourceControlRepository = sourceControlRepository;
             _notificationsPublisher = notificationsPublisher;
+            _mediator = mediator;
             _localizer = localizer;
         }
 
@@ -31,22 +35,14 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
                 return await Result<bool>.FailAsync(_localizer["Branch already exists"]);
             }
 
-            var repository = await _sourceControlRepository.GetRepository(request.RepositoryId);
-
-            if(repository == null)
+            var repository = await _mediator.Send(new GetOrCreateRepositoryCommand()
             {
-                repository = new Repository()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    RepositoryId = request.RepositoryId,
-                    Url = request.RepositoryUrl,
-                    Name = request.RepositoryName,
-                    FullName = request.RepositoryFullName,
-                    Provider = request.Provider
-                };
-
-                await _sourceControlRepository.CreateRepository(repository);
-            }
+                RepositoryId = request.RepositoryId,
+                Url = request.RepositoryUrl,
+                Name = request.RepositoryName,
+                FullName = request.RepositoryFullName,
+                Provider = request.Provider
+            });
 
             branch = new Branch()
             {
