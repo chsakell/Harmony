@@ -56,7 +56,6 @@ namespace Harmony.Infrastructure.Repositories
             var filter = Builders<Repository>.Filter
                     .Eq(repo => repo.Id, repositoryId);
 
-
             return await repositoriesCollection.Find(filter).FirstOrDefaultAsync();
         }
 
@@ -92,6 +91,21 @@ namespace Harmony.Infrastructure.Repositories
             return await branchesCollection.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<List<Branch>> SearchBranches(string term)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var branchesCollection = database
+                .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
+
+            var filter = Builders<Branch>.Filter
+                .Regex(branch => branch.Name,
+                new BsonRegularExpression($"/{term}/"));
+
+            return await branchesCollection.Find(filter).ToListAsync();
+        }
+
         public async Task<bool> DeleteBranch(string name)
         {
             var database = _client
@@ -117,6 +131,20 @@ namespace Harmony.Infrastructure.Repositories
                 .GetCollection<Push>(MongoDbConstants.CommitsCollection);
 
             await commitsCollection.InsertOneAsync(push);
+        }
+
+        public async Task<List<Repository>> GetRepositories(List<string> repositories)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var repositoriesCollection = database
+                .GetCollection<Repository>(MongoDbConstants.RepositoriesCollection);
+
+            var filter = Builders<Repository>.Filter
+                    .In(repo => repo.RepositoryId, repositories);
+
+            return await repositoriesCollection.Find(filter).ToListAsync();
         }
     }
 }

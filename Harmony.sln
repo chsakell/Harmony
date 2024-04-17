@@ -91,7 +91,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Integrations.SourceControl", "src\Integrations\Harmony.Integrations.SourceControl\Harmony.Integrations.SourceControl.csproj", "{3E1FFEF2-7D3F-4433-991A-928076F2F0AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Application.SourceControl", "src\Core\Harmony.Application.SourceControl\Harmony.Application.SourceControl.csproj", "{097391A0-ABB3-4AD6-A94D-7ECD1C92B583}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Application.SourceControl", "src\Core\Harmony.Application.SourceControl\Harmony.Application.SourceControl.csproj", "{097391A0-ABB3-4AD6-A94D-7ECD1C92B583}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

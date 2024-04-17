@@ -1,7 +1,9 @@
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.DeleteBranch;
 using Harmony.Application.SourceControl.Features.SourceControl.Commands.CreatePush;
+using Harmony.Application.SourceControl.Features.SourceControl.Queries.GetCardBranches;
 using Harmony.Domain.Enums.SourceControl;
 using Harmony.Domain.SourceControl;
 using Harmony.Integrations.SourceControl.Constants;
@@ -30,6 +32,10 @@ namespace Harmony.Integrations.SourceControl.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Github webhook
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Index()
         {
@@ -48,30 +54,30 @@ namespace Harmony.Integrations.SourceControl.Controllers
 
             }
 
-            if(eventType == "push")
+            if (eventType == "push")
             {
                 var request = JsonSerializer.Deserialize<GitHubPushRequest>(postData);
 
-                if(request.created || request.deleted)
+                if (request.created || request.deleted)
                 {
                     return Ok();
                 }
 
                 var push = new CreatePushCommand()
                 {
-                    Commits = request.commits.Select(commit => 
+                    Commits = request.commits.Select(commit =>
                         new Domain.SourceControl.Commit()
-                    {
-                        Added = commit.added.Select(a => a.ToString()).ToList(),
-                        CommiterEmail = commit.committer.email,
-                        CommiterName = commit.committer.name,
-                        CommiterUsername = commit.committer.username,
-                        Id = commit.id,
-                        Message = commit.message,
-                        Modified = commit.modified.Select(a => a.ToString()).ToList(),
-                        Removed = commit.removed.Select(a => a.ToString()).ToList(),
-                        Timestamp = commit.timestamp,
-                        Url = commit.url
+                        {
+                            Added = commit.added.Select(a => a.ToString()).ToList(),
+                            CommiterEmail = commit.committer.email,
+                            CommiterName = commit.committer.name,
+                            CommiterUsername = commit.committer.username,
+                            Id = commit.id,
+                            Message = commit.message,
+                            Modified = commit.modified.Select(a => a.ToString()).ToList(),
+                            Removed = commit.removed.Select(a => a.ToString()).ToList(),
+                            Timestamp = commit.timestamp,
+                            Url = commit.url
                         }).ToList(),
                     CompareUrl = request.compare,
                     PusherEmail = request.pusher.email,
@@ -118,6 +124,12 @@ namespace Harmony.Integrations.SourceControl.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCardBranches([FromQuery] string serialKey)
+        {
+            return Ok(await _mediator.Send(new GetCardBranchesQuery(serialKey)));
         }
     }
 }
