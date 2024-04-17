@@ -52,6 +52,11 @@ namespace Harmony.Integrations.SourceControl.Controllers
             {
                 var request = JsonSerializer.Deserialize<GitHubPushRequest>(postData);
 
+                if(request.created || request.deleted)
+                {
+                    return Ok();
+                }
+
                 var push = new CreatePushCommand()
                 {
                     Commits = request.commits.Select(commit => 
@@ -80,7 +85,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
 
                 await _mediator.Send(push);
             }
-            else if (eventType == "branch")
+            else if (eventType == "create" || eventType == "delete")
             {
                 var request = JsonSerializer.Deserialize<GitHubBranchRequest>(postData);
 

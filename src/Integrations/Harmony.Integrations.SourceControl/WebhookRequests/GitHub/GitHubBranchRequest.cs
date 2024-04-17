@@ -1,8 +1,11 @@
-﻿namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
+﻿using System.Text.Json.Serialization;
+
+namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
 {
 
     public class GitHubBranchRequest
     {
+        [JsonPropertyName("ref")]
         public string Ref { get; set; }
         public string ref_type { get; set; }
         public string pusher_type { get; set; }
