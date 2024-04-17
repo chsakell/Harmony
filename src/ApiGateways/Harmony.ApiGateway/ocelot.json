@@ -27,6 +27,19 @@
       ]
     },
     {
+      "SwaggerKey": "sourcecontrolapi",
+      "UpstreamPathTemplate": "/sourcecontrol/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
+      "DownstreamPathTemplate": "/{anything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7113
+        }
+      ]
+    },
+    {
       "UpstreamPathTemplate": "/signalRHub/{everything}",
       "UpstreamHttpMethod": [],
       "DownstreamPathTemplate": "/signalRHub/{everything}",
@@ -61,6 +74,16 @@
           "Name": "Automations API",
           "Version": "v1",
           "Url": "https://localhost:7277/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "sourcecontrolapi",
+      "Config": [
+        {
+          "Name": "Source Control API",
+          "Version": "v1",
+          "Url": "https://localhost:7113/swagger/v1/swagger.json"
         }
       ]
     }

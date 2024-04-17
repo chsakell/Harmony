@@ -2,6 +2,7 @@ using Harmony.Application.Configurations;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Automations.Extensions;
+using Harmony.Integrations.SourceControl.Extensions;
 using Harmony.Logging;
 using Harmony.Messaging;
 using Serilog;
@@ -58,5 +59,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.ConfigureSwagger();
 
 app.Run();

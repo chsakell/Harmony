@@ -1,4 +1,6 @@
 ﻿
+using Harmony.Domain.Enums.SourceControl;
+
 namespace Harmony.Application.SourceControl.DTO
 {
     public class BranchDto
@@ -7,6 +9,8 @@ namespace Harmony.Application.SourceControl.DTO
         public string Name { get; set; }
         public string RepositoryId { get; set; }
         public string RepositoryUrl { get; set; }
-        public string BranchUrl => $"{RepositoryUrl}/branches{Name}";
+        public string BranchUrl => $"{RepositoryUrl}/tree/{Name}";
+        public string CommitsUrl => $"{RepositoryUrl}/commits/{Name}";
+        public SourceControlProvider Provider { get; set; }
     }
 }

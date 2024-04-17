@@ -31,14 +31,15 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Queries.GetCa
 
             foreach(var branch in branches)
             {
-                var branchRepository = repositories.FirstOrDefault(repo => repo.Id == branch.RepositoryId);
+                var branchRepository = repositories.FirstOrDefault(repo => repo.RepositoryId == branch.RepositoryId);
 
                 var branchDto = new BranchDto()
                 {
                     Id = branch.Id,
                     Name = branch.Name,
                     RepositoryId = branch.RepositoryId,
-                    RepositoryUrl = branchRepository?.Url
+                    RepositoryUrl = branchRepository?.Url,
+                    Provider = branchRepository.Provider
                 };
 
                 result.Add(branchDto);
