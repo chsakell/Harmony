@@ -163,6 +163,17 @@ namespace Harmony.Infrastructure.Repositories
             await commitsCollection.InsertOneAsync(push);
         }
 
+        public async Task CreatePullRequest(PullRequest pullRequest)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var collection = database
+                .GetCollection<PullRequest>(MongoDbConstants.PullRequestsCollection);
+
+            await collection.InsertOneAsync(pullRequest);
+        }
+
         public async Task<List<Repository>> GetRepositories(List<string> repositories)
         {
             var database = _client

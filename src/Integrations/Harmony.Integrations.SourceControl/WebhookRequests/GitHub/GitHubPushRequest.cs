@@ -24,7 +24,7 @@ namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
 
     public class GitHubPushRepository
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string node_id { get; set; }
         public string name { get; set; }
         public string full_name { get; set; }

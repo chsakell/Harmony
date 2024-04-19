@@ -2,6 +2,7 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.Cards.Queries.GetActivity;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.DeleteBranch;
+using Harmony.Application.SourceControl.Features.SourceControl.Commands.CreatePullRequest;
 using Harmony.Application.SourceControl.Features.SourceControl.Commands.CreatePush;
 using Harmony.Application.SourceControl.Features.SourceControl.Queries.GetCardBranches;
 using Harmony.Domain.Enums.SourceControl;
@@ -122,7 +123,35 @@ namespace Harmony.Integrations.SourceControl.Controllers
                     }
                 }
             }
+            else if(eventType == "pull_request")
+            {
+                var request = JsonSerializer.Deserialize<GitHubPullRequest>(postData);
 
+                if(request != null)
+                {
+                    var pullRequest = new CreatePullRequestCommand()
+                    {
+                        Action = request.action,
+                        ClosedAt = request.pull_request.closed_at,
+                        CreatedAt = request.pull_request.created_at,
+                        DiffUrl = request.pull_request.diff_url,
+                        HtmlUrl = request.pull_request.html_url,
+                        MergedAt = request.pull_request.merged_at,
+                        Number = request.number,
+                        PullRequestId = request.pull_request.id.ToString(),
+                        SenderAvatarUrl = request.sender.avatar_url,
+                        SenderId = request.sender.id.ToString(),
+                        SenderLogin = request.sender.login,
+                        State = request.pull_request.state,
+                        SourceBranch = request.pull_request.head.Ref,
+                        TargetBranch = request.pull_request.Base.Ref,
+                        Title = request.pull_request.title,
+                        UpdatedAt = request.pull_request.updated_at
+                    };
+
+                    await _mediator.Send(pullRequest);
+                }
+            }
             return Ok();
         }
 

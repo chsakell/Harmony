@@ -16,6 +16,7 @@
         public const string RepositoriesCollection = "repositories";
         public const string BranchesCollection = "branches";
         public const string CommitsCollection = "commits";
+        public const string PullRequestsCollection = "pull_requests";
 
         #endregion
     }
