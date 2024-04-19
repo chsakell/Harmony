@@ -3,6 +3,7 @@ using Harmony.Application.Extensions;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Automations.Extensions;
 using Harmony.Integrations.SourceControl.Extensions;
+using Harmony.Integrations.SourceControl.Services;
 using Harmony.Logging;
 using Harmony.Messaging;
 using Serilog;
@@ -35,6 +36,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Creat
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// gRPC services
+builder.Services.AddGrpc();
+
 builder.Services.AddSingleton<RabbitMqHealthCheck>();
 builder.Services.AddHealthChecks()
     .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
@@ -55,6 +59,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapGrpcService<SourceControlService>();
 
 app.MapControllerRoute(
     name: "default",

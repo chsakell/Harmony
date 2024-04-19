@@ -6,6 +6,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
+using Harmony.Integrations.SourceControl.Protos;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
@@ -22,6 +23,8 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         private readonly IUserService _userService;
         private readonly ISender _sender;
         private readonly ILinkService _linkService;
+        private readonly IBoardRepository _boardRepository;
+        private readonly SourceControlService.SourceControlServiceClient _sourceControlServiceClient;
         private readonly IStringLocalizer<LoadCardHandler> _localizer;
         private readonly IMapper _mapper;
 
@@ -30,6 +33,8 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             IUserService userService,
             ISender sender,
             ILinkService linkService,
+            IBoardRepository boardRepository,
+            SourceControlService.SourceControlServiceClient sourceControlServiceClient,
             IStringLocalizer<LoadCardHandler> localizer,
             IMapper mapper)
         {
@@ -38,6 +43,8 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             _userService = userService;
             _sender = sender;
             _linkService = linkService;
+            _boardRepository = boardRepository;
+            _sourceControlServiceClient = sourceControlServiceClient;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -72,6 +79,13 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             }
 
             var boardId = card?.BoardList?.Board.Id ?? card.IssueType?.BoardId;
+            var board = await _boardRepository.GetAsync(boardId.Value);
+
+            var cardBranches = await _sourceControlServiceClient
+                .GetCardBranchesAsync(new GetCardBranchesRequest()
+                {
+                    SerialKey = $"{board.Key}-{result.SerialNumber}"
+            });
 
             var cardUserIds = card.Members.Select(m => m.UserId).Distinct();
 

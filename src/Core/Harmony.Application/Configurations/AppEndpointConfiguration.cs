@@ -7,6 +7,7 @@
     {
         public string AutomationEndpoint { get; set; }
         public string HarmonyApiEndpoint { get; set; }
+        public string SourceControlEndpoint { get; set; }
 
         private string _frontendUrl;
         public string FrontendUrl

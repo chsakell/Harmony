@@ -12,6 +12,8 @@ using Serilog;
 using Harmony.Persistence.DbContext;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.DependencyInjection;
+using Harmony.Integrations.SourceControl.Protos;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -70,6 +72,18 @@ builder.Services.AddMessaging(builder.Configuration);
 
 // gRPC services
 builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<SourceControlService.SourceControlServiceClient>((services, options) =>
+{
+    options.Address = new Uri(endpointConfiguration.SourceControlEndpoint);
+}).ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    };
+    return handler;
+});
 
 // Configure your Search Engine
 builder.Services.AddSearching(SearchEngine.Database, builder.Configuration);

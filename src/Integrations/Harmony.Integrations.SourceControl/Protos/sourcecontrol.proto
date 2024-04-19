@@ -1,3 +1,23 @@
 syntax = "proto3";
 
 option csharp_namespace = "Harmony.Integrations.SourceControl.Protos";
+
+message GetCardBranchesRequest {
+	string serialKey = 1;
+}
+
+message CardBranch {
+	string id = 1;
+    string name = 2;
+    int32 provider = 3;
+}
+
+message GetCardBranchesResponse {
+	bool success = 1;
+	repeated CardBranch branches = 2;
+	repeated string messages = 3;
+}
+
+service SourceControlService {
+  rpc GetCardBranches (GetCardBranchesRequest) returns (GetCardBranchesResponse);
+}

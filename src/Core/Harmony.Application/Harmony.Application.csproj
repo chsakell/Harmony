@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-      <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
+      <Protobuf Include="../../Integrations/Harmony.Integrations.SourceControl/Protos/*.proto" GrpcServices="Client"></Protobuf>
   </ItemGroup>
 
 </Project>
