@@ -4,6 +4,7 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
+using Harmony.Application.DTO.SourceControl;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Domain.Enums.SourceControl;
@@ -82,25 +83,21 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
             var boardId = card?.BoardList?.Board.Id ?? card.IssueType?.BoardId;
             var board = await _boardRepository.GetAsync(boardId.Value);
 
-            var cardBranches = await _sourceControlServiceClient
-                .GetCardBranchesAsync(new GetCardBranchesRequest()
+            var cardRepoActivity = await _sourceControlServiceClient
+                .GetCardRepoActivityAsync(new GetCardRepoActivityRequest()
                 {
                     SerialKey = $"{board.Key}-{result.SerialNumber}"
             });
 
-            if(cardBranches.Success && cardBranches.Branches.Any())
+            if(cardRepoActivity.Success)
             {
-                result.Branches = new List<CardBranchDto>();
-
-                foreach (var cardBranch in cardBranches.Branches)
+                result.RepoActivity = new CardRepoActivityDto()
                 {
-                    result.Branches.Add(new CardBranchDto()
-                    {
-                        Id = cardBranch.Id,
-                        Name = cardBranch.Name,
-                        Provider = (SourceControlProvider)cardBranch.Provider,
-                    });
-                }
+                    Provider = (SourceControlProvider)cardRepoActivity.Provider,
+                    TotalBranches = cardRepoActivity.TotalBranches,
+                    TotalPullRequests = cardRepoActivity.TotalPullRequests,
+                    TotalPushed = cardRepoActivity.TotalPushed
+                };
             }
 
             var cardUserIds = card.Members.Select(m => m.UserId).Distinct();

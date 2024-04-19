@@ -1,5 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Queries.Get;
-using Harmony.Application.SourceControl.DTO;
+﻿using Harmony.Application.DTO.SourceControl;
+using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using System;

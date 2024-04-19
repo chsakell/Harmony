@@ -1,5 +1,5 @@
 ﻿using Harmony.Application.Contracts.Repositories;
-using Harmony.Application.SourceControl.DTO;
+using Harmony.Application.DTO.SourceControl;
 using Harmony.Shared.Wrapper;
 using MediatR;
 

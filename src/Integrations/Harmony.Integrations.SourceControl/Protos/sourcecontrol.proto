@@ -6,6 +6,10 @@ message GetCardBranchesRequest {
 	string serialKey = 1;
 }
 
+message GetCardRepoActivityRequest {
+	string serialKey = 1;
+}
+
 message CardBranch {
 	string id = 1;
     string name = 2;
@@ -18,6 +22,17 @@ message GetCardBranchesResponse {
 	repeated string messages = 3;
 }
 
+message GetCardRepoActivityResponse {
+	bool success = 1;
+	repeated string messages = 2;
+	int32 totalBranches = 3;
+	int32 totalPushed = 4;
+	int32 totalPullRequests = 5;
+	int32 provider = 6;
+}
+
+
 service SourceControlService {
   rpc GetCardBranches (GetCardBranchesRequest) returns (GetCardBranchesResponse);
+  rpc GetCardRepoActivity (GetCardRepoActivityRequest) returns (GetCardRepoActivityResponse);
 }

@@ -106,6 +106,36 @@ namespace Harmony.Infrastructure.Repositories
             return await branchesCollection.Find(filter).ToListAsync();
         }
 
+        public async Task<long> GetTotalBranches(string term)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var branchesCollection = database
+                .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
+
+            var filter = Builders<Branch>.Filter
+                .Regex(branch => branch.Name,
+                new BsonRegularExpression($"/{term}/i"));
+
+            return await branchesCollection.Find(filter).CountAsync();
+        }
+
+        public async Task<long> GetTotalPushes(string term)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var collection = database
+                .GetCollection<Push>(MongoDbConstants.CommitsCollection);
+
+            var filter = Builders<Push>.Filter
+                .Regex(branch => branch.Ref,
+                new BsonRegularExpression($"/{term}/i"));
+
+            return await collection.Find(filter).CountAsync();
+        }
+
         public async Task<bool> DeleteBranch(string name)
         {
             var database = _client

@@ -1,7 +1,6 @@
-﻿
-using Harmony.Domain.Enums.SourceControl;
+﻿using Harmony.Domain.Enums.SourceControl;
 
-namespace Harmony.Application.SourceControl.DTO
+namespace Harmony.Application.DTO.SourceControl
 {
     public class BranchDto
     {
