@@ -101,7 +101,7 @@ namespace Harmony.Infrastructure.Repositories
 
             var filter = Builders<Branch>.Filter
                 .Regex(branch => branch.Name,
-                new BsonRegularExpression($"/{term}/"));
+                new BsonRegularExpression($"/{term}/i"));
 
             return await branchesCollection.Find(filter).ToListAsync();
         }

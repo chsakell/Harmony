@@ -393,6 +393,19 @@ else
                                 </MudTabPanel>
                                 @if (_card.BoardType != BoardType.Retrospective)
                                 {
+                                    @if(_card.Branches != null && _card.Branches.Any())
+                                    {
+                                        <MudTabPanel Icon="@Icons.Custom.Brands.GitHub">
+                                            <MudTreeView T="string">
+                                                @foreach (var branch in _card.Branches)
+                                                {
+                                                    <MudTreeViewItem Value="@(branch.Name)">
+
+                                                    </MudTreeViewItem>
+                                                }
+                                            </MudTreeView>
+                                        </MudTabPanel>
+                                    }
                                     <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">
                                         @foreach (var activity in _card.Activities)
                                         {

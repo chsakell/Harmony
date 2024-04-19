@@ -35,5 +35,6 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public List<IssueTypeDto> IssueTypes { get; set; }
         public List<GetBoardListResponse> BoardLists { get; set; }
         public List<LinkDetailsDto> Links { get; set; }
+        public List<CardBranchDto> Branches { get; set; }
     }
 }
