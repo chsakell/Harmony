@@ -9,6 +9,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<Repository> GetRepository(string repositoryId);
         Task<List<Repository>> GetRepositories(List<string> repositories);
         Task CreateBranch(Branch branch);
+        Task AddOrUpdatePullRequest(string repositoryId, PullRequest pullRequest);
         Task CreatePush(string repositoryId, string branch, List<Commit> commits);
         Task<Branch> GetBranch(string name, string repositoryId);
         Task<long> GetTotalBranches(string term);

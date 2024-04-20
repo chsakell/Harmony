@@ -157,22 +157,39 @@ namespace Harmony.Integrations.SourceControl.Controllers
             {
                 var pullRequest = new CreatePullRequestCommand()
                 {
-                    Action = request.action,
-                    ClosedAt = request.pull_request.closed_at,
-                    CreatedAt = request.pull_request.created_at,
-                    DiffUrl = request.pull_request.diff_url,
-                    HtmlUrl = request.pull_request.html_url,
-                    MergedAt = request.pull_request.merged_at,
-                    Number = request.number,
-                    PullRequestId = request.pull_request.id.ToString(),
-                    Sender = new RepositoryUser(request.sender.id.ToString(), request.sender.avatar_url, request.sender.html_url),
-                    Assignees = request.pull_request
-                        .assignees.Select(a => new RepositoryUser(a.login, a.avatar_url, a.html_url)).ToList(),
-                    State = request.pull_request.state,
-                    SourceBranch = request.pull_request.head.Ref,
-                    TargetBranch = request.pull_request.Base.Ref,
-                    Title = request.pull_request.title,
-                    UpdatedAt = request.pull_request.updated_at
+                    Id = request.PullRequest.Id.ToString(),
+                    Action = request.Action,
+                    HtmlUrl = request.PullRequest.HtmlUrl,
+                    DiffUrl = request.PullRequest.DiffUrl,
+                    State = request.PullRequest.State
+                    switch
+                    {
+                        "opened" => PullRequestState.Opened,
+                        "closed" => PullRequestState.Closed,
+                        "merged" => PullRequestState.Merged,
+                        _ => PullRequestState.Opened
+                    },
+                    Title = request.PullRequest.Title,
+                    Number = request.PullRequest.Number,
+                    CreatedAt = request.PullRequest.CreatedAt,
+                    UpdatedAt = request.PullRequest.UpdatedAt,
+                    ClosedAt = request.PullRequest.ClosedAt,
+                    MergedAt = request.PullRequest.MergedAt,
+                    SourceBranch = request.PullRequest.Head.Ref,
+                    TargetBranch = request.PullRequest.Base.Ref,
+                    MergeCommitSha = request.PullRequest.MergeCommitSha,
+                    Assignees = request.PullRequest.Assignees.Select(a =>
+                        new RepositoryUser(a.login, a.avatar_url, a.html_url)).ToList(),
+                    Reviewers = request.PullRequest.RequestedReviewers.Select(a =>
+                        new RepositoryUser(a.login, a.avatar_url, a.html_url)).ToList(),
+                    Repository = new Repository()
+                    {
+                        RepositoryId = request.Repository.Id.ToString(),
+                        Name = request.Repository.Name,
+                        FullName = request.Repository.FullName,
+                        Url = request.Repository.HtmlUrl,
+                        Provider = SourceControlProvider.GitHub
+                    }
                 };
 
                 await _mediator.Send(pullRequest);

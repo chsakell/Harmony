@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
+using Harmony.Domain.Enums.SourceControl;
 using Harmony.Domain.SourceControl;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -28,23 +29,37 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
 
         public async Task<Result<bool>> Handle(CreatePullRequestCommand request, CancellationToken cancellationToken)
         {
-            var pullRequesst = new PullRequest()
+            await _mediator.Send(new GetOrCreateRepositoryCommand()
             {
-                ClosedAt = request.ClosedAt,
-                CreatedAt = request.CreatedAt,
-                DiffUrl = request.DiffUrl,
+                RepositoryId = request.Repository.RepositoryId,
+                Url = request.Repository.Url,
+                Name = request.Repository.Name,
+                FullName = request.Repository.FullName,
+                Provider = request.Repository.Provider
+            });
+
+            var pullRequest = new PullRequest()
+            {
+                Id = request.Id.ToString(),
+                //Action = request.Action,
                 HtmlUrl = request.HtmlUrl,
-                Id = Guid.NewGuid().ToString(),
-                MergedAt = request.MergedAt,
-                Number = request.Number,
-                Sender = request.Sender,
-                Assignees = request.Assignees,
+                DiffUrl = request.DiffUrl,
                 State = request.State,
+                Title = request.Title,
+                Number = request.Number,
+                CreatedAt = request.CreatedAt,
+                UpdatedAt = request.UpdatedAt,
+                ClosedAt = request.ClosedAt,
+                MergedAt = request.MergedAt,
                 SourceBranch = request.SourceBranch,
                 TargetBranch = request.TargetBranch,
-                Title = request.Title,
-                UpdatedAt = request.UpdatedAt
+                MergeCommitSha = request.MergeCommitSha,
+                Assignees = request.Assignees,
+                Reviewers = request.Reviewers,
             };
+
+            await _sourceControlRepository
+                .AddOrUpdatePullRequest(request.Repository.RepositoryId, pullRequest);
 
             return Result<bool>.Success(true, _localizer["Pull request created"]);
         }

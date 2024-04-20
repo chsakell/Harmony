@@ -8,20 +8,22 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
 {
     public class CreatePullRequestCommand : IRequest<Result<bool>>
     {
-        public string PullRequestId { get; set; }
+        public string Id { get; set; }
+        public string Action { get; set; }
         public string HtmlUrl { get; set; }
         public string DiffUrl { get; set; }
-        public string Action { get; set; }
-        public string State { get; set; }
+        public PullRequestState State { get; set; }
         public string Title { get; set; }
         public int Number { get; set; }
-        public RepositoryUser Sender { get; set; }
-        public List<RepositoryUser> Assignees { get; set; }
-        public string CreatedAt { get; set; }
-        public string UpdatedAt { get; set; }
-        public string ClosedAt { get; set; }
-        public string MergedAt { get; set; }
+        public Repository Repository { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public DateTime? ClosedAt { get; set; }
+        public DateTime? MergedAt { get; set; }
         public string SourceBranch { get; set; }
         public string TargetBranch { get; set; }
+        public string MergeCommitSha { get; set; }
+        public List<RepositoryUser> Assignees { get; set; }
+        public List<RepositoryUser> Reviewers { get; set; }
     }
 }

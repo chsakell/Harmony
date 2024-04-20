@@ -1,5 +1,6 @@
 ﻿using Algolia.Search.Models.Analytics;
 using Bogus.DataSets;
+using Google.Protobuf.WellKnownTypes;
 using Harmony.Application.Configurations;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
@@ -13,6 +14,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
 using static Harmony.Shared.Constants.Permission.Permissions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Harmony.Infrastructure.Repositories
 {
@@ -180,6 +182,67 @@ namespace Harmony.Infrastructure.Repositories
                     .In(repo => repo.RepositoryId, repositories);
 
             return await repositoriesCollection.Find(filter).ToListAsync();
+        }
+
+        public async Task AddOrUpdatePullRequest(string repositoryId, PullRequest pullRequest)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var collection = database
+                .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
+
+            var repoFilter = Builders<Branch>.Filter
+                .Eq(repo => repo.RepositoryId, repositoryId);
+
+            var branchFilter = Builders<Branch>.Filter
+                    .Eq(branch => branch.Name, pullRequest.SourceBranch);
+
+            var filter = Builders<Branch>.Filter
+                .ElemMatch(b => b.PullRequests,
+                    pullRequest => pullRequest.Id == pullRequest.Id);
+
+            var branch = await collection.Find(Builders<Branch>.Filter
+                .And(repoFilter, branchFilter)).FirstOrDefaultAsync();
+
+            if (branch != null)
+            {
+                var pullRequestsExists = branch.PullRequests.Any(p => p.Id == pullRequest.Id);
+
+                if(pullRequestsExists)
+                {
+                    var compinedFilter = Builders<Branch>
+                            .Filter.Eq(b => b.Name, pullRequest.SourceBranch)
+                        & Builders<Branch>.Filter
+                            .ElemMatch(b => b.PullRequests, 
+                                Builders<PullRequest>.Filter.Eq(p => p.Id, pullRequest.Id));
+
+                    var pullDefinition = Builders<Branch>
+                        .Update.PullFilter(b => b.PullRequests,
+                                    p => p.Id == pullRequest.Id);
+
+                    var removeResult = await collection
+                                .UpdateManyAsync(compinedFilter, pullDefinition);
+
+                    var pushDefinition = Builders<Branch>.Update
+                        .PushEach(p => p.PullRequests, new List<PullRequest> { pullRequest });
+
+                    await collection.UpdateOneAsync(
+                        b => b.Name == branch.Name &&
+                             b.RepositoryId == repositoryId, pushDefinition);
+                }
+                else
+                {
+                    var pushDefinition = Builders<Branch>.Update
+                        .PushEach(p => p.PullRequests, new List<PullRequest> { pullRequest });
+
+                    await collection.UpdateOneAsync(
+                        b => b.Name == branch.Name &&
+                             b.RepositoryId == repositoryId, pushDefinition);
+                }
+
+                
+            }
         }
     }
 }
