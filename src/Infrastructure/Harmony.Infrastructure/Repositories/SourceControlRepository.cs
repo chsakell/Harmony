@@ -121,20 +121,20 @@ namespace Harmony.Infrastructure.Repositories
             return await branchesCollection.Find(filter).CountAsync();
         }
 
-        public async Task<long> GetTotalPushes(string term)
-        {
-            var database = _client
-                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+        //public async Task<long> GetTotalPushes(string term)
+        //{
+        //    var database = _client
+        //        .GetDatabase(MongoDbConstants.SourceControlDatabase);
 
-            var collection = database
-                .GetCollection<Push>(MongoDbConstants.CommitsCollection);
+        //    var collection = database
+        //        .GetCollection<Push>(MongoDbConstants.CommitsCollection);
 
-            var filter = Builders<Push>.Filter
-                .Regex(branch => branch.Ref,
-                new BsonRegularExpression($"/{term}/i"));
+        //    var filter = Builders<Push>.Filter
+        //        .Regex(branch => branch.Ref,
+        //        new BsonRegularExpression($"/{term}/i"));
 
-            return await collection.Find(filter).CountAsync();
-        }
+        //    return await collection.Find(filter).CountAsync();
+        //}
 
         public async Task<bool> DeleteBranch(string name)
         {
@@ -152,26 +152,20 @@ namespace Harmony.Infrastructure.Repositories
             return deleteResult.DeletedCount > 0;
         }
 
-        public async Task CreatePush(Push push)
-        {
-            var database = _client
-                .GetDatabase(MongoDbConstants.SourceControlDatabase);
-
-            var commitsCollection = database
-                .GetCollection<Push>(MongoDbConstants.CommitsCollection);
-
-            await commitsCollection.InsertOneAsync(push);
-        }
-
-        public async Task CreatePullRequest(PullRequest pullRequest)
+        public async Task CreatePush(string repositoryId, string branch, List<Commit> commits)
         {
             var database = _client
                 .GetDatabase(MongoDbConstants.SourceControlDatabase);
 
             var collection = database
-                .GetCollection<PullRequest>(MongoDbConstants.PullRequestsCollection);
+                .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
 
-            await collection.InsertOneAsync(pullRequest);
+            var updateDefinition = Builders<Branch>.Update
+                .PushEach(b => b.Commits, commits);
+
+            await collection.UpdateOneAsync(
+                b => b.Name == branch &&
+                     b.RepositoryId == repositoryId, updateDefinition);
         }
 
         public async Task<List<Repository>> GetRepositories(List<string> repositories)

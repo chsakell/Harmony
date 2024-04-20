@@ -30,7 +30,6 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
         {
             var pullRequesst = new PullRequest()
             {
-                Action = request.Action,
                 ClosedAt = request.ClosedAt,
                 CreatedAt = request.CreatedAt,
                 DiffUrl = request.DiffUrl,
@@ -38,7 +37,6 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 Id = Guid.NewGuid().ToString(),
                 MergedAt = request.MergedAt,
                 Number = request.Number,
-                PullRequestId = request.PullRequestId,
                 Sender = request.Sender,
                 Assignees = request.Assignees,
                 State = request.State,
@@ -47,8 +45,6 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 Title = request.Title,
                 UpdatedAt = request.UpdatedAt
             };
-
-            await _sourceControlRepository.CreatePullRequest(pullRequesst);
 
             return Result<bool>.Success(true, _localizer["Pull request created"]);
         }

@@ -17,7 +17,7 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Queries.GetCa
         public async Task<IResult<CardRepoActivityDto>> Handle(GetCardRepoActivityQuery request, CancellationToken cancellationToken)
         {
             var totalBranches = await _sourceControlRepository.GetTotalBranches(request.SerialKey);
-            var totalPushes = await _sourceControlRepository.GetTotalPushes(request.SerialKey);
+            var totalPushes = 0;
 
             var result = new CardRepoActivityDto()
             {

@@ -15,8 +15,6 @@
         public const string SourceControlDatabase = "harmony_source_control";
         public const string RepositoriesCollection = "repositories";
         public const string BranchesCollection = "branches";
-        public const string CommitsCollection = "commits";
-        public const string PullRequestsCollection = "pull_requests";
 
         #endregion
     }

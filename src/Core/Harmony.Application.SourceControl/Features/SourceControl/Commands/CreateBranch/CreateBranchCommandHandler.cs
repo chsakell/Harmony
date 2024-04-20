@@ -28,27 +28,32 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
 
         public async Task<Result<bool>> Handle(CreateBranchCommand request, CancellationToken cancellationToken)
         {
-            Branch branch = await _sourceControlRepository.GetBranch(request.Name, request.RepositoryId);
+            Branch branch = await _sourceControlRepository
+                .GetBranch(request.Name, request.Repository.RepositoryId);
 
             if (branch != null)
             {
                 return await Result<bool>.FailAsync(_localizer["Branch already exists"]);
             }
 
-            var repository = await _mediator.Send(new GetOrCreateRepositoryCommand()
+            await _mediator.Send(new GetOrCreateRepositoryCommand()
             {
-                RepositoryId = request.RepositoryId,
-                Url = request.RepositoryUrl,
-                Name = request.RepositoryName,
-                FullName = request.RepositoryFullName,
-                Provider = request.Provider
+                RepositoryId = request.Repository.RepositoryId,
+                Url = request.Repository.Url,
+                Name = request.Repository.Name,
+                FullName = request.Repository.FullName,
+                Provider = request.Repository.Provider
             });
 
             branch = new Branch()
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = request.Name,
-                RepositoryId = request.RepositoryId
+                SourceBranchName = request.SourceBranch,
+                Creator = request.Creator,
+                RepositoryId = request.Repository.RepositoryId,
+                Commits = new List<Commit>(),
+                PullRequests = new List<PullRequest>()
             };
 
             await _sourceControlRepository.CreateBranch(branch);

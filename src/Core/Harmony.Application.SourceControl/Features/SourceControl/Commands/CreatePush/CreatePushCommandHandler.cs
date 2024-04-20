@@ -28,21 +28,16 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
 
         public async Task<Result<bool>> Handle(CreatePushCommand request, CancellationToken cancellationToken)
         {
-            var push = new Push()
+            await _mediator.Send(new GetOrCreateRepositoryCommand()
             {
-                Id = Guid.NewGuid().ToString(),
-                Commits = request.Commits,
-                CompareUrl = request.CompareUrl,
-                PusherEmail = request.PusherEmail,
-                PusherName = request.PusherName,
-                Ref = request.Ref,
-                RepositoryId = request.RepositoryId,
-                SenderAvatarUrl = request.SenderAvatarUrl,
-                SenderId = request.SenderId,
-                SenderLogin = request.SenderLogin
-            };
+                RepositoryId = request.Repository.RepositoryId,
+                Url = request.Repository.Url,
+                Name = request.Repository.Name,
+                FullName = request.Repository.FullName,
+                Provider = request.Repository.Provider
+            });
 
-            await _sourceControlRepository.CreatePush(push);
+            await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Branch, request.Commits);
 
             return Result<bool>.Success(true, _localizer["Push created"]);
         }
