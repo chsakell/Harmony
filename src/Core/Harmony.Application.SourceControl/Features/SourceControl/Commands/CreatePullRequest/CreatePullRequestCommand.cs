@@ -15,9 +15,8 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
         public string State { get; set; }
         public string Title { get; set; }
         public int Number { get; set; }
-        public string SenderLogin { get; set; }
-        public string SenderId { get; set; }
-        public string SenderAvatarUrl { get; set; }
+        public RepositoryUser Sender { get; set; }
+        public List<RepositoryUser> Assignees { get; set; }
         public string CreatedAt { get; set; }
         public string UpdatedAt { get; set; }
         public string ClosedAt { get; set; }

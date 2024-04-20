@@ -139,9 +139,9 @@ namespace Harmony.Integrations.SourceControl.Controllers
                         MergedAt = request.pull_request.merged_at,
                         Number = request.number,
                         PullRequestId = request.pull_request.id.ToString(),
-                        SenderAvatarUrl = request.sender.avatar_url,
-                        SenderId = request.sender.id.ToString(),
-                        SenderLogin = request.sender.login,
+                        Sender = new RepositoryUser(request.sender.id.ToString(), request.sender.avatar_url, request.sender.html_url),
+                        Assignees = request.pull_request
+                            .assignees.Select(a => new RepositoryUser(a.login, a.avatar_url, a.html_url)).ToList(),
                         State = request.pull_request.state,
                         SourceBranch = request.pull_request.head.Ref,
                         TargetBranch = request.pull_request.Base.Ref,
