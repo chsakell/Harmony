@@ -41,7 +41,6 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
             var pullRequest = new PullRequest()
             {
                 Id = request.Id.ToString(),
-                //Action = request.Action,
                 HtmlUrl = request.HtmlUrl,
                 DiffUrl = request.DiffUrl,
                 State = request.State,

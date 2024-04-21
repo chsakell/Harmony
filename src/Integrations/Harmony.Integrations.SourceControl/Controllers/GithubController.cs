@@ -136,7 +136,10 @@ namespace Harmony.Integrations.SourceControl.Controllers
                         },
                         Id = commit.Id,
                         Message = commit.Message,
-                        Timestamp = commit.Timestamp
+                        Timestamp = commit.Timestamp,
+                        Added = commit.Added ?? new List<string>(),
+                        Removed = commit.Removed ?? new List<string>(),
+                        Modified = commit.Modified ?? new List<string>(),
                     }).ToList(),
                 Sender = new RepositoryUser(request.Sender.Login, request.Sender.AvatarUrl, request.Sender.HtmlUrl)
             };

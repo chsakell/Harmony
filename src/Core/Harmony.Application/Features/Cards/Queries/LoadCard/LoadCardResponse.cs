@@ -1,5 +1,4 @@
 ﻿using Harmony.Application.DTO;
-using Harmony.Application.DTO.SourceControl;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Domain.Enums;
 
@@ -36,6 +35,5 @@ namespace Harmony.Application.Features.Cards.Queries.LoadCard
         public List<IssueTypeDto> IssueTypes { get; set; }
         public List<GetBoardListResponse> BoardLists { get; set; }
         public List<LinkDetailsDto> Links { get; set; }
-        public CardRepoActivityDto RepoActivity { get; set; }
     }
 }

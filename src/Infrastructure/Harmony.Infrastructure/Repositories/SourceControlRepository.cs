@@ -231,7 +231,6 @@ namespace Harmony.Infrastructure.Repositories
                 return;
             }
 
-
             var pullRequestsExists = branch.PullRequests.Any(p => p.Id == pullRequest.Id);
 
             if (pullRequestsExists)

@@ -1,6 +1,7 @@
 using Harmony.Application.Configurations;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
+using Harmony.Application.SourceControl.Mappings;
 using Harmony.Automations.Extensions;
 using Harmony.Integrations.SourceControl.Extensions;
 using Harmony.Integrations.SourceControl.Services;
@@ -30,7 +31,8 @@ builder.Services.AddMongoDb(builder.Configuration);
 builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
 builder.Services.AddMessaging(builder.Configuration);
 
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+//builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddAutoMapper(typeof(SourceControlProfile).Assembly);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateBranchCommand).Assembly));
 
 // Add services to the container.

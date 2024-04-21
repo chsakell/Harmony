@@ -18,5 +18,14 @@ namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
 
         [JsonPropertyName("author")]
         public GitHubAuthor Author { get; set; }
+
+        [JsonPropertyName("added")]
+        public List<string> Added { get; set; }
+
+        [JsonPropertyName("removed")]
+        public List<string> Removed { get; set; }
+
+        [JsonPropertyName("modified")]
+        public List<string> Modified { get; set; }
     }
 }

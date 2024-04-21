@@ -40,7 +40,6 @@ namespace Harmony.Client.Infrastructure.Models.Board
         public List<IssueTypeDto> IssueTypes { get; set; }
         public List<GetBoardListResponse> BoardLists { get; set; }
         public List<LinkDetailsDto> Links { get; set; }
-        public CardRepoActivityDto RepoActivity { get; set; }
     }
 
     public class FluentValueValidator<T> : AbstractValidator<T>

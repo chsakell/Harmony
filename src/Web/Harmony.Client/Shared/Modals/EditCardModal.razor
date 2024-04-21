@@ -393,12 +393,6 @@ else
                                 </MudTabPanel>
                                 @if (_card.BoardType != BoardType.Retrospective)
                                 {
-                                    @if(_card.RepoActivity != null)
-                                    {
-                                        <MudTabPanel Icon="@Icons.Custom.Brands.GitHub">
-                                            
-                                        </MudTabPanel>
-                                    }
                                     <MudTabPanel Text="History" OnClick="LoadCardHistory" Icon="@Icons.Material.Filled.History">
                                         @foreach (var activity in _card.Activities)
                                         {
