@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
 using Harmony.Domain.SourceControl;
 using Harmony.Shared.Wrapper;
@@ -36,6 +37,19 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 FullName = request.Repository.FullName,
                 Provider = request.Repository.Provider
             });
+
+            var branch = await _sourceControlRepository.GetBranch(request.Branch, request.Repository.RepositoryId);
+
+            if (branch == null)
+            {
+                await _mediator.Send(new CreateBranchCommand()
+                {
+                    Name = request.Branch,
+                    Repository = request.Repository,
+                    Creator = request.Sender,
+                    SkipRepositoryCheck = true
+                });
+            }
 
             await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Branch, request.Commits);
 

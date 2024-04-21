@@ -10,8 +10,8 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string SourceBranch { get; set; }
         public RepositoryUser Creator { get; set; }
         public Repository Repository { get; set; }
+        public bool SkipRepositoryCheck { get; set; }
     }
 }

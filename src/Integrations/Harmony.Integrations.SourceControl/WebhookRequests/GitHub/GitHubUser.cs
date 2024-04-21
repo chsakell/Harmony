@@ -1,9 +1,16 @@
-﻿namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
+﻿using System.Text.Json.Serialization;
+
+namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
 {
     public class GitHubUser
     {
-        public string login { get; set; }
-        public string avatar_url { get; set; }
-        public string html_url { get; set; }
+        [JsonPropertyName("login")]
+        public string Login { get; set; }
+
+        [JsonPropertyName("avatar_url")]
+        public string AvatarUrl { get; set; }
+
+        [JsonPropertyName("html_url")]
+        public string HtmlUrl { get; set; }
     }
 }

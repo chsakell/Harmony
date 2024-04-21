@@ -7,7 +7,6 @@ namespace Harmony.Domain.SourceControl
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string SourceBranchName { get; set; }
         public string RepositoryId { get; set; }
         public RepositoryUser Creator { get; set; }
         public List<Commit> Commits { get; set; }

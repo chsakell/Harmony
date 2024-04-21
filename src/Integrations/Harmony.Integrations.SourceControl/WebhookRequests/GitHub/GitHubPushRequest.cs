@@ -20,7 +20,12 @@ namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
         [JsonPropertyName("repository")]
         public GitHubRepository Repository { get; set; }
 
+        [JsonPropertyName("sender")]
+        public GitHubUser Sender { get; set; }
+
         [JsonPropertyName("commits")]
         public GitHubCommit[] Commits { get; set; }
+
+        
     }
 }

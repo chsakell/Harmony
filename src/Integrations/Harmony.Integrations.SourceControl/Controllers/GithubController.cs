@@ -85,7 +85,6 @@ namespace Harmony.Integrations.SourceControl.Controllers
                         await _mediator.Send(new CreateBranchCommand()
                         {
                             Name = request.Ref,
-                            SourceBranch = request.SourceBranch,
                             Repository = new Repository()
                             {
                                 RepositoryId = request.Repository.Id.ToString(),
@@ -94,7 +93,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
                                 Url = request.Repository.HtmlUrl,
                                 Provider = SourceControlProvider.GitHub
                             },
-                            Creator = new RepositoryUser(request.Sender.login, request.Sender.avatar_url, request.Sender.html_url)
+                            Creator = new RepositoryUser(request.Sender.Login, request.Sender.AvatarUrl, request.Sender.HtmlUrl)
                         });
                         break;
                     case "delete":
@@ -113,11 +112,6 @@ namespace Harmony.Integrations.SourceControl.Controllers
         private async Task HandlePushWebhook(string postData)
         {
             var request = JsonSerializer.Deserialize<GitHubPushRequest>(postData);
-
-            if (request.Created || request.Deleted)
-            {
-                return;
-            }
 
             var push = new CreatePushCommand()
             {
@@ -144,6 +138,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
                         Message = commit.Message,
                         Timestamp = commit.Timestamp
                     }).ToList(),
+                Sender = new RepositoryUser(request.Sender.Login, request.Sender.AvatarUrl, request.Sender.HtmlUrl)
             };
 
             await _mediator.Send(push);
@@ -179,9 +174,9 @@ namespace Harmony.Integrations.SourceControl.Controllers
                     TargetBranch = request.PullRequest.Base.Ref,
                     MergeCommitSha = request.PullRequest.MergeCommitSha,
                     Assignees = request.PullRequest.Assignees.Select(a =>
-                        new RepositoryUser(a.login, a.avatar_url, a.html_url)).ToList(),
+                        new RepositoryUser(a.Login, a.AvatarUrl, a.HtmlUrl)).ToList(),
                     Reviewers = request.PullRequest.RequestedReviewers.Select(a =>
-                        new RepositoryUser(a.login, a.avatar_url, a.html_url)).ToList(),
+                        new RepositoryUser(a.Login, a.AvatarUrl, a.HtmlUrl)).ToList(),
                     Repository = new Repository()
                     {
                         RepositoryId = request.Repository.Id.ToString(),

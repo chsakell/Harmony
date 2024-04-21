@@ -11,5 +11,6 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
         public string Branch { get; set; }
         public Repository Repository { get; set; }
         public List<Commit> Commits { get; set; }
+        public RepositoryUser Sender { get; set; }
     }
 }

@@ -7,9 +7,6 @@ namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
         [JsonPropertyName("ref")]
         public string Ref { get; set; }
 
-        [JsonPropertyName("master_branch")]
-        public string SourceBranch { get; set; }
-
         [JsonPropertyName("ref_type")]
         public string Type { get; set; }
 

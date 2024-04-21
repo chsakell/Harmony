@@ -36,20 +36,22 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
                 return await Result<bool>.FailAsync(_localizer["Branch already exists"]);
             }
 
-            await _mediator.Send(new GetOrCreateRepositoryCommand()
+            if (!request.SkipRepositoryCheck)
             {
-                RepositoryId = request.Repository.RepositoryId,
-                Url = request.Repository.Url,
-                Name = request.Repository.Name,
-                FullName = request.Repository.FullName,
-                Provider = request.Repository.Provider
-            });
+                await _mediator.Send(new GetOrCreateRepositoryCommand()
+                {
+                    RepositoryId = request.Repository.RepositoryId,
+                    Url = request.Repository.Url,
+                    Name = request.Repository.Name,
+                    FullName = request.Repository.FullName,
+                    Provider = request.Repository.Provider
+                });
+            }
 
             branch = new Branch()
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = request.Name,
-                SourceBranchName = request.SourceBranch,
                 Creator = request.Creator,
                 RepositoryId = request.Repository.RepositoryId,
                 Commits = new List<Commit>(),
