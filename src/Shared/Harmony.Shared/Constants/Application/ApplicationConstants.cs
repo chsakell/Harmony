@@ -9,6 +9,7 @@
         {
             public const string CoreApiPrefix = "core/api";
             public const string AutomationsApiPrefix = "automations/api";
+            public const string SourceControlApiPrefix = "sourcecontrol/api";
         }
 
         public static class AppServices

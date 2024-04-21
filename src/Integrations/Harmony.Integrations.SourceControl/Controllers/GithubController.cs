@@ -67,12 +67,6 @@ namespace Harmony.Integrations.SourceControl.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCardBranches([FromQuery] string serialKey)
-        {
-            return Ok(await _mediator.Send(new GetCardBranchesQuery(serialKey)));
-        }
-
         private async Task HandleEventWebhook(string postData, string eventType)
         {
             var request = JsonSerializer.Deserialize<GitHubBranchRequest>(postData);

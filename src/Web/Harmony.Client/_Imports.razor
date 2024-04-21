@@ -7,6 +7,7 @@
 @using Harmony.Client.Infrastructure.Configuration
 @using Harmony.Client.Infrastructure.Managers.Content;
 @using Harmony.Client.Infrastructure.Managers.SignalR;
+@using Harmony.Client.Infrastructure.Managers.SourceControl
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -71,4 +72,5 @@ using Harmony.Client.Infrastructure.Managers.Identity.Roles;
 @inject IAutomationManager _automationManager
 @inject IRetrospectiveManager _retrospectiveManager
 @inject ILinkManager _linkManager
+@inject IRepositoryManager _repositoryManager
 @inject IMapper _mapper
