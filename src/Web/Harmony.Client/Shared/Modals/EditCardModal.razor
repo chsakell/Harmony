@@ -499,6 +499,28 @@ else
                 @if (_card.BoardType != BoardType.Retrospective)
                 {
                     <MudItem xs="12" sm="3">
+                        @if (_branches.Any())
+                        {
+                            <MudPaper>
+                                <MudList Clickable="true">
+                                    @foreach (var branch in _branches)
+                                    {
+                                        <MudListItem Text="@branch.Name" IconColor="Color.Info" Icon="@Icons.Material.Filled.AltRoute">
+                                            <NestedList>
+                                                @if(branch.Commits.Any())
+                                                {
+                                                    <MudListItem Text="@($"{branch.Commits.Count} commits")" Icon="@Icons.Material.Filled.Route" IconColor="Color.Secondary" />
+                                                }
+                                                @if (branch.PullRequests.Any())
+                                                {
+                                                    <MudListItem Text="@($"{branch.PullRequests.Count} pull request(s)")" Icon="@Icons.Material.Filled.Merge" IconColor="Color.Secondary" />
+                                                }
+                                            </NestedList>
+                                        </MudListItem>
+                                    }
+                                </MudList>
+                            </MudPaper>
+                        }
                         <MudButton StartIcon="@Icons.Material.Filled.GroupAdd" Class="mt-2"
                                    Variant="Variant.Outlined" FullWidth="true" OnClick="AddCardMembers"
                                    Color="Color.Primary">MEMBERS</MudButton>

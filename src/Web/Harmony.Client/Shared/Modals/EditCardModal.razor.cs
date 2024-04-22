@@ -76,6 +76,13 @@ namespace Harmony.Client.Shared.Modals
                 {
                     _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == _card.BoardList.Id);
                 }
+
+                var cardBranchesResult = await _repositoryManager.GetCardBranches($"{BoardKey}-{_card.SerialNumber}");
+
+                if (cardBranchesResult.Succeeded)
+                {
+                    _branches = cardBranchesResult.Data;
+                }
             }
 
             _loading = false;
@@ -84,18 +91,6 @@ namespace Harmony.Client.Shared.Modals
 
             await Task.Run(() =>
             {
-                var cardBranchesTask = _repositoryManager.GetCardBranches($"{BoardKey}-{_card.SerialNumber}");
-
-                cardBranchesTask.ContinueWith(res =>
-                {
-                    if(res.Result.Succeeded)
-                    {
-                        _branches = res.Result.Data;
-
-                        StateHasChanged();
-                    }
-                });
-
                 var commentsTask = LoadCommentsTask();
 
                 commentsTask.ContinueWith(res =>
@@ -138,11 +133,11 @@ namespace Harmony.Client.Shared.Modals
 
         private void OnCardLinkDeleted(object? sender, Application.Notifications.CardLinkDeletedMessage e)
         {
-            if(e != null)
+            if (e != null)
             {
                 var linkToRemove = _card.Links.FirstOrDefault(l => l.Id == e.LinkId);
 
-                if(linkToRemove != null)
+                if (linkToRemove != null)
                 {
                     _card.Links.Remove(linkToRemove);
                     StateHasChanged();
@@ -152,7 +147,7 @@ namespace Harmony.Client.Shared.Modals
 
         private void OnCardLinkCreated(object? sender, Application.Notifications.CardLinkCreatedMessage e)
         {
-            if(e != null && !_card.Links.Any(l => l.Id == e.Id) && _card.Id == e.SourceCardId)
+            if (e != null && !_card.Links.Any(l => l.Id == e.Id) && _card.Id == e.SourceCardId)
             {
                 _card.Links.Add(LinkMessageExtensions.GetLinkFromCreateMessage(e));
                 StateHasChanged();
