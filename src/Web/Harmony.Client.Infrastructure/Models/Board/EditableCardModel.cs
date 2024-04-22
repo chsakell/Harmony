@@ -3,7 +3,6 @@ using Harmony.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
-using Harmony.Application.DTO.SourceControl;
 
 namespace Harmony.Client.Infrastructure.Models.Board
 {

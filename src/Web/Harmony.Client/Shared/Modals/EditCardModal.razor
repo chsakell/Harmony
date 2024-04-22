@@ -2,6 +2,7 @@
 @using Harmony.Application.Extensions
 @using Harmony.Application.Features.Lists.Queries.GetBoardLists
 @using Harmony.Application.Helpers;
+@using Harmony.Application.SourceControl.DTO
 @using Harmony.Client.Infrastructure.Helper
 @using Harmony.Domain.Enums;
 @inject Microsoft.Extensions.Localization.IStringLocalizer<CreateBoardModal> _localizer
@@ -341,6 +342,52 @@ else
                                 </MudCard>
                             }
                         </MudItem>
+                        @if (_branches.Any())
+                        {
+                            <MudItem xs="12">
+                                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                                    <MudTabPanel Text="Branches">
+                                        @foreach (var branch in _branches)
+                                        {
+                                            <MudPaper Class="my-4">
+                                                <MudStack>
+                                                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                        <MudLink Href="@branch.BranchUrl" Target="_blank">@branch.Name</MudLink>
+                                                        <MudText>created by</MudText>
+                                                        <MudAvatar>
+                                                            <MudImage Src="@branch.Creator.AvatarUrl"></MudImage>
+                                                        </MudAvatar>
+                                                        <MudChip Icon="@Icons.Custom.Brands.GitHub" Label="true" Color="Color.Primary">@branch.Creator.Login</MudChip>
+                                                    </MudStack>
+                                                    @if (branch.Commits.Any())
+                                                    {
+                                                        <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start" Reverse="false">
+                                                            @foreach (var commit in branch.Commits)
+                                                            {
+                                                                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
+                                                                    <ItemContent>
+                                                                        <MudStack Row="true">
+                                                                            <MudLink Href="@commit.Url">@commit.Message</MudLink>
+                                                                            <MudText>by</MudText>
+                                                                            <MudText>@commit.Author.Username &lt;@commit.Author.Email&gt;</MudText>
+                                                                        </MudStack>
+                                                                    </ItemContent>
+                                                                </MudTimelineItem>
+                                                            }
+                                                        </MudTimeline>
+                                                    }
+                                                </MudStack>
+                                            </MudPaper>
+                                        }
+                                    </MudTabPanel>
+                                    <MudTabPanel Text="Pull requests">
+                                        @foreach (var branch in _branches.Where(b => b.PullRequests.Any()))
+                                        {
+                                        }
+                                    </MudTabPanel>
+                                </MudTabs>
+                            </MudItem>
+                        }
                         <MudItem xs="12">
                             <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
                                 <MudTabPanel Text="Comments" Icon="@Icons.Material.Filled.Comment">

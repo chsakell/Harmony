@@ -8,7 +8,7 @@ namespace Harmony.Client.Infrastructure.Routes
         public static string Index = $"{GatewayConstants.SourceControlApiPrefix}/activity";
 
         public static string Branches(string serialKey)
-            => $"{Index}/branches?serialKey={serialKey}/";
+            => $"{Index}/branches?serialKey={serialKey}";
 
     }
 }

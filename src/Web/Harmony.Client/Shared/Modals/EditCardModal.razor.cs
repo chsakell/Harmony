@@ -24,6 +24,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDescription;
 using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Helpers;
+using Harmony.Application.SourceControl.DTO;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
@@ -51,6 +52,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _updatingStoryPoints;
         private GetBoardListResponse? _cardBoardList;
         private CardDto subTaskBeforeEdit;
+        private List<BranchDto> _branches = new List<BranchDto>();
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
@@ -82,6 +84,18 @@ namespace Harmony.Client.Shared.Modals
 
             await Task.Run(() =>
             {
+                var cardBranchesTask = _repositoryManager.GetCardBranches($"{BoardKey}-{_card.SerialNumber}");
+
+                cardBranchesTask.ContinueWith(res =>
+                {
+                    if(res.Result.Succeeded)
+                    {
+                        _branches = res.Result.Data;
+
+                        StateHasChanged();
+                    }
+                });
+
                 var commentsTask = LoadCommentsTask();
 
                 commentsTask.ContinueWith(res =>
