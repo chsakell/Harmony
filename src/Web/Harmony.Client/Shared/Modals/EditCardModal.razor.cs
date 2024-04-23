@@ -165,6 +165,20 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
+        private async Task ViewRepositoryActivityDetails()
+        {
+            var parameters = new DialogParameters<ViewRepositoryActivityModal>
+            {
+                {
+                    modal => modal.Branches, _branches
+                },
+            };
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var dialog = _dialogService.Show<ViewRepositoryActivityModal>(_localizer["View repository activity"], parameters, options);
+            var result = await dialog.Result;
+        }
+
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
         {
             const long maxAllowedImageSize = 10000000;

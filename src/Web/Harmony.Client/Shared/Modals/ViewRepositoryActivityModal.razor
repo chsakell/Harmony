@@ -1,0 +1,78 @@
+﻿@using Harmony.Domain.Enums;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<EditCardLabelsModal> _localizer
+
+<MudDialog>
+    <TitleContent>
+        @{
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Custom.Brands.GitHub" Class="mr-3 mb-n1" />
+                @_localizer["Repository activity"]
+            </MudText>
+        }
+    </TitleContent>
+    <DialogContent>
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Branches">
+                @foreach (var branch in Branches)
+                {
+                    <MudPaper Class="mb-4 pa-2">
+                        <MudStack>
+                            <MudStack Row="true" AlignItems="AlignItems.Center">
+                                <MudLink Href="@branch.BranchUrl" Target="_blank">@branch.Name</MudLink>
+                                <MudText>created by</MudText>
+                                <MudAvatar>
+                                    <MudImage Src="@branch.Creator.AvatarUrl"></MudImage>
+                                </MudAvatar>
+                                <MudChip Icon="@Icons.Custom.Brands.GitHub" Label="true" Color="Color.Primary">@branch.Creator.Login</MudChip>
+                            </MudStack>
+                            @if (branch.Commits.Any())
+                            {
+                                <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start" Reverse="false">
+                                    @foreach (var commit in branch.Commits)
+                                    {
+                                        <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
+                                            <ItemContent>
+                                                <MudText Color="Color.Secondary" Typo="Typo.body2" GutterBottom="true">@commit.Author.Username &lt;@commit.Author.Email&gt</MudText>
+                                                <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                    <MudLink Href="@commit.Url">@commit.Message</MudLink>
+                                                    @if (commit.Added.Any())
+                                                    {
+                                                        <MudBadge Content="@commit.Added.Count" Color="Color.Primary" Overlap="false" Bordered="true" Class="mx-2">
+                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Warning">Added</MudButton>
+                                                        </MudBadge>
+                                                    }
+                                                    @if (commit.Modified.Any())
+                                                    {
+                                                        <MudBadge Content="@commit.Modified.Count" Color="Color.Warning" Overlap="false" Bordered="true" Class="mx-2">
+                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning">Edited</MudButton>
+                                                        </MudBadge>
+                                                    }
+                                                    @if (commit.Removed.Any())
+                                                    {
+                                                        <MudBadge Content="@commit.Removed.Count" Color="Color.Error" Overlap="false" Bordered="true" Class="mx-2">
+                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Deleted</MudButton>
+                                                        </MudBadge>
+                                                    }
+                                                </MudStack>
+                                                
+                                            </ItemContent>
+                                        </MudTimelineItem>
+                                    }
+                                </MudTimeline>
+                            }
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudTabPanel>
+            <MudTabPanel Text="Pull requests">
+                @foreach (var branch in Branches.Where(b => b.PullRequests.Any()))
+                {
+                }
+            </MudTabPanel>
+        </MudTabs>
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Close"]</MudButton>
+    </DialogActions>
+</MudDialog>
