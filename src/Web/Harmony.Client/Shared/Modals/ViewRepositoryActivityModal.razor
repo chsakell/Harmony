@@ -32,29 +32,34 @@
                                     {
                                         <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
                                             <ItemContent>
-                                                <MudText Color="Color.Secondary" Typo="Typo.body2" GutterBottom="true">@commit.Author.Username &lt;@commit.Author.Email&gt</MudText>
-                                                <MudStack Row="true" AlignItems="AlignItems.Center">
-                                                    <MudLink Href="@commit.Url">@commit.Message</MudLink>
-                                                    @if (commit.Added.Any())
-                                                    {
-                                                        <MudBadge Content="@commit.Added.Count" Color="Color.Primary" Overlap="false" Bordered="true" Class="mx-2">
-                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Warning">Added</MudButton>
-                                                        </MudBadge>
-                                                    }
-                                                    @if (commit.Modified.Any())
-                                                    {
-                                                        <MudBadge Content="@commit.Modified.Count" Color="Color.Warning" Overlap="false" Bordered="true" Class="mx-2">
-                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning">Edited</MudButton>
-                                                        </MudBadge>
-                                                    }
-                                                    @if (commit.Removed.Any())
-                                                    {
-                                                        <MudBadge Content="@commit.Removed.Count" Color="Color.Error" Overlap="false" Bordered="true" Class="mx-2">
-                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Deleted</MudButton>
-                                                        </MudBadge>
-                                                    }
-                                                </MudStack>
-                                                
+                                                <MudPaper Class="mb-2 pa-2">
+                                                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
+                                                        <MudText Color="Color.Secondary" Typo="Typo.body2" GutterBottom="true">@commit.Author.Username &lt;@commit.Author.Email&gt</MudText>
+                                                        <MudText Color="Color.Default">@commit.Timestamp.ToLocalTime().ToString("F")</MudText>
+                                                    </MudStack>
+
+                                                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                        <MudLink Href="@commit.Url">@commit.Message</MudLink>
+                                                        @if (commit.Added.Any())
+                                                        {
+                                                            <MudBadge Content="@commit.Added.Count" Color="Color.Primary" Overlap="true" Bordered="true" Class="mx-2">
+                                                                <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Warning">Added</MudButton>
+                                                            </MudBadge>
+                                                        }
+                                                        @if (commit.Modified.Any())
+                                                        {
+                                                            <MudBadge Content="@commit.Modified.Count" Color="Color.Warning" Overlap="true" Bordered="true" Class="mx-2">
+                                                                <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning">Edited</MudButton>
+                                                            </MudBadge>
+                                                        }
+                                                        @if (commit.Removed.Any())
+                                                        {
+                                                            <MudBadge Content="@commit.Removed.Count" Color="Color.Error" Overlap="true" Bordered="true" Class="mx-2">
+                                                                <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Deleted</MudButton>
+                                                            </MudBadge>
+                                                        }
+                                                    </MudStack>
+                                                </MudPaper>
                                             </ItemContent>
                                         </MudTimelineItem>
                                     }

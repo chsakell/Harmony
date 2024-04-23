@@ -174,7 +174,7 @@ namespace Harmony.Client.Shared.Modals
                 },
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = true };
             var dialog = _dialogService.Show<ViewRepositoryActivityModal>(_localizer["View repository activity"], parameters, options);
             var result = await dialog.Result;
         }
