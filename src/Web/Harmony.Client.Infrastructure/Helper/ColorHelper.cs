@@ -1,4 +1,5 @@
 ﻿using Harmony.Domain.Enums;
+using Harmony.Domain.Enums.SourceControl;
 using Harmony.Shared.Constants.Application;
 using MudBlazor;
 
@@ -35,6 +36,17 @@ namespace Harmony.Client.Infrastructure.Helper
                 IssueTypesConstants.BUG => Color.Error,
                 IssueTypesConstants.STORY => Color.Success,
                 IssueTypesConstants.TASK => Color.Info,
+                _ => Color.Info,
+            };
+        }
+
+        public static Color GetPullRequestColor(PullRequestState state)
+        {
+            return state switch
+            {
+                PullRequestState.Opened => Color.Primary,
+                PullRequestState.Merged => Color.Success,
+                PullRequestState.Closed => Color.Error,
                 _ => Color.Info,
             };
         }
