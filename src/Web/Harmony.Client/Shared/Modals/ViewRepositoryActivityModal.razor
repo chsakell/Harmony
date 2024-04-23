@@ -14,59 +14,69 @@
     <DialogContent>
         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
             <MudTabPanel Text="Branches">
-                @foreach (var branch in Branches)
-                {
-                    <MudStack>
-                        <MudStack Row="true" AlignItems="AlignItems.Center">
-                            <MudLink Href="@branch.BranchUrl" Target="_blank">@branch.Name</MudLink>
-                            <MudText>created by</MudText>
-                            <MudAvatar>
-                                <MudImage Src="@branch.Creator.AvatarUrl"></MudImage>
-                            </MudAvatar>
-                            <MudChip Icon="@Icons.Custom.Brands.GitHub" Label="true" Color="Color.Primary">@branch.Creator.Login</MudChip>
-                        </MudStack>
-                        @if (branch.Commits.Any())
-                        {
-                            <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start" Reverse="false">
-                                @foreach (var commit in branch.Commits)
-                                {
-                                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
-                                        <ItemContent>
-                                            <MudPaper Class="mb-2 pa-2">
-                                                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
-                                                    <MudText Color="Color.Secondary" Typo="Typo.body2" GutterBottom="true">@commit.Author.Username &lt;@commit.Author.Email&gt</MudText>
-                                                    <MudText Color="Color.Default">@commit.Timestamp.ToLocalTime().ToString("F")</MudText>
-                                                </MudStack>
+                <MudExpansionPanels>
+                    @foreach (var branch in Branches)
+                    {
+                        <MudExpansionPanel>
+                            <TitleContent>
+                                <MudStack Row="true" AlignItems="AlignItems.Center">
+                                    <MudLink Href="@branch.BranchUrl" Target="_blank">@branch.Name</MudLink>
+                                    <MudText>created by</MudText>
+                                    <MudAvatar>
+                                        <MudImage Src="@branch.Creator.AvatarUrl"></MudImage>
+                                    </MudAvatar>
+                                    <MudChip Icon="@Icons.Custom.Brands.GitHub" Label="true" Color="Color.Primary">@branch.Creator.Login</MudChip>
+                                </MudStack>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudStack>
 
-                                                <MudStack Row="true" AlignItems="AlignItems.Center">
-                                                    <MudLink Href="@commit.Url">@commit.Message</MudLink>
-                                                    @if (commit.Added.Any())
-                                                    {
-                                                        <MudBadge Content="@commit.Added.Count" Color="Color.Primary" Overlap="true" Bordered="true" Class="mx-2">
-                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Warning">Added</MudButton>
-                                                        </MudBadge>
-                                                    }
-                                                    @if (commit.Modified.Any())
-                                                    {
-                                                        <MudBadge Content="@commit.Modified.Count" Color="Color.Warning" Overlap="true" Bordered="true" Class="mx-2">
-                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning">Edited</MudButton>
-                                                        </MudBadge>
-                                                    }
-                                                    @if (commit.Removed.Any())
-                                                    {
-                                                        <MudBadge Content="@commit.Removed.Count" Color="Color.Error" Overlap="true" Bordered="true" Class="mx-2">
-                                                            <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Deleted</MudButton>
-                                                        </MudBadge>
-                                                    }
-                                                </MudStack>
-                                            </MudPaper>
-                                        </ItemContent>
-                                    </MudTimelineItem>
-                                }
-                            </MudTimeline>
-                        }
-                    </MudStack>
-                }
+                                    @if (branch.Commits.Any())
+                                    {
+                                        <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start" Reverse="false">
+                                            @foreach (var commit in branch.Commits)
+                                            {
+                                                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled">
+                                                    <ItemContent>
+                                                        <MudPaper Class="mb-2 pa-2">
+                                                            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
+                                                                <MudText Color="Color.Secondary" Typo="Typo.body2" GutterBottom="true">@commit.Author.Username &lt;@commit.Author.Email&gt</MudText>
+                                                                <MudText Color="Color.Default">@commit.Timestamp.ToLocalTime().ToString("F")</MudText>
+                                                            </MudStack>
+
+                                                            <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                                <MudLink Href="@commit.Url">@commit.Message</MudLink>
+                                                                @if (commit.Added.Any())
+                                                                {
+                                                                    <MudBadge Content="@commit.Added.Count" Color="Color.Primary" Overlap="true" Bordered="true" Class="mx-2">
+                                                                        <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Warning">Added</MudButton>
+                                                                    </MudBadge>
+                                                                }
+                                                                @if (commit.Modified.Any())
+                                                                {
+                                                                    <MudBadge Content="@commit.Modified.Count" Color="Color.Warning" Overlap="true" Bordered="true" Class="mx-2">
+                                                                        <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Warning">Edited</MudButton>
+                                                                    </MudBadge>
+                                                                }
+                                                                @if (commit.Removed.Any())
+                                                                {
+                                                                    <MudBadge Content="@commit.Removed.Count" Color="Color.Error" Overlap="true" Bordered="true" Class="mx-2">
+                                                                        <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Deleted</MudButton>
+                                                                    </MudBadge>
+                                                                }
+                                                            </MudStack>
+                                                        </MudPaper>
+                                                    </ItemContent>
+                                                </MudTimelineItem>
+                                            }
+                                        </MudTimeline>
+                                    }
+                                </MudStack>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                        
+                    }
+                </MudExpansionPanels>
             </MudTabPanel>
             @if (Branches.Select(b => b.PullRequests).Any())
             {
@@ -89,14 +99,14 @@
                                 <MudStack>
                                     <MudText>@context.SourceBranch</MudText>
                                     <MudText>@context.TargetBranch</MudText>
-                                </MudStack>    
+                                </MudStack>
                             </MudTd>
                             <MudTd DataLabel="">
                                 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                                    <MudTabPanel Text="Assignes">
-                                        @foreach(var assigne  in context.Assignees)
+                                    <MudTabPanel Icon="@Icons.Material.Filled.AssignmentInd" Text="Assign">
+                                        @foreach (var assigne in context.Assignees)
                                         {
-                                            <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                            <MudStack Row="true">
                                                 <MudAvatar>
                                                     <MudImage Src="@assigne.AvatarUrl"></MudImage>
                                                 </MudAvatar>
@@ -104,10 +114,10 @@
                                             </MudStack>
                                         }
                                     </MudTabPanel>
-                                    <MudTabPanel Text="Reviewers">
+                                    <MudTabPanel Icon="@Icons.Material.Filled.FactCheck" Text="Review">
                                         @foreach (var reviewer in context.Reviewers)
                                         {
-                                            <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                            <MudStack Row="true">
                                                 <MudAvatar>
                                                     <MudImage Src="@reviewer.AvatarUrl"></MudImage>
                                                 </MudAvatar>
