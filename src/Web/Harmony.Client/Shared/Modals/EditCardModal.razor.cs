@@ -52,7 +52,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _updatingStoryPoints;
         private GetBoardListResponse? _cardBoardList;
         private CardDto subTaskBeforeEdit;
-        private List<BranchDto> _branches = new List<BranchDto>();
+        public string SerialKey => $"{BoardKey}-{_card.SerialNumber}";
 
         [Parameter] public Guid CardId { get; set; }
         [Parameter] public Guid BoardId { get; set; }
@@ -75,13 +75,6 @@ namespace Harmony.Client.Shared.Modals
                 if (_card.BoardList != null)
                 {
                     _cardBoardList = _card.BoardLists.FirstOrDefault(l => l.Id == _card.BoardList.Id);
-                }
-
-                var cardBranchesResult = await _repositoryManager.GetCardBranches($"{BoardKey}-{_card.SerialNumber}");
-
-                if (cardBranchesResult.Succeeded)
-                {
-                    _branches = cardBranchesResult.Data;
                 }
             }
 
@@ -163,20 +156,6 @@ namespace Harmony.Client.Shared.Modals
                 _card.Attachments.Remove(attachment);
                 StateHasChanged();
             }
-        }
-
-        private async Task ViewRepositoryActivityDetails()
-        {
-            var parameters = new DialogParameters<ViewRepositoryActivityModal>
-            {
-                {
-                    modal => modal.Branches, _branches
-                },
-            };
-
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = true };
-            var dialog = _dialogService.Show<ViewRepositoryActivityModal>(_localizer["View repository activity"], parameters, options);
-            var result = await dialog.Result;
         }
 
         private async Task UploadFiles(IReadOnlyList<IBrowserFile> files)
