@@ -157,8 +157,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
                     switch
                     {
                         "opened" => PullRequestState.Opened,
-                        "closed" => PullRequestState.Closed,
-                        "merged" => PullRequestState.Merged,
+                        "closed" => request.PullRequest.MergedAt.HasValue ? PullRequestState.Merged : PullRequestState.Closed,
                         _ => PullRequestState.Opened
                     },
                     Title = request.PullRequest.Title,
