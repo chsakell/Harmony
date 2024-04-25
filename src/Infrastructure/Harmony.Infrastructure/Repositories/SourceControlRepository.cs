@@ -58,7 +58,7 @@ namespace Harmony.Infrastructure.Repositories
                 .GetCollection<Repository>(MongoDbConstants.RepositoriesCollection);
 
             var filter = Builders<Repository>.Filter
-                    .Eq(repo => repo.Id, repositoryId);
+                    .Eq(repo => repo.RepositoryId, repositoryId);
 
             return await repositoriesCollection.Find(filter).FirstOrDefaultAsync();
         }
