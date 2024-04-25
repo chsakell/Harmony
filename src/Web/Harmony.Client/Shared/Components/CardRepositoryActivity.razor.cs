@@ -46,6 +46,21 @@ namespace Harmony.Client.Shared.Components
             var result = await dialog.Result;
         }
 
+        private bool ShowArrows()
+        {
+            if(!_branches.Any())
+            {
+                return false;
+            }
+
+            var counter = 0;
+
+            counter += _branches.Count;
+            counter+= _branches.SelectMany(b => b.PullRequests).Count();
+
+            return counter > 1;
+        }
+
         private void DisplayMessage(IResult result)
         {
             if (result == null)

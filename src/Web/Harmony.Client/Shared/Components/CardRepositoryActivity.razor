@@ -13,7 +13,8 @@ else if (_branches.Any())
         <MudButton StartIcon="@Icons.Custom.Brands.GitHub" Class="mt-2"
                    Variant="Variant.Outlined" FullWidth="true" OnClick="ViewRepositoryActivityDetails"
                    Color="Color.Primary">VIEW DETAILS</MudButton>
-        <MudCarousel Class="mud-width-full" Style="height:150px;" ShowArrows="true" ShowBullets="false"
+        <MudCarousel Class="mud-width-full" Style="height:150px;" 
+                ShowArrows="@ShowArrows()" ShowBullets="false"
                      EnableSwipeGesture="true" AutoCycle="false" TData="object">
             @foreach (var branch in _branches)
             {
