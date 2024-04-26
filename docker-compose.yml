@@ -98,6 +98,29 @@ services:
         - $USERPROFILE/.aspnet/https:/https/
     depends_on:
         - rabbitmq
+   integrations-sourcecontrol:
+    build: 
+        context: .
+        dockerfile: src/Integrations/Harmony.Integrations.SourceControl/Dockerfile
+        args:
+          BUILD_CONFIGURATION: Debug
+    container_name: harmony-integrations-sourcecontrol
+    ports:
+        - "7113:443"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=https://+:443;http://+:80
+        - ASPNETCORE_HTTPS_PORT=7113
+        - BrokerConfiguration__Host=harmony-rabbitmq
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
+        - MongoDB__ConnectionURI=mongodb://harmony-mongodb-server:27017
+        - ElasticConfiguration:Uri=http://elasticsearch:9200
+    volumes:
+        - $USERPROFILE/.aspnet/https:/https/
+    depends_on:
+        - rabbitmq
+        - mongodb
    client:
     build: 
         context: .

@@ -29,8 +29,22 @@
       "DangerousAcceptAnyServerCertificateValidator": true
     },
     {
+      "SwaggerKey": "sourcecontrolapi",
+      "UpstreamPathTemplate": "/sourcecontrol/{anything}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/{anything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "harmony-integrations-sourcecontrol",
+          "Port": 443
+        }
+      ],
+      "DangerousAcceptAnyServerCertificateValidator": true
+    },
+    {
       "UpstreamPathTemplate": "/signalRHub/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "UpstreamHttpMethod": [],
       "DownstreamPathTemplate": "/signalRHub/{everything}",
       "ReRouteIsCaseSensitive": false,
       "DownstreamScheme": "wss",
