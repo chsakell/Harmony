@@ -25,5 +25,6 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
         public string MergeCommitSha { get; set; }
         public List<RepositoryUser> Assignees { get; set; }
         public List<RepositoryUser> Reviewers { get; set; }
+        public RepositoryUser Sender { get; set; }
     }
 }

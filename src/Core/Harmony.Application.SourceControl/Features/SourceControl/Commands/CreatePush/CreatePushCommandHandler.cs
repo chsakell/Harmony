@@ -38,18 +38,13 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 Provider = request.Repository.Provider
             });
 
-            var branch = await _sourceControlRepository.GetBranch(request.Branch, request.Repository.RepositoryId);
-
-            if (branch == null)
+            await _mediator.Send(new CreateBranchCommand()
             {
-                await _mediator.Send(new CreateBranchCommand()
-                {
-                    Name = request.Branch,
-                    Repository = request.Repository,
-                    Creator = request.Sender,
-                    SkipRepositoryCheck = true
-                });
-            }
+                Name = request.Branch,
+                Repository = request.Repository,
+                Creator = request.Sender,
+                SkipRepositoryCheck = true
+            });
 
             await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Branch, request.Commits);
 

@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
 using Harmony.Domain.Enums.SourceControl;
 using Harmony.Domain.SourceControl;
@@ -37,6 +38,16 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 FullName = request.Repository.FullName,
                 Provider = request.Repository.Provider
             });
+
+
+            await _mediator.Send(new CreateBranchCommand()
+            {
+                Name = request.SourceBranch,
+                Repository = request.Repository,
+                Creator = request.Sender,
+                SkipRepositoryCheck = true
+            });
+
 
             var pullRequest = new PullRequest()
             {

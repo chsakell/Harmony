@@ -180,7 +180,8 @@ namespace Harmony.Integrations.SourceControl.Controllers
                         FullName = request.Repository.FullName,
                         Url = request.Repository.HtmlUrl,
                         Provider = SourceControlProvider.GitHub
-                    }
+                    },
+                    Sender = new RepositoryUser(request.Sender.Login, request.Sender.AvatarUrl, request.Sender.HtmlUrl)
                 };
 
                 await _mediator.Send(pullRequest);
