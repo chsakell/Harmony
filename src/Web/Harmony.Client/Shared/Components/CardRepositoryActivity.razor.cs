@@ -48,7 +48,7 @@ namespace Harmony.Client.Shared.Components
 
         private bool ShowArrows()
         {
-            if(!_branches.Any())
+            if (!_branches.Any())
             {
                 return false;
             }
@@ -56,9 +56,20 @@ namespace Harmony.Client.Shared.Components
             var counter = 0;
 
             counter += _branches.Count;
-            counter+= _branches.SelectMany(b => b.PullRequests).Count();
+            counter += _branches.SelectMany(b => b.PullRequests).Count();
 
             return counter > 1;
+        }
+
+        public void AddBranch(BranchDto branch)
+        {
+            if (!_branches.Any(b => b.Id == branch.Id))
+            {
+                _branches.Add(branch);
+
+                DisplayMessage(Result<bool>.Success(true, $"Branch {branch.Name} created by {branch.Creator.Login}"));
+                StateHasChanged();
+            }
         }
 
         private void DisplayMessage(IResult result)

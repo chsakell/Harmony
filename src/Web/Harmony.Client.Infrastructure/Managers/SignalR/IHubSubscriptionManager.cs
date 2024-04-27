@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Harmony.Application.Events;
 using Harmony.Application.Notifications;
+using Harmony.Application.SourceControl.Messages;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Polly;
@@ -17,6 +18,8 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         #region Listeners
         Task ListenForBoardEvents(string boardId);
         Task StopListeningForBoardEvents(string boardId);
+        Task ListenForCardEvents(string serialKey);
+        Task StopListeningForCardEvents(string serialKey);
         #endregion
 
         #region Events
@@ -45,6 +48,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         event EventHandler<CardCommentDeletedMessage> OnCardCommentDeleted;
         event EventHandler<CardLinkCreatedMessage> OnCardLinkCreated;
         event EventHandler<CardLinkDeletedMessage> OnCardLinkDeleted;
+        event EventHandler<BranchCreatedMessage> OnBranchCreated;
 
         #endregion
     }

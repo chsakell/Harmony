@@ -26,6 +26,8 @@
 
             public const string ListenForBoardEvents = "ListenForBoardEvents";
             public const string StopListeningForBoardEvents = "StopListeningForBoardEvents";
+            public const string ListenForCardEvents = "ListenForCardEvents";
+            public const string StopListeningForCardEvents = "StopListeningForCardEvents";
 
             // Board events
             public const string OnBoardListAdded = "OnBoardListAdded";

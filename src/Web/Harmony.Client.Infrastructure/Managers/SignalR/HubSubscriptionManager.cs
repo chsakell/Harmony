@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Harmony.Application.Events;
 using Harmony.Application.Notifications;
+using Harmony.Application.SourceControl.Messages;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Constants.Application;
 using Microsoft.AspNetCore.Components;
@@ -73,7 +74,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public event EventHandler<CardCommentDeletedMessage> OnCardCommentDeleted;
         public event EventHandler<CardLinkCreatedMessage> OnCardLinkCreated;
         public event EventHandler<CardLinkDeletedMessage> OnCardLinkDeleted;
-
+        public event EventHandler<BranchCreatedMessage> OnBranchCreated;
         #endregion
 
         #region Listeners
@@ -94,6 +95,35 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
                 try
                 {
                     await _hubConnection.SendAsync(ApplicationConstants.SignalR.StopListeningForBoardEvents, boardId);
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex);
+                }
+            }
+        }
+
+        public async Task ListenForCardEvents(string serialKey)
+        {
+            if (_hubConnection.State == HubConnectionState.Connected)
+            {
+                try
+                {
+                    await _hubConnection.SendAsync(ApplicationConstants.SignalR.ListenForCardEvents, serialKey);
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex);
+                }
+            }
+        }
+        public async Task StopListeningForCardEvents(string serialKey)
+        {
+            if (_hubConnection.State == HubConnectionState.Connected)
+            {
+                try
+                {
+                    await _hubConnection.SendAsync(ApplicationConstants.SignalR.StopListeningForCardEvents, serialKey);
                 }
                 catch (Exception ex)
                 {
@@ -240,6 +270,11 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             _hubConnection.On<CardLinkDeletedMessage>(ApplicationConstants.SignalR.OnCardLinkDeleted, (@event) =>
             {
                 OnCardLinkDeleted?.Invoke(this, @event);
+            });
+
+            _hubConnection.On<BranchCreatedMessage>(ApplicationConstants.SignalR.OnBranchCreated, (@event) =>
+            {
+                OnBranchCreated?.Invoke(this, @event);
             });
         }
 

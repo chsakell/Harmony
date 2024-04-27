@@ -1,5 +1,4 @@
 ﻿using Harmony.Api.Extensions;
-using Harmony.Api.Hubs;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Persistence.DbContext;
 using Harmony.Shared.Constants.Application;
@@ -48,7 +47,6 @@ namespace Harmony.Api.Extensions
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
-                endpoints.MapHub<SignalRHub>(ApplicationConstants.SignalR.HubUrl);
             });
     }
 }

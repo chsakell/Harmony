@@ -25,6 +25,7 @@ using Harmony.Application.Features.Lists.Commands.UpdateListItemDueDate;
 using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Helpers;
 using Harmony.Application.SourceControl.DTO;
+using Harmony.Application.SourceControl.Messages;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
@@ -52,6 +53,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _updatingStoryPoints;
         private GetBoardListResponse? _cardBoardList;
         private CardDto subTaskBeforeEdit;
+        private CardRepositoryActivity _cardRepositoryActivity;
         public string SerialKey => $"{BoardKey}-{_card.SerialNumber}";
 
         [Parameter] public Guid CardId { get; set; }
@@ -102,6 +104,8 @@ namespace Harmony.Client.Shared.Modals
 
         private void RegisterEvents()
         {
+            _hubSubscriptionManager.ListenForCardEvents($"{BoardKey}-{_card.SerialNumber}");
+
             _hubSubscriptionManager.OnCardLabelRemoved += OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded += OnCardMemberAdded;
             _hubSubscriptionManager.OnCardMemberRemoved += OnCardMemberRemoved;
@@ -110,10 +114,13 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardAttachmentRemoved += OnCardAttachmentRemoved;
             _hubSubscriptionManager.OnCardLinkCreated += OnCardLinkCreated;
             _hubSubscriptionManager.OnCardLinkDeleted += OnCardLinkDeleted;
+            _hubSubscriptionManager.OnBranchCreated += OnBranchCreated;
         }
 
         private void UnRegisterEvents()
         {
+            _hubSubscriptionManager.StopListeningForCardEvents($"{BoardKey}-{_card.SerialNumber}");
+
             _hubSubscriptionManager.OnCardLabelRemoved -= OnCardLabelRemoved;
             _hubSubscriptionManager.OnCardMemberAdded -= OnCardMemberAdded;
             _hubSubscriptionManager.OnCardMemberRemoved -= OnCardMemberRemoved;
@@ -122,6 +129,25 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardAttachmentRemoved -= OnCardAttachmentRemoved;
             _hubSubscriptionManager.OnCardLinkCreated -= OnCardLinkCreated;
             _hubSubscriptionManager.OnCardLinkDeleted -= OnCardLinkDeleted;
+            _hubSubscriptionManager.OnBranchCreated -= OnBranchCreated;
+        }
+
+        private void OnBranchCreated(object? sender, BranchCreatedMessage e)
+        {
+            if (_cardRepositoryActivity != null)
+            {
+                _cardRepositoryActivity.AddBranch(new BranchDto()
+                {
+                    Id = e.Id,
+                    Commits = new List<CommitDto>(),
+                    Creator = e.Creator,
+                    Name = e.Name,
+                    Provider = e.Provider,
+                    PullRequests = new List<PullRequestDto>(),
+                    RepositoryName = e.RepositoryName,
+                    RepositoryUrl = e.RepositoryUrl,
+                });
+            }
         }
 
         private void OnCardLinkDeleted(object? sender, Application.Notifications.CardLinkDeletedMessage e)

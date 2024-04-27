@@ -453,7 +453,7 @@ else
                 @if (_card.BoardType != BoardType.Retrospective)
                 {
                     <MudItem xs="12" sm="3">
-                        <CardRepositoryActivity SerialKey="@SerialKey" />
+                        <CardRepositoryActivity @ref="_cardRepositoryActivity" SerialKey="@SerialKey" />
                         <MudButton StartIcon="@Icons.Material.Filled.GroupAdd"
                                    Variant="Variant.Outlined" FullWidth="true" OnClick="AddCardMembers"
                                    Color="Color.Primary">MEMBERS</MudButton>
