@@ -9,6 +9,7 @@ namespace Harmony.Application.SourceControl.DTO
 {
     public class CommitDto
     {
+        public string Id { get; set; }
         public string Message { get; set; }
         public DateTime Timestamp { get; set; }
         public string Url { get; set; }

@@ -108,10 +108,12 @@ namespace Harmony.Integrations.SourceControl.Controllers
         private async Task HandlePushWebhook(string postData)
         {
             var request = JsonSerializer.Deserialize<GitHubPushRequest>(postData);
+            var branch = request.Ref.Replace("refs/heads/", string.Empty);
 
             var push = new CreatePushCommand()
             {
-                Branch = request.Ref.Split('/').Last(),
+                SerialKey = GetSerialKey(branch),
+                Branch = branch,
                 Repository = new Repository()
                 {
                     RepositoryId = request.Repository.Id.ToString(),

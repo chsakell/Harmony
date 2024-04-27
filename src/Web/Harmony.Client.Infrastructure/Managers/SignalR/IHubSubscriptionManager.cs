@@ -49,6 +49,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         event EventHandler<CardLinkCreatedMessage> OnCardLinkCreated;
         event EventHandler<CardLinkDeletedMessage> OnCardLinkDeleted;
         event EventHandler<BranchCreatedMessage> OnBranchCreated;
+        event EventHandler<BranchCommitsPushedMessage> OnBranchCommitsPushed;
 
         #endregion
     }

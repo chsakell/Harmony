@@ -56,6 +56,7 @@
             public const string OnCardLinkAdded = "OnCardLinkAdded";
             public const string OnCardLinkDeleted = "OnCardLinkDeleted";
             public const string OnBranchCreated = "OnBranchCreated";
+            public const string OnBranchCommitsPushed = "OnBranchCommitsPushed";
         }
 
         public static class HarmonyRetryPolicy

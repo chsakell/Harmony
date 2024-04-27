@@ -24,5 +24,11 @@ namespace Harmony.SignalR.Services
             await _hubContext.Clients.Group(messsage.SerialKey)
                 .SendAsync(ApplicationConstants.SignalR.OnBranchCreated, messsage);
         }
+
+        public async Task BranchCommitsPushed(BranchCommitsPushedMessage messsage)
+        {
+            await _hubContext.Clients.Group(messsage.SerialKey)
+                .SendAsync(ApplicationConstants.SignalR.OnBranchCommitsPushed, messsage);
+        }
     }
 }

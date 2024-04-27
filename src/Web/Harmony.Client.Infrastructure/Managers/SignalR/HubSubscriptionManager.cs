@@ -75,6 +75,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         public event EventHandler<CardLinkCreatedMessage> OnCardLinkCreated;
         public event EventHandler<CardLinkDeletedMessage> OnCardLinkDeleted;
         public event EventHandler<BranchCreatedMessage> OnBranchCreated;
+        public event EventHandler<BranchCommitsPushedMessage> OnBranchCommitsPushed;
         #endregion
 
         #region Listeners
@@ -275,6 +276,11 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
             _hubConnection.On<BranchCreatedMessage>(ApplicationConstants.SignalR.OnBranchCreated, (@event) =>
             {
                 OnBranchCreated?.Invoke(this, @event);
+            });
+
+            _hubConnection.On<BranchCommitsPushedMessage>(ApplicationConstants.SignalR.OnBranchCommitsPushed, (@event) =>
+            {
+                OnBranchCommitsPushed?.Invoke(this, @event);
             });
         }
 

@@ -11,5 +11,6 @@ namespace Harmony.Application.SourceControl.Services.Hubs
     public interface IHubClientSourceControlNotifierService
     {
         Task BranchCreated(BranchCreatedMessage messsage);
+        Task BranchCommitsPushed(BranchCommitsPushedMessage messsage);
     }
 }

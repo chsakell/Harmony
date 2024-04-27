@@ -1,7 +1,10 @@
-﻿using Harmony.Application.Contracts.Messaging;
+﻿using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
+using Harmony.Application.SourceControl.Messages;
+using Harmony.Domain.Enums;
 using Harmony.Domain.SourceControl;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -47,6 +50,34 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
             });
 
             await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Branch, request.Commits);
+
+            if (!string.IsNullOrEmpty(request.SerialKey) && request.Commits.Any())
+            {
+                var message = new BranchCommitsPushedMessage()
+                {
+                    SerialKey = request.SerialKey.ToLower(),
+                    Branch = request.Branch,
+                    Commits = request.Commits.Select(c => new DTO.CommitDto()
+                    {
+                        Id = c.Id,
+                        Added = c.Added,
+                        Author = new DTO.AuthorDto()
+                        {
+                            Email = c.Author.Email,
+                            Name = c.Author.Name,
+                            Username = c.Author.Username,
+                        },
+                        Message = c.Message,
+                        Modified = c.Modified,
+                        Removed = c.Removed,
+                        Timestamp = c.Timestamp,
+                        Url = c.Url
+                    }).ToList()
+                };
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.BranchCommitsPushed, routingKey: BrokerConstants.RoutingKeys.SignalR);
+            }
 
             return Result<bool>.Success(true, _localizer["Push created"]);
         }

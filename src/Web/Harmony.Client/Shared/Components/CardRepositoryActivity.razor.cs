@@ -72,6 +72,28 @@ namespace Harmony.Client.Shared.Components
             }
         }
 
+        public void AddCommitsToBranch(string branchName, RepositoryUserDto author, List<CommitDto> commits)
+        {
+            var branch = _branches.FirstOrDefault(b => b.Name == branchName);
+
+            if (branch == null)
+            {
+                return;
+            }
+
+            foreach (var commit in commits)
+            {
+                if(!branch.Commits.Any(c => c.Id == commit.Id))
+                {
+                    branch.Commits.Add(commit);
+                }
+            }
+
+            DisplayMessage(Result<bool>.Success(true, $"{author?.Login} pushed {commits.Count} commits to {branchName}"));
+
+            StateHasChanged();
+        }
+
         private void DisplayMessage(IResult result)
         {
             if (result == null)

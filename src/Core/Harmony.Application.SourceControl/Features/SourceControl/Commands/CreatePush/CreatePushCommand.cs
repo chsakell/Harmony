@@ -8,6 +8,7 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
 {
     public class CreatePushCommand : IRequest<Result<bool>>
     {
+        public string SerialKey { get; set; }
         public string Branch { get; set; }
         public Repository Repository { get; set; }
         public List<Commit> Commits { get; set; }
