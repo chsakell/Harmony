@@ -6,6 +6,7 @@ WORKDIR /src
 COPY ["src/Web/Harmony.Client/Harmony.Client.csproj", "Web/Harmony.Client/"]
 COPY ["src/Web/Harmony.Client.Infrastructure/Harmony.Client.Infrastructure.csproj", "Web/Harmony.Client.Infrastructure/"]
 COPY ["src/Core/Harmony.Application/Harmony.Application.csproj", "Core/Harmony.Application/"]
+COPY ["src/Core/Harmony.Application.SourceControl/Harmony.Application.SourceControl.csproj", "Core/Harmony.Application.SourceControl/"]
 COPY ["src/Shared/Harmony.Shared/Harmony.Shared.csproj", "Shared/Harmony.Shared/"]
 COPY ["src/Core/Harmony.Domain/Harmony.Domain.csproj", "Core/Harmony.Domain/"]
 
