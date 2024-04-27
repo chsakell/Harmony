@@ -2,6 +2,8 @@
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Services.Hubs;
 using Harmony.Application.Notifications;
+using Harmony.Application.SourceControl.Messages;
+using Harmony.Application.SourceControl.Services.Hubs;
 using Harmony.Domain.Enums;
 using Harmony.Messaging;
 using Microsoft.Extensions.Options;
@@ -112,7 +114,7 @@ namespace Harmony.SignalR.Services.Hosted
                                 using (IServiceScope scope = _serviceProvider.CreateScope())
                                 {
                                     var hubClientNotifierService = scope.ServiceProvider.GetRequiredService<IHubClientNotifierService>();
-
+                                    var hubClientSourceControlNotifierService = scope.ServiceProvider.GetRequiredService<IHubClientSourceControlNotifierService>();
                                     switch (notificationType)
                                     {
                                         case NotificationType.CardCreated:
@@ -327,6 +329,14 @@ namespace Harmony.SignalR.Services.Hosted
                                                 .Deserialize<CardLinkDeletedMessage>(ea.Body.Span);
 
                                                 await hubClientNotifierService.LinkDeleted(message);
+                                            }
+                                            break;
+                                        case NotificationType.BranchCreated:
+                                            {
+                                                var message = JsonSerializer
+                                                .Deserialize<BranchCreatedMessage>(ea.Body.Span);
+
+                                                await hubClientSourceControlNotifierService.BranchCreated(message);
                                             }
                                             break;
                                         default:

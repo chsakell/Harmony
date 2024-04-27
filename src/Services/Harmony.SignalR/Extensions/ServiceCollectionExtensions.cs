@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Services.Hubs;
+using Harmony.Application.SourceControl.Services.Hubs;
 using Harmony.Messaging;
 using Harmony.SignalR.Extensions;
 using Harmony.SignalR.Services;
@@ -9,10 +10,12 @@ namespace Harmony.SignalR.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        internal static IServiceCollection AddClientNotificationService(this IServiceCollection services)
+        internal static IServiceCollection AddClientNotificationServices(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
             services.AddScoped<IHubClientNotifierService, HubClientNotifierService>();
+            services.AddScoped<IHubClientSourceControlNotifierService, HubClientSourceControlNotifierService>();
+            
             return services;
         }
 

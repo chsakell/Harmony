@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog(SeriLogger.Configure);
 
-builder.Services.AddClientNotificationService();
+builder.Services.AddClientNotificationServices();
 builder.Services.AddMessaging(builder.Configuration);
 
 builder.Services.AddHostedService<PushNotificationsConsumerHostedService>();

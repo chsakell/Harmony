@@ -8,6 +8,7 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
 {
     public class CreateBranchCommand : IRequest<Result<bool>>
     {
+        public string SerialKey { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
         public RepositoryUser Creator { get; set; }

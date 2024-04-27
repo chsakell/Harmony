@@ -10,6 +10,7 @@ using Harmony.Integrations.SourceControl.WebhookRequests.GitHub;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Harmony.Integrations.SourceControl.Controllers
 {
@@ -17,7 +18,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<GithubController> _logger;
-
+        private static char[] ALLOWED_CHARS = [' ','_','-','/'];
         public GithubController(
             IMediator mediator,
             ILogger<GithubController> logger)
@@ -78,6 +79,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
                     case "create":
                         await _mediator.Send(new CreateBranchCommand()
                         {
+                            SerialKey = GetSerialKey(request.Ref),
                             Name = request.Ref,
                             Repository = new Repository()
                             {
@@ -186,6 +188,62 @@ namespace Harmony.Integrations.SourceControl.Controllers
 
                 await _mediator.Send(pullRequest);
             }
+        }
+
+        private string GetSerialKey(string text)
+        {
+            List<string> matches = Regex.Matches(text, @"([a-zA-Z]{3,5})-(\d+)", RegexOptions.IgnoreCase)
+                       .Cast<Match>()
+                       .Select(x => x.Value).ToList();
+
+            foreach(var match in matches)
+            {
+                var matchIndex = text.IndexOf(match, StringComparison.InvariantCultureIgnoreCase);
+
+                if(matchIndex == 0 && NextCharAllowed(text, match, matchIndex))
+                {
+                    return match;
+                }
+                else if(matchIndex > 0)
+                {
+                    var previousChar = text[matchIndex - 1];
+                    if (PreviewCharAllowed(text, matchIndex) && NextCharAllowed(text, match, matchIndex))
+                    {
+                        return match;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private bool PreviewCharAllowed(string original, int termIndex)
+        {
+            var previousChar = original[termIndex - 1];
+
+            if (ALLOWED_CHARS.Contains(previousChar))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool NextCharAllowed(string original, string term, int termIndex)
+        {
+            if(original.Length == term.Length + termIndex)
+            {
+                return true;
+            }
+
+            var nextChar = original[termIndex + term.Length];
+
+            if (ALLOWED_CHARS.Contains(nextChar))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

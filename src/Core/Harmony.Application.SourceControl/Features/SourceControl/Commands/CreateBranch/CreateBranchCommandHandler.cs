@@ -1,6 +1,9 @@
-﻿using Harmony.Application.Contracts.Messaging;
+﻿using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
+using Harmony.Application.SourceControl.Messages;
+using Harmony.Domain.Enums;
 using Harmony.Domain.SourceControl;
 using Harmony.Shared.Wrapper;
 using MediatR;
@@ -59,6 +62,28 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
             };
 
             await _sourceControlRepository.CreateBranch(branch);
+
+            if (!string.IsNullOrEmpty(request.SerialKey))
+            {
+                var message = new BranchCreatedMessage()
+                {
+                    SerialKey = request.SerialKey.ToLower(),
+                    Id = branch.Id,
+                    Name = branch.Name,
+                    Creator = new Application.SourceControl.DTO.RepositoryUserDto()
+                    {
+                        Login = branch.Creator.Login,
+                        AvatarUrl = branch.Creator.AvatarUrl,
+                        HtmlUrl = branch.Creator.HtmlUrl,
+                    },
+                    Provider = request.Repository.Provider,
+                    RepositoryName = request.Repository.Name,
+                    RepositoryUrl = request.Repository.Url,
+                };
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.BranchCreated, routingKey: BrokerConstants.RoutingKeys.SignalR);
+            }
 
             return Result<bool>.Success(true, _localizer["Branch created"]);
         }

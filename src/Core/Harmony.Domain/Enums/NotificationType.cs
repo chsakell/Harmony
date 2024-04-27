@@ -28,5 +28,6 @@
         CardCommentDeleted,
         CardLinkCreated,
         CardLinkDeleted,
+        BranchCreated,
     }
 }

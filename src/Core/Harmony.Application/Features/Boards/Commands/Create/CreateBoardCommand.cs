@@ -29,6 +29,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
 
         [Required]
         [MaxLength(5)]
+        [MinLength(3)]
+        [RegularExpression("[a-zA-Z]{3,5}")]
         public string Key { get; set; }
     }
 }
