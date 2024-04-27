@@ -153,6 +153,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
             {
                 var pullRequest = new CreatePullRequestCommand()
                 {
+                    SerialKey = GetSerialKey(request.PullRequest.Head.Ref),
                     Id = request.PullRequest.Id.ToString(),
                     Action = request.Action,
                     HtmlUrl = request.PullRequest.HtmlUrl,

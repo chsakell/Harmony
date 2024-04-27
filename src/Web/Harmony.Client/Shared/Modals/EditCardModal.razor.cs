@@ -116,6 +116,7 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLinkDeleted += OnCardLinkDeleted;
             _hubSubscriptionManager.OnBranchCreated += OnBranchCreated;
             _hubSubscriptionManager.OnBranchCommitsPushed += OnBranchCommitsPushed;
+            _hubSubscriptionManager.OnBranchPullRequestCreated += OnBranchPullRequestCreated;
         }
 
         private void UnRegisterEvents()
@@ -132,6 +133,16 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLinkDeleted -= OnCardLinkDeleted;
             _hubSubscriptionManager.OnBranchCreated -= OnBranchCreated;
             _hubSubscriptionManager.OnBranchCommitsPushed -= OnBranchCommitsPushed;
+            _hubSubscriptionManager.OnBranchPullRequestCreated -= OnBranchPullRequestCreated;
+        }
+
+        private void OnBranchPullRequestCreated(object? sender, BranchPullRequestCreatedMessage e)
+        {
+            if (_cardRepositoryActivity != null)
+            {
+                _cardRepositoryActivity.AddPullRequestToBranch(e.PullRequest, 
+                    e.Sender);
+            }
         }
 
         private void OnBranchCommitsPushed(object? sender, BranchCommitsPushedMessage e)

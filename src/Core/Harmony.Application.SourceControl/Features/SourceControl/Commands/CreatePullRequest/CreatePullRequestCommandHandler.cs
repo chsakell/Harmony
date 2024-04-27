@@ -1,7 +1,10 @@
-﻿using Harmony.Application.Contracts.Messaging;
+﻿using Harmony.Application.Constants;
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
+using Harmony.Application.SourceControl.Messages;
+using Harmony.Domain.Enums;
 using Harmony.Domain.Enums.SourceControl;
 using Harmony.Domain.SourceControl;
 using Harmony.Shared.Wrapper;
@@ -70,6 +73,51 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
 
             await _sourceControlRepository
                 .AddOrUpdatePullRequest(request.Repository.RepositoryId, pullRequest);
+
+            if (!string.IsNullOrEmpty(request.SerialKey))
+            {
+                var message = new BranchPullRequestCreatedMessage()
+                {
+                    SerialKey = request.SerialKey.ToLower(),
+                    PullRequest = new DTO.PullRequestDto()
+                    {
+                        Assignees = request.Assignees.Select(a => new DTO.RepositoryUserDto()
+                        {
+                            AvatarUrl = a.AvatarUrl,
+                            HtmlUrl = a.HtmlUrl,
+                            Login = a.Login,
+                        }).ToList(),
+                        ClosedAt = request.ClosedAt,
+                        MergedAt = request.MergedAt,
+                        SourceBranch = request.SourceBranch,
+                        TargetBranch = request.TargetBranch,
+                        MergeCommitSha = request.MergeCommitSha,
+                        Number = request.Number,
+                        CreatedAt = request.CreatedAt,
+                        DiffUrl = request.DiffUrl,
+                        HtmlUrl = request.HtmlUrl,
+                        Id = request.Id,
+                        Reviewers = request.Reviewers.Select(a => new DTO.RepositoryUserDto()
+                        {
+                            AvatarUrl = a.AvatarUrl,
+                            HtmlUrl = a.HtmlUrl,
+                            Login = a.Login,
+                        }).ToList(),
+                        State = request.State,
+                        Title = request.Title,
+                        UpdatedAt = request.UpdatedAt
+                    },
+                    Sender = new DTO.RepositoryUserDto()
+                    {
+                        AvatarUrl = request.Sender.AvatarUrl,
+                        HtmlUrl = request.Sender.HtmlUrl,
+                        Login = request.Sender.Login
+                    }
+                };
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.BranchPullRequestCreated, routingKey: BrokerConstants.RoutingKeys.SignalR);
+            }
 
             return Result<bool>.Success(true, _localizer["Pull request created"]);
         }

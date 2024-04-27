@@ -8,6 +8,7 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
 {
     public class CreatePullRequestCommand : IRequest<Result<bool>>
     {
+        public string SerialKey { get; set; }
         public string Id { get; set; }
         public string Action { get; set; }
         public string HtmlUrl { get; set; }

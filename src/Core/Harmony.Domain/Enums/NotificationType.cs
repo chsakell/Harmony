@@ -29,6 +29,7 @@
         CardLinkCreated,
         CardLinkDeleted,
         BranchCreated,
-        BranchCommitsPushed
+        BranchCommitsPushed,
+        BranchPullRequestCreated
     }
 }

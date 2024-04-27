@@ -94,6 +94,30 @@ namespace Harmony.Client.Shared.Components
             StateHasChanged();
         }
 
+        public void AddPullRequestToBranch(PullRequestDto pullRequest, RepositoryUserDto sender)
+        {
+            if(pullRequest == null)
+            {
+                return;
+            }
+
+            var branch = _branches.FirstOrDefault(b => b.Name == pullRequest.SourceBranch);
+
+            if (branch == null)
+            {
+                return;
+            }
+
+            if(!branch.PullRequests.Any(p => p.Id == pullRequest.Id))
+            {
+                branch.PullRequests.Add(pullRequest);
+            }
+
+            DisplayMessage(Result<bool>.Success(true, $"{sender?.Login} {pullRequest.State} {pullRequest.SourceBranch} pull request"));
+
+            StateHasChanged();
+        }
+
         private void DisplayMessage(IResult result)
         {
             if (result == null)

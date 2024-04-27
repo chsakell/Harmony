@@ -12,5 +12,6 @@ namespace Harmony.Application.SourceControl.Services.Hubs
     {
         Task BranchCreated(BranchCreatedMessage messsage);
         Task BranchCommitsPushed(BranchCommitsPushedMessage messsage);
+        Task BranchPullRequestCreated(BranchPullRequestCreatedMessage messsage);
     }
 }

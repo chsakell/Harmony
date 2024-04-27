@@ -347,6 +347,14 @@ namespace Harmony.SignalR.Services.Hosted
                                                 await hubClientSourceControlNotifierService.BranchCommitsPushed(message);
                                             }
                                             break;
+                                        case NotificationType.BranchPullRequestCreated:
+                                            {
+                                                var message = JsonSerializer
+                                                .Deserialize<BranchPullRequestCreatedMessage>(ea.Body.Span);
+
+                                                await hubClientSourceControlNotifierService.BranchPullRequestCreated(message);
+                                            }
+                                            break;
                                         default:
                                             break;
                                     }
