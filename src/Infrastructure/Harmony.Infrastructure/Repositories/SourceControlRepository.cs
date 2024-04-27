@@ -13,8 +13,6 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
-using static Harmony.Shared.Constants.Permission.Permissions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Harmony.Infrastructure.Repositories
 {
@@ -27,6 +25,8 @@ namespace Harmony.Infrastructure.Repositories
         {
             var mongoConnectionUrl = new MongoUrl(mongoConfiguration.Value.ConnectionURI);
             var mongoClientSettings = MongoClientSettings.FromUrl(mongoConnectionUrl);
+            mongoClientSettings.ConnectTimeout = TimeSpan.FromSeconds(10);
+            mongoClientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(10);
             mongoClientSettings.ClusterConfigurator = cb =>
             {
                 cb.Subscribe<CommandStartedEvent>(e =>
@@ -256,7 +256,16 @@ namespace Harmony.Infrastructure.Repositories
             await collection.UpdateOneAsync(
                 b => b.Name == branch.Name &&
                      b.RepositoryId == repositoryId, pushDefinition);
+        }
 
+        public async Task<bool> Ping(string database)
+        {
+            var db = _client
+                .GetDatabase(database);
+
+            var result = await db.RunCommandAsync((Command<BsonDocument>)"{ping:1}");
+
+            return result != null;
         }
     }
 }

@@ -16,5 +16,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<long> GetTotalBranches(string term);
         Task<List<Branch>> SearchBranches(string term);
         Task<bool> DeleteBranch(string name);
+        Task<bool> Ping(string database);
     }
 }

@@ -4,9 +4,11 @@ using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.SourceControl.Mappings;
 using Harmony.Automations.Extensions;
 using Harmony.Integrations.SourceControl.Extensions;
+using Harmony.Integrations.SourceControl.HealthChecks;
 using Harmony.Integrations.SourceControl.Services;
 using Harmony.Logging;
 using Harmony.Messaging;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using System.Reflection;
 
@@ -41,9 +43,9 @@ builder.Services.AddControllersWithViews();
 // gRPC services
 builder.Services.AddGrpc();
 
-builder.Services.AddSingleton<RabbitMqHealthCheck>();
+builder.Services.AddScoped<MongoDbHealthCheck>();
 builder.Services.AddHealthChecks()
-    .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
+    .AddCheck<MongoDbHealthCheck>("mongodb", tags: ["ready"]);
 
 var app = builder.Build();
 
@@ -59,6 +61,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.MapHealthChecks("/healthz/ready", new HealthCheckOptions
+{
+    Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+});
+
+app.MapHealthChecks("/healthz/live", new HealthCheckOptions
+{
+    Predicate = _ => true
+});
 
 app.UseAuthorization();
 

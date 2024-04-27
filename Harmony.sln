@@ -83,6 +83,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{7036FDCD-BD1
 		.k8s\rabbitmq-service.yaml = .k8s\rabbitmq-service.yaml
 		.k8s\signalr-deployment.yaml = .k8s\signalr-deployment.yaml
 		.k8s\signalr-service.yaml = .k8s\signalr-service.yaml
+		.k8s\sourcecontrol-deployment.yaml = .k8s\sourcecontrol-deployment.yaml
+		.k8s\sourcecontrol-service.yaml = .k8s\sourcecontrol-service.yaml
 		.k8s\sql-server-deployment.yaml = .k8s\sql-server-deployment.yaml
 		.k8s\sql-server-service.yaml = .k8s\sql-server-service.yaml
 	EndProjectSection

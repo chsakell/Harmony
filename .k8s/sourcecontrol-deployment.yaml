@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sourcecontrol
+  name: sourcecontrol
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sourcecontrol
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sourcecontrol
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "443"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: HarmonyTeamsSecretKey
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: /https/harmony.pfx
+            - name: ASPNETCORE_URLS
+              value: https://+:443;http://+:80
+            - name: BrokerConfiguration__Host
+              value: harmony-rabbitmq
+            - name: ElasticConfiguration__Uri
+              value: http://elasticsearch:9200
+            - name: MongoDB__ConnectionURI
+              value: mongodb://harmony-mongodb-server:27017
+          image: harmony-integrations-sourcecontrol:latest
+          imagePullPolicy: IfNotPresent
+          name: harmony-integrations-sourcecontrol
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 120
+          ports:
+            - containerPort: 443
+          volumeMounts:
+            - mountPath: /https/harmony.pfx
+              subPath: harmony.pfx
+              name: cert-config-map
+      restartPolicy: Always
+      volumes:
+        - name: cert-config-map
+          configMap:
+            name: cert-config-map

@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Protos\sourcecontrol.proto" />
   </ItemGroup>
 </Project>
