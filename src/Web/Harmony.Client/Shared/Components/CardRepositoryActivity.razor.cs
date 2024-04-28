@@ -50,7 +50,7 @@ namespace Harmony.Client.Shared.Components
 
         private string GetGitSlug()
         {
-            return $"git checkout -b {StringUtilities.SlugifyString(CardTitle)}";
+            return $"git checkout -b {SerialKey.ToLower()}-{StringUtilities.SlugifyString(CardTitle)}";
         }
 
         private async Task CopyToClipboard()

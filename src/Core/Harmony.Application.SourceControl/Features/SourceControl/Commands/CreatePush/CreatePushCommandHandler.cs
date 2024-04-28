@@ -46,7 +46,8 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 Name = request.Branch,
                 Repository = request.Repository,
                 Creator = request.Sender,
-                SkipRepositoryCheck = true
+                SkipRepositoryCheck = true,
+                SerialKey = request.SerialKey
             });
 
             await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Branch, request.Commits);
