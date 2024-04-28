@@ -22,6 +22,12 @@ namespace Harmony.Client.Infrastructure.Managers.SourceControl
             var response = await _httpClient
                 .GetAsync(Routes.SourceControlEndpoints.Branches(serialKey));
 
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Failed to retrieve repository activity {response}");
+                return new Result<List<BranchDto>>();
+            }
+
             return await response.ToResult<List<BranchDto>>();
         }
     }
