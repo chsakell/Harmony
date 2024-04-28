@@ -9,12 +9,12 @@
 }
 else if (_branches.Any())
 {
-    <MudCard Class="mb-2">
+    <MudPaper Class="mb-2">
         <MudButton StartIcon="@Icons.Custom.Brands.GitHub" Class="mt-2"
                    Variant="Variant.Outlined" FullWidth="true" OnClick="ViewRepositoryActivityDetails"
                    Color="Color.Primary">VIEW DETAILS</MudButton>
-        <MudCarousel Class="mud-width-full" Style="height:150px;" 
-                ShowArrows="@ShowArrows()" ShowBullets="false"
+        <MudCarousel Class="mud-width-full" Style="height:150px;"
+                     ShowArrows="@ShowArrows()" ShowBullets="false"
                      EnableSwipeGesture="true" AutoCycle="false" TData="object">
             @foreach (var branch in _branches)
             {
@@ -40,5 +40,28 @@ else if (_branches.Any())
                 </MudCarouselItem>
             }
         </MudCarousel>
-    </MudCard>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Class="mb-2">
+        <MudButton StartIcon="@Icons.Material.Filled.AltRoute" Class="mt-2"
+                   Variant="Variant.Outlined" FullWidth="true" OnClick="CopyToClipboard"
+                   Color="Color.Primary">CREATE BRANCH</MudButton>
+        <MudCard>
+            <MudCardHeader Class="pb-0">
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">Git command</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudTooltip ShowOnClick="false" ShowOnFocus="false" ShowOnHover="true" Text="Source control integration is required">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Primary" Size="Size.Small" />
+                    </MudTooltip>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.body2"><strong><code>@GetGitSlug()</code></strong></MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudPaper>
 }

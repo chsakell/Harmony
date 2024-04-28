@@ -3,18 +3,20 @@ using Harmony.Application.DTO.Search;
 using Harmony.Application.SourceControl.DTO;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Enums;
+using Harmony.Domain.SourceControl;
 using Harmony.Shared.Utilities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
+using Slugify;
 
 namespace Harmony.Client.Shared.Components
 {
     public partial class CardRepositoryActivity
     {
         [Parameter] public string SerialKey { get; set; }
-
+        [Parameter] public string CardTitle { get; set; }
         private List<BranchDto> _branches = new List<BranchDto>();
         private bool _loading;
         private bool _dataLoaded;
@@ -45,6 +47,18 @@ namespace Harmony.Client.Shared.Components
             var dialog = _dialogService.Show<ViewRepositoryActivityModal>("View repository activity", parameters, options);
             var result = await dialog.Result;
         }
+
+        private string GetGitSlug()
+        {
+            return $"git checkout -b {StringUtilities.SlugifyString(CardTitle)}";
+        }
+
+        private async Task CopyToClipboard()
+        {
+            await _jsRuntime.InvokeVoidAsync("clipboardCopy.copyText", GetGitSlug());
+            DisplayMessage(Result<bool>.Success(true, $"Copied to clipboard!"));
+        }
+
 
         private bool ShowArrows()
         {
@@ -83,7 +97,7 @@ namespace Harmony.Client.Shared.Components
 
             foreach (var commit in commits)
             {
-                if(!branch.Commits.Any(c => c.Id == commit.Id))
+                if (!branch.Commits.Any(c => c.Id == commit.Id))
                 {
                     branch.Commits.Add(commit);
                 }
@@ -96,7 +110,7 @@ namespace Harmony.Client.Shared.Components
 
         public void AddPullRequestToBranch(PullRequestDto pullRequest, RepositoryUserDto sender)
         {
-            if(pullRequest == null)
+            if (pullRequest == null)
             {
                 return;
             }
@@ -108,7 +122,7 @@ namespace Harmony.Client.Shared.Components
                 return;
             }
 
-            if(!branch.PullRequests.Any(p => p.Id == pullRequest.Id))
+            if (!branch.PullRequests.Any(p => p.Id == pullRequest.Id))
             {
                 branch.PullRequests.Add(pullRequest);
             }
