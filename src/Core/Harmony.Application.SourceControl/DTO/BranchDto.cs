@@ -22,5 +22,6 @@ namespace Harmony.Application.SourceControl.DTO
         public string BranchUrl => $"{RepositoryUrl}/tree/{Name}";
         public string CommitsUrl => $"{RepositoryUrl}/commits/{Name}";
         public SourceControlProvider Provider { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

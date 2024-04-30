@@ -1,5 +1,6 @@
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.DeleteBranch;
+using Harmony.Application.Helpers;
 using Harmony.Application.SourceControl.Features.SourceControl.Commands.CreatePullRequest;
 using Harmony.Application.SourceControl.Features.SourceControl.Commands.CreatePush;
 using Harmony.Application.SourceControl.Features.SourceControl.Queries.GetCardBranches;
@@ -20,7 +21,6 @@ namespace Harmony.Integrations.SourceControl.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<GithubController> _logger;
-        private static char[] ALLOWED_CHARS = [' ', '_', '-', '/'];
         private static int MAX_CONCURRENCY = 1;
         private static int SEMAPHORE_TIMEOUT_MIL = 3000;
 
@@ -84,7 +84,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
                 switch (eventType)
                 {
                     case "create":
-                        var serialKey = GetSerialKey(request.Ref);
+                        var serialKey = CardHelper.GetSerialKey(request.Ref);
 
                         await RunWithLock(serialKey, nameof(HandleEventWebhook), async () =>
                         {
@@ -121,15 +121,33 @@ namespace Harmony.Integrations.SourceControl.Controllers
         private async Task HandlePushWebhook(string postData)
         {
             var request = JsonSerializer.Deserialize<GitHubPushRequest>(postData);
-            var branch = request.Ref.Replace("refs/heads/", string.Empty);
-            var serialKey = GetSerialKey(branch);
+            var tagPushed = false;
+            var branchPushed = false;
+            string pushedRef = string.Empty;
+
+            if(request.Ref.Contains("refs/heads/"))
+            {
+                pushedRef = request.Ref.Replace("refs/heads/", string.Empty);
+                branchPushed = true;
+            }
+            else if(request.Ref.Contains("refs/tags/"))
+            {
+                pushedRef = request.Ref.Replace("refs/tags/", string.Empty);
+                tagPushed = true;
+            }
+            else
+            {
+                return;
+            }
+
+            var serialKey = CardHelper.GetSerialKey(pushedRef);
 
             await RunWithLock(serialKey, nameof(HandlePushWebhook), async () =>
             {
                 var push = new CreatePushCommand()
                 {
                     SerialKey = serialKey,
-                    Branch = branch,
+                    Ref = pushedRef,
                     Repository = new Repository()
                     {
                         RepositoryId = request.Repository.Id.ToString(),
@@ -155,7 +173,25 @@ namespace Harmony.Integrations.SourceControl.Controllers
                             Removed = commit.Removed ?? new List<string>(),
                             Modified = commit.Modified ?? new List<string>(),
                         }).ToList(),
-                    Sender = new RepositoryUser(request.Sender.Login, request.Sender.AvatarUrl, request.Sender.HtmlUrl)
+                    Sender = new RepositoryUser(request.Sender.Login, request.Sender.AvatarUrl, request.Sender.HtmlUrl),
+                    HeadCommit = new Commit()
+                    {
+                        Url = request.HeadCommit.Url,
+                        Author = new Author()
+                        {
+                            Email = request.HeadCommit.Author.Email,
+                            Name = request.HeadCommit.Author.Name,
+                            Username = request.HeadCommit.Author.Username,
+                        },
+                        Id = request.HeadCommit.Id,
+                        Message = request.HeadCommit.Message,
+                        Timestamp = request.HeadCommit.Timestamp,
+                        Added = request.HeadCommit.Added ?? new List<string>(),
+                        Removed = request.HeadCommit.Removed ?? new List<string>(),
+                        Modified = request.HeadCommit.Modified ?? new List<string>(),
+                    },
+                    BranchPushed = branchPushed,
+                    TagPushed = tagPushed
                 };
 
                 await _mediator.Send(push);
@@ -168,7 +204,7 @@ namespace Harmony.Integrations.SourceControl.Controllers
 
             if (request != null)
             {
-                var serialKey = GetSerialKey(request.PullRequest.Head.Ref);
+                var serialKey = CardHelper.GetSerialKey(request.PullRequest.Head.Ref);
 
                 await RunWithLock(serialKey, nameof(HandlePullRequestWebhook), async () =>
                 {
@@ -247,62 +283,6 @@ namespace Harmony.Integrations.SourceControl.Controllers
                     _semaphores.TryRemove(serialKey, out _);
                 }
             }
-        }
-
-        private string GetSerialKey(string text)
-        {
-            List<string> matches = Regex.Matches(text, @"([a-zA-Z]{3,5})-(\d+)", RegexOptions.IgnoreCase)
-                       .Cast<Match>()
-                       .Select(x => x.Value).ToList();
-
-            foreach (var match in matches)
-            {
-                var matchIndex = text.IndexOf(match, StringComparison.InvariantCultureIgnoreCase);
-
-                if (matchIndex == 0 && NextCharAllowed(text, match, matchIndex))
-                {
-                    return match;
-                }
-                else if (matchIndex > 0)
-                {
-                    var previousChar = text[matchIndex - 1];
-                    if (PreviewCharAllowed(text, matchIndex) && NextCharAllowed(text, match, matchIndex))
-                    {
-                        return match;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private bool PreviewCharAllowed(string original, int termIndex)
-        {
-            var previousChar = original[termIndex - 1];
-
-            if (ALLOWED_CHARS.Contains(previousChar))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool NextCharAllowed(string original, string term, int termIndex)
-        {
-            if (original.Length == term.Length + termIndex)
-            {
-                return true;
-            }
-
-            var nextChar = original[termIndex + term.Length];
-
-            if (ALLOWED_CHARS.Contains(nextChar))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

@@ -191,6 +191,39 @@ namespace Harmony.Infrastructure.Repositories
                      b.RepositoryId == repositoryId, updateDefinition);
         }
 
+        public async Task<Branch> FindBranchByCommit(string repositoryId, string commitId)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var collection = database
+                .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
+
+            var filter = Builders<Branch>.Filter
+                .ElemMatch(b => b.Commits, commit => commit.Id == commitId);
+
+            var branch = await collection
+                .Find(filter).FirstOrDefaultAsync();
+
+            return branch;
+        }
+
+        public async Task AddTagToBranch(string branchId, string repositoryId, string tag)
+        {
+            var database = _client
+                .GetDatabase(MongoDbConstants.SourceControlDatabase);
+
+            var collection = database
+                .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
+
+            var updateDefinition = Builders<Branch>.Update
+                .Push(b => b.Tags, tag);
+
+            await collection.UpdateOneAsync(
+                b => b.Id == branchId &&
+                     b.RepositoryId == repositoryId, updateDefinition);
+        }
+
         public async Task<List<Repository>> GetRepositories(List<string> repositories)
         {
             var database = _client

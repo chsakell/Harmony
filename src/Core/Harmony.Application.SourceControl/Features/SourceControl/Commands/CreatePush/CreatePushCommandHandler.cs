@@ -3,6 +3,7 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Features.SourceControl.Commands.CreateBranch;
 using Harmony.Application.Features.SourceControl.Commands.GetOrCreateRepository;
+using Harmony.Application.Helpers;
 using Harmony.Application.SourceControl.Messages;
 using Harmony.Domain.Enums;
 using Harmony.Domain.SourceControl;
@@ -41,23 +42,65 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 Provider = request.Repository.Provider
             });
 
+            if (request.BranchPushed)
+            {
+                await HandleBranchPushed(request);
+            }
+            else if (request.TagPushed)
+            {
+                await HandleTagPushed(request);
+            }
+
+            return Result<bool>.Success(true, _localizer["Push created"]);
+        }
+
+        private async Task HandleTagPushed(CreatePushCommand request)
+        {
+            var branch = await _sourceControlRepository
+                                .FindBranchByCommit(request.Repository.RepositoryId, request.HeadCommit.Id);
+
+            if (branch == null || branch.Tags.Contains(request.Ref))
+            {
+                return;
+            }
+
+            await _sourceControlRepository.AddTagToBranch(branch.Id, request.Repository.RepositoryId, request.Ref);
+
+            var serialKey = CardHelper.GetSerialKey(branch.Name);
+
+            if(!string.IsNullOrEmpty(serialKey))
+            {
+                var message = new TagPushedMessage()
+                {
+                    SerialKey = serialKey.ToLower(),
+                    Branch = branch.Name,
+                    Tag = request.Ref
+                };
+
+                _notificationsPublisher.PublishMessage(message,
+                    NotificationType.TagPushed, routingKey: BrokerConstants.RoutingKeys.SignalR);
+            }
+        }
+
+        private async Task HandleBranchPushed(CreatePushCommand request)
+        {
             await _mediator.Send(new CreateBranchCommand()
             {
-                Name = request.Branch,
+                Name = request.Ref,
                 Repository = request.Repository,
                 Creator = request.Sender,
                 SkipRepositoryCheck = true,
                 SerialKey = request.SerialKey
             });
 
-            await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Branch, request.Commits);
+            await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Ref, request.Commits);
 
             if (!string.IsNullOrEmpty(request.SerialKey) && request.Commits.Any())
             {
                 var message = new BranchCommitsPushedMessage()
                 {
                     SerialKey = request.SerialKey.ToLower(),
-                    Branch = request.Branch,
+                    Branch = request.Ref,
                     Commits = request.Commits.Select(c => new DTO.CommitDto()
                     {
                         Id = c.Id,
@@ -79,8 +122,6 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 _notificationsPublisher.PublishMessage(message,
                     NotificationType.BranchCommitsPushed, routingKey: BrokerConstants.RoutingKeys.SignalR);
             }
-
-            return Result<bool>.Success(true, _localizer["Push created"]);
         }
     }
 }

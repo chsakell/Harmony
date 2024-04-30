@@ -11,11 +11,13 @@ namespace Harmony.Application.Contracts.Repositories
         Task CreateBranch(Branch branch);
         Task AddOrUpdatePullRequest(string repositoryId, PullRequest pullRequest);
         Task CreatePush(string repositoryId, string branch, List<Commit> commits);
+        Task<Branch> FindBranchByCommit(string repositoryId, string commitId);
         Task<Branch> GetBranch(string name, string repositoryId);
         Task<bool> BranchExists(string name, string repositoryId);
         Task<long> GetTotalBranches(string term);
         Task<List<Branch>> SearchBranches(string term);
         Task<bool> DeleteBranch(string name);
+        Task AddTagToBranch(string branchId, string repositoryId, string tag);
         Task<bool> Ping(string database);
     }
 }

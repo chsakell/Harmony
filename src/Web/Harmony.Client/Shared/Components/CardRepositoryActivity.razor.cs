@@ -108,6 +108,22 @@ namespace Harmony.Client.Shared.Components
             StateHasChanged();
         }
 
+        public void AddTagToBranch(string branchName, string tag)
+        {
+            var branch = _branches.FirstOrDefault(b => b.Name == branchName);
+
+            if (branch == null)
+            {
+                return;
+            }
+
+            branch.Tags.Add(tag);
+
+            DisplayMessage(Result<bool>.Success(true, $"{tag} created for {branchName}"));
+
+            StateHasChanged();
+        }
+
         public void AddPullRequestToBranch(PullRequestDto pullRequest, RepositoryUserDto sender)
         {
             if (pullRequest == null)

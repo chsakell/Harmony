@@ -26,6 +26,7 @@ namespace Harmony.Integrations.SourceControl.WebhookRequests.GitHub
         [JsonPropertyName("commits")]
         public GitHubCommit[] Commits { get; set; }
 
-        
+        [JsonPropertyName("head_commit")]
+        public GitHubCommit HeadCommit { get; set; }
     }
 }

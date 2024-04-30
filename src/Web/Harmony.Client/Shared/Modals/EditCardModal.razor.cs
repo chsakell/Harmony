@@ -116,6 +116,7 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLinkDeleted += OnCardLinkDeleted;
             _hubSubscriptionManager.OnBranchCreated += OnBranchCreated;
             _hubSubscriptionManager.OnBranchCommitsPushed += OnBranchCommitsPushed;
+            _hubSubscriptionManager.OnTagPushed += OnTagPushed;
             _hubSubscriptionManager.OnBranchPullRequestCreated += OnBranchPullRequestCreated;
         }
 
@@ -133,6 +134,7 @@ namespace Harmony.Client.Shared.Modals
             _hubSubscriptionManager.OnCardLinkDeleted -= OnCardLinkDeleted;
             _hubSubscriptionManager.OnBranchCreated -= OnBranchCreated;
             _hubSubscriptionManager.OnBranchCommitsPushed -= OnBranchCommitsPushed;
+            _hubSubscriptionManager.OnTagPushed -= OnTagPushed;
             _hubSubscriptionManager.OnBranchPullRequestCreated -= OnBranchPullRequestCreated;
         }
 
@@ -140,9 +142,14 @@ namespace Harmony.Client.Shared.Modals
         {
             if (_cardRepositoryActivity != null)
             {
-                _cardRepositoryActivity.AddPullRequestToBranch(e.PullRequest, 
+                _cardRepositoryActivity.AddPullRequestToBranch(e.PullRequest,
                     e.Sender);
             }
+        }
+
+        private void OnTagPushed(object? sender, TagPushedMessage e)
+        {
+            _cardRepositoryActivity?.AddTagToBranch(e.Branch, e.Tag);
         }
 
         private void OnBranchCommitsPushed(object? sender, BranchCommitsPushedMessage e)

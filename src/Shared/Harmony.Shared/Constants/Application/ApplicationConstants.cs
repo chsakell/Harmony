@@ -58,6 +58,7 @@
             public const string OnBranchCreated = "OnBranchCreated";
             public const string OnBranchCommitsPushed = "OnBranchCommitsPushed";
             public const string OnBranchPullRequestCreated = "OnBranchPullRequestCreated";
+            public const string OnTagPushed = "OnTagPushed";
         }
 
         public static class HarmonyRetryPolicy

@@ -10,6 +10,7 @@ namespace Harmony.Domain.SourceControl
         public string RepositoryId { get; set; }
         public RepositoryUser Creator { get; set; }
         public List<Commit> Commits { get; set; }
-        public List<PullRequest> PullRequests { get; set; }    
+        public List<PullRequest> PullRequests { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

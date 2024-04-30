@@ -51,6 +51,7 @@ namespace Harmony.Client.Infrastructure.Managers.SignalR
         event EventHandler<BranchCreatedMessage> OnBranchCreated;
         event EventHandler<BranchCommitsPushedMessage> OnBranchCommitsPushed;
         event EventHandler<BranchPullRequestCreatedMessage> OnBranchPullRequestCreated;
+        event EventHandler<TagPushedMessage> OnTagPushed;
 
         #endregion
     }
