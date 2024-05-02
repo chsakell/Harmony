@@ -6,13 +6,17 @@ namespace Harmony.Client.Pages.Authentication
 {
     public partial class Register
     {
-        //private FluentValidationValidator _fluentValidationValidator;
-        //private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
+        private bool _signingUp = false;
         private RegisterRequest _registerUserModel = new();
 
         private async Task SubmitAsync()
         {
+            _signingUp = true;
+
             var response = await _userManager.RegisterUserAsync(_registerUserModel);
+
+            _signingUp = false;
+
             if (response.Succeeded)
             {
                 _snackBar.Add(response.Messages[0], Severity.Success);

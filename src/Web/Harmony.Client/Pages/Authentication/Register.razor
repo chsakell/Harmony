@@ -37,7 +37,16 @@
             <MudTextField For="@(() => _registerUserModel.ConfirmPassword)" InputType="InputType.Password" @bind-Value="_registerUserModel.ConfirmPassword" Label="Confirm Password" />
         </MudItem>
         <MudItem  xs="12" Class="d-flex justify-center">
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Register</MudButton>
+            @if (_signingUp)
+            {
+                <MudButton Variant="Variant.Text" Disabled="true" Size="Size.Small">
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                </MudButton>
+            }
+            else
+            {
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Register</MudButton>
+            }
         </MudItem>
     </MudGrid>
 </EditForm>

@@ -9,8 +9,7 @@ namespace Harmony.Client.Pages.Authentication
 {
     public partial class Login
     {
-        //private FluentValidationValidator _fluentValidationValidator;
-        //private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
+        private bool _loggingIn= false;
         private TokenRequest _tokenModel = new();
 
         protected override async Task OnInitializedAsync()
@@ -24,7 +23,12 @@ namespace Harmony.Client.Pages.Authentication
 
         private async Task SubmitAsync()
         {
+            _loggingIn = true;
+
             var result = await _authenticationManager.Login(_tokenModel);
+
+            _loggingIn = false;
+
             if (!result.Succeeded)
             {
                 foreach (var message in result.Messages)
