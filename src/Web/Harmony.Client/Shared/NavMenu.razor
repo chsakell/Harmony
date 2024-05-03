@@ -42,6 +42,9 @@
                                                 <MudListItem Href="@GetBoardUrl(board)" Icon="@Icons.Material.Filled.Dashboard">
                                                     Board
                                                 </MudListItem>
+                                                <MudListItem Href="@GetBoardWorkItemsUrl(board)" Icon="@Icons.Material.Filled.Task">
+                                                    Work items
+                                                </MudListItem>
                                                 @if (board.Type == Domain.Enums.BoardType.Scrum)
                                                 {
                                                     <MudListItem Href="@GetBacklogUrl(board)" Icon="@Icons.Material.Filled.ListAlt">
@@ -116,6 +119,11 @@
         var slug = StringUtilities.SlugifyString(board.Title.ToString());
 
         return $"boards/{board.Id}/{slug}";
+    }
+
+    private string GetBoardWorkItemsUrl(BoardDto board)
+    {
+        return $"boards/{board.Id}/work-items";
     }
 
     private string GetBoardDetailsUrl(BoardDto board)

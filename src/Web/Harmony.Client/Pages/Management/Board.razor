@@ -19,7 +19,7 @@ else if (_inactiveWorkspace)
 else
 {
     <MudPaper Elevation="25">
-        <MudToolBar>
+        <MudToolBar WrapContent="true">
             @if (!KanbanStore.IsRetrospective)
             {
                 <MudButton Variant="Variant.Text" OnClick="OpenCreateBoardListModal" StartIcon="@Icons.Material.Outlined.Checklist">Create list</MudButton>

@@ -9,6 +9,7 @@ using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Harmony.Application.Features.Boards.Queries.GetUserBoards;
+using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
@@ -103,6 +104,13 @@ namespace Harmony.Api.Controllers.Management
         {
             return Ok(await _mediator.Send(new
                 GetArchivedItemsQuery(id, pageNumber, pageSize, searchTerm, orderBy)));
+        }
+
+        [HttpGet("{boardId:guid}/work-items")]
+        public async Task<IActionResult> WorkItems(Guid boardId, [FromQuery] GetWorkItemsQuery query)
+        {
+            query.BoardId = boardId;
+            return Ok(await _mediator.Send(query));
         }
 
         [HttpGet("{id:guid}/issuetypes")]
