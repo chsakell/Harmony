@@ -40,10 +40,20 @@ namespace Harmony.Application.Features.Boards.Queries.GetWorkItems
                 .Entities.Specify(filter)
                 .CountAsync();
 
-            var ordering = string.Join(",", request.OrderBy ?? new string[] { "dateCreated" });
+            var ordering = string.Empty;
+            if(request.OrderBy == null || request.OrderBy.FirstOrDefault() == null)
+            {
+                ordering = string.Join(",", new string[] { "dateCreated" });
+            }
+            else
+            {
+                ordering = string.Join(",", request.OrderBy);
+            }
 
             var cards = await _cardRepository
-                .Entities.Specify(filter)
+                .Entities.AsNoTracking()
+                .IgnoreQueryFilters()
+                .Specify(filter)
                 .OrderBy(ordering)
                 .Skip((request.PageNumber - 1) * request.PageSize)
                     .Take(request.PageSize)

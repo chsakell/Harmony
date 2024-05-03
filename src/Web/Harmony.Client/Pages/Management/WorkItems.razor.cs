@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
+using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Modals;
@@ -17,10 +18,10 @@ namespace Harmony.Client.Pages.Management
 
         private string _searchString = "";
         private int _totalItems;
-        private List<GetArchivedItemResponse> _cards;
-        private MudTable<GetArchivedItemResponse> _table;
-        private HashSet<GetArchivedItemResponse> _selectedCards = new HashSet<GetArchivedItemResponse>();
-        private GetArchivedItemResponse _itemBeforeEdit;
+        private List<CardDto> _cards;
+        private MudTable<CardDto> _table;
+        private HashSet<CardDto> _selectedCards = new HashSet<CardDto>();
+        private CardDto _itemBeforeEdit;
         private List<IssueTypeDto> _issueTypes;
         private IDisposable registration;
 
@@ -45,61 +46,7 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async Task Reactivate()
-        {
-            if(!_selectedCards.Any()) 
-            { 
-                return; 
-            }
-
-            var boardType = _selectedCards.FirstOrDefault().BoardType;
-            switch (boardType)
-            {
-                case Domain.Enums.BoardType.Kanban:
-                    var parameters = new DialogParameters<ReactivateCardsModal>
-                    {
-                        {
-                            modal => modal.BoardId,Guid.Parse(Id)
-                        },
-                        {
-                            modal => modal.Items, _selectedCards
-                        }
-                    };
-
-                    var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
-                    var dialog = _dialogService.Show<ReactivateCardsModal>(_localizer["Reactivate cards"], parameters, options);
-                    var result = await dialog.Result;
-
-                    if (!result.Canceled)
-                    {
-                        await _table.ReloadServerData();
-                    }
-                    break;
-                        case Domain.Enums.BoardType.Scrum:
-                    var moveSprintParams = new DialogParameters<ReactivateScrumCardsModal>
-                    {
-                        {
-                            modal => modal.BoardId,Guid.Parse(Id)
-                        },
-                        {
-                            modal => modal.Items, _selectedCards
-                        }
-                    };
-
-                    var moveSprintOptions = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
-                    var moveSprintOptionsDialog = _dialogService.Show<ReactivateScrumCardsModal>(_localizer["Reactivate cards"], moveSprintParams, moveSprintOptions);
-                    var moveSprintResult = await moveSprintOptionsDialog.Result;
-
-                    if (!moveSprintResult.Canceled)
-                    {
-                        await _table.ReloadServerData();
-                    }
-                    break;
-            }
-            
-        }
-
-        private async Task<TableData<GetArchivedItemResponse>> ReloadData(TableState state)
+        private async Task<TableData<CardDto>> ReloadData(TableState state)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {
@@ -107,14 +54,14 @@ namespace Harmony.Client.Pages.Management
             }
             await LoadData(state.Page, state.PageSize, state);
 
-            return new TableData<GetArchivedItemResponse>
+            return new TableData<CardDto>
             {
                 TotalItems = _totalItems,
                 Items = _cards
             };
         }
 
-        private async Task EditCard(GetArchivedItemResponse card)
+        private async Task EditCard(CardDto card)
         {
             var parameters = new DialogParameters<EditCardModal>
                 {
@@ -135,7 +82,7 @@ namespace Harmony.Client.Pages.Management
             editCardModal.OnCardUpdated -= (object? sender, EditableCardModel e) => EditCardModal_OnCardUpdated(sender, e, card); ;
         }
 
-        private void EditCardModal_OnCardUpdated(object? sender, EditableCardModel e, GetArchivedItemResponse item)
+        private void EditCardModal_OnCardUpdated(object? sender, EditableCardModel e, CardDto item)
         {
             item.Title = e.Title;
             item.StoryPoints = e.StoryPoints;
@@ -160,17 +107,21 @@ namespace Harmony.Client.Pages.Management
             {
                 orderings = state.SortDirection != SortDirection.None ? new[] { $"{state.SortLabel} {state.SortDirection}" } : new[] { $"{state.SortLabel}" };
             }
-
-            var request = new GetArchivedItemsQuery(Guid.Parse(Id))
+            else
             {
-                BoardId = Guid.Parse(Id),
+                orderings = new[] { $"DateCreated descending" };
+            }
+
+            var request = new GetWorkItemsQuery(Guid.Parse(Id))
+            {
                 PageSize = pageSize,
                 PageNumber = pageNumber + 1,
-                SearchTerm = _searchString,
+                CardTitle = _searchString,
                 OrderBy = orderings
             };
 
-            var response = await _boardManager.GetArchivedItems(request);
+            var response = await _boardManager.GetWorkItems(request);
+
             if (response.Succeeded)
             {
                 _totalItems = response.TotalCount;
@@ -219,7 +170,7 @@ namespace Harmony.Client.Pages.Management
 
         private async void UpdateItem(object element)
         {
-            var item = element as GetArchivedItemResponse;
+            var item = element as CardDto;
 
             if (item == null)
             {
@@ -237,27 +188,27 @@ namespace Harmony.Client.Pages.Management
         {
             _itemBeforeEdit = new()
             {
-                Id = ((GetArchivedItemResponse)element).Id,
-                Title = ((GetArchivedItemResponse)element).Title,
-                DueDate = ((GetArchivedItemResponse)element).DueDate,
-                IssueType = ((GetArchivedItemResponse)element).IssueType,
-                SerialKey = ((GetArchivedItemResponse)element).SerialKey,
-                StoryPoints = ((GetArchivedItemResponse)element).StoryPoints,
-                Position = ((GetArchivedItemResponse)element).Position,
-                StartDate = ((GetArchivedItemResponse)element).StartDate
+                Id = ((CardDto)element).Id,
+                Title = ((CardDto)element).Title,
+                DueDate = ((CardDto)element).DueDate,
+                IssueType = ((CardDto)element).IssueType,
+                SerialNumber = ((CardDto)element).SerialNumber,
+                StoryPoints = ((CardDto)element).StoryPoints,
+                Position = ((CardDto)element).Position,
+                StartDate = ((CardDto)element).StartDate
             };
         }
 
         private void CancelEdit(object element)
         {
-            ((GetArchivedItemResponse)element).Id = _itemBeforeEdit.Id;
-            ((GetArchivedItemResponse)element).Title = _itemBeforeEdit.Title;
-            ((GetArchivedItemResponse)element).DueDate = _itemBeforeEdit.DueDate;
-            ((GetArchivedItemResponse)element).StartDate = _itemBeforeEdit.StartDate;
-            ((GetArchivedItemResponse)element).Position = _itemBeforeEdit.Position;
-            ((GetArchivedItemResponse)element).IssueType = _itemBeforeEdit.IssueType;
-            ((GetArchivedItemResponse)element).StoryPoints = _itemBeforeEdit.StoryPoints;
-            ((GetArchivedItemResponse)element).SerialKey = _itemBeforeEdit.SerialKey;
+            ((CardDto)element).Id = _itemBeforeEdit.Id;
+            ((CardDto)element).Title = _itemBeforeEdit.Title;
+            ((CardDto)element).DueDate = _itemBeforeEdit.DueDate;
+            ((CardDto)element).StartDate = _itemBeforeEdit.StartDate;
+            ((CardDto)element).Position = _itemBeforeEdit.Position;
+            ((CardDto)element).IssueType = _itemBeforeEdit.IssueType;
+            ((CardDto)element).StoryPoints = _itemBeforeEdit.StoryPoints;
+            ((CardDto)element).SerialNumber = _itemBeforeEdit.SerialNumber;
         }
 
         #endregion

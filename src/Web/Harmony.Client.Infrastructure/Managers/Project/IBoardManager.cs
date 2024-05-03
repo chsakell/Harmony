@@ -11,6 +11,7 @@ using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
+using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
 using Harmony.Application.Features.Cards.Commands.MoveToSprint;
@@ -48,5 +49,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<GetPendingSprintCardsResponse>> GetPendingSprintCards(GetPendingSprintCardsQuery request);
         Task<IResult<List<BoardDto>>> GetUserBoards();
         Task<PaginatedResult<GetArchivedItemResponse>> GetArchivedItems(GetArchivedItemsQuery request);
+        Task<PaginatedResult<CardDto>> GetWorkItems(GetWorkItemsQuery request);
     }
 }

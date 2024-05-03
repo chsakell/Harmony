@@ -16,6 +16,11 @@ namespace Harmony.Application.Features.Boards.Queries.GetWorkItems
             
         }
 
+        public GetWorkItemsQuery(Guid boardId)
+        {
+            BoardId = boardId;
+        }
+
         public GetWorkItemsQuery(Guid boardId, int pageNumber, int pageSize, string orderBy)
         {
             BoardId = boardId;

@@ -1,4 +1,5 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Application.Features.Boards.Queries.GetWorkItems;
+using Harmony.Domain.Enums;
 using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Client.Infrastructure.Routes
@@ -96,6 +97,25 @@ namespace Harmony.Client.Infrastructure.Routes
             if (orderBy?.Any() == true)
             {
                 foreach (var orderByPart in orderBy)
+                {
+                    url += $"{orderByPart},";
+                }
+                url = url[..^1];
+            }
+            return url;
+        }
+
+        public static string WorkItems(GetWorkItemsQuery query)
+        {
+            var url = $"{Index}{query.BoardId}/work-items/?" +
+                $"pageNumber={query.PageNumber}" +
+                $"&pageSize={query.PageSize}" +
+                $"&cardTitle={query.CardTitle}" +
+                $"&orderBy=";
+
+            if (query.OrderBy?.Any() == true)
+            {
+                foreach (var orderByPart in query.OrderBy)
                 {
                     url += $"{orderByPart},";
                 }

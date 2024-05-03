@@ -1,7 +1,7 @@
 ﻿@page "/projects/{id}/work-items"
-@inject Microsoft.Extensions.Localization.IStringLocalizer<ArchivedItems> _localizer
+@page "/boards/{id}/work-items"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<WorkItems> _localizer
 @using Harmony.Application.DTO
-@using Harmony.Application.Features.Boards.Queries.GetArchivedItems
 @using Harmony.Client.Infrastructure.Helper
 
 <MudPaper Style="height:calc(100vh - 100px);overflow:auto">
@@ -13,25 +13,17 @@
               RowEditPreview="BackupItem"
               EditButtonPosition="TableEditButtonPosition.End"
               EditTrigger="TableEditTrigger.EditButton"
-              T="GetArchivedItemResponse"
-              MultiSelection="true"
+              T="CardDto"
               @bind-SelectedItems="_selectedCards"
-              ServerData="@(new Func<TableState, Task<TableData<GetArchivedItemResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+              ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
         <ToolBarContent>
-            <div class="justify-center mud-text-align-center ml-2">
-                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
-                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
-                         AnchorOrigin="Origin.BottomLeft">
-                    <MudMenuItem Icon="@Icons.Material.Filled.AddTask" 
-                    OnClick="Reactivate" IconColor="Color.Tertiary">RE-ACTIVATE</MudMenuItem>
-                </MudMenu>
-            </div>
+            
             <MudSpacer />
-            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search archived list.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search items by title.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<GetArchivedItemResponse, object>(x => x.SerialKey)">Key</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<GetArchivedItemResponse, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+            <MudTh>Key</MudTh>
+            <MudTh>Title</MudTh>
             <MudTh>Type</MudTh>
             <MudTh Style="width:160px">Story Points</MudTh>
             <MudTh Style="text-align:right"></MudTh>
@@ -39,7 +31,7 @@
         <RowTemplate>
             <MudTd DataLabel="SerialKey">
                 <MudTooltip Text="Click for full editing" Delay="2500">
-                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@context.SerialKey</MudChip>
+                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@context.SerialNumber</MudChip>
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Title">
@@ -61,7 +53,7 @@
                 </MudTd>
             </RowTemplate>
             <RowEditingTemplate>
-                <MudTd DataLabel="SerialKey">@context.SerialKey</MudTd>
+                <MudTd DataLabel="SerialKey">@context.SerialNumber</MudTd>
                 <MudTd DataLabel="Title">
                     <MudTextField T="string" For="@(() => context.Title)" @bind-Value="context.Title" Label="Title"></MudTextField>
                 </MudTd>

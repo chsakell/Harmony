@@ -11,6 +11,7 @@ using Harmony.Application.Features.Boards.Queries.GetBacklog;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
+using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Application.Features.Boards.Queries.SearchBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveToBacklog;
@@ -141,6 +142,14 @@ namespace Harmony.Client.Infrastructure.Managers.Project
                      request.SearchTerm, request.OrderBy));
 
             return await response.ToPaginatedResult<GetArchivedItemResponse>();
+        }
+
+        public async Task<PaginatedResult<CardDto>> GetWorkItems(GetWorkItemsQuery request)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints
+                .WorkItems(request));
+
+            return await response.ToPaginatedResult<CardDto>();
         }
 
         public async Task<IResult<GetPendingSprintCardsResponse>> GetPendingSprintCards(GetPendingSprintCardsQuery request)
