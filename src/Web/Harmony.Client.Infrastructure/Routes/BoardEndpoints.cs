@@ -112,10 +112,21 @@ namespace Harmony.Client.Infrastructure.Routes
 
         public static string WorkItems(GetWorkItemsQuery query)
         {
+            var issueTypesParam = string.Empty;
+
+            if(query.IssueTypes.Any())
+            {
+                foreach(var issueType in query.IssueTypes)
+                {
+                    issueTypesParam += "&issueTypes=" + issueType.ToString();
+                }
+            }
+
             var url = $"{Index}{query.BoardId}/work-items/?" +
                 $"pageNumber={query.PageNumber}" +
                 $"&pageSize={query.PageSize}" +
                 $"&cardTitle={query.CardTitle}" +
+                $"{issueTypesParam}" +
                 $"&orderBy=";
 
             if (query.OrderBy?.Any() == true)

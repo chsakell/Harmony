@@ -17,7 +17,24 @@
               @bind-SelectedItems="_selectedCards"
               ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
         <ToolBarContent>
-            
+            <div class="justify-center mud-text-align-center">
+                <MudSelect MultiSelection="true" T="IssueTypeDto"
+                           MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionIssueTypesText))"
+                           @bind-SelectedValues:get="_selectedIssueTypes"
+                           @bind-SelectedValues:set="SetSelectedIssueTypes"
+                           Label="Type" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var type in _boardInfo.IssueTypes)
+                    {
+                        <MudSelectItem Value="type">
+                            <MudStack Row="true">
+                                <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
+                                         Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
+                                <MudText>@type.Summary</MudText>
+                            </MudStack>
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
             <MudSpacer />
             <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search items by title.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>

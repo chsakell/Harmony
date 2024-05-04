@@ -17,6 +17,8 @@ using Harmony.Shared.Utilities;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Google.Protobuf.Collections;
 using AutoMapper;
+using MediatR;
+using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -29,6 +31,7 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly ICardRepository _cardRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private readonly IMemoryCache _memoryCache;
         private readonly string _connectionString;
 
@@ -38,6 +41,7 @@ namespace Harmony.Infrastructure.Services.Management
             IIssueTypeRepository issueTypeRepository,
             ICardRepository cardRepository,
             IMapper mapper,
+            IMediator mediator,
             IMemoryCache memoryCache)
         {
             _connectionString = configuration.GetConnectionString("HarmonyConnection");
@@ -48,6 +52,7 @@ namespace Harmony.Infrastructure.Services.Management
             _issueTypeRepository = issueTypeRepository;
             _cardRepository = cardRepository;
             _mapper = mapper;
+            _mediator = mediator;
             _memoryCache = memoryCache;
         }
 
@@ -137,12 +142,15 @@ namespace Harmony.Infrastructure.Services.Management
                     return null;
                 }
 
+                var issueTypes = await _mediator.Send(new GetIssueTypesQuery(boardId));
+
                 var result = new BoardInfo()
                 {
                     Id = board.Id,
                     Title = board.Title,
                     Type = board.Type,
                     Lists = board.Lists,
+                    IssueTypes = issueTypes.Data,
                     Key = board.Key,
                     IndexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}"),
                     ActiveSprints = new List<SprintDto>()

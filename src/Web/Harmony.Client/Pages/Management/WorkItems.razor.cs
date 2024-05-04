@@ -5,6 +5,7 @@ using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Models;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
@@ -26,8 +27,11 @@ namespace Harmony.Client.Pages.Management
         private List<IssueTypeDto> _issueTypes;
         private IDisposable registration;
         private BoardInfo? _boardInfo = new BoardInfo();
+        private bool _reloadData = false;
 
-        protected override async Task OnInitializedAsync()
+        private IEnumerable<IssueTypeDto> _selectedIssueTypes = new List<IssueTypeDto>();
+
+        protected async override Task OnParametersSetAsync()
         {
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
 
@@ -36,6 +40,11 @@ namespace Harmony.Client.Pages.Management
             if(boardInfoResult.Succeeded)
             {
                 _boardInfo = boardInfoResult.Data;
+            }
+
+            if(_reloadData)
+            {
+                await _table.ReloadServerData();
             }
         }
 
@@ -52,7 +61,26 @@ namespace Harmony.Client.Pages.Management
             if (!arg.TargetLocation.Contains(Id))
             {
                 await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
+                _reloadData = true;
             }
+        }
+
+        private string GetMultiSelectionIssueTypesText(List<string> selectedValues)
+        {
+            if(!_selectedIssueTypes.Any())
+            {
+                return string.Empty;
+            }
+
+            return string.Join(", ", _selectedIssueTypes.Select(x => x.Summary));
+        }
+
+        private void SetSelectedIssueTypes(IEnumerable<IssueTypeDto> newSelectedIssueTypes)
+        {
+
+            _selectedIssueTypes = newSelectedIssueTypes;
+
+             _table.ReloadServerData();
         }
 
         private async Task<TableData<CardDto>> ReloadData(TableState state)
@@ -62,6 +90,8 @@ namespace Harmony.Client.Pages.Management
                 state.Page = 0;
             }
             await LoadData(state.Page, state.PageSize, state);
+
+            _reloadData = false;
 
             return new TableData<CardDto>
             {
@@ -126,7 +156,8 @@ namespace Harmony.Client.Pages.Management
                 PageSize = pageSize,
                 PageNumber = pageNumber + 1,
                 CardTitle = _searchString,
-                OrderBy = orderings
+                OrderBy = orderings,
+                IssueTypes = _selectedIssueTypes.Select(i => i.Id).ToList()
             };
 
             var response = await _boardManager.GetWorkItems(request);
