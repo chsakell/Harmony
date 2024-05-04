@@ -132,12 +132,23 @@ namespace Harmony.Client.Infrastructure.Routes
                 }
             }
 
+            var sprintsParam = string.Empty;
+
+            if (query.Sprints.Any())
+            {
+                foreach (var sprint in query.Sprints)
+                {
+                    sprintsParam += "&sprints=" + sprint.ToString();
+                }
+            }
+
             var url = $"{Index}{query.BoardId}/work-items/?" +
                 $"pageNumber={query.PageNumber}" +
                 $"&pageSize={query.PageSize}" +
                 $"&cardTitle={query.CardTitle}" +
                 $"{issueTypesParam}" +
                 $"{boardListsParam}" +
+                $"{sprintsParam}" +
                 $"&orderBy=";
 
             if (query.OrderBy?.Any() == true)

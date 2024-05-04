@@ -32,6 +32,7 @@ namespace Harmony.Client.Pages.Management
 
         private IEnumerable<IssueTypeDto> _selectedIssueTypes = new List<IssueTypeDto>();
         private IEnumerable<BoardListDto> _selectedLists = new List<BoardListDto>();
+        private IEnumerable<SprintDto> _selectedSprints = new List<SprintDto>();
 
         protected async override Task OnParametersSetAsync()
         {
@@ -39,12 +40,12 @@ namespace Harmony.Client.Pages.Management
 
             var boardInfoResult = await _boardManager.GetBoardInfoAsync(Id);
 
-            if(boardInfoResult.Succeeded)
+            if (boardInfoResult.Succeeded)
             {
                 _boardInfo = boardInfoResult.Data;
             }
 
-            if(_reloadData)
+            if (_reloadData)
             {
                 await _table.ReloadServerData();
             }
@@ -64,12 +65,21 @@ namespace Harmony.Client.Pages.Management
             {
                 await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
                 _reloadData = true;
+
+                Clear();
             }
+        }
+
+        private void Clear()
+        {
+            _selectedIssueTypes = new List<IssueTypeDto>();
+            _selectedLists = new List<BoardListDto>();
+            _selectedSprints = new List<SprintDto>();
         }
 
         private string GetMultiSelectionIssueTypesText(List<string> selectedValues)
         {
-            if(!_selectedIssueTypes.Any())
+            if (!_selectedIssueTypes.Any())
             {
                 return string.Empty;
             }
@@ -87,12 +97,22 @@ namespace Harmony.Client.Pages.Management
             return string.Join(", ", _selectedLists.Select(x => x.Title));
         }
 
+        private string GetMultiSelectionSprintsText(List<string> selectedValues)
+        {
+            if (!_selectedLists.Any())
+            {
+                return string.Empty;
+            }
+
+            return string.Join(", ", _selectedSprints.Select(x => x.Name));
+        }
+
         private void SetSelectedIssueTypes(IEnumerable<IssueTypeDto> newSelectedIssueTypes)
         {
 
             _selectedIssueTypes = newSelectedIssueTypes;
 
-             _table.ReloadServerData();
+            _table.ReloadServerData();
         }
 
         private void SetSelectedLists(IEnumerable<BoardListDto> newSelectedLists)
@@ -102,11 +122,18 @@ namespace Harmony.Client.Pages.Management
             _table.ReloadServerData();
         }
 
+        private void SetSelectedSprints(IEnumerable<SprintDto> newSelectedSprints)
+        {
+            _selectedSprints = newSelectedSprints;
+
+            _table.ReloadServerData();
+        }
+
         private string GetBoardList(Guid boardListId)
         {
             var list = _boardInfo.Lists.FirstOrDefault(l => l.Id == boardListId);
 
-            if(list == null)
+            if (list == null)
             {
                 return "N/A";
             }
@@ -196,7 +223,8 @@ namespace Harmony.Client.Pages.Management
                 CardTitle = _searchString,
                 OrderBy = orderings,
                 BoardLists = _selectedLists.Select(l => l.Id).ToList(),
-                IssueTypes = _selectedIssueTypes.Select(i => i.Id).ToList()
+                IssueTypes = _selectedIssueTypes.Select(i => i.Id).ToList(),
+                Sprints = _selectedSprints.Select(i => i.Id).ToList()
             };
 
             var response = await _boardManager.GetWorkItems(request);

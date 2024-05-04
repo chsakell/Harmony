@@ -11,6 +11,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetWorkItems
         public string CardTitle { get; set; }
         public List<Guid>? IssueTypes { get; set; }
         public List<Guid>? BoardLists { get; set; }
+        public List<Guid>? Sprints { get; set; }
 
         public GetWorkItemsQuery()
         {

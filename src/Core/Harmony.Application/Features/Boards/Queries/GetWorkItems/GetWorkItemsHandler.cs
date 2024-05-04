@@ -34,6 +34,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetWorkItems
                 IncludeIssueType = true,
                 IssueTypes = request.IssueTypes,
                 BoardLists = request.BoardLists,
+                Sprints = request.Sprints,
             };
 
             filter.Build();

@@ -48,7 +48,22 @@
                     }
                 </MudSelect>
             </div>
-
+            @if(_boardInfo.Type == Domain.Enums.BoardType.Scrum)
+            {
+                <div class="justify-center mud-text-align-center">
+                    <MudSelect MultiSelection="true" T="SprintDto" Clearable="true"
+                               MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionSprintsText))"
+                               @bind-SelectedValues:get="_selectedSprints"
+                               @bind-SelectedValues:set="SetSelectedSprints"
+                               FullWidth="false"
+                               T="BoardListDto" Label="Sprints" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var list in _boardInfo.ActiveSprints)
+                        {
+                            <MudSelectItem Value="list">@list.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+            }
             <MudSpacer />
             <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search items by title.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
@@ -57,6 +72,10 @@
             <MudTh>Title</MudTh>
             <MudTh>Type</MudTh>
             <MudTh>Status</MudTh>
+            @if(_boardInfo.Type == Domain.Enums.BoardType.Scrum)
+            {
+                <MudTh>Story Points</MudTh>
+            }
             <MudTh Style="text-align:right"></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -80,15 +99,25 @@
                     @(GetBoardList(context.BoardListId))
                 </MudChip>
             </MudTd>
+            @if(_boardInfo.Type == Domain.Enums.BoardType.Scrum)
+            {
+                <MudTd Style="width:160px" DataLabel="StoryPoints">
+                    <MudChip Variant="Variant.Text" Color="Color.Primary">
+                        @(context.StoryPoints?.ToString() ?? "-")
+                    </MudChip>
+                </MudTd>
+            }
             <MudTd Style="text-align:right">
             </MudTd>
         </RowTemplate>
         <RowEditingTemplate>
-            <MudTd DataLabel="SerialKey">@context.SerialNumber</MudTd>
+            <MudTd DataLabel="SerialKey">
+                <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@($"{_boardInfo.Key}-{context.SerialNumber}")</MudChip>
+            </MudTd>
             <MudTd DataLabel="Title">
                 <MudTextField T="string" For="@(() => context.Title)" @bind-Value="context.Title" Label="Title"></MudTextField>
             </MudTd>
-            <MudTd DataLabel="Type">
+            <MudTd DataLabel="Type" Style="max-width:160px">
                 <MudStack Row="true">
                     @if (_issueTypes != null)
                     {
@@ -112,9 +141,17 @@
                     }
                 </MudStack>
             </MudTd>
-            <MudTd DataLabel="StoryPoints">
-                <MudNumericField T="short?" Clearable="true" @bind-Value="@context.StoryPoints" Min="0" />
+            <MudTd Style="width:160px" DataLabel="Status">
+                <MudChip Variant="Variant.Text" Color="@GetBoardListColor(context.BoardListId)">
+                    @(GetBoardList(context.BoardListId))
+                </MudChip>
             </MudTd>
+            @if (_boardInfo.Type == Domain.Enums.BoardType.Scrum)
+            {
+                <MudTd DataLabel="StoryPoints" Style="width:160px">
+                    <MudNumericField T="short?" Clearable="true" @bind-Value="@context.StoryPoints" Min="0" />
+                </MudTd>
+            }
             <MudTd Style="text-align:right">
             </MudTd>
         </RowEditingTemplate>
