@@ -3,6 +3,7 @@ using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Models;
+using Harmony.Client.Infrastructure.Helper;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Entities;
@@ -30,6 +31,7 @@ namespace Harmony.Client.Pages.Management
         private bool _reloadData = false;
 
         private IEnumerable<IssueTypeDto> _selectedIssueTypes = new List<IssueTypeDto>();
+        private IEnumerable<BoardListDto> _selectedLists = new List<BoardListDto>();
 
         protected async override Task OnParametersSetAsync()
         {
@@ -75,12 +77,48 @@ namespace Harmony.Client.Pages.Management
             return string.Join(", ", _selectedIssueTypes.Select(x => x.Summary));
         }
 
+        private string GetMultiSelectionBoardListsText(List<string> selectedValues)
+        {
+            if (!_selectedLists.Any())
+            {
+                return string.Empty;
+            }
+
+            return string.Join(", ", _selectedLists.Select(x => x.Title));
+        }
+
         private void SetSelectedIssueTypes(IEnumerable<IssueTypeDto> newSelectedIssueTypes)
         {
 
             _selectedIssueTypes = newSelectedIssueTypes;
 
              _table.ReloadServerData();
+        }
+
+        private void SetSelectedLists(IEnumerable<BoardListDto> newSelectedLists)
+        {
+            _selectedLists = newSelectedLists;
+
+            _table.ReloadServerData();
+        }
+
+        private string GetBoardList(Guid boardListId)
+        {
+            var list = _boardInfo.Lists.FirstOrDefault(l => l.Id == boardListId);
+
+            if(list == null)
+            {
+                return "N/A";
+            }
+
+            return list.Title;
+        }
+
+        private Color GetBoardListColor(Guid boardListId)
+        {
+            var list = _boardInfo?.Lists.FirstOrDefault(l => l.Id == boardListId);
+
+            return ColorHelper.GetBoardListColor(list);
         }
 
         private async Task<TableData<CardDto>> ReloadData(TableState state)
@@ -157,6 +195,7 @@ namespace Harmony.Client.Pages.Management
                 PageNumber = pageNumber + 1,
                 CardTitle = _searchString,
                 OrderBy = orderings,
+                BoardLists = _selectedLists.Select(l => l.Id).ToList(),
                 IssueTypes = _selectedIssueTypes.Select(i => i.Id).ToList()
             };
 

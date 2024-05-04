@@ -122,11 +122,22 @@ namespace Harmony.Client.Infrastructure.Routes
                 }
             }
 
+            var boardListsParam = string.Empty;
+
+            if (query.BoardLists.Any())
+            {
+                foreach (var list in query.BoardLists)
+                {
+                    issueTypesParam += "&boardLists=" + list.ToString();
+                }
+            }
+
             var url = $"{Index}{query.BoardId}/work-items/?" +
                 $"pageNumber={query.PageNumber}" +
                 $"&pageSize={query.PageSize}" +
                 $"&cardTitle={query.CardTitle}" +
                 $"{issueTypesParam}" +
+                $"{boardListsParam}" +
                 $"&orderBy=";
 
             if (query.OrderBy?.Any() == true)

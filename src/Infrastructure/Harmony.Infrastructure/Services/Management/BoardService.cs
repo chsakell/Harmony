@@ -149,7 +149,7 @@ namespace Harmony.Infrastructure.Services.Management
                     Id = board.Id,
                     Title = board.Title,
                     Type = board.Type,
-                    Lists = board.Lists,
+                    Lists = _mapper.Map<List<BoardListDto>>(board.Lists),
                     IssueTypes = issueTypes.Data,
                     Key = board.Key,
                     IndexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}"),

@@ -33,6 +33,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetWorkItems
                 Title = request.CardTitle,
                 IncludeIssueType = true,
                 IssueTypes = request.IssueTypes,
+                BoardLists = request.BoardLists,
             };
 
             filter.Build();

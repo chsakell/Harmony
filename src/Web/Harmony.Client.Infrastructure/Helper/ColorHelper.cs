@@ -1,4 +1,5 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Application.DTO;
+using Harmony.Domain.Enums;
 using Harmony.Domain.Enums.SourceControl;
 using Harmony.Shared.Constants.Application;
 using MudBlazor;
@@ -38,6 +39,21 @@ namespace Harmony.Client.Infrastructure.Helper
                 IssueTypesConstants.TASK => Color.Info,
                 _ => Color.Info,
             };
+        }
+
+        public static Color GetBoardListColor(BoardListDto list)
+        {
+            if(list == null)
+            {
+                return Color.Info;
+            }
+
+            if(list.CardStatus.HasValue && list.CardStatus == BoardListCardStatus.DONE)
+            {
+                return Color.Success;
+            }
+
+            return Color.Info;
         }
 
         public static Color GetPullRequestColor(PullRequestState state)

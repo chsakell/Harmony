@@ -13,6 +13,7 @@ namespace Harmony.Application.Specifications.Cards
         public Guid? BoardId { get; set; }
         public Guid? CardId { get; set; }
         public List<Guid>? IssueTypes { get; set; }
+        public List<Guid>? BoardLists { get; set; }
         public string Title { get; set; }
 
         public bool IncludeIssueType { get; set; }
@@ -39,6 +40,11 @@ namespace Harmony.Application.Specifications.Cards
             if (IssueTypes != null && IssueTypes.Any())
             {
                 Criteria = And(card => IssueTypes.Contains(card.IssueTypeId.Value));
+            }
+
+            if (BoardLists != null && BoardLists.Any())
+            {
+                Criteria = And(card => BoardLists.Contains(card.BoardListId.Value));
             }
 
             if (!string.IsNullOrEmpty(Title))

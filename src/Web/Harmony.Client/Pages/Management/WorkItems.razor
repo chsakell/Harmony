@@ -18,7 +18,7 @@
               ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
         <ToolBarContent>
             <div class="justify-center mud-text-align-center">
-                <MudSelect MultiSelection="true" T="IssueTypeDto"
+                <MudSelect MultiSelection="true" T="IssueTypeDto" Clearable="true"
                            MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionIssueTypesText))"
                            @bind-SelectedValues:get="_selectedIssueTypes"
                            @bind-SelectedValues:set="SetSelectedIssueTypes"
@@ -35,6 +35,20 @@
                     }
                 </MudSelect>
             </div>
+            <div class="justify-center mud-text-align-center">
+                <MudSelect MultiSelection="true" T="BoardListDto" Clearable="true"
+                           MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionBoardListsText))"
+                           @bind-SelectedValues:get="_selectedLists"
+                           @bind-SelectedValues:set="SetSelectedLists"
+                           FullWidth="false"
+                           T="BoardListDto" Label="Status" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var list in _boardInfo.Lists)
+                    {
+                        <MudSelectItem Value="list">@list.Title</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+
             <MudSpacer />
             <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search items by title.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
@@ -42,41 +56,41 @@
             <MudTh>Key</MudTh>
             <MudTh>Title</MudTh>
             <MudTh>Type</MudTh>
-            <MudTh Style="width:160px">Story Points</MudTh>
+            <MudTh>Status</MudTh>
             <MudTh Style="text-align:right"></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="SerialKey">
                 <MudTooltip Text="Click for full editing" Delay="2500">
                     <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@($"{_boardInfo.Key}-{context.SerialNumber}")</MudChip>
-                    </MudTooltip>
-                </MudTd>
-                <MudTd DataLabel="Title">
-                    <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
-                </MudTd>
-                <MudTd DataLabel="Type">
-                    <MudStack Row="true">
-                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
-                                 Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
-                        <MudText>@context.IssueType.Summary</MudText>
-                    </MudStack>
-                </MudTd>
-                <MudTd Style="width:160px" DataLabel="StoryPoints">
-                    <MudChip Variant="Variant.Text" Color="Color.Primary">
-                        @(context.StoryPoints?.ToString() ?? "-")
-                    </MudChip>
-                </MudTd>
-                <MudTd Style="text-align:right">
-                </MudTd>
-            </RowTemplate>
-            <RowEditingTemplate>
-                <MudTd DataLabel="SerialKey">@context.SerialNumber</MudTd>
-                <MudTd DataLabel="Title">
-                    <MudTextField T="string" For="@(() => context.Title)" @bind-Value="context.Title" Label="Title"></MudTextField>
-                </MudTd>
-                <MudTd DataLabel="Type">
-                    <MudStack Row="true">
-                        @if (_issueTypes != null)
+                </MudTooltip>
+            </MudTd>
+            <MudTd DataLabel="Title">
+                <MudHighlighter Text="@context.Title" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Type">
+                <MudStack Row="true">
+                    <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                             Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                    <MudText>@context.IssueType.Summary</MudText>
+                </MudStack>
+            </MudTd>
+            <MudTd Style="width:160px" DataLabel="Status">
+                <MudChip Variant="Variant.Text" Color="@GetBoardListColor(context.BoardListId)">
+                    @(GetBoardList(context.BoardListId))
+                </MudChip>
+            </MudTd>
+            <MudTd Style="text-align:right">
+            </MudTd>
+        </RowTemplate>
+        <RowEditingTemplate>
+            <MudTd DataLabel="SerialKey">@context.SerialNumber</MudTd>
+            <MudTd DataLabel="Title">
+                <MudTextField T="string" For="@(() => context.Title)" @bind-Value="context.Title" Label="Title"></MudTextField>
+            </MudTd>
+            <MudTd DataLabel="Type">
+                <MudStack Row="true">
+                    @if (_issueTypes != null)
                     {
                         <MudSelect T="IssueTypeDto" @bind-Value="context.IssueType"
                                    For="@(() => context.IssueType)"
@@ -91,8 +105,8 @@
                                         <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
                                                  Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
                                         <MudText>@type.Summary</MudText>
-                                        </MudStack>
-                                    </MudSelectItem>
+                                    </MudStack>
+                                </MudSelectItem>
                             }
                         </MudSelect>
                     }

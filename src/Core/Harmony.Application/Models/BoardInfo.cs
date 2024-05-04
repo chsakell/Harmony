@@ -8,7 +8,7 @@ namespace Harmony.Application.Models
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public List<BoardList> Lists { get; set; }
+        public List<BoardListDto> Lists { get; set; } = new List<BoardListDto>();
         public List<IssueTypeDto> IssueTypes { get; set; } = new List<IssueTypeDto>();
         public BoardType Type { get; set; }
         public string Key { get; set; }
