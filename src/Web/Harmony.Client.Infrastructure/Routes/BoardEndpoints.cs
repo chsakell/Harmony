@@ -15,6 +15,11 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Index}{boardId}/?size={size}";
         }
 
+        public static string GetInfo(string boardId)
+        {
+            return $"{Index}{boardId}/info/";
+        }
+
         public static string GetMembers(string boardId)
         {
             return $"{Index}{boardId}/members/";

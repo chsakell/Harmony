@@ -2,6 +2,7 @@
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
 using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
+using Harmony.Application.Models;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Modals;
 using Harmony.Shared.Wrapper;
@@ -24,10 +25,18 @@ namespace Harmony.Client.Pages.Management
         private CardDto _itemBeforeEdit;
         private List<IssueTypeDto> _issueTypes;
         private IDisposable registration;
+        private BoardInfo? _boardInfo = new BoardInfo();
 
         protected override async Task OnInitializedAsync()
         {
             await _hubSubscriptionManager.ListenForBoardEvents(Id);
+
+            var boardInfoResult = await _boardManager.GetBoardInfoAsync(Id);
+
+            if(boardInfoResult.Succeeded)
+            {
+                _boardInfo = boardInfoResult.Data;
+            }
         }
 
         protected override void OnAfterRender(bool firstRender)

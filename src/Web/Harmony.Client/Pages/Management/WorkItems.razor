@@ -31,7 +31,7 @@
         <RowTemplate>
             <MudTd DataLabel="SerialKey">
                 <MudTooltip Text="Click for full editing" Delay="2500">
-                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@context.SerialNumber</MudChip>
+                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@($"{_boardInfo.Key}-{context.SerialNumber}")</MudChip>
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Title">

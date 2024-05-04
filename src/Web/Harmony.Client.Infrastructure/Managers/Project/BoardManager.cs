@@ -22,6 +22,7 @@ using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
+using Harmony.Application.Models;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Shared.Wrapper;
 using System.Net.Http.Json;
@@ -70,6 +71,12 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         {
             var response = await _httpClient.GetAsync(Routes.BoardEndpoints.Get(boardId, size));
             return await response.ToResult<GetBoardResponse>();
+        }
+
+        public async Task<IResult<BoardInfo>> GetBoardInfoAsync(string boardId)
+        {
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.GetInfo(boardId));
+            return await response.ToResult<BoardInfo>();
         }
 
         public async Task<IResult<List<UserBoardResponse>>> GetBoardMembersAsync(string boardId)

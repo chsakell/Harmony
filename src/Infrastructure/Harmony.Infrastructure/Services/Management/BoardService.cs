@@ -16,6 +16,7 @@ using Harmony.Application.Constants;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
 using Google.Protobuf.Collections;
+using AutoMapper;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -27,6 +28,7 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly ISprintRepository _sprintRepository;
         private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly ICardRepository _cardRepository;
+        private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly string _connectionString;
 
@@ -35,6 +37,7 @@ namespace Harmony.Infrastructure.Services.Management
             ISprintRepository sprintRepository,
             IIssueTypeRepository issueTypeRepository,
             ICardRepository cardRepository,
+            IMapper mapper,
             IMemoryCache memoryCache)
         {
             _connectionString = configuration.GetConnectionString("HarmonyConnection");
@@ -44,6 +47,7 @@ namespace Harmony.Infrastructure.Services.Management
             _sprintRepository = sprintRepository;
             _issueTypeRepository = issueTypeRepository;
             _cardRepository = cardRepository;
+            _mapper = mapper;
             _memoryCache = memoryCache;
         }
 
@@ -137,10 +141,22 @@ namespace Harmony.Infrastructure.Services.Management
                 {
                     Id = board.Id,
                     Title = board.Title,
+                    Type = board.Type,
                     Lists = board.Lists,
                     Key = board.Key,
-                    IndexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}")
+                    IndexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}"),
+                    ActiveSprints = new List<SprintDto>()
                 };
+
+                if (board.Type == BoardType.Scrum)
+                {
+                    var activeSprints = await _sprintRepository.GetActiveSprints(board.Id);
+
+                    if(activeSprints.Any())
+                    {
+                        result.ActiveSprints = [.. _mapper.Map<List<SprintDto>>(activeSprints)];
+                    }
+                }
 
                 return result;
             });

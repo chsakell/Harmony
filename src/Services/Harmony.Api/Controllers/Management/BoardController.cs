@@ -5,6 +5,7 @@ using Harmony.Application.Features.Boards.Commands.RemoveUserBoard;
 using Harmony.Application.Features.Boards.Commands.UpdateUserBoardAccess;
 using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetArchivedItems;
+using Harmony.Application.Features.Boards.Queries.GetBoardInfo;
 using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Boards.Queries.GetSprints;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
@@ -41,6 +42,12 @@ namespace Harmony.Api.Controllers.Management
         public async Task<IActionResult> LoadBoard(Guid id, int size)
         {
             return Ok(await _mediator.Send(new GetBoardQuery(id, size)));
+        }
+
+        [HttpGet("{id:guid}/info")]
+        public async Task<IActionResult> GetInfo(Guid id)
+        {
+            return Ok(await _mediator.Send(new GetBoardInfoQuery(id)));
         }
 
         [HttpGet("{id:guid}/members")]

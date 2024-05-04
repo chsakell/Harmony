@@ -21,6 +21,7 @@ using Harmony.Application.Features.Lists.Queries.GetBoardLists;
 using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Features.Workspaces.Queries.GetBacklog;
 using Harmony.Application.Features.Workspaces.Queries.GetSprints;
+using Harmony.Application.Models;
 using Harmony.Shared.Wrapper;
 
 namespace Harmony.Client.Infrastructure.Managers.Project
@@ -50,5 +51,6 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         Task<IResult<List<BoardDto>>> GetUserBoards();
         Task<PaginatedResult<GetArchivedItemResponse>> GetArchivedItems(GetArchivedItemsQuery request);
         Task<PaginatedResult<CardDto>> GetWorkItems(GetWorkItemsQuery request);
+        Task<IResult<BoardInfo>> GetBoardInfoAsync(string boardId);
     }
 }

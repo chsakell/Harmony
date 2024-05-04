@@ -1,4 +1,6 @@
-﻿using Harmony.Domain.Entities;
+﻿using Harmony.Application.DTO;
+using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 
 namespace Harmony.Application.Models
 {
@@ -7,7 +9,9 @@ namespace Harmony.Application.Models
         public Guid Id { get; set; }
         public string Title { get; set; }
         public List<BoardList> Lists { get; set; }
+        public BoardType Type { get; set; }
         public string Key { get; set; }
         public string IndexName { get; set; }
+        public List<SprintDto> ActiveSprints { get; set; }
     }
 }
