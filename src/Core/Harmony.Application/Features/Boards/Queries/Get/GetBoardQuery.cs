@@ -10,11 +10,6 @@ namespace Harmony.Application.Features.Boards.Queries.Get
     {
         public Guid BoardId { get; set; }
         public int MaxCardsPerList { get; set; }
-
-        public GetBoardQuery(Guid boardId, int maxCardsPerList)
-        {
-            BoardId = boardId;
-            MaxCardsPerList = maxCardsPerList;
-        }
+        public Guid? SprintId { get; set; }
     }
 }

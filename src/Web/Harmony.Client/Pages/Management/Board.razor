@@ -30,38 +30,26 @@ else
                 @if (KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
                 {
                     <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
-
-                    <MudTooltip Delay="2000">
-                        <ChildContent>
-                            <MudButton Variant="Variant.Text" OnClick="ViewSprints" StartIcon="@Icons.Material.Outlined.Update">Sprints</MudButton>
-                        </ChildContent>
-                        <TooltipContent>
-                            @if (KanbanStore.Board.ActiveSprints.Any())
+                    @if (!AddCardsDisabled)
+                    {
+                        <MudMenu Label="@KanbanStore.Board.SelectedSprint.Name" Variant="Variant.Filled"
+                                 EndIcon="@Icons.Material.Filled.KeyboardArrowDown" 
+                                 AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopRight"
+                                 IconColor="Color.Secondary">
+                            @foreach (var sprint in KanbanStore.Board.ActiveSprints)
                             {
-                                <MudList>
-                                    <MudListSubheader>
-                                        Active sprints
-                                    </MudListSubheader>
-                                    @foreach (var sprint in KanbanStore.Board.ActiveSprints)
-                                    {
-                                        <MudListItem Class="mud-tertiary-text">@sprint.Name</MudListItem>
-                                    }
-                                </MudList>
+                                <MudMenuItem OnClick="@(() => SelectSprint(sprint.Id))">@sprint.Name</MudMenuItem>
                             }
-                            else
-                            {
-                                <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
-                            }
-                        </TooltipContent>
-                    </MudTooltip>
-                    @if (AddCardsDisabled)
+                        </MudMenu>
+                    }
+                    else
                     {
                         <MudTooltip>
                             <ChildContent>
                                 <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Medium" />
                             </ChildContent>
                             <TooltipContent>
-                                <MudAlert Severity="Severity.Warning">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
+                                <MudAlert Severity="Severity.Normal">The board need's an active sprint to display cards. Click Sprints to setup an active sprint. </MudAlert>
                             </TooltipContent>
                         </MudTooltip>
                     }

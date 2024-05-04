@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmony.Persistence.Migrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20240411174049_LoadBoardListCardsSp")]
+    [Migration("20240504101500_LoadBoardListCardsSp")]
     partial class LoadBoardListCardsSp
     {
         /// <inheritdoc />

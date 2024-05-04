@@ -67,9 +67,9 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 			return await response.ToResult<CardDto>();
 		}
 
-		public async Task<IResult<GetBoardResponse>> GetBoardAsync(string boardId, int size)
+		public async Task<IResult<GetBoardResponse>> GetBoardAsync(GetBoardQuery query)
         {
-            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.Get(boardId, size));
+            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.Get(query));
             return await response.ToResult<GetBoardResponse>();
         }
 

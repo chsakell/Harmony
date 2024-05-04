@@ -29,7 +29,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [dbo].[LoadBoard] @BoardId uniqueidentifier, @cardsPerList int
+CREATE PROCEDURE [dbo].[LoadBoard] @BoardId uniqueidentifier, @cardsPerList int, @sprintId uniqueidentifier = null
 AS
 BEGIN
 	SELECT * FROM Boards WHERE Id = @BoardId
@@ -95,7 +95,7 @@ BEGIN
 					INSERT INTO @cards 
 					Select c.* from Cards c
 					JOIN Sprints s on s.Id = c.SprintId
-					where BoardListId = @boardListId AND c.Status = 0 AND s.Status = 1 AND ParentCardId IS NULL
+					where BoardListId = @boardListId AND c.Status = 0 AND s.Status = 1 AND ParentCardId IS NULL AND s.Id = @sprintId
 					order by c.Position
 					OFFSET 0 ROWS 
 					FETCH FIRST @cardsPerList ROWS ONLY;

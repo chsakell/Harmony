@@ -51,6 +51,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         {
             var userId = _currentUserService.UserId;
             List<Sprint> activeSprints = null;
+            Guid? selectedSprintId = null;
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -108,9 +109,13 @@ namespace Harmony.Application.Features.Boards.Queries.Get
 
                     return await Result<GetBoardResponse>.SuccessAsync(emptyBoard);
                 }
+                else
+                {
+                    selectedSprintId = request.SprintId ?? activeSprints[0].Id;
+                }
             }
 
-            var userBoard = await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList);
+            var userBoard = await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);
             
@@ -121,8 +126,10 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 if (activeSprints != null && activeSprints.Any())
                 {
                     result.ActiveSprints = _mapper.Map<List<SprintDto>>(activeSprints);
+                    result.SelectedSprint = result.ActiveSprints.FirstOrDefault(s => s.Id == selectedSprintId);
+                    
                     totalCardsPerList = await _boardListRepository
-                            .GetTotalCardsForBoardLists(result.ActiveSprints[0].Id, result.Lists.Select(l => l.Id).ToList());
+                            .GetTotalCardsForBoardLists(selectedSprintId.Value, result.Lists.Select(l => l.Id).ToList());
                 }
             }
             else

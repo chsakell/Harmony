@@ -15,7 +15,8 @@
               EditTrigger="TableEditTrigger.EditButton"
               T="CardDto"
               @bind-SelectedItems="_selectedCards"
-              ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+              ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table"
+              Class="mt-4">
         <ToolBarContent>
             <div class="justify-center mud-text-align-center">
                 <MudSelect MultiSelection="true" T="IssueTypeDto" Clearable="true"
@@ -48,7 +49,7 @@
                     }
                 </MudSelect>
             </div>
-            @if(_boardInfo.Type == Domain.Enums.BoardType.Scrum)
+            @if (_boardInfo.Type == Domain.Enums.BoardType.Scrum)
             {
                 <div class="justify-center mud-text-align-center">
                     <MudSelect MultiSelection="true" T="SprintDto" Clearable="true"
@@ -72,7 +73,7 @@
             <MudTh>Title</MudTh>
             <MudTh>Type</MudTh>
             <MudTh>Status</MudTh>
-            @if(_boardInfo.Type == Domain.Enums.BoardType.Scrum)
+            @if (_boardInfo.Type == Domain.Enums.BoardType.Scrum)
             {
                 <MudTh>Story Points</MudTh>
             }
@@ -99,7 +100,7 @@
                     @(GetBoardList(context.BoardListId))
                 </MudChip>
             </MudTd>
-            @if(_boardInfo.Type == Domain.Enums.BoardType.Scrum)
+            @if (_boardInfo.Type == Domain.Enums.BoardType.Scrum)
             {
                 <MudTd Style="width:160px" DataLabel="StoryPoints">
                     <MudChip Variant="Variant.Text" Color="Color.Primary">

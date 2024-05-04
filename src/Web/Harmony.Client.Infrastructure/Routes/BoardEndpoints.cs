@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Features.Boards.Queries.GetWorkItems;
+﻿using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Domain.Enums;
 using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
@@ -10,9 +11,10 @@ namespace Harmony.Client.Infrastructure.Routes
 
         public static string UserBoards = $"{GatewayConstants.CoreApiPrefix}/board/userboards/";
 
-        public static string Get(string boardId, int size)
+        public static string Get(GetBoardQuery query)
         {
-            return $"{Index}{boardId}/?size={size}";
+            var sprintParam = query.SprintId.HasValue ? $"&sprintId={query.SprintId}" : string.Empty;
+            return $"{Index}{query.BoardId}/?MaxCardsPerList={query.MaxCardsPerList}{sprintParam}";
         }
 
         public static string GetInfo(string boardId)

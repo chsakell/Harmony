@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Extensions;
+using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -43,6 +44,7 @@ namespace Harmony.Client.Pages.Management
         private bool _unauthorisedAccess = false;
         private bool _inactiveWorkspace = false;
         private string _errorText = string.Empty;
+        private Guid? _selectedSprintId = null;
 
         private int _listCardsSize = 10;
         private Guid _moveUpdateId = Guid.NewGuid();
@@ -76,12 +78,33 @@ namespace Harmony.Client.Pages.Management
             }
 
             _stopListeningBoardId = Id;
+            await LoadBoard();
 
-            var result = await _boardManager.GetBoardAsync(Id, _listCardsSize);
+            if (!string.IsNullOrEmpty(CardId) && Guid.TryParse(CardId, out var cardId))
+            {
+                await EditCard(new CardDto()
+                {
+                    Id = cardId
+                });
+            }
+        }
+
+        private async Task LoadBoard()
+        {
+            var query = new GetBoardQuery()
+            {
+                BoardId = Guid.Parse(Id),
+                MaxCardsPerList = _listCardsSize,
+                SprintId = _selectedSprintId
+            };
+
+            var result = await _boardManager.GetBoardAsync(query);
 
             if (result.Succeeded)
             {
                 KanbanStore.LoadBoard(result.Data);
+
+                _selectedSprintId = result.Data.SelectedSprint?.Id;
 
                 await RegisterBoardEvents();
             }
@@ -101,14 +124,15 @@ namespace Harmony.Client.Pages.Management
                     await _clientPreferenceManager.ClearSelectedWorkspace();
                 }
             }
+        }
 
-            if (!string.IsNullOrEmpty(CardId) && Guid.TryParse(CardId, out var cardId))
-            {
-                await EditCard(new CardDto()
-                {
-                    Id = cardId
-                });
-            }
+        private async Task SelectSprint(Guid sprintId)
+        {
+            _selectedSprintId = sprintId;
+
+            await CleanBoard(false);
+            KanbanStore.SetLoading(true);
+            await LoadBoard();
         }
 
         private async Task RegisterBoardEvents()

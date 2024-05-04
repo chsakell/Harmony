@@ -30,7 +30,7 @@ END
 GO
 
 CREATE PROCEDURE [dbo].[LoadBoardListCards] @BoardId uniqueidentifier, 
-@BoardListId uniqueidentifier, @page int, @cardsPerList int
+@BoardListId uniqueidentifier, @page int, @cardsPerList int, @sprintId uniqueidentifier = null
 AS
 BEGIN
 
@@ -72,7 +72,7 @@ BEGIN
 		INSERT INTO @cards 
 		Select c.* from Cards c
 		JOIN Sprints s on s.Id = c.SprintId
-		where BoardListId = @boardListId AND c.Status = 0  AND s.Status = 1 AND ParentCardId IS NULL
+		where BoardListId = @boardListId AND c.Status = 0  AND s.Status = 1 AND ParentCardId IS NULL AND s.Id = @sprintId
 		order by Position
 		OFFSET (@page - 1) * @cardsPerList ROWS 
 		FETCH FIRST @cardsPerList ROWS ONLY;

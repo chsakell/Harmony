@@ -170,7 +170,7 @@ namespace Harmony.Infrastructure.Services.Management
             });
         }
 
-        public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList)
+        public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList, Guid? sprintId = null)
         {
             try
             {
@@ -178,6 +178,11 @@ namespace Harmony.Infrastructure.Services.Management
                 var parameters = new DynamicParameters();
                 parameters.Add("@BoardId", boardId, DbType.Guid, ParameterDirection.Input);
                 parameters.Add("@cardsPerList", maxCardsPerList, DbType.Int32, ParameterDirection.Input);
+
+                if(sprintId.HasValue)
+                {
+                    parameters.Add("@sprintId", sprintId, DbType.Guid, ParameterDirection.Input);
+                }
 
                 using (var connection = new SqlConnection(_connectionString))
                 using (var multi = await connection.QueryMultipleAsync(query, parameters, commandType: CommandType.StoredProcedure))
