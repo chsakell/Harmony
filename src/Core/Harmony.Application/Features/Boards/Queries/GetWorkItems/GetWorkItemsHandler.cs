@@ -43,8 +43,8 @@ namespace Harmony.Application.Features.Boards.Queries.GetWorkItems
                 .Entities.Specify(filter)
                 .CountAsync();
 
-            var ordering = string.Empty;
-            if(request.OrderBy == null || request.OrderBy.FirstOrDefault() == null)
+            string ordering;
+            if (request.OrderBy == null || !request.OrderBy.Any() || request.OrderBy.FirstOrDefault() == null)
             {
                 ordering = string.Join(",", new string[] { "dateCreated" });
             }

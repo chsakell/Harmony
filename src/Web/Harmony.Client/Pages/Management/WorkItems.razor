@@ -66,6 +66,46 @@
                 </div>
             }
             <MudSpacer />
+            <MudMenu AnchorOrigin="Origin.BottomLeft" Icon="@Icons.Material.Filled.Sort" Style="align-self:end">
+                <MudMenuItem AutoClose="false">
+                    @foreach(var sortableField in _sortableFields.Fields)
+                    {
+                        <MudStack Row="true">
+                            <MudCheckBox @bind-Value="sortableField.Enabled" Label="@sortableField.Label"></MudCheckBox>
+                            <MudRadioGroup @bind-Value="@sortableField.Descending">
+                                <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
+                                <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
+                            </MudRadioGroup>
+                        </MudStack>
+                    }
+                    @* <MudStack Row="true">
+                        <MudCheckBox @bind-Value="_sortDateCreated" Label="Date created"></MudCheckBox>
+                        <MudRadioGroup @bind-Value="@_sortDateCreatedDescending">
+                            <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
+                            <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
+                        </MudRadioGroup>
+                    </MudStack>
+                    <MudStack Row="true">
+                        <MudCheckBox @bind-Value="_sortType" Label="Type"></MudCheckBox>
+                        <MudRadioGroup @bind-Value="@_sortTypeDescending">
+                            <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
+                            <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
+                        </MudRadioGroup>
+                    </MudStack>
+                    <MudStack Row="true">
+                        <MudCheckBox @bind-Value="_sortStatus" Label="Status"></MudCheckBox>
+                        <MudRadioGroup @bind-Value="@_sortStatusDescending">
+                            <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
+                            <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
+                        </MudRadioGroup>
+                    </MudStack> *@
+                </MudMenuItem>
+                <MudMenuItem>
+                    <MudStack Justify="Justify.Center">
+                        <MudButton OnClick="@(() => _table.ReloadServerData())" StartIcon="@Icons.Material.Filled.Sort">APPLY SORTING</MudButton>
+                    </MudStack>
+                </MudMenuItem>
+            </MudMenu>
             <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search items by title.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>

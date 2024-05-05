@@ -4,6 +4,7 @@ using Harmony.Application.Features.Boards.Queries.GetWorkItems;
 using Harmony.Application.Features.Cards.Commands.UpdateBacklog;
 using Harmony.Application.Models;
 using Harmony.Client.Infrastructure.Helper;
+using Harmony.Client.Infrastructure.Models;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Shared.Modals;
 using Harmony.Domain.Entities;
@@ -33,6 +34,37 @@ namespace Harmony.Client.Pages.Management
         private IEnumerable<IssueTypeDto> _selectedIssueTypes = new List<IssueTypeDto>();
         private IEnumerable<BoardListDto> _selectedLists = new List<BoardListDto>();
         private IEnumerable<SprintDto> _selectedSprints = new List<SprintDto>();
+
+        private SortableFields _sortableFields = new SortableFields()
+        {
+            Fields = new List<SortableField>
+            {
+                new SortableField
+                {
+                    Field = "DateCreated",
+                    Label = "Date created",
+                    Order = 0,
+                    Descending = true,
+                    Enabled = true,
+                },
+                new SortableField
+                {
+                    Field = "IssueType.Summary",
+                    Label = "Type",
+                    Order = 1,
+                    Descending = false,
+                    Enabled = false,
+                },
+                new SortableField
+                {
+                    Field = "BoardList.Title",
+                    Label = "Status",
+                    Order = 2,
+                    Descending = false,
+                    Enabled = false,
+                }
+            }
+        };
 
         protected async override Task OnParametersSetAsync()
         {
@@ -206,15 +238,7 @@ namespace Harmony.Client.Pages.Management
 
         private async Task LoadData(int pageNumber, int pageSize, TableState state)
         {
-            string[] orderings = null;
-            if (!string.IsNullOrEmpty(state.SortLabel))
-            {
-                orderings = state.SortDirection != SortDirection.None ? new[] { $"{state.SortLabel} {state.SortDirection}" } : new[] { $"{state.SortLabel}" };
-            }
-            else
-            {
-                orderings = new[] { $"DateCreated descending" };
-            }
+            string[] orderings = _sortableFields.BuildQueryString();
 
             var request = new GetWorkItemsQuery(Guid.Parse(Id))
             {
