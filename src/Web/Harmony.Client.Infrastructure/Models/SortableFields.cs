@@ -3,7 +3,9 @@ namespace Harmony.Client.Infrastructure.Models
 {
     public class SortableFields
     {
-        public List<SortableField> Fields { get; set; } = new List<SortableField>();
+        public IEnumerable<SortableField> Fields { get; set; } = new List<SortableField>();
+
+        public int MaxOrder => Fields.Select(x => x.Order).Max();
 
         public string[] BuildQueryString()
         {
@@ -15,6 +17,28 @@ namespace Harmony.Client.Infrastructure.Models
             }
 
             return queryParams.ToArray();
+        }
+
+        public void MoveDown(SortableField field)
+        {
+            var swapField = Fields.FirstOrDefault(f => f.Order == field.Order + 1);
+
+            if (swapField != null)
+            {
+                field.Order += 1;
+                swapField.Order -= 1;
+            }
+        }
+
+        public void MoveUp(SortableField field)
+        {
+            var swapField = Fields.FirstOrDefault(f => f.Order == field.Order - 1);
+
+            if (swapField != null)
+            {
+                field.Order -= 1;
+                swapField.Order += 1;
+            }
         }
     }
 

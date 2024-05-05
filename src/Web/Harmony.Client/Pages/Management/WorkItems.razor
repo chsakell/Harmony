@@ -66,39 +66,27 @@
                 </div>
             }
             <MudSpacer />
-            <MudMenu AnchorOrigin="Origin.BottomLeft" Icon="@Icons.Material.Filled.Sort" Style="align-self:end">
+            <MudMenu AnchorOrigin="Origin.BottomLeft" @ref="_sortMenu" Icon="@Icons.Material.Filled.Sort" Style="align-self:end">
                 <MudMenuItem AutoClose="false">
-                    @foreach(var sortableField in _sortableFields.Fields)
+                    @foreach (var sortableField in _sortableFields.Fields.OrderBy(f => f.Order))
                     {
-                        <MudStack Row="true">
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                             <MudCheckBox @bind-Value="sortableField.Enabled" Label="@sortableField.Label"></MudCheckBox>
                             <MudRadioGroup @bind-Value="@sortableField.Descending">
                                 <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
                                 <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
                             </MudRadioGroup>
+
+                            @if (sortableField.Order < _sortableFields.MaxOrder)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.MoveDown" @onclick="@(() => _sortableFields.MoveDown(sortableField))" Color="Color.Error" />
+                            }
+                            @if (sortableField.Order > 0)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.MoveUp" @onclick="@(() => _sortableFields.MoveUp(sortableField))" Color="Color.Success" />
+                            }
                         </MudStack>
                     }
-                    @* <MudStack Row="true">
-                        <MudCheckBox @bind-Value="_sortDateCreated" Label="Date created"></MudCheckBox>
-                        <MudRadioGroup @bind-Value="@_sortDateCreatedDescending">
-                            <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
-                            <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
-                        </MudRadioGroup>
-                    </MudStack>
-                    <MudStack Row="true">
-                        <MudCheckBox @bind-Value="_sortType" Label="Type"></MudCheckBox>
-                        <MudRadioGroup @bind-Value="@_sortTypeDescending">
-                            <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
-                            <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
-                        </MudRadioGroup>
-                    </MudStack>
-                    <MudStack Row="true">
-                        <MudCheckBox @bind-Value="_sortStatus" Label="Status"></MudCheckBox>
-                        <MudRadioGroup @bind-Value="@_sortStatusDescending">
-                            <MudRadio Value="@(false)" Color="Color.Primary">ASC</MudRadio>
-                            <MudRadio Value="@(true)" Color="Color.Secondary">DESC</MudRadio>
-                        </MudRadioGroup>
-                    </MudStack> *@
                 </MudMenuItem>
                 <MudMenuItem>
                     <MudStack Justify="Justify.Center">
