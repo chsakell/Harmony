@@ -125,11 +125,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             return await response.ToResult<UpdateListsPositionsResponse>();
         }
 
-        public async Task<IResult<List<CardDto>>> GetBoardListCardsAsync(LoadBoardListQuery request)
+        public async Task<IResult<List<CardDto>>> GetBoardListCardsAsync(LoadBoardListQuery query)
         {
             var response = await _httpClient
-                .GetAsync(Routes.BoardEndpoints.GetBoardList(request.BoardId.ToString(), 
-                    request.BoardListId, request.Page, request.PageSize));
+                .GetAsync(Routes.BoardEndpoints.GetBoardList(query));
             return await response.ToResult<List<CardDto>>();
         }
 

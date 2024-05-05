@@ -256,7 +256,7 @@ namespace Harmony.Client.Pages.Management
                 {
                     KanbanStore.UpdateTodalCardChildren(e.Message.Card.ParentCardId.Value, increase: true);
                 }
-                
+
                 _dropContainer.Refresh();
             }
         }
@@ -332,7 +332,7 @@ namespace Harmony.Client.Pages.Management
                 {
                     Console.WriteLine(ex);
                 }
-                
+
 
                 _dropContainer.Refresh();
             }
@@ -417,7 +417,14 @@ namespace Harmony.Client.Pages.Management
         private async Task LoadListCards(Guid listId, int page)
         {
             var result = await _boardManager
-                .GetBoardListCardsAsync(new LoadBoardListQuery(Guid.Parse(Id), listId, page, _listCardsSize));
+                .GetBoardListCardsAsync(new LoadBoardListQuery()
+                {
+                    BoardId = Guid.Parse(Id),
+                    BoardListId = listId,
+                    Page = page,
+                    PageSize = _listCardsSize,
+                    SprintId = _selectedSprintId
+                });
 
             if (result.Succeeded)
             {
@@ -516,7 +523,7 @@ namespace Harmony.Client.Pages.Management
                 .Select(c => (int)c.Position).ToList();
 
             var previousPositionAvailable = !cardPositionsInList.Contains(newPosition - 1);
-            
+
 
             return newPosition;
         }
@@ -606,7 +613,7 @@ namespace Harmony.Client.Pages.Management
 
         private async Task AddCard(BoardListDto list)
         {
-            var result = KanbanStore.Board.Type != Domain.Enums.BoardType.Retrospective ? 
+            var result = KanbanStore.Board.Type != Domain.Enums.BoardType.Retrospective ?
                 await OpenNormalCardModal(list) :
                 await OpenRetrospectiveCardModal(list);
 
@@ -631,6 +638,9 @@ namespace Harmony.Client.Pages.Management
                 },
                 {
                     modal => modal.ActiveSprints, KanbanStore.Board.ActiveSprints
+                },
+                {
+                    modal => modal.SelectedSprintId, _selectedSprintId
                 },
                 {
                     modal => modal.ListTitle, list.Title

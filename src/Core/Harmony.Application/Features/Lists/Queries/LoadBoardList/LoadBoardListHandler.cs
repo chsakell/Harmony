@@ -58,7 +58,8 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
             }
 
             var cards = await _boardService
-                    .LoadBoardListCards(request.BoardId, request.BoardListId, request.Page, request.PageSize);
+                    .LoadBoardListCards(request.BoardId, request.BoardListId, 
+                    request.Page, request.PageSize, request.SprintId);
 
             var result = _mapper.Map<List<CardDto>>(cards);
 

@@ -47,7 +47,7 @@
                                    Variant="Variant.Outlined">
                             @foreach (var sprint in ActiveSprints)
                             {
-                                <MudSelectItem Value="sprint">@sprint.Name</MudSelectItem>
+                                <MudSelectItem Value="sprint" Disabled="@(sprint.Id != SelectedSprintId)">@sprint.Name</MudSelectItem>
                             }
                         </MudSelect>
                     </MudItem>

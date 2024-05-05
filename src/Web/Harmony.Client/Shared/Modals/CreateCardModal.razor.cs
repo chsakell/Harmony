@@ -22,6 +22,9 @@ namespace Harmony.Client.Shared.Modals
         public List<SprintDto>? ActiveSprints { get; set; }
 
         [Parameter]
+        public Guid? SelectedSprintId { get; set; }
+
+        [Parameter]
         public string ListTitle { get; set; }
 
         private List<IssueTypeDto> _issueTypes = new List<IssueTypeDto>();

@@ -304,7 +304,7 @@ namespace Harmony.Infrastructure.Services.Management
             return new Board();
         }
 
-        public async Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList)
+        public async Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList, Guid? sprintId = null)
         {
             try
             {
@@ -314,6 +314,11 @@ namespace Harmony.Infrastructure.Services.Management
                 parameters.Add("@BoardListId", boardListId, DbType.Guid, ParameterDirection.Input);
                 parameters.Add("@page", page, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("@cardsPerList", maxCardsPerList, DbType.Int32, ParameterDirection.Input);
+
+                if (sprintId.HasValue)
+                {
+                    parameters.Add("@sprintId", sprintId, DbType.Guid, ParameterDirection.Input);
+                }
 
                 using (var connection = new SqlConnection(_connectionString))
                 using (var multi = await connection.QueryMultipleAsync(query, parameters, commandType: CommandType.StoredProcedure))

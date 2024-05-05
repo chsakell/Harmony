@@ -13,13 +13,6 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
         public Guid BoardListId { get; set; }
         public int PageSize { get; set; } = 5;
         public int Page { get; set; } = 1;
-
-        public LoadBoardListQuery(Guid boardId, Guid boardListId, int page, int maxCardsPerList)
-        {
-            BoardId = boardId;
-            BoardListId = boardListId;
-            Page = page;
-            PageSize = maxCardsPerList;
-        }
+        public Guid? SprintId { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Features.Boards.Queries.Get;
 using Harmony.Application.Features.Boards.Queries.GetWorkItems;
+using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Domain.Enums;
 using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
@@ -234,9 +235,14 @@ namespace Harmony.Client.Infrastructure.Routes
             return url;
         }
 
-        public static string GetBoardList(string boardId, Guid listId, int page, int maxCards)
+        public static string GetBoardList(LoadBoardListQuery query)
         {
-            return $"{Index}{boardId}/lists/{listId}/?page={page}&maxCards={maxCards}";
+            var sprintParam = query.SprintId.HasValue ? $"&sprintId={query.SprintId}" : string.Empty;
+
+            return $"{Index}{query.BoardId}/lists/{query.BoardListId}/" +
+                $"?page={query.Page}" +
+                $"&pageSize={query.PageSize}" +
+                sprintParam;
         }
     }
 }

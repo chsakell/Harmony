@@ -93,9 +93,11 @@ namespace Harmony.Api.Controllers.Management
         }
 
         [HttpGet("{id:guid}/lists/{listId:guid}")]
-        public async Task<IActionResult> LoadBoardListCards(Guid id, Guid listId, int page, int maxCards)
+        public async Task<IActionResult> LoadBoardListCards(Guid id, Guid listId, [FromQuery] LoadBoardListQuery query)
         {
-            return Ok(await _mediator.Send(new LoadBoardListQuery(id, listId, page, maxCards)));
+            query.BoardId = id;
+            query.BoardListId = listId;
+            return Ok(await _mediator.Send(query));
         }
 
         [HttpGet("{id:guid}/backlog")]
