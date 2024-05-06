@@ -66,7 +66,7 @@
                 </div>
             }
             <MudSpacer />
-            <MudMenu AnchorOrigin="Origin.BottomLeft" @ref="_sortMenu" Icon="@Icons.Material.Filled.Sort" Style="align-self:end">
+            <MudMenu AnchorOrigin="Origin.BottomLeft" Icon="@Icons.Material.Filled.Sort" Style="align-self:end">
                 <MudMenuItem AutoClose="false">
                     @foreach (var sortableField in _sortableFields.Fields.OrderBy(f => f.Order))
                     {

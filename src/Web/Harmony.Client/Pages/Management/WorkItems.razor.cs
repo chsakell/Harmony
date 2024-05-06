@@ -24,7 +24,6 @@ namespace Harmony.Client.Pages.Management
         private int _totalItems;
         private List<CardDto> _cards;
         private MudTable<CardDto> _table;
-        private MudMenu _sortMenu;
         private HashSet<CardDto> _selectedCards = new HashSet<CardDto>();
         private CardDto _itemBeforeEdit;
         private List<IssueTypeDto> _issueTypes;
