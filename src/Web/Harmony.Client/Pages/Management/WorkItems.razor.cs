@@ -203,7 +203,7 @@ namespace Harmony.Client.Pages.Management
                 {
                     { c => c.CardId, card.Id },
                     { c => c.BoardId, Guid.Parse(Id) },
-                    { c => c.BoardKey, card.BoardKey }
+                    { c => c.BoardKey, _boardInfo?.Key }
                 };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
