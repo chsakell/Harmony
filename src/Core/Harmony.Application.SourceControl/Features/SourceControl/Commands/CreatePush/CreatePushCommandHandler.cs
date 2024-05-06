@@ -90,10 +90,12 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                 Repository = request.Repository,
                 Creator = request.Sender,
                 SkipRepositoryCheck = true,
-                SerialKey = request.SerialKey
+                SerialKey = request.SerialKey,
+                HeadCommitId = request.HeadCommit?.Id
             });
 
-            await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, request.Ref, request.Commits);
+            await _sourceControlRepository.CreatePush(request.Repository.RepositoryId, 
+                request.Ref, request.Commits, request.HeadCommit?.Id);
 
             if (!string.IsNullOrEmpty(request.SerialKey) && request.Commits.Any())
             {

@@ -58,7 +58,9 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
                 Creator = request.Creator,
                 RepositoryId = request.Repository.RepositoryId,
                 Commits = new List<Commit>(),
-                PullRequests = new List<PullRequest>()
+                PullRequests = new List<PullRequest>(),
+                Tags = new List<string>(),
+                HeadCommitId = request.HeadCommitId,
             };
 
             await _sourceControlRepository.CreateBranch(branch);

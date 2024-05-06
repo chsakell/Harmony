@@ -12,5 +12,6 @@ namespace Harmony.Domain.SourceControl
         public List<Commit> Commits { get; set; }
         public List<PullRequest> PullRequests { get; set; }
         public List<string> Tags { get; set; }
+        public string HeadCommitId { get; set; }
     }
 }

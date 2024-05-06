@@ -175,7 +175,8 @@ namespace Harmony.Infrastructure.Repositories
             return deleteResult.DeletedCount > 0;
         }
 
-        public async Task CreatePush(string repositoryId, string branch, List<Commit> commits)
+        public async Task CreatePush(string repositoryId, string branch, 
+            List<Commit> commits, string headCommitId)
         {
             var database = _client
                 .GetDatabase(MongoDbConstants.SourceControlDatabase);
@@ -184,7 +185,8 @@ namespace Harmony.Infrastructure.Repositories
                 .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
 
             var updateDefinition = Builders<Branch>.Update
-                .PushEach(b => b.Commits, commits);
+                .PushEach(b => b.Commits, commits)
+                .Set(b => b.HeadCommitId, headCommitId);
 
             await collection.UpdateOneAsync(
                 b => b.Name == branch &&
@@ -199,8 +201,14 @@ namespace Harmony.Infrastructure.Repositories
             var collection = database
                 .GetCollection<Branch>(MongoDbConstants.BranchesCollection);
 
-            var filter = Builders<Branch>.Filter
+            var elemMatchfilter = Builders<Branch>.Filter
                 .ElemMatch(b => b.Commits, commit => commit.Id == commitId);
+
+            var headCommitFilter = Builders<Branch>.Filter
+                .Eq(b => b.HeadCommitId, commitId);
+
+            var filter = Builders<Branch>.Filter
+                .Or(elemMatchfilter, headCommitFilter);
 
             var branch = await collection
                 .Find(filter).FirstOrDefaultAsync();

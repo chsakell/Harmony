@@ -14,5 +14,6 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
         public RepositoryUser Creator { get; set; }
         public Repository Repository { get; set; }
         public bool SkipRepositoryCheck { get; set; }
+        public string HeadCommitId { get; set; }
     }
 }

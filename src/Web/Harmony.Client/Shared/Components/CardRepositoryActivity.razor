@@ -21,7 +21,7 @@ else if (_branches.Any())
                 <MudCarouselItem Transition="Transition.Slide" Color="@Color.Default">
 
                     <div class="d-flex flex-column flex-column justify-center align-center gap-4" style="height:100%">
-                        <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.AltRoute" Size="@Size.Large" />
+                        <MudIcon Class="mx-auto" Icon="fa-solid fa-code-branch" Size="@Size.Large" />
                         <MudLink Href="@branch.BranchUrl" Target="_blank">@branch.Name</MudLink>
                     </div>
 
@@ -32,9 +32,20 @@ else if (_branches.Any())
                 <MudCarouselItem Transition="Transition.Slide" Color="@Color.Dark">
 
                     <div class="d-flex flex-column flex-column justify-center align-center gap-2" style="height:100%">
-                        <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.Merge" Size="@Size.Large" />
+                        <MudIcon Class="mx-auto" Icon="fa-solid fa-code-pull-request" Size="@Size.Large" />
                         <MudLink Href="@pullRequest.HtmlUrl" Target="_blank">@pullRequest.Title</MudLink>
                         <MudChip Size="Size.Small" Color="@ColorHelper.GetPullRequestColor(pullRequest.State)">@pullRequest.State.ToString()</MudChip>
+                    </div>
+
+                </MudCarouselItem>
+            }
+            @foreach (var tag in _branches.SelectMany(b => b.Tags))
+            {
+                <MudCarouselItem Transition="Transition.Slide" Color="@Color.Dark">
+
+                    <div class="d-flex flex-column flex-column justify-center align-center gap-2" style="height:100%">
+                        <MudIcon Class="mx-auto" Icon="fa-solid fa-tag" Size="@Size.Large" />
+                        <MudChip Size="Size.Small" Color="@Color.Info">@tag</MudChip>
                     </div>
 
                 </MudCarouselItem>
