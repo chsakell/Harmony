@@ -14,7 +14,7 @@ namespace Harmony.Application.SourceControl.DTO
         public string Name { get; set; }
         public RepositoryUserDto Creator { get; set; }
         public List<CommitDto> Commits { get; set; }
-        public List<PullRequestDto> PullRequests { get; set; }
+        public List<PullRequestDto> PullRequests { get; set; } = new List<PullRequestDto>();
 
         // Extra properties
         public string RepositoryUrl { get; set; }
@@ -22,6 +22,6 @@ namespace Harmony.Application.SourceControl.DTO
         public string BranchUrl => $"{RepositoryUrl}/tree/{Name}";
         public string CommitsUrl => $"{RepositoryUrl}/commits/{Name}";
         public SourceControlProvider Provider { get; set; }
-        public List<string> Tags { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
     }
 }

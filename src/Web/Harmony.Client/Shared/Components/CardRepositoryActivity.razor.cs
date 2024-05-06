@@ -70,8 +70,9 @@ namespace Harmony.Client.Shared.Components
             var counter = 0;
 
             counter += _branches.Count;
-            counter += _branches.SelectMany(b => b.PullRequests).Count();
-            counter += _branches.SelectMany(b => b.Tags).Count();
+
+            counter += _branches.SelectMany(b => b.PullRequests ?? new List<PullRequestDto>()).Count();
+            counter += _branches.SelectMany(b => b.Tags ?? new List<string>()).Count();
 
             return counter > 1;
         }
