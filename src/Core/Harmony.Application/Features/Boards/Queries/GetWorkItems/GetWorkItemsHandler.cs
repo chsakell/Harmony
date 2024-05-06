@@ -35,6 +35,7 @@ namespace Harmony.Application.Features.Boards.Queries.GetWorkItems
                 IssueTypes = request.IssueTypes,
                 BoardLists = request.BoardLists,
                 Sprints = request.Sprints,
+                Statuses = new List<Domain.Enums.CardStatus> { Domain.Enums.CardStatus.Active },
             };
 
             filter.Build();

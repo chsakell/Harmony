@@ -1,5 +1,6 @@
 ﻿using Harmony.Application.Specifications.Base;
 using Harmony.Domain.Entities;
+using Harmony.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Harmony.Application.Specifications.Cards
         public List<Guid>? BoardLists { get; set; }
         public List<Guid>? Sprints { get; set; }
         public string Title { get; set; }
+        public List<CardStatus>? Statuses { get; set; }
 
         public bool IncludeIssueType { get; set; }
         
@@ -41,6 +43,11 @@ namespace Harmony.Application.Specifications.Cards
             if (IssueTypes != null && IssueTypes.Any())
             {
                 Criteria = And(card => IssueTypes.Contains(card.IssueTypeId.Value));
+            }
+
+            if (Statuses != null && Statuses.Any())
+            {
+                Criteria = And(card => Statuses.Contains(card.Status));
             }
 
             if (BoardLists != null && BoardLists.Any())
