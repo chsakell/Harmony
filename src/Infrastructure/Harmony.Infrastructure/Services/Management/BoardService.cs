@@ -19,6 +19,7 @@ using Google.Protobuf.Collections;
 using AutoMapper;
 using MediatR;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
+using Harmony.Application.Contracts.Services;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -32,7 +33,7 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly ICardRepository _cardRepository;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
         private readonly string _connectionString;
 
         public BoardService(IConfiguration configuration, IBoardRepository boardRepository,
@@ -42,7 +43,7 @@ namespace Harmony.Infrastructure.Services.Management
             ICardRepository cardRepository,
             IMapper mapper,
             IMediator mediator,
-            IMemoryCache memoryCache)
+            ICacheService cacheService)
         {
             _connectionString = configuration.GetConnectionString("HarmonyConnection");
             _boardRepository = boardRepository;
@@ -53,7 +54,7 @@ namespace Harmony.Infrastructure.Services.Management
             _cardRepository = cardRepository;
             _mapper = mapper;
             _mediator = mediator;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public async Task<bool> HasUserAccessToBoard(string userId, Guid boardId)
@@ -122,16 +123,17 @@ namespace Harmony.Infrastructure.Services.Management
 
         public async Task<BoardInfo?> GetBoardInfo(Guid boardId)
         {
-            return await _memoryCache.GetOrCreateAsync(CacheKeys.BoardInfo(boardId),
-            async cacheEntry =>
+            return await _cacheService.GetOrCreateAsync(CacheKeys.BoardInfo(boardId),
+            async () =>
             {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-
-                var filter = new BoardFilterSpecification(boardId, new BoardIncludes()
+                var filter = new BoardFilterSpecification()
                 {
-                    Workspace = true,
-                    Lists = true
-                });
+                    BoardId = boardId,
+                    IncludeWorkspace = true,
+                    IncludeLists = true
+                };
+
+                filter.Build();
 
                 var board = await _boardRepository
                     .Entities.Specify(filter)
@@ -160,14 +162,19 @@ namespace Harmony.Infrastructure.Services.Management
                 {
                     var activeSprints = await _sprintRepository.GetActiveSprints(board.Id);
 
-                    if(activeSprints.Any())
+                    if (activeSprints.Any())
                     {
                         result.ActiveSprints = [.. _mapper.Map<List<SprintDto>>(activeSprints)];
                     }
                 }
 
                 return result;
-            });
+            }, TimeSpan.FromMinutes(5));
+        }
+
+        public async Task<Board> LoadBoardNew(Guid boardId, int maxCardsPerList, Guid? sprintId = null)
+        {
+            return new Board();
         }
 
         public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList, Guid? sprintId = null)
@@ -179,7 +186,7 @@ namespace Harmony.Infrastructure.Services.Management
                 parameters.Add("@BoardId", boardId, DbType.Guid, ParameterDirection.Input);
                 parameters.Add("@cardsPerList", maxCardsPerList, DbType.Int32, ParameterDirection.Input);
 
-                if(sprintId.HasValue)
+                if (sprintId.HasValue)
                 {
                     parameters.Add("@sprintId", sprintId, DbType.Guid, ParameterDirection.Input);
                 }

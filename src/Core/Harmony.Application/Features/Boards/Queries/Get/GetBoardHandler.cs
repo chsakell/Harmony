@@ -59,10 +59,13 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 return await Result<GetBoardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var filter = new BoardFilterSpecification(request.BoardId, new BoardIncludes()
+            var filter = new BoardFilterSpecification()
             {
-                Workspace = true,
-            });
+                BoardId = request.BoardId,
+                IncludeWorkspace = true
+            };
+
+            filter.Build();
 
             var board = await _boardRepository
                 .Entities.IgnoreQueryFilters()

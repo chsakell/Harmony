@@ -83,7 +83,12 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var boardServiceClient = new BoardService.BoardServiceClient(channel);
 
-            var filter = new BoardFilterSpecification(notification.BoardId, new BoardIncludes());
+            var filter = new BoardFilterSpecification()
+            {
+                BoardId = notification.BoardId
+            };
+
+            filter.Build();
 
             var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
             {

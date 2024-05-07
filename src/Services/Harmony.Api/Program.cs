@@ -12,7 +12,7 @@ using Serilog;
 using Harmony.Persistence.DbContext;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.DependencyInjection;
+using Harmony.Caching.Extensions;
 using Harmony.Integrations.SourceControl.Protos;
 
 
@@ -88,7 +88,7 @@ builder.Services.AddGrpcClient<SourceControlService.SourceControlServiceClient>(
 // Configure your Search Engine
 builder.Services.AddSearching(SearchEngine.Database, builder.Configuration);
 builder.Services.AddMemoryCache();
-
+builder.Services.UseInMemoryCaching();
 builder.Services.AddHealthChecks()
      .AddDbContextCheck<HarmonyContext>("database", tags: ["ready"]);
 

@@ -1,22 +1,22 @@
 ﻿using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Contracts.Services;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
 using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Harmony.Infrastructure.Repositories
 {
     public class CardRepository : ICardRepository
     {
         private readonly HarmonyContext _context;
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
 
-        public CardRepository(HarmonyContext context, IMemoryCache memoryCache)
+        public CardRepository(HarmonyContext context, ICacheService cacheService)
         {
             _context = context;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public IQueryable<Card> Entities => _context.Set<Card>();
@@ -37,11 +37,9 @@ namespace Harmony.Infrastructure.Repositories
 
         public async Task<Guid> GetBoardId(Guid cardId)
         {
-            return await _memoryCache.GetOrCreateAsync(CacheKeys.BoardIdFromCard(cardId),
-            async cacheEntry =>
+            return await _cacheService.GetOrCreateAsync(CacheKeys.BoardIdFromCard(cardId),
+            async () =>
             {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
-
                 var card = (await _context.Cards
                     .Include(c => c.BoardList)
                 .FirstOrDefaultAsync(c => c.Id == cardId));
@@ -54,7 +52,7 @@ namespace Harmony.Infrastructure.Repositories
                 }
 
                 return card.BoardList.BoardId;
-            });
+            }, TimeSpan.FromMinutes(15));
         }
 
         public async Task<Card?> Load(Guid cardId)

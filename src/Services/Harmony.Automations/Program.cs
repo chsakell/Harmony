@@ -4,7 +4,7 @@ using Harmony.Application.Extensions;
 using Harmony.Automations.Extensions;
 using Harmony.Automations.Services;
 using Harmony.Automations.Services.Hosted;
-using Harmony.Infrastructure.Extensions;
+using Harmony.Caching.Extensions;
 using Harmony.Logging;
 using Harmony.Messaging;
 using Harmony.Persistence.DbContext;
@@ -59,6 +59,8 @@ namespace Harmony.Automations
             builder.Services.AddHealthChecks()
                 .AddDbContextCheck<AutomationContext>("database", tags: ["ready"])
                 .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
+
+            builder.Services.UseInMemoryCaching();
 
             var app = builder.Build();
 

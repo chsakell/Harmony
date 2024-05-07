@@ -5,39 +5,41 @@ namespace Harmony.Application.Specifications.Boards
 {
     public class BoardFilterSpecification : HarmonySpecification<Board>
     {
-        public BoardFilterSpecification(Guid? boardId, BoardIncludes includes)
+        #region Criteria
+
+        public Guid? BoardId { get; set; }
+
+        #endregion
+
+        #region
+        public bool IncludeWorkspace { get; set; }
+        public bool IncludeLists { get; set; }
+        #endregion
+
+        public void Build()
         {
-            if(includes.Workspace)
-            {
-                Includes.Add(Board => Board.Workspace);
-            }
+            AddCriteria();
+            AddIncludes();
+        }
 
-            if (includes.Lists)
+        private void AddCriteria()
+        {
+            if (BoardId.HasValue)
             {
-                Includes.Add(Board => Board.Lists);
-            }
-
-            if (boardId.HasValue)
-            {
-                Criteria = Board => Board.Id == boardId;
+                Criteria = Board => Board.Id == BoardId;
             }
         }
 
-        public BoardFilterSpecification(List<Guid> boardIds, BoardIncludes includes)
+        private void AddIncludes()
         {
-            if (includes.Workspace)
+            if (IncludeWorkspace)
             {
                 Includes.Add(Board => Board.Workspace);
             }
 
-            if (includes.Lists)
+            if (IncludeLists)
             {
                 Includes.Add(Board => Board.Lists);
-            }
-
-            if (boardIds != null)
-            {
-                Criteria = Board => boardIds.Contains(Board.Id);
             }
         }
     }

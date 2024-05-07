@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
@@ -16,16 +17,16 @@ namespace Harmony.Application.Features.Boards.Queries.GetIssueTypes
     {
         private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly IStringLocalizer<GetIssueTypesHandler> _localizer;
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public GetIssueTypesHandler(IIssueTypeRepository issueTypeRepository,
             IStringLocalizer<GetIssueTypesHandler> localizer,
-            IMemoryCache cache, IMapper mapper)
+            ICacheService cacheService, IMapper mapper)
         {
             _issueTypeRepository = issueTypeRepository;
             _localizer = localizer;
-            _memoryCache = cache;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
@@ -40,13 +41,10 @@ namespace Harmony.Application.Features.Boards.Queries.GetIssueTypes
 
         private async Task<List<IssueType>> GetIssueTypes(Guid boardId)
         {
-            return await _memoryCache.GetOrCreateAsync(CacheKeys.BoardIssueTypes(boardId),
-            async cacheEntry =>
-            {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-
-                return await _issueTypeRepository.GetIssueTypes(boardId);
-            });
+            return await _cacheService.GetOrCreateAsync(
+                CacheKeys.BoardIssueTypes(boardId),
+                async () => await _issueTypeRepository.GetIssueTypes(boardId),
+                TimeSpan.FromMinutes(30));
         }
     }
 }

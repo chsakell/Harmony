@@ -25,13 +25,14 @@ namespace Harmony.Api.Services.gRPC
         public override async Task<Protos.BoardResponse> GetBoard(Protos.BoardFilterRequest request,
             ServerCallContext context)
         {
-            var includes = new BoardIncludes()
+            var filter = new BoardFilterSpecification()
             {
-                Workspace = request.Workspace,
-                Lists = request.Lists
+                BoardId = Guid.Parse(request.BoardId),
+                IncludeWorkspace = request.Workspace,
+                IncludeLists = request.Lists
             };
 
-            var filter = new BoardFilterSpecification(Guid.Parse(request.BoardId), includes);
+            filter.Build();
 
             var board = await _boardRepository
                 .Entities.Specify(filter)

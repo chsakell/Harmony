@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Repositories;
+using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO.Automation;
 using Harmony.Application.Features.Automations.Queries.GetAutomationTemplates;
 using Harmony.Shared.Wrapper;
 using MediatR;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Harmony.Application.Features.Cards.Queries.GetLabels
 {
@@ -15,28 +15,26 @@ namespace Harmony.Application.Features.Cards.Queries.GetLabels
     public class GetAutomationTemplatesHandler : IRequestHandler<GetAutomationTemplatesQuery, IResult<List<AutomationTemplateDto>>>
     {
         private readonly IAutomationRepository _automationRepository;
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public GetAutomationTemplatesHandler(
             IAutomationRepository automationRepository,
-            IMemoryCache cache,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _automationRepository = automationRepository;
-            _cache = cache;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
 
         public async Task<IResult<List<AutomationTemplateDto>>> Handle(GetAutomationTemplatesQuery request, CancellationToken cancellationToken)
         {
-            var templates = await _cache.GetOrCreateAsync(CacheKeys.AutomationTemplates,
-            async cacheEntry =>
+            var templates = await _cacheService.GetOrCreateAsync(CacheKeys.AutomationTemplates,
+            async () =>
             {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-
-                return await _automationRepository.GetTemplates(); ;
-            });
+                return await _automationRepository.GetTemplates();
+            }, TimeSpan.FromMinutes(10));
 
             var result = _mapper.Map<List<AutomationTemplateDto>>(templates);
 

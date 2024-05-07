@@ -95,6 +95,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Integrations.Source
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Application.SourceControl", "src\Core\Harmony.Application.SourceControl\Harmony.Application.SourceControl.csproj", "{097391A0-ABB3-4AD6-A94D-7ECD1C92B583}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Caching", "src\Infrastructure\Harmony.Caching\Harmony.Caching.csproj", "{29DE5F2B-1A89-4D9F-9D9D-94A72556467C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{097391A0-ABB3-4AD6-A94D-7ECD1C92B583}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{097391A0-ABB3-4AD6-A94D-7ECD1C92B583}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{097391A0-ABB3-4AD6-A94D-7ECD1C92B583}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29DE5F2B-1A89-4D9F-9D9D-94A72556467C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29DE5F2B-1A89-4D9F-9D9D-94A72556467C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29DE5F2B-1A89-4D9F-9D9D-94A72556467C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29DE5F2B-1A89-4D9F-9D9D-94A72556467C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -194,6 +200,7 @@ Global
 		{125D6404-0BA0-4091-BCCB-FA3F9DE252AB} = {F0792C2B-78CD-4594-A6EC-0FCD62D4CC9B}
 		{3E1FFEF2-7D3F-4433-991A-928076F2F0AA} = {125D6404-0BA0-4091-BCCB-FA3F9DE252AB}
 		{097391A0-ABB3-4AD6-A94D-7ECD1C92B583} = {2187258F-DAAA-4704-8DE8-180E661B81C8}
+		{29DE5F2B-1A89-4D9F-9D9D-94A72556467C} = {68B5421A-5494-4494-98C3-9BC5BCF02130}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33331015-6B3C-4A49-95BB-1D4FC3983BFD}
