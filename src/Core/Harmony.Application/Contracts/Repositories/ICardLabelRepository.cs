@@ -12,6 +12,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task AddAsync(Label label);
         Task<int> CreateAsync(Label label);
         Task<Label> GetLabel(Guid labelId);
+        Task<List<Guid>> GetLabelIds(Guid cardId);
         Task<int> CreateCardLabelAsync(CardLabel label);
         Task<int> DeleteCardLabel(CardLabel label);
     }

@@ -10,6 +10,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CreateAsync(CheckListItem item);
         Task<CheckListItem> Get(Guid checklistItemId);
         Task<List<CheckListItem>> GetItems(Guid checklistId);
+        Task<List<CheckListItem>> GetItems(IEnumerable<Guid> checklistIds);
         Task<int> Update(CheckListItem checklistItem);
     }
 }

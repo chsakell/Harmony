@@ -32,9 +32,9 @@ namespace Harmony.Application.Mappings.Management
 
             CreateMap<Card, CardDto>()
                 .ForMember(dto => dto.TotalItems, opt =>
-                    opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items).Count()))
+                    opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items ?? new List<CheckListItem>()).Count()))
                 .ForMember(dto => dto.TotalItemsCompleted, opt =>
-                    opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items)
+                    opt.MapFrom(c => c.CheckLists.SelectMany(l => l.Items ?? new List<CheckListItem>())
                             .Where(i => i.IsChecked).Count()))
                 .ForMember(dto => dto.Labels, opt =>
                     opt.MapFrom(c => c.Labels.Select(cl => cl.Label)))

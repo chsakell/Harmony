@@ -54,5 +54,12 @@ namespace Harmony.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetTotalComments(Guid cardId)
+        {
+            return await _context.Comments
+                .Where(l => l.CardId == cardId)
+                .CountAsync();
+        }
     }
 }

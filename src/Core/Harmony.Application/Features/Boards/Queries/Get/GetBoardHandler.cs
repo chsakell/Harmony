@@ -53,11 +53,11 @@ namespace Harmony.Application.Features.Boards.Queries.Get
             List<Sprint> activeSprints = null;
             Guid? selectedSprintId = null;
 
-            if (string.IsNullOrEmpty(userId))
-            {
+            //if (string.IsNullOrEmpty(userId))
+            //{
 
-                return await Result<GetBoardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
-            }
+            //    return await Result<GetBoardResponse>.FailAsync(_localizer["Login required to complete this operator"]);
+            //}
 
             var filter = new BoardFilterSpecification()
             {
@@ -94,10 +94,10 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 userHasAccess = await _boardService.HasUserAccessToBoard(userId, request.BoardId);
             }
             
-            if (!userHasAccess)
-            {
-                return await Result<GetBoardResponse>.FailAsync(_localizer["You are not authorized to view this board's content."], ResultCode.UnauthorisedAccess);
-            }
+            //if (!userHasAccess)
+            //{
+            //    return await Result<GetBoardResponse>.FailAsync(_localizer["You are not authorized to view this board's content."], ResultCode.UnauthorisedAccess);
+            //}
 
             if(board.Type == Domain.Enums.BoardType.Scrum)
             {
@@ -118,8 +118,14 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 }
             }
 
-            var userBoard = await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
+            var test = true;
 
+            var userBoard = test ? await _boardService.LoadBoardNew(request.BoardId, request.MaxCardsPerList, selectedSprintId) :
+            await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
+
+            var tBoard = !test ? await _boardService.LoadBoardNew(request.BoardId, request.MaxCardsPerList, selectedSprintId) :
+            await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
+            
             var result = _mapper.Map<GetBoardResponse>(userBoard);
             
             Dictionary<Guid,int> totalCardsPerList = new Dictionary<Guid,int>();

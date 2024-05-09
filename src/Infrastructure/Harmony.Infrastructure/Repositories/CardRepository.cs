@@ -194,5 +194,19 @@ namespace Harmony.Infrastructure.Repositories
 				.Where(c => c.BoardList.CardStatus != BoardListCardStatus.DONE && c.SprintId == sprintId)
 				.ToListAsync();
         }
+
+        public async Task<int> GetTotalChildren(Guid cardId)
+        {
+            return await _context.Cards.IgnoreQueryFilters()
+                .Where(c => c.Status == CardStatus.Active && c.ParentCardId == cardId).CountAsync();
+        }
+
+        public async Task<int> GetTotalAttachments(Guid cardId)
+        {
+            return await _context.Cards
+                .Where(c => c.Id == cardId)
+                .Select(c => c.Attachments)
+                .CountAsync();
+        }
     }
 }

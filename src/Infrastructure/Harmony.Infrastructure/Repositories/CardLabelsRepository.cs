@@ -61,5 +61,13 @@ namespace Harmony.Infrastructure.Repositories
                 .Where(l => l.Id == labelId)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<List<Guid>> GetLabelIds(Guid cardId)
+        {
+            return await _context.CardLabels
+                .Where(cl => cl.CardId == cardId)
+                .Select(l => l.LabelId)
+                .ToListAsync();
+        }
     }
 }

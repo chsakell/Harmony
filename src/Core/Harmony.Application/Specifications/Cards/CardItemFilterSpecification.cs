@@ -18,9 +18,13 @@ namespace Harmony.Application.Specifications.Cards
         public List<Guid>? Sprints { get; set; }
         public string Title { get; set; }
         public List<CardStatus>? Statuses { get; set; }
+        public bool SkipChildren { get; set; }
 
         public bool IncludeIssueType { get; set; }
-        
+        public bool IncludeLabels { get; set; }
+        public bool IncludeCheckLists { get; set; }
+        public bool IncludeAttachments { get; set; }
+        public bool IncludeLinks { get; set; }
 
         public void Build()
         {
@@ -64,6 +68,11 @@ namespace Harmony.Application.Specifications.Cards
             {
                 Criteria = And(card => card.Title.Contains(Title));
             }
+
+            if (SkipChildren)
+            {
+                Criteria = And(card => card.ParentCardId == null);
+            }
         }
 
         private void AddInclude()
@@ -71,6 +80,26 @@ namespace Harmony.Application.Specifications.Cards
             if (IncludeIssueType)
             {
                 Includes.Add(card => card.IssueType);
+            }
+
+            if (IncludeLabels)
+            {
+                Includes.Add(card => card.Labels);
+            }
+
+            if (IncludeCheckLists)
+            {
+                Includes.Add(card => card.CheckLists);
+            }
+
+            if (IncludeAttachments)
+            {
+                Includes.Add(card => card.Attachments);
+            }
+
+            if (IncludeLinks)
+            {
+                Includes.Add(card => card.Links);
             }
         }
     }

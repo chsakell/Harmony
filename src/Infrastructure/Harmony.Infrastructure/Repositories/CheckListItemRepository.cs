@@ -34,6 +34,13 @@ namespace Harmony.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<CheckListItem>> GetItems(IEnumerable<Guid> checklistIds)
+        {
+            return await _context.CheckListItems
+                .Where(item => checklistIds.Contains(item.CheckListId))
+                .ToListAsync();
+        }
+
         public async Task<int> Update(CheckListItem checklistItem)
         {
             _context.CheckListItems.Update(checklistItem);

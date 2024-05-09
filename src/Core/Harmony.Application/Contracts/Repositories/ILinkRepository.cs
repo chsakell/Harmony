@@ -16,5 +16,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> Update(Link link);
         void Remove(Link link);
         Task<int> Delete(Link link);
+        Task<int> GetTotalLinks(Guid cardId);
     }
 }

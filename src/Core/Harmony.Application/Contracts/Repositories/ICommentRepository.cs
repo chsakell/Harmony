@@ -14,5 +14,6 @@ namespace Harmony.Application.Contracts.Repositories
         Task<int> CreateAsync(Comment comment);
         Task<int> Update(Comment comment);
         Task<int> Delete(Comment comment);
+        Task<int> GetTotalComments(Guid cardId);
     }
 }

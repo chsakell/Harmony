@@ -60,5 +60,10 @@ namespace Harmony.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetTotalLinks(Guid cardId)
+        {
+            return await _context.Links.Where(l => l.SourceCardId == cardId).CountAsync();
+        }
     }
 }
