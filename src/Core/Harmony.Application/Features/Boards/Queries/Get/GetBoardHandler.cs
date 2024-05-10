@@ -118,13 +118,11 @@ namespace Harmony.Application.Features.Boards.Queries.Get
                 }
             }
 
-            var test = true;
+            var userBoard = await _boardService
+                .LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
 
-            var userBoard = test ? await _boardService.LoadBoardNew(request.BoardId, request.MaxCardsPerList, selectedSprintId) :
-            await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
-
-            var tBoard = !test ? await _boardService.LoadBoardNew(request.BoardId, request.MaxCardsPerList, selectedSprintId) :
-            await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
+            //var tBoard = !test ? await _boardService.LoadBoardNew(request.BoardId, request.MaxCardsPerList, selectedSprintId) :
+            //await _boardService.LoadBoard(request.BoardId, request.MaxCardsPerList, selectedSprintId);
             
             var result = _mapper.Map<GetBoardResponse>(userBoard);
             
