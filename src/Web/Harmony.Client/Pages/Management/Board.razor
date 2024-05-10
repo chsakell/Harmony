@@ -170,12 +170,12 @@ else
             </ChildContent>
             <ItemRenderer>
                 <span id="@context.Id.ToString()" />
-                <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-4 rounded-lg my-3 cursor-pointer">
+                <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-2 rounded-lg my-3 cursor-pointer">
                     <MudCardHeader Class="pa-0">
                         <MudText Typo="Typo.body1">@context.Title</MudText>
                     </MudCardHeader>
                     <MudCardContent Class="pa-0 mt-2">
-                        <MudStack Justify="Justify.SpaceBetween">
+                        <MudStack Justify="Justify.SpaceBetween" Class="gap-0">
                             @if (context.Labels.Any())
                             {
                                 <MudPaper Class="d-flex flex-wrap" Elevation="0">
@@ -192,8 +192,7 @@ else
                             {
                                 <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;margin-bottom:10px;">@((MarkupString)context.Description)</MudPaper>
                             }
-                            <MudStack>
-
+                            <MudStack Style="gap:0px !important">
                                 <div class="flex flex-wrap gap-4">
                                     @if (context.StartDate != null || context.DueDate != null)
                                     {
