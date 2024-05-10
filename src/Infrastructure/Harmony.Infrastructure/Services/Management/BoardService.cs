@@ -189,36 +189,12 @@ namespace Harmony.Infrastructure.Services.Management
             }, TimeSpan.FromMinutes(5));
         }
 
-        public async Task<Board> LoadBoard(Guid boardId, int maxCardsPerList, Guid? sprintId = null)
+        public async Task<Board> LoadBoard(Board board, int maxCardsPerList, Guid? sprintId = null)
         {
-            // board
-            var board = await _cacheService.GetOrCreateAsync(CacheKeys.BoardSummary(boardId),
-            async () =>
-            {
-                var boardFilter = new BoardFilterSpecification()
-                {
-                    BoardId = boardId,
-                    IncludeWorkspace = true,
-                    IncludeLists = true,
-                    BoardListsStatuses = new List<BoardListStatus>() { BoardListStatus.Active },
-                    IncludeLabels = true,
-                    IncludeIssueTypes = true,
-                };
-
-                boardFilter.Build();
-
-                var dbBoard = await _boardRepository
-                    .Entities.AsNoTracking()
-                    .Specify(boardFilter)
-                    .FirstOrDefaultAsync();
-
-                return dbBoard;
-            }, TimeSpan.FromMinutes(1));
-
             // cards
             var cardFilter = new CardItemFilterSpecification()
             {
-                BoardId = boardId,
+                BoardId = board.Id,
                 Statuses = new List<CardStatus> { CardStatus.Active },
                 BoardLists = board.Lists.Select(x => x.Id).ToList(),
                 SkipChildren = true,
