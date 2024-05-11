@@ -22,5 +22,12 @@ namespace Harmony.Infrastructure.Repositories
                 .Where(a => a.UserId == userId)
                 .CountAsync();
         }
+
+        public async Task<int> CountAttachments(Guid cardId)
+        {
+            return await _context.Attachments
+                .Where(a => a.CardId == cardId)
+                .CountAsync();
+        }
     }
 }

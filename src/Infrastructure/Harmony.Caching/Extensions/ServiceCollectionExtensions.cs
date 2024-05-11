@@ -31,7 +31,7 @@ namespace Harmony.Caching.Extensions
                         // enable deep clone when reading object from cache or not, default value is true.
                         EnableReadDeepClone = true,
                         // enable deep clone when writing object to cache or not, default value is false.
-                        EnableWriteDeepClone = false,
+                        EnableWriteDeepClone = true,
                     };
                     // the max random second will be added to cache's expiration, default value is 120
                     config.MaxRdSecond = 120;

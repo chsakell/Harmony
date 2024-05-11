@@ -37,6 +37,7 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly IMediator _mediator;
         private readonly ICacheService _cacheService;
         private readonly IUserCardRepository _userCardRepository;
+        private readonly IAttachmentRepository _attachmentRepository;
         private readonly ICheckListItemRepository _checkListItemRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly ICardLabelRepository _cardLabelRepository;
@@ -52,6 +53,7 @@ namespace Harmony.Infrastructure.Services.Management
             IMediator mediator,
             ICacheService cacheService,
             IUserCardRepository userCardRepository,
+            IAttachmentRepository attachmentRepository,
             ICheckListItemRepository checkListItemRepository,
             ICommentRepository commentRepository,
             ICardLabelRepository cardLabelRepository,
@@ -68,6 +70,7 @@ namespace Harmony.Infrastructure.Services.Management
             _mediator = mediator;
             _cacheService = cacheService;
             _userCardRepository = userCardRepository;
+            _attachmentRepository = attachmentRepository;
             _checkListItemRepository = checkListItemRepository;
             _commentRepository = commentRepository;
             _cardLabelRepository = cardLabelRepository;
@@ -191,155 +194,8 @@ namespace Harmony.Infrastructure.Services.Management
 
         public async Task<Board> LoadBoard(Board board, int maxCardsPerList, Guid? sprintId = null)
         {
-            // cards
-            var cardFilter = new CardItemFilterSpecification()
-            {
-                BoardId = board.Id,
-                Statuses = new List<CardStatus> { CardStatus.Active },
-                BoardLists = board.Lists.Select(x => x.Id).ToList(),
-                SkipChildren = true,
-                IncludeCheckLists = true,
-            };
-
-            if (sprintId.HasValue)
-            {
-                cardFilter.Sprints = new List<Guid> { sprintId.Value };
-            }
-
-            cardFilter.Build();
-
-            var cards = await _cardRepository
-                .Entities.AsNoTracking()
-                .Specify(cardFilter)
-                .Skip(0).Take(maxCardsPerList)
-                .ToListAsync();
-
-            foreach (var card in cards)
-            {
-                var cardSummary = await _cacheService
-                    .GetOrCreateAsync(CacheKeys.CardSummary(card.Id),
-                    async () => await GetCardSummary(card),
-                    TimeSpan.FromMinutes(2));
-
-                #region labels
-
-                var cardLabels = cardSummary.Labels;// await _cardLabelRepository.GetLabelIds(card.Id);
-                card.Labels = new List<CardLabel>(cardLabels.Count);
-
-                for (var i = 0; i < cardLabels.Count; i++)
-                {
-                    var labelId = cardLabels[i];
-                    var label = board.Labels.FirstOrDefault(l => l.Id == labelId);
-                    card.Labels.Add(new CardLabel()
-                    {
-                        LabelId = labelId,
-                        Label = label,
-                    });
-                }
-
-                foreach (var cardLabel in card.Labels)
-                {
-                    cardLabel.Label = board.Labels.FirstOrDefault(l => l.Id == cardLabel.LabelId);
-                }
-
-                #endregion
-
-                #region checklists
-
-                //var checkListItems = await _checkListItemRepository.GetItems(card.CheckLists.Select(c => c.Id));
-
-                foreach (var checkList in card.CheckLists)
-                {
-                    var checkListSummary = cardSummary.CheckLists.FirstOrDefault(l => l.CheckListId == checkList.Id);
-                    checkList.Items = new List<CheckListItem>();
-
-                    if (checkListSummary != null)
-                    {
-                        for(var i=0; i< checkListSummary.TotalItems; i++)
-                        {
-                            checkList.Items.Add(new CheckListItem()
-                            {
-                                CheckListId = checkList.Id
-                            });
-                        }
-                        for (var i = 0; i < checkListSummary.TotalItemsChecked; i++)
-                        {
-                            checkList.Items[i].IsChecked = true;
-                        }
-                    }
-                    //checkList.Items = checkListItems.Where(cli => cli.CheckListId == checkList.Id).ToList();
-                }
-
-                #endregion
-
-                #region children
-
-                var totalChildren = cardSummary.TotalChildren;// await _cardRepository.GetTotalChildren(card.Id);
-                card.Children = new List<Card>(totalChildren);
-
-                for (var i = 0; i < totalChildren; i++)
-                {
-                    card.Children.Add(new Card());
-                }
-
-                #endregion
-
-                #region user cards
-
-                var cardMembers = cardSummary.Members;// await _userCardRepository.GetCardMembers(card.Id);
-                card.Members = new List<UserCard>();
-                for (var i = 0; i < cardMembers.Count; i++)
-                {
-                    card.Members.Add(new UserCard()
-                    {
-                        UserId = cardMembers[i]
-                    });
-                }
-
-                #endregion
-
-                #region Links
-
-                var totalLinks = cardSummary.TotalLinks;// await _linkRepository.GetTotalLinks(card.Id);
-                card.Links = new List<Link>(totalLinks);
-
-                for (var i = 0; i < totalLinks; i++)
-                {
-                    card.Links.Add(new Link());
-                }
-
-                #endregion
-
-                #region Comments
-
-                var totalComments = cardSummary.TotalComments; // await _commentRepository.GetTotalComments(card.Id);
-                card.Comments = new List<Comment>(totalComments);
-
-                for (var i = 0; i < totalComments; i++)
-                {
-                    card.Comments.Add(new Comment());
-                }
-
-                #endregion
-
-                #region attachments
-
-                var totalAttachments = cardSummary.TotalAttachments; // await _cardRepository.GetTotalAttachments(card.Id);
-                card.Attachments = new List<Attachment>(totalAttachments);
-
-                for (var i = 0; i < totalAttachments; i++)
-                {
-                    card.Attachments.Add(new Attachment());
-                }
-
-                #endregion
-
-                if (card.IssueTypeId.HasValue)
-                {
-                    card.IssueType = board.IssueTypes
-                        .FirstOrDefault(it => it.Id == card.IssueTypeId);
-                }
-            }
+            var cards = await GetBoardListCards(board,
+                 board.Lists.Select(x => x.Id).ToList(), 1, maxCardsPerList, sprintId);
 
             foreach (var boardList in board.Lists)
             {
@@ -359,7 +215,7 @@ namespace Harmony.Infrastructure.Services.Management
             var cardMembers = await _userCardRepository.GetCardMembers(card.Id);
             var totalLinks = await _linkRepository.GetTotalLinks(card.Id);
             var totalComments = await _commentRepository.GetTotalComments(card.Id);
-            var totalAttachments = await _cardRepository.GetTotalAttachments(card.Id);
+            var totalAttachments = await _attachmentRepository.CountAttachments(card.Id);
 
             summary.Labels = cardLabels;
             summary.TotalChildren = totalChildren;
@@ -518,7 +374,7 @@ namespace Harmony.Infrastructure.Services.Management
             return new Board();
         }
 
-        public async Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList, Guid? sprintId = null)
+        public async Task<List<Card>> LoadBoardListCardsOld(Guid boardId, Guid boardListId, int page, int maxCardsPerList, Guid? sprintId = null)
         {
             try
             {
@@ -615,6 +471,176 @@ namespace Harmony.Infrastructure.Services.Management
             {
                 throw;
             }
+        }
+
+        public async Task<List<Card>> LoadBoardListCards(Board board, Guid boardListId, int page,
+            int maxCardsPerList, Guid? sprintId = null)
+        {
+            var cards = await GetBoardListCards(board, new List<Guid> { boardListId }, page, maxCardsPerList, sprintId);
+
+            foreach (var boardList in board.Lists)
+            {
+                boardList.Cards = [.. cards.Where(card => card.BoardListId == boardList.Id)];
+            }
+
+            return cards;
+        }
+        private async Task<List<Card>> GetBoardListCards(Board board, List<Guid> boardListIds, int page, 
+            int maxCardsPerList, Guid? sprintId = null)
+        {
+            // cards
+            var cardFilter = new CardItemFilterSpecification()
+            {
+                BoardId = board.Id,
+                Statuses = new List<CardStatus> { CardStatus.Active },
+                BoardLists = boardListIds,
+                SkipChildren = true,
+                IncludeCheckLists = true,
+            };
+
+            if (sprintId.HasValue)
+            {
+                cardFilter.Sprints = new List<Guid> { sprintId.Value };
+            }
+
+            cardFilter.Build();
+
+            var cards = await _cardRepository
+                .Entities.AsNoTracking()
+                .Specify(cardFilter)
+                .Skip((page - 1) * maxCardsPerList).Take(maxCardsPerList)
+                .ToListAsync();
+
+            foreach (var card in cards)
+            {
+                var cardSummary = await _cacheService
+                    .GetOrCreateAsync(CacheKeys.CardSummary(card.Id),
+                    async () => await GetCardSummary(card),
+                    TimeSpan.FromMinutes(2));
+
+                #region labels
+
+                var cardLabels = cardSummary.Labels;
+                card.Labels = new List<CardLabel>(cardLabels.Count);
+
+                for (var i = 0; i < cardLabels.Count; i++)
+                {
+                    var labelId = cardLabels[i];
+                    var label = board.Labels.FirstOrDefault(l => l.Id == labelId);
+                    card.Labels.Add(new CardLabel()
+                    {
+                        LabelId = labelId,
+                        Label = label,
+                    });
+                }
+
+                foreach (var cardLabel in card.Labels)
+                {
+                    cardLabel.Label = board.Labels.FirstOrDefault(l => l.Id == cardLabel.LabelId);
+                }
+
+                #endregion
+
+                #region checklists
+
+                foreach (var checkList in card.CheckLists)
+                {
+                    var checkListSummary = cardSummary.CheckLists.FirstOrDefault(l => l.CheckListId == checkList.Id);
+                    checkList.Items = new List<CheckListItem>();
+
+                    if (checkListSummary != null)
+                    {
+                        for (var i = 0; i < checkListSummary.TotalItems; i++)
+                        {
+                            checkList.Items.Add(new CheckListItem()
+                            {
+                                CheckListId = checkList.Id
+                            });
+                        }
+                        for (var i = 0; i < checkListSummary.TotalItemsChecked; i++)
+                        {
+                            checkList.Items[i].IsChecked = true;
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region children
+
+                var totalChildren = cardSummary.TotalChildren;
+                card.Children = new List<Card>(totalChildren);
+
+                for (var i = 0; i < totalChildren; i++)
+                {
+                    card.Children.Add(new Card());
+                }
+
+                #endregion
+
+                #region user cards
+
+                var cardMembers = cardSummary.Members;
+                card.Members = new List<UserCard>();
+                for (var i = 0; i < cardMembers.Count; i++)
+                {
+                    card.Members.Add(new UserCard()
+                    {
+                        UserId = cardMembers[i]
+                    });
+                }
+
+                #endregion
+
+                #region Links
+
+                var totalLinks = cardSummary.TotalLinks;
+                card.Links = new List<Link>(totalLinks);
+
+                for (var i = 0; i < totalLinks; i++)
+                {
+                    card.Links.Add(new Link());
+                }
+
+                #endregion
+
+                #region Comments
+
+                var totalComments = cardSummary.TotalComments;
+                card.Comments = new List<Comment>(totalComments);
+
+                for (var i = 0; i < totalComments; i++)
+                {
+                    card.Comments.Add(new Comment());
+                }
+
+                #endregion
+
+                #region attachments
+
+                var totalAttachments = cardSummary.TotalAttachments;
+                card.Attachments = new List<Attachment>(totalAttachments);
+
+                for (var i = 0; i < totalAttachments; i++)
+                {
+                    card.Attachments.Add(new Attachment());
+                }
+
+                #endregion
+
+                if (card.IssueTypeId.HasValue)
+                {
+                    card.IssueType = board.IssueTypes
+                        .FirstOrDefault(it => it.Id == card.IssueTypeId);
+                }
+            }
+
+            foreach (var boardList in board.Lists)
+            {
+                boardList.Cards = [.. cards.Where(card => card.BoardListId == boardList.Id)];
+            }
+
+            return cards;
         }
 
         public async Task<List<SprintSummary>> GetSprintsSummaries(Guid boardId, string term,

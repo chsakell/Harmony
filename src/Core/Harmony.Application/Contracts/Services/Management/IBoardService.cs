@@ -15,7 +15,8 @@ namespace Harmony.Application.Contracts.Services.Management
         Task<List<Board>> GetUserBoardsWithLists(Guid? workspaceId, string userId);
         Task<Board> LoadBoardOld(Guid boardId, int maxCardsPerList, Guid? sprintId = null);
         Task<Board> LoadBoard(Board board, int maxCardsPerList, Guid? sprintId = null);
-        Task<List<Card>> LoadBoardListCards(Guid boardId, Guid boardListId, int page, int maxCardsPerList, Guid? sprintId = null);
+        Task<List<Card>> LoadBoardListCards(Board board, Guid boardListId, int page, int maxCardsPerList, Guid? sprintId = null);
+        Task<List<Card>> LoadBoardListCardsOld(Guid boardId, Guid boardListId, int page, int maxCardsPerList, Guid? sprintId = null);
         Task<List<SprintSummary>> GetSprintsSummaries(Guid boardId, string term, int pageNumber, int pageSize, SprintStatus? status);
         Task<BoardInfo?> GetBoardInfo(Guid boardId);
         Task<List<Board>> GetStatusForBoards(List<Guid> boardIds);

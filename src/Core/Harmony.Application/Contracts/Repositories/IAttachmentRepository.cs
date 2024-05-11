@@ -9,5 +9,6 @@ namespace Harmony.Application.Contracts.Repositories
     {
         IQueryable<Attachment> Entities { get; }
         Task<int> CountAttachments(string userId);
+        Task<int> CountAttachments(Guid cardId);
     }
 }
