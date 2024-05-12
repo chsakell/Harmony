@@ -41,7 +41,7 @@ namespace Harmony.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Dictionary<Guid, int>> GetTotalItems(IEnumerable<Guid> checklistIds)
+        public async Task<Dictionary<Guid, Tuple<int, int>>> GetTotalItems(IEnumerable<Guid> checklistIds)
         {
             return await _context.CheckListItems
                 .Where(item => checklistIds.Contains(item.CheckListId))
@@ -50,8 +50,9 @@ namespace Harmony.Infrastructure.Repositories
                 {
                     CheckListId = cli.Key,
                     TotalItems = cli.ToList().Count,
+                    TotalItemsChecked = cli.Where(cli => cli.IsChecked).Count()
                 })
-                .ToDictionaryAsync(g => g.CheckListId, g => g.TotalItems);
+                .ToDictionaryAsync(g => g.CheckListId, (g => new Tuple<int, int>(g.TotalItems, g.TotalItemsChecked)));
         }
 
         public async Task<int> Update(CheckListItem checklistItem)

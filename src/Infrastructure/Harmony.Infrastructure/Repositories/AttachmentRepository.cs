@@ -29,5 +29,19 @@ namespace Harmony.Infrastructure.Repositories
                 .Where(a => a.CardId == cardId)
                 .CountAsync();
         }
+
+        public async Task<Dictionary<Guid, int>> GetTotalAttachments(List<Guid> cardIds)
+        {
+            return await _context.Attachments
+                .Where(a => cardIds.Contains(a.CardId))
+                .GroupBy(a => a.CardId)
+                .Select(g => new 
+                {
+                    CardId = g.Key,
+                    TotalAttachments = g.Count()
+                })
+                .ToDictionaryAsync(g => g.CardId, g => g.TotalAttachments);
+
+        }
     }
 }

@@ -239,9 +239,9 @@ namespace Harmony.Infrastructure.Services.Management
             return summary;
         }
 
-        private async Task<List<CardSummary>> GetCardSummaries(List<Card> cards)
+        private async Task<Dictionary<Guid, CardSummary>> GetCardSummaries(List<Card> cards)
         {
-            var summary = new List<CardSummary>();
+            var summaries = new Dictionary<Guid, CardSummary>();
             var cardIds = cards.Select(i => i.Id).ToList();
 
             var cardLabels = await _cardLabelRepository.GetLabelIds(cardIds);
@@ -251,31 +251,39 @@ namespace Harmony.Infrastructure.Services.Management
             var totalChildren = await _cardRepository.GetTotalChildren(cardIds);
             var cardMembers = await _userCardRepository.GetCardMembers(cardIds);
             var totalLinks = await _linkRepository.GetTotalLinks(cardIds);
+            var totalComments = await _commentRepository.GetTotalComments(cardIds);
+            var totalAttachments = await _attachmentRepository.GetTotalAttachments(cardIds);
 
-            Console.WriteLine();
-            
-            //var totalComments = await _commentRepository.GetTotalComments(card.Id);
-            //var totalAttachments = await _attachmentRepository.CountAttachments(card.Id);
+            foreach(var card in cards)
+            {
+                var summary = new CardSummary { 
+                    CardId = card.Id,
+                    Labels = cardLabels.ContainsKey(card.Id) ? cardLabels[card.Id].ToList() : Enumerable.Empty<Guid>().ToList(),
+                    TotalAttachments = totalAttachments.ContainsKey(card.Id) ? totalAttachments[card.Id] : 0,
+                    TotalChildren = totalChildren.ContainsKey(card.Id) ? totalChildren[card.Id] : 0,
+                    TotalComments = totalComments.ContainsKey(card.Id) ? totalComments[card.Id] : 0,
+                    TotalLinks = totalLinks.ContainsKey(card.Id) ? totalLinks[card.Id] : 0,
+                    Members = cardMembers.ContainsKey(card.Id) ? cardMembers[card.Id].ToList() : Enumerable.Empty<string>().ToList(),
+                };
 
-            //summary.Labels = cardLabels;
-            //summary.TotalChildren = totalChildren;
-            //summary.Members = cardMembers;
-            //summary.TotalLinks = totalLinks;
-            //summary.TotalComments = totalComments;
-            //summary.TotalAttachments = totalAttachments;
+                foreach(var checkList in card.CheckLists)
+                {
+                    var checkListSummary = new CheckListSummary()
+                    {
+                        CheckListId = checkList.Id,
+                    };
 
-            //foreach (var itemGroup in checkListItems.GroupBy(i => i.CheckListId))
-            //{
-            //    var items = itemGroup.ToList();
-            //    summary.CheckLists.Add(new CheckListSummary()
-            //    {
-            //        CheckListId = itemGroup.Key,
-            //        TotalItems = items.Count,
-            //        TotalItemsChecked = items.Where(i => i.IsChecked).Count(),
-            //    });
-            //}
+                    if(checkListItems.ContainsKey(checkList.Id))
+                    {
+                        checkListSummary.TotalItems = checkListItems[checkList.Id].Item1;
+                        checkListSummary.TotalItemsChecked = checkListItems[checkList.Id].Item2;
+                    }
+                }
 
-            return summary;
+                summaries.Add(card.Id, summary);
+            }
+
+            return summaries;
         }
 
         public async Task<Board> LoadBoardOld(Guid boardId, int maxCardsPerList, Guid? sprintId = null)
@@ -555,10 +563,7 @@ namespace Harmony.Infrastructure.Services.Management
 
             foreach (var card in cards)
             {
-                var cardSummary = await _cacheService
-                    .GetOrCreateAsync(CacheKeys.CardSummary(card.Id),
-                    async () => await GetCardSummary(card),
-                    TimeSpan.FromMinutes(2));
+                var cardSummary = cardSummaries[card.Id];
 
                 #region labels
 

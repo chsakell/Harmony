@@ -11,7 +11,7 @@ namespace Harmony.Application.Contracts.Repositories
         Task<CheckListItem> Get(Guid checklistItemId);
         Task<List<CheckListItem>> GetItems(Guid checklistId);
         Task<List<CheckListItem>> GetItems(IEnumerable<Guid> checklistIds);
-        Task<Dictionary<Guid, int>> GetTotalItems(IEnumerable<Guid> checklistIds);
+        Task<Dictionary<Guid, Tuple<int, int>>> GetTotalItems(IEnumerable<Guid> checklistIds);
         Task<int> Update(CheckListItem checklistItem);
     }
 }

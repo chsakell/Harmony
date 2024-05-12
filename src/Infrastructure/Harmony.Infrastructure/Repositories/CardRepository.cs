@@ -210,7 +210,7 @@ namespace Harmony.Infrastructure.Repositories
                 .Select(g => new
                 {
                     CardId = g.Key,
-                    TotalChildren = g.ToList().Count()
+                    TotalChildren = g.Count()
                 })
                 .ToDictionaryAsync(g => g.CardId, g => g.TotalChildren);
         }

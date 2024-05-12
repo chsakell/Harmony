@@ -74,7 +74,7 @@ namespace Harmony.Infrastructure.Repositories
                 .Select(g => new
                 {
                     CardId = g.Key,
-                    TotalLinks = g.ToList().Count
+                    TotalLinks = g.Count()
                 })
             .ToDictionaryAsync(g => g.CardId, g => g.TotalLinks);
         }
