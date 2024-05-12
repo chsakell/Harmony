@@ -25,6 +25,7 @@ namespace Harmony.Application.Specifications.Cards
         public bool IncludeCheckLists { get; set; }
         public bool IncludeAttachments { get; set; }
         public bool IncludeLinks { get; set; }
+        public bool IncludeChildren { get; set; }
 
         public void Build()
         {
@@ -90,6 +91,7 @@ namespace Harmony.Application.Specifications.Cards
             if (IncludeCheckLists)
             {
                 Includes.Add(card => card.CheckLists);
+                AddInclude("CheckLists.Items");
             }
 
             if (IncludeAttachments)
@@ -100,6 +102,11 @@ namespace Harmony.Application.Specifications.Cards
             if (IncludeLinks)
             {
                 Includes.Add(card => card.Links);
+            }
+
+            if (IncludeChildren)
+            {
+                Includes.Add(card => card.Children);
             }
         }
     }

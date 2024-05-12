@@ -10,6 +10,7 @@ namespace Harmony.Application.Contracts.Repositories
     {
         Task<UserCard?> GetUserCard(Guid cardId, string userId);
         Task<List<string>> GetCardMembers(Guid cardId);
+        Task<Dictionary<Guid, List<string>>> GetCardMembers(List<Guid> cardIds);
         Task<int> CreateAsync(UserCard Board);
 
         Task<int> CountCardUsers(Guid cardId);

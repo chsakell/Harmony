@@ -29,6 +29,19 @@ namespace Harmony.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Dictionary<Guid, List<string>>> GetCardMembers(List<Guid> cardIds)
+        {
+            return await _context.UserCards
+                .Where(uc => cardIds.Contains(uc.CardId))
+                .GroupBy(uc => uc.CardId)
+                .Select(g => new
+                {
+                    CardId = g.Key,
+                    Members = g.ToList().Select(cm => cm.UserId).ToList(),
+                })
+                .ToDictionaryAsync(g => g.CardId, g => g.Members);
+        }
+
         public async Task<int> CreateAsync(UserCard Board)
         {
             await _context.UserCards.AddAsync(Board);

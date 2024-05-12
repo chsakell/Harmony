@@ -200,5 +200,19 @@ namespace Harmony.Infrastructure.Repositories
             return await _context.Cards.IgnoreQueryFilters()
                 .Where(c => c.Status == CardStatus.Active && c.ParentCardId == cardId).CountAsync();
         }
+
+        public async Task<Dictionary<Guid, int>> GetTotalChildren(List<Guid> cardIds)
+        {
+            return await _context.Cards.IgnoreQueryFilters()
+                .Where(c => c.Status == CardStatus.Active && c.ParentCardId.HasValue & 
+                cardIds.Contains(c.ParentCardId.Value))
+                .GroupBy(c => c.ParentCardId.Value)
+                .Select(g => new
+                {
+                    CardId = g.Key,
+                    TotalChildren = g.ToList().Count()
+                })
+                .ToDictionaryAsync(g => g.CardId, g => g.TotalChildren);
+        }
     }
 }

@@ -65,5 +65,18 @@ namespace Harmony.Infrastructure.Repositories
         {
             return await _context.Links.Where(l => l.SourceCardId == cardId).CountAsync();
         }
+
+        public async Task<Dictionary<Guid, int>> GetTotalLinks(List<Guid> cardIds)
+        {
+            return await _context.Links
+                .Where(l => cardIds.Contains(l.SourceCardId))
+                .GroupBy(l => l.SourceCardId)
+                .Select(g => new
+                {
+                    CardId = g.Key,
+                    TotalLinks = g.ToList().Count
+                })
+            .ToDictionaryAsync(g => g.CardId, g => g.TotalLinks);
+        }
     }
 }

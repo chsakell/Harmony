@@ -22,6 +22,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Application.DTO.Summaries;
+using System.Linq;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -234,6 +235,45 @@ namespace Harmony.Infrastructure.Services.Management
                     TotalItemsChecked = items.Where(i => i.IsChecked).Count(),
                 });
             }
+
+            return summary;
+        }
+
+        private async Task<List<CardSummary>> GetCardSummaries(List<Card> cards)
+        {
+            var summary = new List<CardSummary>();
+            var cardIds = cards.Select(i => i.Id).ToList();
+
+            var cardLabels = await _cardLabelRepository.GetLabelIds(cardIds);
+            var checkListItems = await _checkListItemRepository
+                .GetTotalItems(cards.SelectMany(c => c.CheckLists).Select(c => c.Id));
+
+            var totalChildren = await _cardRepository.GetTotalChildren(cardIds);
+            var cardMembers = await _userCardRepository.GetCardMembers(cardIds);
+            var totalLinks = await _linkRepository.GetTotalLinks(cardIds);
+
+            Console.WriteLine();
+            
+            //var totalComments = await _commentRepository.GetTotalComments(card.Id);
+            //var totalAttachments = await _attachmentRepository.CountAttachments(card.Id);
+
+            //summary.Labels = cardLabels;
+            //summary.TotalChildren = totalChildren;
+            //summary.Members = cardMembers;
+            //summary.TotalLinks = totalLinks;
+            //summary.TotalComments = totalComments;
+            //summary.TotalAttachments = totalAttachments;
+
+            //foreach (var itemGroup in checkListItems.GroupBy(i => i.CheckListId))
+            //{
+            //    var items = itemGroup.ToList();
+            //    summary.CheckLists.Add(new CheckListSummary()
+            //    {
+            //        CheckListId = itemGroup.Key,
+            //        TotalItems = items.Count,
+            //        TotalItemsChecked = items.Where(i => i.IsChecked).Count(),
+            //    });
+            //}
 
             return summary;
         }
@@ -510,6 +550,8 @@ namespace Harmony.Infrastructure.Services.Management
                 .Specify(cardFilter)
                 .Skip((page - 1) * maxCardsPerList).Take(maxCardsPerList)
                 .ToListAsync();
+
+            var cardSummaries = await GetCardSummaries(cards);
 
             foreach (var card in cards)
             {

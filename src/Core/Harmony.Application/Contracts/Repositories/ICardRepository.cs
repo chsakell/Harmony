@@ -16,6 +16,7 @@ namespace Harmony.Application.Contracts.Repositories
 		Task<List<Card>> GetCardsInPositionGreaterOrEqualThan(Guid boardListId, short position);
         Task<List<Card>> GetPendingSprintCards(Guid sprintId);
         Task<int> GetTotalChildren(Guid cardId);
+        Task<Dictionary<Guid, int>> GetTotalChildren(List<Guid>? cardIds);
         Task<int> CountCards(Guid listId);
         Task<int> CountActiveCards(Guid listId);
         Task<short> GetMaxActivePosition(Guid listId);

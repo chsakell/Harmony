@@ -9,6 +9,8 @@ namespace Harmony.Infrastructure.Repositories
     {
         private readonly HarmonyContext _context;
 
+        public IQueryable<CardLabel> Entities => _context.Set<CardLabel>();
+
         public CardLabelRepository(HarmonyContext context)
         {
             _context = context;
@@ -68,6 +70,19 @@ namespace Harmony.Infrastructure.Repositories
                 .Where(cl => cl.CardId == cardId)
                 .Select(l => l.LabelId)
                 .ToListAsync();
+        }
+
+        public async Task<Dictionary<Guid, IEnumerable<Guid>>> GetLabelIds(List<Guid> cardIds)
+        {
+            return await _context.CardLabels
+                .Where(cl => cardIds.Contains(cl.CardId))
+                .GroupBy(c => c.CardId)
+                .Select(cl => new
+                {
+                    CardId = cl.Key,
+                    Labels = cl.ToList().Select(l => l.LabelId)
+                })
+                .ToDictionaryAsync(c => c.CardId, c => c.Labels);
         }
     }
 }
