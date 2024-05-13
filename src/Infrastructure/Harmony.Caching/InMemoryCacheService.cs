@@ -4,11 +4,11 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Harmony.Caching
 {
-    public class CacheService : ICacheService
+    public class InMemoryCacheService : ICacheService
     {
         private readonly IEasyCachingProvider _provider;
 
-        public CacheService(IEasyCachingProvider provider)
+        public InMemoryCacheService(IEasyCachingProvider provider)
         {
             _provider = provider;
         }
@@ -32,10 +32,30 @@ namespace Harmony.Caching
             return cacheValue.Value;
         }
 
+        public Task<Dictionary<I, T>> HashGetAllAsync<I, T>(string cacheKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> HashMSetAsync<I, T>(string cacheKey, Dictionary<I, T> vals, TimeSpan? expiration = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task RemoveAsync<TItem>(string cacheKey,
             CancellationToken cancellationToken)
         {
             await _provider.RemoveAsync(cacheKey, cancellationToken);
+        }
+
+        public async Task<long> SetAddAsync<T>(string cacheKey, IList<T> cacheValues, TimeSpan? expiration = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<T>> SetMembersAsync<T>(string cacheKey)
+        {
+            throw new NotImplementedException();
         }
     }
 }

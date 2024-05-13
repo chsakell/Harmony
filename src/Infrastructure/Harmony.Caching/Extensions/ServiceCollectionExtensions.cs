@@ -1,10 +1,16 @@
-﻿using EasyCaching.InMemory;
+﻿using EasyCaching.Core.Configurations;
+using EasyCaching.InMemory;
+using EasyCaching.Serialization.SystemTextJson.Configurations;
+using Google.Protobuf.WellKnownTypes;
 using Harmony.Application.Contracts.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Harmony.Caching.Extensions
@@ -44,12 +50,43 @@ namespace Harmony.Caching.Extensions
                 });
             });
 
-            return services.RegisterCache();
+            return services.RegisterInMemoryCache();
         }
 
-        private static IServiceCollection RegisterCache(this IServiceCollection services)
+        public static IServiceCollection UseRedisCaching(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<ICacheService, CacheService>();
+            var redisConnectionInfo = configuration["RedisConnectionString"].Split(":");
+            var host = redisConnectionInfo[0];
+            var port = int.Parse(redisConnectionInfo[1]);
+
+            services.AddEasyCaching(option =>
+            {
+                //option.WithSystemTextJson();
+
+                option.WithSystemTextJson((options) =>
+                {
+                    options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                }, "json");
+
+                option.UseRedis(config =>
+                {
+                    config.DBConfig.Endpoints.Add(new ServerEndPoint(host, port));
+                }, "json");
+            });
+
+            return services.RegisterRedisCache();
+        }
+
+        private static IServiceCollection RegisterInMemoryCache(this IServiceCollection services)
+        {
+            services.AddSingleton<ICacheService, InMemoryCacheService>();
+
+            return services;
+        }
+
+        private static IServiceCollection RegisterRedisCache(this IServiceCollection services)
+        {
+            services.AddSingleton<ICacheService, RedisCacheService>();
 
             return services;
         }

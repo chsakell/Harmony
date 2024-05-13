@@ -9,8 +9,8 @@ namespace Harmony.Application.DTO.Summaries
     public class CardSummary
     {
         public Guid CardId { get; set; }
-        public List<Guid> Labels = new List<Guid>();
-        public List<CheckListSummary> CheckLists = new List<CheckListSummary>();
+        public List<Guid> Labels { get; set; } = new List<Guid>();
+        public List<CheckListSummary> CheckLists { get; set; } = new List<CheckListSummary>();
         public int TotalChildren { get; set; }
         public List<string> Members { get; set; } = new List<string>();
         public int TotalLinks { get; set; }

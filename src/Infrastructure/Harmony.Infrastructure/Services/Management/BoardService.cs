@@ -11,18 +11,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using Harmony.Application.Extensions;
-using Microsoft.Extensions.Caching.Memory;
 using Harmony.Application.Constants;
 using Harmony.Shared.Utilities;
 using Harmony.Application.Features.Boards.Queries.GetSprintsSummary;
-using Google.Protobuf.Collections;
 using AutoMapper;
 using MediatR;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Application.DTO.Summaries;
-using System.Linq;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -224,8 +221,8 @@ namespace Harmony.Infrastructure.Services.Management
             summary.TotalLinks = totalLinks;
             summary.TotalComments = totalComments;
             summary.TotalAttachments = totalAttachments;
-            
-            foreach(var itemGroup in checkListItems.GroupBy(i => i.CheckListId))
+
+            foreach (var itemGroup in checkListItems.GroupBy(i => i.CheckListId))
             {
                 var items = itemGroup.ToList();
                 summary.CheckLists.Add(new CheckListSummary()
@@ -254,9 +251,10 @@ namespace Harmony.Infrastructure.Services.Management
             var totalComments = await _commentRepository.GetTotalComments(cardIds);
             var totalAttachments = await _attachmentRepository.GetTotalAttachments(cardIds);
 
-            foreach(var card in cards)
+            foreach (var card in cards)
             {
-                var summary = new CardSummary { 
+                var summary = new CardSummary
+                {
                     CardId = card.Id,
                     Labels = cardLabels.ContainsKey(card.Id) ? cardLabels[card.Id].ToList() : Enumerable.Empty<Guid>().ToList(),
                     TotalAttachments = totalAttachments.ContainsKey(card.Id) ? totalAttachments[card.Id] : 0,
@@ -266,17 +264,19 @@ namespace Harmony.Infrastructure.Services.Management
                     Members = cardMembers.ContainsKey(card.Id) ? cardMembers[card.Id].ToList() : Enumerable.Empty<string>().ToList(),
                 };
 
-                foreach(var checkList in card.CheckLists)
+                foreach (var checkList in card.CheckLists)
                 {
                     var checkListSummary = new CheckListSummary()
                     {
                         CheckListId = checkList.Id,
                     };
 
-                    if(checkListItems.ContainsKey(checkList.Id))
+                    if (checkListItems.ContainsKey(checkList.Id))
                     {
                         checkListSummary.TotalItems = checkListItems[checkList.Id].Item1;
                         checkListSummary.TotalItemsChecked = checkListItems[checkList.Id].Item2;
+
+                        summary.CheckLists.Add(checkListSummary);
                     }
                 }
 
@@ -533,7 +533,7 @@ namespace Harmony.Infrastructure.Services.Management
 
             return cards;
         }
-        private async Task<List<Card>> GetBoardListCards(Board board, List<Guid> boardListIds, int page, 
+        private async Task<List<Card>> GetBoardListCards(Board board, List<Guid> boardListIds, int page,
             int maxCardsPerList, Guid? sprintId = null)
         {
             // cards
@@ -556,10 +556,34 @@ namespace Harmony.Infrastructure.Services.Management
             var cards = await _cardRepository
                 .Entities.AsNoTracking()
                 .Specify(cardFilter)
-                .Skip((page - 1) * maxCardsPerList).Take(maxCardsPerList)
                 .ToListAsync();
 
-            var cardSummaries = await GetCardSummaries(cards);
+            var cardSummaries = await _cacheService
+                    .HashGetAllAsync<Guid, CardSummary>(CacheKeys.ActiveCardSummaries(board.Id));
+
+            var cachedContainsCards = cardSummaries != null && cardSummaries.Count > 0;
+
+            var cachedCardIds = cachedContainsCards ?
+                cardSummaries.Select(c => c.Key).Distinct() : Enumerable.Empty<Guid>();
+
+            var notCachedCards = cards.Where(c => !cachedCardIds.Contains(c.Id)).ToList();
+
+            if (notCachedCards.Any())
+            {
+                var newCardSummaries = await GetCardSummaries(notCachedCards);
+
+                if (newCardSummaries.Any())
+                {
+                    await _cacheService.HashMSetAsync(
+                        CacheKeys.ActiveCardSummaries(board.Id),
+                        newCardSummaries);
+
+                    foreach (var cardSummary in newCardSummaries)
+                    {
+                        cardSummaries[cardSummary.Key] = cardSummary.Value;
+                    }
+                }
+            }
 
             foreach (var card in cards)
             {

@@ -88,7 +88,10 @@ builder.Services.AddGrpcClient<SourceControlService.SourceControlServiceClient>(
 // Configure your Search Engine
 builder.Services.AddSearching(SearchEngine.Database, builder.Configuration);
 builder.Services.AddMemoryCache();
+
 builder.Services.UseInMemoryCaching();
+builder.Services.UseRedisCaching(builder.Configuration);
+
 builder.Services.AddHealthChecks()
      .AddDbContextCheck<HarmonyContext>("database", tags: ["ready"]);
 
