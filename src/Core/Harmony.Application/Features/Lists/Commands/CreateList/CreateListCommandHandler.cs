@@ -11,6 +11,8 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Application.Models;
+using Harmony.Domain.Extensions;
 
 namespace Harmony.Application.Features.Lists.Commands.CreateList
 {
@@ -19,18 +21,21 @@ namespace Harmony.Application.Features.Lists.Commands.CreateList
         private readonly IBoardListRepository _boardListRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly ICacheService _cacheService;
         private readonly IStringLocalizer<CreateBoardCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public CreateListCommandHandler(IBoardListRepository boardListRepository,
             ICurrentUserService currentUserService,
             INotificationsPublisher notificationsPublisher,
+            ICacheService cacheService,
             IStringLocalizer<CreateBoardCommandHandler> localizer,
             IMapper mapper)
         {
             _boardListRepository = boardListRepository;
             _currentUserService = currentUserService;
             _notificationsPublisher = notificationsPublisher;
+            _cacheService = cacheService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -57,6 +62,18 @@ namespace Harmony.Application.Features.Lists.Commands.CreateList
 
             if (dbResult > 0)
             {
+                var lists = await _cacheService.HashGetAsync<List<BoardList>>(
+                        CacheKeys.Board(request.BoardId), CacheKeys.BoardLists(request.BoardId));
+
+                var newList = lists.FirstOrDefault(l => l.Id == boardList.Id);
+
+                if (newList == null)
+                {
+                    lists.Add(boardList);
+                    await _cacheService.HashHSetAsync(CacheKeys.Board(request.BoardId),
+                        CacheKeys.BoardLists(request.BoardId), lists.SerializeLists());
+                }
+
                 var result = _mapper.Map<BoardListDto>(boardList);
 
                 var message = new BoardListCreatedMessage()

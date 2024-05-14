@@ -1,4 +1,5 @@
 ﻿using Harmony.Application.Constants;
+using Harmony.Domain.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,22 @@ namespace Harmony.Application.Contracts.Services
             Func<Task<TItem>> dataRetriever, TimeSpan expiration,
             CancellationToken cancellationToken = default);
 
-        Task RemoveAsync<TItem>(string cacheKey,
+        Task RemoveAsync(string cacheKey,
             CancellationToken cancellationToken = default);
 
         Task<long> SetAddAsync<T>(string cacheKey, IList<T> cacheValues, TimeSpan? expiration = null);
 
+        Task<Dictionary<string, string>> HashGetAllAsync(string cacheKey);
         Task<Dictionary<I, T>> HashGetAllAsync<I, T>(string cacheKey);
+        Task<T> HashGetAllAsync<T>(string cacheKey,
+            Func<Dictionary<string, string>, T> converter);
+        Task<T> HashGetAllOrCreateAsync<T>(string cacheKey,
+            Func<Dictionary<string, string>, T> converter,
+            Func<Task<T>> dataRetriever) where T : IHashable;
 
+        Task<T> HashGetAsync<T>(string cacheKey, string field);
         Task<bool> HashMSetAsync<I, T>(string cacheKey, Dictionary<I, T> vals, TimeSpan? expiration = null);
+        Task<bool> HashMSetAsync(string cacheKey, Dictionary<string, string> vals, TimeSpan? expiration = null);
+        Task<bool> HashHSetAsync(string cacheKey, string field, string value);
     }
 }

@@ -10,6 +10,9 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
 using static Harmony.Application.Notifications.BoardListArchivedMessage;
+using Harmony.Application.Models;
+using Harmony.Domain.Entities;
+using Harmony.Domain.Extensions;
 
 namespace Harmony.Application.Features.Lists.Commands.ArchiveList
 {
@@ -20,6 +23,7 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
         private readonly IStringLocalizer<ArchiveListCommandHandler> _localizer;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IListService _listService;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public ArchiveListCommandHandler(IBoardListRepository boardListRepository,
@@ -27,6 +31,7 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
             IStringLocalizer<ArchiveListCommandHandler> localizer,
             INotificationsPublisher notificationsPublisher,
             IListService listService,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _boardListRepository = boardListRepository;
@@ -34,6 +39,7 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
             _localizer = localizer;
             _notificationsPublisher = notificationsPublisher;
             _listService = listService;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
         public async Task<Result<bool>> Handle(UpdateListStatusCommand request, CancellationToken cancellationToken)
@@ -61,6 +67,18 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
             {
                 if(request.Status == BoardListStatus.Archived)
                 {
+                    var lists = await _cacheService.HashGetAsync<List<BoardList>>(
+                        CacheKeys.Board(request.BoardId), CacheKeys.BoardLists(request.BoardId));
+
+                    var archivedList = lists.FirstOrDefault(l => l.Id == request.ListId);
+
+                    if (archivedList != null)
+                    {
+                        lists.Remove(archivedList);
+                        await _cacheService.HashHSetAsync(CacheKeys.Board(request.BoardId), 
+                            CacheKeys.BoardLists(request.BoardId), lists.SerializeLists());
+                    }
+
                     var message = new BoardListArchivedMessage(list.BoardId, list.Id, newPositions);
 
                     _notificationsPublisher.PublishMessage(message,

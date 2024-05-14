@@ -1,11 +1,13 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Domain.Contracts;
+using Harmony.Domain.Enums;
+using Harmony.Domain.Extensions;
 
 namespace Harmony.Domain.Entities
 {
     /// <summary>
     /// Represents a user's board
     /// </summary>
-    public class Board : AuditableEntity<Guid>
+    public class Board : AuditableEntity<Guid>, IHashable
     {
         public string Title { get; set; }
         public string Description { get; set; }
@@ -20,9 +22,13 @@ namespace Harmony.Domain.Entities
         public BoardType Type { get; set; }
         public string Key {  get; set; }
         public List<Sprint> Sprints { get; set; }
-
         public Retrospective Retrospective { get; set; }
         public Guid? RetrospectiveId { get; set; }
         public List<Retrospective> Retrospectives { get; set; }
+
+        public Dictionary<string, string> ConvertToDictionary()
+        {
+            return this.ToDictionary();
+        }
     }
 }

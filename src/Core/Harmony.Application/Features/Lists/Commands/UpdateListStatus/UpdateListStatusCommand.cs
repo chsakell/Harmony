@@ -1,10 +1,11 @@
-﻿using Harmony.Domain.Enums;
+﻿using Harmony.Application.Models;
+using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using MediatR;
 
 namespace Harmony.Application.Features.Lists.Commands.ArchiveList;
 
-public class UpdateListStatusCommand : IRequest<Result<bool>>
+public class UpdateListStatusCommand : BaseBoardCommand, IRequest<Result<bool>>
 {
     public Guid ListId { get; set; }
     public BoardListStatus Status { get; set; }

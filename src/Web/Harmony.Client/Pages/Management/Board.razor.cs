@@ -691,7 +691,10 @@ namespace Harmony.Client.Pages.Management
             if (!dialogResult.Canceled)
             {
                 var result = await _boardListManager
-                    .UpdateListStatusAsync(new UpdateListStatusCommand(list.Id, Domain.Enums.BoardListStatus.Archived));
+                    .UpdateListStatusAsync(new UpdateListStatusCommand(list.Id, Domain.Enums.BoardListStatus.Archived)
+                    {
+                        BoardId = Guid.Parse(Id)
+                    });
 
                 if (result.Succeeded && result.Data)
                 {

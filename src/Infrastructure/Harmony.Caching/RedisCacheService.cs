@@ -1,6 +1,8 @@
 ﻿using EasyCaching.Core;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Extensions;
+using Harmony.Domain.Contracts;
+using Harmony.Domain.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
 
@@ -39,7 +41,7 @@ namespace Harmony.Caching
             return cacheValue.Value;
         }
 
-        public async Task RemoveAsync<TItem>(string cacheKey,
+        public async Task RemoveAsync(string cacheKey,
             CancellationToken cancellationToken)
         {
             await _provider.RemoveAsync(cacheKey, cancellationToken);
@@ -77,6 +79,50 @@ namespace Harmony.Caching
             return result;
         }
 
+        public async Task<Dictionary<string, string>> HashGetAllAsync(string cacheKey)
+        {
+            return await _redisCachingProvider.HGetAllAsync(cacheKey);
+        }
+
+        public async Task<T> HashGetAllAsync<T>(string cacheKey, 
+            Func<Dictionary<string, string>, T> converter)
+        {
+            var dictionary = await _redisCachingProvider.HGetAllAsync(cacheKey);
+
+            return converter(dictionary);
+        }
+
+        public async Task<T> HashGetAllOrCreateAsync<T>(string cacheKey,
+            Func<Dictionary<string, string>, T> converter,
+            Func<Task<T>> dataRetriever) where T: IHashable
+        {
+            var dictionary = await _redisCachingProvider.HGetAllAsync(cacheKey);
+
+            if(dictionary == null || !dictionary.Keys.Any())
+            {
+                var data = await dataRetriever();
+                var hashTable = data.ConvertToDictionary();
+
+                await HashMSetAsync(cacheKey, hashTable);
+
+                return converter(hashTable);
+            }
+
+            return converter(dictionary);
+        }
+
+        public async Task<T> HashGetAsync<T>(string cacheKey, string field)
+        {
+            var value = await _redisCachingProvider.HGetAsync(cacheKey, field);
+
+            if(value == null)
+            {
+                return default;
+            }
+
+            return JsonSerializer.Deserialize<T>(value, CacheDomainExtensions._jsonSerializerOptions);
+        }
+
         public async Task<bool> HashMSetAsync<I,T>(string cacheKey, Dictionary<I, T> vals, TimeSpan? expiration = null)
         {
             var result = new Dictionary<string, string>();
@@ -88,6 +134,16 @@ namespace Harmony.Caching
             }
 
             return await _redisCachingProvider.HMSetAsync(cacheKey, result, expiration);
+        }
+
+        public async Task<bool> HashMSetAsync(string cacheKey, Dictionary<string, string> vals, TimeSpan? expiration = null)
+        {
+            return await _redisCachingProvider.HMSetAsync(cacheKey, vals, expiration);
+        }
+
+        public async Task<bool> HashHSetAsync(string cacheKey, string field, string value)
+        {
+            return await _redisCachingProvider.HSetAsync(cacheKey, field, value);
         }
 
 

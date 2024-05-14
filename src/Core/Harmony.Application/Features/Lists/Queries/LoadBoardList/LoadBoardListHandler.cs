@@ -10,6 +10,7 @@ using Harmony.Application.Responses;
 using Harmony.Application.Specifications.Boards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -60,28 +61,9 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
                 return await Result<List<CardDto>>.FailAsync(_localizer["Login required to complete this operator"]);
             }
 
-            var board = await _cacheService.GetOrCreateAsync(CacheKeys.BoardSummary(request.BoardId),
-            async () =>
-            {
-                var boardFilter = new BoardFilterSpecification()
-                {
-                    BoardId = request.BoardId,
-                    IncludeWorkspace = true,
-                    IncludeLists = true,
-                    BoardListsStatuses = new List<BoardListStatus>() { BoardListStatus.Active },
-                    IncludeLabels = true,
-                    IncludeIssueTypes = true,
-                };
-
-                boardFilter.Build();
-
-                var dbBoard = await _boardRepository
-                    .Entities.AsNoTracking()
-                    .Specify(boardFilter)
-                    .FirstOrDefaultAsync();
-
-                return dbBoard;
-            }, TimeSpan.FromMinutes(1));
+            var board = await _cacheService.HashGetAllOrCreateAsync(CacheKeys.Board(request.BoardId),
+                dict => CacheDomainExtensions.FromDictionary(request.BoardId, dict),
+                async () => await _boardService.GetBoard(request.BoardId));
 
             if (board == null)
             {

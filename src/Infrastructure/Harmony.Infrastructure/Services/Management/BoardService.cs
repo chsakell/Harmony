@@ -20,6 +20,7 @@ using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Application.DTO.Summaries;
+using Harmony.Domain.Extensions;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -141,53 +142,55 @@ namespace Harmony.Infrastructure.Services.Management
 
         public async Task<BoardInfo?> GetBoardInfo(Guid boardId)
         {
-            return await _cacheService.GetOrCreateAsync(CacheKeys.BoardInfo(boardId),
-            async () =>
+            var board = await _cacheService.HashGetAllOrCreateAsync(CacheKeys.Board(boardId),
+                dict => CacheDomainExtensions.FromDictionary(boardId, dict),
+                async () => await GetBoard(boardId));
+
+            var result = new BoardInfo()
             {
-                var filter = new BoardFilterSpecification()
+                Id = board.Id,
+                Title = board.Title,
+                Type = board.Type,
+                Lists = _mapper.Map<List<BoardListDto>>(board.Lists),
+                IssueTypes = _mapper.Map<List<IssueTypeDto>>(board.IssueTypes),
+                Key = board.Key,
+                IndexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}"),
+                ActiveSprints = new List<SprintDto>()
+            };
+
+            if (board.Type == BoardType.Scrum)
+            {
+                var activeSprints = await _sprintRepository.GetActiveSprints(board.Id);
+
+                if (activeSprints.Any())
                 {
-                    BoardId = boardId,
-                    IncludeWorkspace = true,
-                    IncludeLists = true
-                };
-
-                filter.Build();
-
-                var board = await _boardRepository
-                    .Entities.Specify(filter)
-                    .FirstOrDefaultAsync();
-
-                if (board == null)
-                {
-                    return null;
+                    result.ActiveSprints = [.. _mapper.Map<List<SprintDto>>(activeSprints)];
                 }
+            }
 
-                var issueTypes = await _mediator.Send(new GetIssueTypesQuery(boardId));
+            return result;
+        }
 
-                var result = new BoardInfo()
-                {
-                    Id = board.Id,
-                    Title = board.Title,
-                    Type = board.Type,
-                    Lists = _mapper.Map<List<BoardListDto>>(board.Lists),
-                    IssueTypes = issueTypes.Data,
-                    Key = board.Key,
-                    IndexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}"),
-                    ActiveSprints = new List<SprintDto>()
-                };
+        public async Task<Board> GetBoard(Guid boardId)
+        {
+            var boardFilter = new BoardFilterSpecification()
+            {
+                BoardId = boardId,
+                IncludeWorkspace = true,
+                IncludeLists = true,
+                BoardListsStatuses = new List<BoardListStatus>() { BoardListStatus.Active },
+                IncludeLabels = true,
+                IncludeIssueTypes = true,
+            };
 
-                if (board.Type == BoardType.Scrum)
-                {
-                    var activeSprints = await _sprintRepository.GetActiveSprints(board.Id);
+            boardFilter.Build();
 
-                    if (activeSprints.Any())
-                    {
-                        result.ActiveSprints = [.. _mapper.Map<List<SprintDto>>(activeSprints)];
-                    }
-                }
+            var board = await _boardRepository
+                .Entities.AsNoTracking()
+                .Specify(boardFilter)
+                .FirstOrDefaultAsync();
 
-                return result;
-            }, TimeSpan.FromMinutes(5));
+            return board;
         }
 
         public async Task<Board> LoadBoard(Board board, int maxCardsPerList, Guid? sprintId = null)
@@ -533,6 +536,7 @@ namespace Harmony.Infrastructure.Services.Management
 
             return cards;
         }
+
         private async Task<List<Card>> GetBoardListCards(Board board, List<Guid> boardListIds, int page,
             int maxCardsPerList, Guid? sprintId = null)
         {
