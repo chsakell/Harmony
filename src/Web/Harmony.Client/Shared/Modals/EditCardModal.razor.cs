@@ -297,7 +297,10 @@ namespace Harmony.Client.Shared.Modals
 
             if (!dialogResult.Canceled)
             {
-                var command = new DeleteCheckListCommand(checkListId);
+                var command = new DeleteCheckListCommand(checkListId)
+                {
+                    BoardId = BoardId
+                };
                 var result = await _checkListManager.DeleteCheckListAsync(command);
 
                 if (result.Succeeded && result.Data)
@@ -592,7 +595,8 @@ namespace Harmony.Client.Shared.Modals
         {
             var parameters = new DialogParameters<CreateCheckListModal>
             {
-                { c => c.CardId, CardId }
+                { c => c.CardId, CardId },
+                { c => c.BoardId, BoardId }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };

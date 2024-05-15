@@ -6,7 +6,7 @@ namespace Harmony.Client.Infrastructure.Routes
     {
         public static string Index = $"{GatewayConstants.CoreApiPrefix}/checklists";
 
-        public static string GetList(Guid checkListId) => $"{Index}/{checkListId}/";
+        public static string GetList(Guid checkListId, Guid boardId) => $"{Index}/{checkListId}/?boardId={boardId}";
 
         public static string GetListItems(Guid checkListId) => $"{Index}/{checkListId}/items/";
 

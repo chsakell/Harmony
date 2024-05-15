@@ -14,6 +14,9 @@ namespace Harmony.Client.Shared.Modals
         [Parameter]
         public Guid CardId { get; set; }
 
+        [Parameter]
+        public Guid BoardId { get; set; }
+
         private void Cancel()
         {
             MudDialog.Cancel();
@@ -24,7 +27,10 @@ namespace Harmony.Client.Shared.Modals
             _processing = true;
 
             var response = await _checkListManager
-                .CreateCheckListAsync(new CreateCheckListCommand(CardId, _createCheckListModel.Title));
+                .CreateCheckListAsync(new CreateCheckListCommand(CardId, _createCheckListModel.Title)
+                {
+                    BoardId = BoardId
+                });
 
             MudDialog.Close(DialogResult.Ok(response.Data));
 

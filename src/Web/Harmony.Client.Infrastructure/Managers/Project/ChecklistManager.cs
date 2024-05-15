@@ -30,7 +30,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
         public async Task<IResult<bool>> DeleteCheckListAsync(DeleteCheckListCommand request)
         {
-            var response = await _httpClient.DeleteAsync(Routes.CheckListEndpoints.GetList(request.CheckListId));
+            var response = await _httpClient.DeleteAsync(Routes.CheckListEndpoints.GetList(request.CheckListId, request.BoardId));
 
             return await response.ToResult<bool>();
         }

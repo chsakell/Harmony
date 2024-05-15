@@ -12,6 +12,9 @@ using Harmony.Domain.Enums;
 using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
+using Harmony.Application.DTO.Summaries;
+using Harmony.Domain.Extensions;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
@@ -19,29 +22,26 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
     {
         private readonly ICheckListItemRepository _checkListItemRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly ICardActivityService _cardActivityService;
         private readonly ICheckListRepository _checklistRepository;
-        private readonly ICardRepository _cardRepository;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
+        private readonly ICacheService _cacheService;
         private readonly IMapper _mapper;
 
         public CreateCheckListItemCommandHandler(ICheckListItemRepository checkListItemRepository,
             ICurrentUserService currentUserService,
-            ICardActivityService cardActivityService,
             ICheckListRepository checklistRepository,
-            ICardRepository cardRepository,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,
+            ICacheService cacheService,
             IMapper mapper)
         {
             _checkListItemRepository = checkListItemRepository;
             _currentUserService = currentUserService;
-            _cardActivityService = cardActivityService;
             _checklistRepository = checklistRepository;
-            _cardRepository = cardRepository;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
+            _cacheService = cacheService;
             _mapper = mapper;
         }
         public async Task<Result<CheckListItemDto>> Handle(CreateCheckListItemCommand request, CancellationToken cancellationToken)
@@ -69,8 +69,20 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             {
                 var checkList = await _checklistRepository.Get(request.CheckListId);
 
-                await _cardActivityService.CreateActivity(checkList.CardId, userId,
-                    CardActivityType.CheckListItemAdded, newItem.DateCreated, checkList.Title);
+                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
+                        CacheKeys.ActiveCardSummaries(request.BoardId),
+                        request.CardId.ToString());
+
+                var cardSummaryCheckList = cardSummary.CheckLists
+                    .FirstOrDefault(c => c.CheckListId == request.CheckListId);
+
+                if (cardSummaryCheckList != null)
+                {
+                    cardSummaryCheckList.TotalItems += 1;
+
+                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
+                    request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
+                }
 
                 var result = _mapper.Map<CheckListItemDto>(newItem);
 

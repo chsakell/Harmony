@@ -1,11 +1,12 @@
 ﻿using Harmony.Application.DTO;
+using Harmony.Application.Models;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist;
 
-public class CreateCheckListCommand : IRequest<Result<CheckListDto>>
+public class CreateCheckListCommand : BaseBoardCommand, IRequest<Result<CheckListDto>>
 {
     public Guid CardId { get; set; }
 

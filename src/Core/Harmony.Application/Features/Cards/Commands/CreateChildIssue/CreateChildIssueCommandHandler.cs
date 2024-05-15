@@ -18,6 +18,9 @@ using Harmony.Shared.Constants.Application;
 using Harmony.Application.Features.Workspaces.Queries.GetIssueTypes;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
+using Harmony.Application.DTO.Summaries;
+using Harmony.Domain.Extensions;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 {
@@ -30,6 +33,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IIssueTypeRepository _issueTypeRepository;
         private readonly IStringLocalizer<CreateChildIssueCommandHandler> _localizer;
+        private readonly ICacheService _cacheService;
         private readonly ISender _sender;
         private readonly IMapper _mapper;
 
@@ -40,6 +44,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
             INotificationsPublisher notificationsPublisher,
             IIssueTypeRepository issueTypeRepository,
             IStringLocalizer<CreateChildIssueCommandHandler> localizer,
+            ICacheService cacheService,
             ISender sender, IMapper mapper)
         {
             _cardRepository = cardRepository;
@@ -49,6 +54,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
             _notificationsPublisher = notificationsPublisher;
             _issueTypeRepository = issueTypeRepository;
             _localizer = localizer;
+            _cacheService = cacheService;
             _sender = sender;
             _mapper = mapper;
         }
@@ -98,6 +104,18 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 
             if (dbResult > 0)
             {
+                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
+                        CacheKeys.ActiveCardSummaries(request.BoardId),
+                        request.CardId.ToString());
+
+                if (cardSummary != null)
+                {
+                    cardSummary.TotalChildren += 1;
+
+                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
+                    request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
+                }
+
                 var board = await _boardService.GetBoardInfo(request.BoardId);
 
                 _notificationsPublisher

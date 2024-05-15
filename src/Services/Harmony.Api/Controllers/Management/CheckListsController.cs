@@ -31,9 +31,9 @@ namespace Harmony.Api.Controllers.Management
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, [FromQuery] Guid boardId)
         {
-            return Ok(await _mediator.Send(new DeleteCheckListCommand(id)));
+            return Ok(await _mediator.Send(new DeleteCheckListCommand(id) { BoardId = boardId }));
         }
     }
 }
