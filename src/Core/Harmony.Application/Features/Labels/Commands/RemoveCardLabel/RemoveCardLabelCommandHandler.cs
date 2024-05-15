@@ -8,6 +8,8 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Extensions;
+using Harmony.Domain.Entities;
 
 namespace Harmony.Application.Features.Labels.Commands.RemoveCardLabel
 {
@@ -16,18 +18,21 @@ namespace Harmony.Application.Features.Labels.Commands.RemoveCardLabel
         private readonly IBoardLabelRepository _boardLabelRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly ICacheService _cacheService;
         private readonly IStringLocalizer<RemoveCardLabelCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
         public RemoveCardLabelCommandHandler(IBoardLabelRepository boardLabelRepository,
             ICurrentUserService currentUserService,
             INotificationsPublisher notificationsPublisher,
+            ICacheService cacheService,
             IStringLocalizer<RemoveCardLabelCommandHandler> localizer,
             IMapper mapper)
         {
             _boardLabelRepository = boardLabelRepository;
             _currentUserService = currentUserService;
             _notificationsPublisher = notificationsPublisher;
+            _cacheService = cacheService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -50,6 +55,22 @@ namespace Harmony.Application.Features.Labels.Commands.RemoveCardLabel
             var dbResult = await _boardLabelRepository.Delete(label);
             if (dbResult > 0)
             {
+                var boardLabels = await _cacheService.HashGetAsync<List<Label>>(
+                        CacheKeys.Board(label.BoardId),
+                        CacheKeys.BoardLabels(label.BoardId));
+
+                if (boardLabels.Any(l => l.Id == label.Id))
+                {
+                    var labelToRemove = boardLabels.FirstOrDefault(l => l.Id == label.Id);
+                    boardLabels.Remove(labelToRemove);
+
+                    await _cacheService.HashHSetAsync(CacheKeys.Board(label.BoardId),
+                        CacheKeys.BoardLabels(label.BoardId),
+                        CacheDomainExtensions.SerializeLabels(boardLabels));
+
+                    await _cacheService.RemoveAsync(CacheKeys.ActiveCardSummaries(label.BoardId));
+                }
+
                 var message = new CardLabelRemovedMessage(label.BoardId, label.Id);
 
                 _notificationsPublisher.PublishMessage(message,

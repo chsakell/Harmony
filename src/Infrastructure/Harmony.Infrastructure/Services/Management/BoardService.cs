@@ -602,11 +602,15 @@ namespace Harmony.Infrastructure.Services.Management
                 {
                     var labelId = cardLabels[i];
                     var label = board.Labels.FirstOrDefault(l => l.Id == labelId);
-                    card.Labels.Add(new CardLabel()
+
+                    if (label != null)
                     {
-                        LabelId = labelId,
-                        Label = label,
-                    });
+                        card.Labels.Add(new CardLabel()
+                        {
+                            LabelId = labelId,
+                            Label = label,
+                        });
+                    }
                 }
 
                 foreach (var cardLabel in card.Labels)

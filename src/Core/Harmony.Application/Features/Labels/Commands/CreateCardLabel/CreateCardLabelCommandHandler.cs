@@ -6,6 +6,10 @@ using Harmony.Application.Contracts.Services;
 using AutoMapper;
 using Harmony.Domain.Entities;
 using Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
+using Harmony.Application.Constants;
+using Harmony.Application.DTO.Summaries;
+using Harmony.Domain.Extensions;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
 {
@@ -15,6 +19,7 @@ namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardLabelRepository _cardLabelRepository;
         private readonly IStringLocalizer<CreateCardLabelCommandHandler> _localizer;
+        private readonly ICacheService _cacheService;
         private readonly ISender _sender;
         private readonly IMapper _mapper;
 
@@ -22,13 +27,14 @@ namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
             ICurrentUserService currentUserService,
             ICardLabelRepository cardLabelRepository,
             IStringLocalizer<CreateCardLabelCommandHandler> localizer,
-            ISender sender,
-            IMapper mapper)
+            ICacheService cacheService,
+            ISender sender, IMapper mapper)
         {
             _boardLabelRepository = boardLabelRepository;
             _currentUserService = currentUserService;
             _cardLabelRepository = cardLabelRepository;
             _localizer = localizer;
+            _cacheService = cacheService;
             _sender = sender;
             _mapper = mapper;
         }
@@ -52,6 +58,19 @@ namespace Harmony.Application.Features.Labels.Commands.CreateCardLabel
 
             if (dbResult > 0)
             {
+                var boardLabels = await _cacheService.HashGetAsync<List<Label>>(
+                        CacheKeys.Board(request.BoardId),
+                        CacheKeys.BoardLabels(request.BoardId));
+
+                if(!boardLabels.Any(l => l.Id == label.Id))
+                {
+                    boardLabels.Add(label);
+
+                    await _cacheService.HashHSetAsync(CacheKeys.Board(request.BoardId),
+                    CacheKeys.BoardLabels(request.BoardId),
+                    CacheDomainExtensions.SerializeLabels(boardLabels));
+                }
+
                 var response = new CreateCardLabelResponse()
                 {
                     BoardId = request.BoardId,

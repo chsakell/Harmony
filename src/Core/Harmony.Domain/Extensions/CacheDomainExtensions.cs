@@ -51,31 +51,31 @@ namespace Harmony.Domain.Extensions
 
             if(dictionary.TryGetValue($"board-details-{boardId}", out  var details))
             {
-                board = JsonSerializer.Deserialize<Board>(details);
+                board = JsonSerializer.Deserialize<Board>(details, _jsonSerializerOptions);
             }
 
             if (dictionary.TryGetValue($"board-workspace-{boardId}", out var workspace))
             {
-                board.Workspace = JsonSerializer.Deserialize<Workspace>(workspace);
+                board.Workspace = JsonSerializer.Deserialize<Workspace>(workspace, _jsonSerializerOptions);
             }
 
             if (dictionary.TryGetValue($"board-lists-{boardId}", out var boardLists))
             {
-                var lists = JsonSerializer.Deserialize<List<BoardList>>(boardLists);
+                var lists = JsonSerializer.Deserialize<List<BoardList>>(boardLists, _jsonSerializerOptions);
 
                 board.Lists = lists;
             }
 
             if (dictionary.TryGetValue($"board-labels-{boardId}", out var boardLabels))
             {
-                var labels = JsonSerializer.Deserialize<List<Label>>(boardLabels);
+                var labels = JsonSerializer.Deserialize<List<Label>>(boardLabels, _jsonSerializerOptions);
 
                 board.Labels = labels;
             }
 
             if (dictionary.TryGetValue($"board-issue-types-{boardId}", out var boardIssueTypes))
             {
-                var issueTypes = JsonSerializer.Deserialize<List<IssueType>>(boardIssueTypes);
+                var issueTypes = JsonSerializer.Deserialize<List<IssueType>>(boardIssueTypes, _jsonSerializerOptions);
 
                 board.IssueTypes = issueTypes;
             }
@@ -133,6 +133,22 @@ namespace Harmony.Domain.Extensions
                 }), _jsonSerializerOptions);
 
             return serializedIssueTypes;
+        }
+
+        public static string SerializeLabels(this List<Label> labels)
+        {
+            var serializedLabels = JsonSerializer.Serialize(
+                labels.Select(label =>
+                {
+                    return new
+                    {
+                        label.Id,
+                        label.Title,
+                        label.Colour,
+                    };
+                }), _jsonSerializerOptions);
+
+            return serializedLabels;
         }
 
         public static string SerializeLists(this List<BoardList> boardLists)
