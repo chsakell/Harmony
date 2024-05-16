@@ -13,6 +13,9 @@ using Harmony.Domain.Enums;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
+using Harmony.Application.DTO.Summaries;
+using Harmony.Domain.Extensions;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateCard
 {
@@ -23,6 +26,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
         private readonly ISearchService _searchService;
         private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly ICacheService _cacheService;
         private readonly IStringLocalizer<CreateCardCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
@@ -31,6 +35,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             ISearchService searchService,
             IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
+            ICacheService cacheService,
             IStringLocalizer<CreateCardCommandHandler> localizer,
             IMapper mapper)
         {
@@ -39,6 +44,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             _searchService = searchService;
             _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
+            _cacheService = cacheService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -69,6 +75,19 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
 
             if (dbResult > 0)
             {
+                var cardSummary = new CardSummary()
+                {
+                    CardId = card.Id,
+                    CheckLists = new List<CheckListSummary>(),
+                    Labels = new List<Guid>(),
+                    Members = new List<string>(),
+                };
+
+                await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
+                        card.Id.ToString(), 
+                        JsonSerializer.Serialize(cardSummary, 
+                        CacheDomainExtensions._jsonSerializerOptions));
+
                 await _cardRepository.LoadIssueEntryAsync(card);
 
                 var board = await _boardService.GetBoardInfo(request.BoardId);

@@ -9,6 +9,9 @@ using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Application.DTO.Summaries;
+using Harmony.Domain.Extensions;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 
@@ -19,6 +22,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
     private readonly ICardService _cardService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IBoardService _boardService;
+    private readonly ICacheService _cacheService;
     private readonly IStringLocalizer<UpdateCardStatusCommandHandler> _localizer;
 
 	public UpdateCardStatusCommandHandler(
@@ -27,6 +31,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 		ICardService cardService,
 		INotificationsPublisher notificationsPublisher,
 		IBoardService boardService,
+		ICacheService cacheService,
 		IStringLocalizer<UpdateCardStatusCommandHandler> localizer)
 	{
 		_cardRepository = cardRepository;
@@ -34,6 +39,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
         _cardService = cardService;
         _notificationsPublisher = notificationsPublisher;
         _boardService = boardService;
+        _cacheService = cacheService;
         _localizer = localizer;
 	}
 	public async Task<Result<bool>> Handle(UpdateCardStatusCommand request, CancellationToken cancellationToken)
@@ -58,6 +64,13 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 
 		if (updateResult > 0)
 		{
+			if(request.Status == CardStatus.Archived)
+			{
+                await _cacheService.HashDeleleteField(CacheKeys
+					.ActiveCardSummaries(request.BoardId),
+                        card.Id.ToString());
+            }
+
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
             _notificationsPublisher

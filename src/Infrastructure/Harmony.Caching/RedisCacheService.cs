@@ -4,6 +4,7 @@ using Harmony.Application.Extensions;
 using Harmony.Domain.Contracts;
 using Harmony.Domain.Extensions;
 using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
 using System.Text.Json;
 
 namespace Harmony.Caching
@@ -69,6 +70,21 @@ namespace Harmony.Caching
             var result = new Dictionary<I, T>();
 
             var hash = await _redisCachingProvider.HGetAllAsync(cacheKey);
+
+            foreach (var kvp in hash)
+            {
+                var key = kvp.Key.Convert<I>();
+                result[key] = JsonSerializer.Deserialize<T>(kvp.Value);
+            }
+
+            return result;
+        }
+
+        public async Task<Dictionary<I, T>> HashMGetFields<I,T>(string cacheKey, List<string> fields)
+        {
+            var result = new Dictionary<I, T>();
+
+            var hash = await _redisCachingProvider.HMGetAsync(cacheKey, fields);
 
             foreach (var kvp in hash)
             {
@@ -146,6 +162,15 @@ namespace Harmony.Caching
             return await _redisCachingProvider.HSetAsync(cacheKey, field, value);
         }
 
+        public async Task<long> HashDeleleteFields(string cacheKey, IList<string> fields = null)
+        {
+            return await _redisCachingProvider.HDelAsync(cacheKey, fields);
+        }
+
+        public async Task<long> HashDeleleteField(string cacheKey, string field)
+        {
+            return await HashDeleleteFields(cacheKey, new List<string> { field });
+        }
 
         #endregion
 

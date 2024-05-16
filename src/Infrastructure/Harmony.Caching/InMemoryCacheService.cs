@@ -33,6 +33,16 @@ namespace Harmony.Caching
             return cacheValue.Value;
         }
 
+        public Task<long> HashDeleleteField(string cacheKey, string field)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> HashDeleleteFields(string cacheKey, IList<string> fields = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Dictionary<I, T>> HashGetAllAsync<I, T>(string cacheKey)
         {
             throw new NotImplementedException();
@@ -59,6 +69,16 @@ namespace Harmony.Caching
         }
 
         public Task<bool> HashHSetAsync(string cacheKey, string field, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Dictionary<I, T>> HashMGetFields<I, T>(string cacheKey, IList<string> fields)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Dictionary<I, T>> HashMGetFields<I, T>(string cacheKey, List<string> fields)
         {
             throw new NotImplementedException();
         }

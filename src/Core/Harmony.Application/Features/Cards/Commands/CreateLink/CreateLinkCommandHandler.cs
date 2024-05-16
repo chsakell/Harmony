@@ -4,16 +4,19 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
+using Harmony.Application.DTO.Summaries;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Notifications;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateLink
@@ -25,6 +28,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
         private readonly IMapper _mapper;
         private readonly ICardRepository _cardRepository;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly ICacheService _cacheService;
         private readonly ICurrentUserService _currentUserService;
 
         public CreateLinkCommandHandler(ILinkRepository linkRepository,
@@ -32,6 +36,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             IMapper mapper,
             ICardRepository cardRepository,
             INotificationsPublisher notificationsPublisher,
+            ICacheService cacheService,
             ICurrentUserService currentUserService)
         {
             _linkRepository = linkRepository;
@@ -39,6 +44,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             _mapper = mapper;
             _cardRepository = cardRepository;
             _notificationsPublisher = notificationsPublisher;
+            _cacheService = cacheService;
             _currentUserService = currentUserService;
         }
         public async Task<Result<LinkDetailsDto>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
@@ -131,6 +137,20 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
 
             if (dbResult > 0)
             {
+                var cardSummaries = await _cacheService.HashMGetFields<Guid, CardSummary>(
+                        CacheKeys.ActiveCardSummaries(request.BoardId),
+                        new List<string> { request.SourceCardId.ToString(), 
+                            request.TargetCardId.ToString() });
+
+                foreach(var cardSummary in cardSummaries.Values)
+                {
+                    cardSummary.TotalLinks += 1;
+                }
+
+                await _cacheService.HashMSetAsync
+                    (CacheKeys.ActiveCardSummaries(request.BoardId),
+                        cardSummaries);
+
                 result.Id = sourceLink.Id;
                 if(targetLink != null)
                 {

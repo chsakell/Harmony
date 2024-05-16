@@ -4,6 +4,7 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.DTO;
+using Harmony.Application.DTO.Summaries;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Cards.Commands.RemoveCardAttachment;
 using Harmony.Application.Notifications;
@@ -11,10 +12,12 @@ using Harmony.Application.Specifications.Cards;
 using Harmony.Application.Specifications.Sprints;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Application.Features.Cards.Commands.DeleteLink
@@ -26,6 +29,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
         private readonly IMapper _mapper;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly ICardRepository _cardRepository;
+        private readonly ICacheService _cacheService;
         private readonly ICurrentUserService _currentUserService;
 
         public DeleteLinkCommandHandler(ILinkRepository linkRepository,
@@ -33,6 +37,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
             IMapper mapper,
             INotificationsPublisher notificationsPublisher,
             ICardRepository cardRepository,
+            ICacheService cacheService,
             ICurrentUserService currentUserService)
         {
             _linkRepository = linkRepository;
@@ -40,6 +45,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
             _mapper = mapper;
             _notificationsPublisher = notificationsPublisher;
             _cardRepository = cardRepository;
+            _cacheService = cacheService;
             _currentUserService = currentUserService;
         }
         public async Task<Result<List<Guid>>> Handle(DeleteLinkCommand request, CancellationToken cancellationToken)
@@ -84,6 +90,20 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
 
             if (dbResult > 0)
             {
+                var cardSummaries = await _cacheService.HashMGetFields<Guid, CardSummary>(
+                        CacheKeys.ActiveCardSummaries(request.BoardId),
+                        new List<string> { sourceLink.SourceCardId.ToString(),
+                            sourceLink.TargetCardId.ToString() });
+
+                foreach (var cardSummary in cardSummaries.Values)
+                {
+                    cardSummary.TotalLinks -= 1;
+                }
+
+                await _cacheService.HashMSetAsync
+                    (CacheKeys.ActiveCardSummaries(request.BoardId),
+                        cardSummaries);
+
                 deletedLinks.Add(sourceLink.Id);
 
                 await PublishRemovedLink(sourceLink);

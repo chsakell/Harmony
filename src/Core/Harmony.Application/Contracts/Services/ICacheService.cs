@@ -27,6 +27,7 @@ namespace Harmony.Application.Contracts.Services
 
         Task<Dictionary<string, string>> HashGetAllAsync(string cacheKey);
         Task<Dictionary<I, T>> HashGetAllAsync<I, T>(string cacheKey);
+        Task<Dictionary<I, T>> HashMGetFields<I, T>(string cacheKey, List<string> fields);
         Task<T> HashGetAllAsync<T>(string cacheKey,
             Func<Dictionary<string, string>, T> converter);
         Task<T> HashGetAllOrCreateAsync<T>(string cacheKey,
@@ -37,5 +38,7 @@ namespace Harmony.Application.Contracts.Services
         Task<bool> HashMSetAsync<I, T>(string cacheKey, Dictionary<I, T> vals, TimeSpan? expiration = null);
         Task<bool> HashMSetAsync(string cacheKey, Dictionary<string, string> vals, TimeSpan? expiration = null);
         Task<bool> HashHSetAsync(string cacheKey, string field, string value);
+        Task<long> HashDeleleteFields(string cacheKey, IList<string> fields = null);
+        Task<long> HashDeleleteField(string cacheKey, string field);
     }
 }
