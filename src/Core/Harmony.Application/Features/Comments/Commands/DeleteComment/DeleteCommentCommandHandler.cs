@@ -8,6 +8,9 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Constants;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Application.DTO.Summaries;
+using Harmony.Domain.Extensions;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Comments.Commands.DeleteComment
 {
@@ -16,6 +19,7 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
         private readonly ICurrentUserService _currentUserService;
         private readonly ICommentRepository _commentRepository;
         private readonly IUserService _userService;
+        private readonly ICacheService _cacheService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<DeleteCommentCommandHandler> _localizer;
 
@@ -23,12 +27,14 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
             ICardRepository cardRepository,
             ICommentRepository commentRepository,
             IUserService userService,
+            ICacheService cacheService,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<DeleteCommentCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
             _commentRepository = commentRepository;
             _userService = userService;
+            _cacheService = cacheService;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
         }
@@ -57,6 +63,18 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
 
             if (dbResult > 0)
             {
+                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
+                        CacheKeys.ActiveCardSummaries(request.BoardId),
+                        request.CardId.ToString());
+
+                if (cardSummary != null)
+                {
+                    cardSummary.TotalComments -= 1;
+
+                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
+                    request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
+                }
+
                 var cardCommentDeletedMessage = new CardCommentDeletedMessage()
                 {
                     BoardId = request.BoardId,

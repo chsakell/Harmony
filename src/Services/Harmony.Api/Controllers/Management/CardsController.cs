@@ -160,9 +160,12 @@ namespace Harmony.Api.Controllers.Management
         }
 
         [HttpDelete("{id:guid}/attachments/{attachmentId:guid}")]
-        public async Task<IActionResult> DeleteAttachment(Guid id, Guid attachmentId)
+        public async Task<IActionResult> DeleteAttachment(Guid id, Guid attachmentId, [FromQuery] Guid boardId)
         {
-            return Ok(await _mediator.Send(new RemoveCardAttachmentCommand(id, attachmentId)));
+            return Ok(await _mediator.Send(new RemoveCardAttachmentCommand(id, attachmentId)
+            {
+                BoardId = boardId
+            }));
         }
 
         [HttpPost("{id:guid}/links")]

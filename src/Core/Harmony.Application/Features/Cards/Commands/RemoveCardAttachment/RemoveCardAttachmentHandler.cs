@@ -4,14 +4,17 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Management;
+using Harmony.Application.DTO.Summaries;
 using Harmony.Application.Extensions;
 using Harmony.Application.Notifications;
 using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 {
@@ -20,18 +23,21 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
         private readonly IBoardService _boardService;
+        private readonly ICacheService _cacheService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly ICardRepository _cardRepository;
 
         public RemoveCardAttachmentCommandHandler(ICurrentUserService currentUserService,
             IMapper mapper,
             IBoardService boardService,
+            ICacheService cacheService,
             INotificationsPublisher notificationsPublisher,
             ICardRepository cardRepository)
         {
             _currentUserService = currentUserService;
             _mapper = mapper;
             _boardService = boardService;
+            _cacheService = cacheService;
             _notificationsPublisher = notificationsPublisher;
             _cardRepository = cardRepository;
         }
@@ -63,6 +69,18 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 
                 if (dbResult > 0)
                 {
+                    var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
+                        CacheKeys.ActiveCardSummaries(command.BoardId),
+                        command.CardId.ToString());
+
+                    if (cardSummary != null)
+                    {
+                        cardSummary.TotalAttachments -= 1;
+
+                        await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(command.BoardId),
+                        command.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
+                    }
+
                     var message = new AttachmentRemovedMessage(command.BoardId, card.Id, command.AttachmentId);
 
                     _notificationsPublisher.PublishMessage(message,

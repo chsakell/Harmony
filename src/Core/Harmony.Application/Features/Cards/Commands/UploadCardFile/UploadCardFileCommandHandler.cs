@@ -5,6 +5,7 @@ using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.DTO;
+using Harmony.Application.DTO.Summaries;
 using Harmony.Application.Extensions;
 using Harmony.Application.Helpers;
 using Harmony.Application.Notifications;
@@ -12,9 +13,11 @@ using Harmony.Application.Notifications.SearchIndex;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Domain.Entities;
 using Harmony.Domain.Enums;
+using Harmony.Domain.Extensions;
 using Harmony.Shared.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 {
@@ -26,6 +29,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
         private readonly IMapper _mapper;
         private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly ICacheService _cacheService;
         private readonly ICardRepository _cardRepository;
 
         public UploadCardFileCommandHandler(IUploadService uploadService,
@@ -34,6 +38,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
             IMapper mapper,
             IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
+            ICacheService cacheService,
             ICardRepository cardRepository)
         {
             _uploadService = uploadService;
@@ -42,6 +47,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
             _mapper = mapper;
             _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
+            _cacheService = cacheService;
             _cardRepository = cardRepository;
         }
 
@@ -79,6 +85,18 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 
             if (dbResult > 0)
             {
+                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
+                        CacheKeys.ActiveCardSummaries(command.BoardId),
+                        command.CardId.ToString());
+
+                if (cardSummary != null)
+                {
+                    cardSummary.TotalAttachments += 1;
+
+                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(command.BoardId),
+                    command.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
+                }
+
                 var activityType = FileHelper.GetAttachmentType(command.Extension) == AttachmentType.CardImage ?
                     CardActivityType.ImageAttachmentAdded : CardActivityType.DocumentAttachmentAdded;
 

@@ -34,9 +34,9 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Index}/{cardId}/members/{userId}/?boardId={boardId}";
         }
 
-        public static string GetCardAttachment(Guid cardId, Guid attachmentId)
+        public static string GetCardAttachment(Guid cardId, Guid attachmentId, Guid boardId)
         {
-            return $"{Index}/{cardId}/attachments/{attachmentId}/";
+            return $"{Index}/{cardId}/attachments/{attachmentId}/?boardId={boardId}";
         }
 
         public static string Links(Guid cardId) => $"{Index}/{cardId}/links/";
