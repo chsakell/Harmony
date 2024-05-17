@@ -13,6 +13,8 @@ using Harmony.Domain.Enums;
 using Harmony.Application.DTO.Summaries;
 using System.Text.Json;
 using Harmony.Domain.Extensions;
+using Harmony.Application.Contracts.Services.Caching;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Application.Features.Cards.Commands.ToggleCardLabel;
 
@@ -21,21 +23,21 @@ public class ToggleCardLabelCommandHandler : IRequestHandler<ToggleCardLabelComm
     private readonly ICardLabelRepository _cardLabelRepository;
     private readonly ICurrentUserService _currentUserService;
     private readonly INotificationsPublisher _notificationsPublisher;
-    private readonly ICacheService _cacheService;
+    private readonly ICardSummaryService _cardSummaryService;
     private readonly IStringLocalizer<ToggleCardLabelCommandHandler> _localizer;
     private readonly IMapper _mapper;
 
     public ToggleCardLabelCommandHandler(ICardLabelRepository cardLabelRepository,
         ICurrentUserService currentUserService,
         INotificationsPublisher notificationsPublisher,
-        ICacheService cacheService,
+        ICardSummaryService cardSummaryService,
         IStringLocalizer<ToggleCardLabelCommandHandler> localizer,
         IMapper mapper)
     {
         _cardLabelRepository = cardLabelRepository;
         _currentUserService = currentUserService;
         _notificationsPublisher = notificationsPublisher;
-        _cacheService = cacheService;
+        _cardSummaryService = cardSummaryService;
         _localizer = localizer;
         _mapper = mapper;
     }
@@ -73,28 +75,20 @@ public class ToggleCardLabelCommandHandler : IRequestHandler<ToggleCardLabelComm
         {
             dbResult = await _cardLabelRepository.DeleteCardLabel(cardLabel);
         }
-
         if (dbResult > 0)
         {
-            var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId), 
-                        request.CardId.ToString());
-
-            if (cardSummary != null)
+            await _cardSummaryService.UpdateCardSummary(request.BoardId, request.CardId,
+            (summary) =>
             {
-                if(labelDto.IsChecked)
+                if (labelDto.IsChecked)
                 {
-                    cardSummary.Labels.Add(labelDto.Id);
+                    summary.Labels.Add(labelDto.Id);
                 }
                 else
                 {
-                    cardSummary.Labels.Remove(labelDto.Id);
+                    summary.Labels.Remove(labelDto.Id);
                 }
-
-                await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                    request.CardId.ToString(), 
-                    JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
-            }
+            });
 
             var message = new CardLabelToggledMessage(request.BoardId, request.CardId, labelDto);
 

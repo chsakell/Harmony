@@ -11,30 +11,28 @@ using Harmony.Domain.Enums;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Comments.Commands.DeleteComment
 {
     public class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand, Result<bool>>
     {
         private readonly ICurrentUserService _currentUserService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly ICommentRepository _commentRepository;
-        private readonly IUserService _userService;
-        private readonly ICacheService _cacheService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<DeleteCommentCommandHandler> _localizer;
 
         public DeleteCommentCommandHandler(ICurrentUserService currentUserService,
-            ICardRepository cardRepository,
+            ICardSummaryService cardSummaryService,
             ICommentRepository commentRepository,
-            IUserService userService,
-            ICacheService cacheService,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<DeleteCommentCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
+            _cardSummaryService = cardSummaryService;
             _commentRepository = commentRepository;
-            _userService = userService;
-            _cacheService = cacheService;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
         }
@@ -60,20 +58,13 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
             }
 
             var dbResult = await _commentRepository.Delete(comment);
-
             if (dbResult > 0)
             {
-                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        request.CardId.ToString());
-
-                if (cardSummary != null)
-                {
-                    cardSummary.TotalComments -= 1;
-
-                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                    request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
-                }
+                await _cardSummaryService.UpdateCardSummary(request.BoardId, request.CardId,
+                    (summary) =>
+                    {
+                        summary.TotalComments -= 1;
+                    });
 
                 var cardCommentDeletedMessage = new CardCommentDeletedMessage()
                 {

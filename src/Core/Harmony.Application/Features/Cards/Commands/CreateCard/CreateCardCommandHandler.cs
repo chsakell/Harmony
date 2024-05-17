@@ -16,6 +16,7 @@ using Harmony.Application.Notifications;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateCard
 {
@@ -26,7 +27,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
         private readonly ISearchService _searchService;
         private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly IStringLocalizer<CreateCardCommandHandler> _localizer;
         private readonly IMapper _mapper;
 
@@ -35,7 +36,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             ISearchService searchService,
             IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             IStringLocalizer<CreateCardCommandHandler> localizer,
             IMapper mapper)
         {
@@ -44,7 +45,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
             _searchService = searchService;
             _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _localizer = localizer;
             _mapper = mapper;
         }
@@ -83,10 +84,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateCard
                     Members = new List<string>(),
                 };
 
-                await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                        card.Id.ToString(), 
-                        JsonSerializer.Serialize(cardSummary, 
-                        CacheDomainExtensions._jsonSerializerOptions));
+                await _cardSummaryService.SaveCardSummary(request.BoardId, cardSummary);
 
                 await _cardRepository.LoadIssueEntryAsync(card);
 

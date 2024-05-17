@@ -3,6 +3,7 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Caching;
 using Harmony.Application.DTO;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Application.Extensions;
@@ -29,7 +30,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
         private readonly IMapper _mapper;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly ICardRepository _cardRepository;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly ICurrentUserService _currentUserService;
 
         public DeleteLinkCommandHandler(ILinkRepository linkRepository,
@@ -37,7 +38,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
             IMapper mapper,
             INotificationsPublisher notificationsPublisher,
             ICardRepository cardRepository,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             ICurrentUserService currentUserService)
         {
             _linkRepository = linkRepository;
@@ -45,7 +46,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
             _mapper = mapper;
             _notificationsPublisher = notificationsPublisher;
             _cardRepository = cardRepository;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _currentUserService = currentUserService;
         }
         public async Task<Result<List<Guid>>> Handle(DeleteLinkCommand request, CancellationToken cancellationToken)
@@ -90,19 +91,16 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
 
             if (dbResult > 0)
             {
-                var cardSummaries = await _cacheService.HashMGetFields<Guid, CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        new List<string> { sourceLink.SourceCardId.ToString(),
-                            sourceLink.TargetCardId.ToString() });
-
-                foreach (var cardSummary in cardSummaries.Values)
+                await _cardSummaryService.UpdateCardSummaries(
+                    boardId: request.BoardId,
+                    cardIds: new List<Guid> { sourceLink.SourceCardId, sourceLink.TargetCardId },
+                (summaries) =>
                 {
-                    cardSummary.TotalLinks -= 1;
-                }
-
-                await _cacheService.HashMSetAsync
-                    (CacheKeys.ActiveCardSummaries(request.BoardId),
-                        cardSummaries);
+                    foreach (var cardSummary in summaries.Values)
+                    {
+                        cardSummary.TotalLinks -= 1;
+                    }
+                });
 
                 deletedLinks.Add(sourceLink.Id);
 

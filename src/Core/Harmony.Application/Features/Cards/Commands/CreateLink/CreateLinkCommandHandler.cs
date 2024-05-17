@@ -3,6 +3,7 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Repositories;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Contracts.Services.Caching;
 using Harmony.Application.DTO;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Application.Extensions;
@@ -28,7 +29,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
         private readonly IMapper _mapper;
         private readonly ICardRepository _cardRepository;
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly ICurrentUserService _currentUserService;
 
         public CreateLinkCommandHandler(ILinkRepository linkRepository,
@@ -36,7 +37,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             IMapper mapper,
             ICardRepository cardRepository,
             INotificationsPublisher notificationsPublisher,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             ICurrentUserService currentUserService)
         {
             _linkRepository = linkRepository;
@@ -44,7 +45,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
             _mapper = mapper;
             _cardRepository = cardRepository;
             _notificationsPublisher = notificationsPublisher;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _currentUserService = currentUserService;
         }
         public async Task<Result<LinkDetailsDto>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
@@ -137,19 +138,16 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
 
             if (dbResult > 0)
             {
-                var cardSummaries = await _cacheService.HashMGetFields<Guid, CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        new List<string> { request.SourceCardId.ToString(), 
-                            request.TargetCardId.ToString() });
-
-                foreach(var cardSummary in cardSummaries.Values)
+                await _cardSummaryService.UpdateCardSummaries(
+                    boardId: request.BoardId,
+                    cardIds: new List<Guid> { request.SourceCardId, request.TargetCardId.Value },
+                (summaries) =>
                 {
-                    cardSummary.TotalLinks += 1;
-                }
-
-                await _cacheService.HashMSetAsync
-                    (CacheKeys.ActiveCardSummaries(request.BoardId),
-                        cardSummaries);
+                    foreach (var cardSummary in summaries.Values)
+                    {
+                        cardSummary.TotalLinks += 1;
+                    }
+                });
 
                 result.Id = sourceLink.Id;
                 if(targetLink != null)

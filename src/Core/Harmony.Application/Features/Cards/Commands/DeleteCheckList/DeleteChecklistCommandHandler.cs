@@ -11,6 +11,8 @@ using Harmony.Application.Constants;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Cards.Commands.DeleteChecklist
 {
@@ -20,21 +22,21 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteChecklist
         private readonly ICurrentUserService _currentUserService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<DeleteChecklistCommandHandler> _localizer;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly IMapper _mapper;
 
         public DeleteChecklistCommandHandler(ICheckListRepository checklistRepository,
             ICurrentUserService currentUserService,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<DeleteChecklistCommandHandler> localizer,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             IMapper mapper)
         {
             _checklistRepository = checklistRepository;
             _currentUserService = currentUserService;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _mapper = mapper;
         }
         public async Task<Result<bool>> Handle(DeleteCheckListCommand request, CancellationToken cancellationToken)
@@ -59,23 +61,19 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteChecklist
             var boardId = await _checklistRepository.GetBoardId(checkList.Id);
 
             var dbResult = await _checklistRepository.Delete(checkList);
-
             if (dbResult > 0)
             {
-                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        checkList.CardId.ToString());
-
-                var cardSummaryCheckList = cardSummary.CheckLists
-                    .FirstOrDefault(c => c.CheckListId == request.CheckListId);
-
-                if (cardSummaryCheckList != null)
+                await _cardSummaryService.UpdateCardSummary(request.BoardId, checkList.CardId,
+                (summary) =>
                 {
-                    cardSummary.CheckLists.Remove(cardSummaryCheckList);
+                    var cardSummaryCheckList = summary.CheckLists
+                        .FirstOrDefault(c => c.CheckListId == request.CheckListId);
 
-                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                    checkList.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
-                }
+                    if (cardSummaryCheckList != null)
+                    {
+                        summary.CheckLists.Remove(cardSummaryCheckList);
+                    }
+                });
 
                 var message = new CheckListRemovedMessage(boardId, checkList.Id, checkList.CardId, totalItems, totalItemsCompleted);
 

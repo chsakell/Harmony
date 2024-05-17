@@ -6,6 +6,7 @@ using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Contracts.Persistence;
 using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Account;
+using Harmony.Application.Contracts.Services.Caching;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Contracts.Services.Search;
@@ -78,6 +79,7 @@ namespace Harmony.Api.Extensions
             services.AddScoped<ISprintService, SprintService>();
             services.AddScoped<ILinkService, LinkService>();
 
+            services.AddSingleton<ICardSummaryService, CardSummaryService>();
             return services;
         }
 

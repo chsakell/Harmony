@@ -12,6 +12,7 @@ using Harmony.Domain.Enums;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
 
@@ -22,7 +23,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
     private readonly ICardService _cardService;
     private readonly INotificationsPublisher _notificationsPublisher;
     private readonly IBoardService _boardService;
-    private readonly ICacheService _cacheService;
+    private readonly ICardSummaryService _cardSummaryService;
     private readonly IStringLocalizer<UpdateCardStatusCommandHandler> _localizer;
 
 	public UpdateCardStatusCommandHandler(
@@ -31,7 +32,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 		ICardService cardService,
 		INotificationsPublisher notificationsPublisher,
 		IBoardService boardService,
-		ICacheService cacheService,
+		ICardSummaryService cardSummaryService,
 		IStringLocalizer<UpdateCardStatusCommandHandler> localizer)
 	{
 		_cardRepository = cardRepository;
@@ -39,7 +40,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
         _cardService = cardService;
         _notificationsPublisher = notificationsPublisher;
         _boardService = boardService;
-        _cacheService = cacheService;
+        _cardSummaryService = cardSummaryService;
         _localizer = localizer;
 	}
 	public async Task<Result<bool>> Handle(UpdateCardStatusCommand request, CancellationToken cancellationToken)
@@ -66,9 +67,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 		{
 			if(request.Status == CardStatus.Archived)
 			{
-                await _cacheService.HashDeleleteField(CacheKeys
-					.ActiveCardSummaries(request.BoardId),
-                        card.Id.ToString());
+				await _cardSummaryService.DeleteCardSummary(request.BoardId, card.Id);
             }
 
             var board = await _boardService.GetBoardInfo(request.BoardId);

@@ -12,6 +12,7 @@ using Harmony.Domain.Enums;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Comments.Commands.CreateComment
 {
@@ -21,21 +22,21 @@ namespace Harmony.Application.Features.Comments.Commands.CreateComment
         private readonly ICommentRepository _commentRepository;
         private readonly IUserService _userService;
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly IStringLocalizer<CreateCommentCommandHandler> _localizer;
 
         public CreateCommentCommandHandler(ICurrentUserService currentUserService,
             ICommentRepository commentRepository,
             IUserService userService,
             INotificationsPublisher notificationsPublisher,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             IStringLocalizer<CreateCommentCommandHandler> localizer)
         {
             _currentUserService = currentUserService;
             _commentRepository = commentRepository;
             _userService = userService;
             _notificationsPublisher = notificationsPublisher;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _localizer = localizer;
         }
         public async Task<Result<CreateCommentResponse>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
@@ -58,17 +59,11 @@ namespace Harmony.Application.Features.Comments.Commands.CreateComment
 
             if (dbResult > 0)
             {
-                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        request.CardId.ToString());
-
-                if (cardSummary != null)
-                {
-                    cardSummary.TotalComments += 1;
-
-                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                    request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
-                }
+                await _cardSummaryService.UpdateCardSummary(request.BoardId, request.CardId,
+                    (summary) =>
+                    {
+                        summary.TotalComments += 1;
+                    });
 
                 var user = (await _userService.GetPublicInfoAsync(userId)).Data;
 

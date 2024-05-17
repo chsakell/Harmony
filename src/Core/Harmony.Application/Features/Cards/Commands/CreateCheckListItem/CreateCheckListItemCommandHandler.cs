@@ -15,6 +15,8 @@ using Harmony.Application.Notifications;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 {
@@ -25,7 +27,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
         private readonly ICheckListRepository _checklistRepository;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IStringLocalizer<CreateChecklistCommandHandler> _localizer;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly IMapper _mapper;
 
         public CreateCheckListItemCommandHandler(ICheckListItemRepository checkListItemRepository,
@@ -33,7 +35,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             ICheckListRepository checklistRepository,
             INotificationsPublisher notificationsPublisher,
             IStringLocalizer<CreateChecklistCommandHandler> localizer,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             IMapper mapper)
         {
             _checkListItemRepository = checkListItemRepository;
@@ -41,7 +43,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             _checklistRepository = checklistRepository;
             _notificationsPublisher = notificationsPublisher;
             _localizer = localizer;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _mapper = mapper;
         }
         public async Task<Result<CheckListItemDto>> Handle(CreateCheckListItemCommand request, CancellationToken cancellationToken)
@@ -68,21 +70,17 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
             if (dbResult > 0)
             {
                 var checkList = await _checklistRepository.Get(request.CheckListId);
-
-                var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        request.CardId.ToString());
-
-                var cardSummaryCheckList = cardSummary.CheckLists
+                await _cardSummaryService.UpdateCardSummary(request.BoardId, request.CardId,
+                (summary) =>
+                {
+                    var cardSummaryCheckList = summary.CheckLists
                     .FirstOrDefault(c => c.CheckListId == request.CheckListId);
 
-                if (cardSummaryCheckList != null)
-                {
-                    cardSummaryCheckList.TotalItems += 1;
-
-                    await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                    request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
-                }
+                    if (cardSummaryCheckList != null)
+                    {
+                        cardSummaryCheckList.TotalItems += 1;
+                    }
+                });
 
                 var result = _mapper.Map<CheckListItemDto>(newItem);
 

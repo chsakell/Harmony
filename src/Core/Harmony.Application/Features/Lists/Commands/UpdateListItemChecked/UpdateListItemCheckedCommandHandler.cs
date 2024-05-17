@@ -7,6 +7,8 @@ using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Messaging;
 using Harmony.Application.Notifications;
 using Harmony.Domain.Enums;
+using Harmony.Application.Contracts.Services.Caching;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
 {
@@ -16,18 +18,21 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
         private readonly ICurrentUserService _currentUserService;
         private readonly ICardRepository _cardRepository;
         private readonly INotificationsPublisher _notificationsPublisher;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly IStringLocalizer<UpdateListItemCheckedCommandHandler> _localizer;
 
         public UpdateListItemCheckedCommandHandler(ICheckListItemRepository checkListItemRepository,
             ICurrentUserService currentUserService,
             ICardRepository cardRepository,
             INotificationsPublisher notificationsPublisher,
+            ICardSummaryService cardSummaryService,
             IStringLocalizer<UpdateListItemCheckedCommandHandler> localizer)
         {
             _checkListItemRepository = checkListItemRepository;
             _currentUserService = currentUserService;
             _cardRepository = cardRepository;
             _notificationsPublisher = notificationsPublisher;
+            _cardSummaryService = cardSummaryService;
             _localizer = localizer;
         }
         public async Task<Result<bool>> Handle(UpdateListItemCheckedCommand request, CancellationToken cancellationToken)
@@ -45,6 +50,21 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
             var dbResult = await _checkListItemRepository.Update(listItem);
             if (dbResult > 0)
             {
+                await _cardSummaryService.UpdateCardSummary(request.BoardId, request.CardId,
+                (summary) =>
+                {
+                    var checkList = summary.CheckLists.FirstOrDefault(c => c.CheckListId == listItem.CheckListId);
+
+                    if (checkList != null)
+                    {
+                        if(!request.IsChecked && checkList.TotalItemsChecked == 0)
+                        {
+                            return;
+                        }
+                        checkList.TotalItemsChecked += request.IsChecked ? 1 : -1;
+                    }
+                });
+
                 var message = new CardItemCheckedChangedMessage(request.BoardId, request.CardId, 
                     listItem.Id, listItem.IsChecked);
 

@@ -19,6 +19,7 @@ using Microsoft.Extensions.Options;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 {
@@ -29,7 +30,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
         private readonly IUserCardRepository _userCardRepository;
         private readonly IUserService _userService;
         private readonly IBoardService _boardService;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly IMapper _mapper;
         private readonly IOptions<AppEndpointConfiguration> _endpointsConfiguration;
         private readonly IStringLocalizer<RemoveUserCardCommandHandler> _localizer;
@@ -39,7 +40,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
             IUserCardRepository userCardRepository,
             IUserService userService,
             IBoardService boardService,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             IMapper mapper, IOptions<AppEndpointConfiguration> endpointsConfiguration,
             IStringLocalizer<RemoveUserCardCommandHandler> localizer)
         {
@@ -48,7 +49,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
             _userCardRepository = userCardRepository;
             _userService = userService;
             _boardService = boardService;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _mapper = mapper;
             _endpointsConfiguration = endpointsConfiguration;
             _localizer = localizer;
@@ -72,20 +73,14 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                 if (dbResult > 0)
                 {
-                    var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        request.CardId.ToString());
-
-                    if (cardSummary != null)
+                    await _cardSummaryService.UpdateCardSummary(request.BoardId, request.CardId,
+                    (summary) =>
                     {
-                        if (cardSummary.Members.Contains(request.UserId))
+                        if (summary.Members.Contains(request.UserId))
                         {
-                            cardSummary.Members.Remove(request.UserId);
+                            summary.Members.Remove(request.UserId);
                         }
-
-                        await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                            request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
-                    }
+                    });
 
                     var result = new RemoveUserCardResponse(request.CardId, request.UserId)
                     {

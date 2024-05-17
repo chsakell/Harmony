@@ -20,6 +20,8 @@ using Microsoft.Extensions.Options;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 {
@@ -34,7 +36,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
         private readonly IBoardService _boardService;
         private readonly INotificationsPublisher _notificationsPublisher;
         private readonly IOptions<AppEndpointConfiguration> _endpointsConfiguration;
-        private readonly ICacheService _cacheService;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly IStringLocalizer<AddUserCardCommandHandler> _localizer;
 
         public AddUserCardCommandHandler(IUserBoardRepository userBoardRepository,
@@ -45,7 +47,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             IBoardService boardService,
             INotificationsPublisher notificationsPublisher,
             IOptions<AppEndpointConfiguration> endpointsConfiguration,
-            ICacheService cacheService,
+            ICardSummaryService cardSummaryService,
             IStringLocalizer<AddUserCardCommandHandler> localizer)
         {
             _userBoardRepository = userBoardRepository;
@@ -57,7 +59,7 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
             _boardService = boardService;
             _notificationsPublisher = notificationsPublisher;
             _endpointsConfiguration = endpointsConfiguration;
-            _cacheService = cacheService;
+            _cardSummaryService = cardSummaryService;
             _localizer = localizer;
         }
         public async Task<Result<AddUserCardResponse>> Handle(AddUserCardCommand request, CancellationToken cancellationToken)
@@ -100,20 +102,14 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 
                 if (dbResult > 0)
                 {
-                    var cardSummary = await _cacheService.HashGetAsync<CardSummary>(
-                        CacheKeys.ActiveCardSummaries(request.BoardId),
-                        request.CardId.ToString());
-
-                    if (cardSummary != null)
+                    await _cardSummaryService.UpdateCardSummary(request.BoardId, request.CardId,
+                    (summary) =>
                     {
-                        if(!cardSummary.Members.Contains(request.UserId))
+                        if (!summary.Members.Contains(request.UserId))
                         {
-                            cardSummary.Members.Add(request.UserId);
+                            summary.Members.Add(request.UserId);
                         }
-
-                        await _cacheService.HashHSetAsync(CacheKeys.ActiveCardSummaries(request.BoardId),
-                            request.CardId.ToString(), JsonSerializer.Serialize(cardSummary, CacheDomainExtensions._jsonSerializerOptions));
-                    }
+                    });
 
                     var result = new AddUserCardResponse(request.CardId, request.UserId)
                     {
