@@ -18,6 +18,7 @@ namespace Harmony.Domain.Extensions
             {
                 board.Id,
                 board.Title,
+                board.Type,
                 board.Key,
                 board.WorkspaceId,
                 board.Visibility

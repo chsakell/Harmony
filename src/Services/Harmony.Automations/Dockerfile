@@ -16,6 +16,7 @@ COPY ["src/Core/Harmony.Domain/Harmony.Domain.csproj", "Core/Harmony.Domain/"]
 COPY ["src/Infrastructure/Harmony.Infrastructure/Harmony.Infrastructure.csproj", "Infrastructure/Harmony.Infrastructure/"]
 COPY ["src/Infrastructure/Harmony.Persistence/Harmony.Persistence.csproj", "Infrastructure/Harmony.Persistence/"]
 COPY ["src/Infrastructure/Harmony.Messaging/Harmony.Messaging.csproj", "Infrastructure/Harmony.Messaging/"]
+COPY ["src/Infrastructure/Harmony.Caching/Harmony.Caching.csproj", "Infrastructure/Harmony.Caching/"]
 RUN dotnet restore "Services/Harmony.Automations/Harmony.Automations.csproj"
 COPY src/ .
 WORKDIR "/src/Services/Harmony.Automations"

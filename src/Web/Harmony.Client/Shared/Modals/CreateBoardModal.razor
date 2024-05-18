@@ -23,7 +23,7 @@
                     <MudSelect T="BoardType" @bind-Value="@_createBoardModel.BoardType"
                                Label="Type" AnchorOrigin="Origin.BottomCenter"
                                Variant="Variant.Outlined" Clearable>
-                        @foreach (var type in Enum.GetValues<BoardType>())
+                        @foreach (var type in Enum.GetValues<BoardType>().Where(type => type != BoardType.Retrospective))
                         {
                             <MudSelectItem Disabled="Type.HasValue && type != Type" Value="type">@type.ToString()</MudSelectItem>
                         }
