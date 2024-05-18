@@ -282,7 +282,7 @@ namespace Harmony.Client.Pages.Management
         private void OnCardLabelRemoved(object? sender, CardLabelRemovedEvent e)
         {
             KanbanStore.RemoveCardLabel(e.CardLabelId);
-            StateHasChanged();
+            _dropContainer.Refresh();
         }
 
         private void OnBoardListTitleChanged(object? sender, BoardListTitleChangedEvent e)
