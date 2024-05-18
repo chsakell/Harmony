@@ -60,7 +60,7 @@ namespace Harmony.Automations
                 .AddDbContextCheck<AutomationContext>("database", tags: ["ready"])
                 .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: ["ready"]);
 
-            builder.Services.UseInMemoryCaching();
+            builder.Services.AddCaching(builder.Configuration);
 
             var app = builder.Build();
 

@@ -17,9 +17,26 @@ namespace Harmony.Caching.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection UseInMemoryCaching(this IServiceCollection services)
+        public static IServiceCollection AddCaching(this IServiceCollection services, IConfiguration configuration)
         {
+            var cacheProvider = configuration["CacheProvider"];
 
+            if (cacheProvider == null || !System.Enum
+                .TryParse<CacheProvider>(cacheProvider, out var provider))
+            {
+                return services.UseInMemoryCaching();
+            }
+
+            return provider switch
+            {
+                CacheProvider.InMemory => services.UseInMemoryCaching(),
+                CacheProvider.Redis => services.UseRedisCaching(configuration),
+                _ => services.UseInMemoryCaching(),
+            };
+        }
+
+        private static IServiceCollection UseInMemoryCaching(this IServiceCollection services)
+        {
             //Important step for In-Memory Caching
             services.AddEasyCaching(options =>
             {
@@ -53,7 +70,7 @@ namespace Harmony.Caching.Extensions
             return services.RegisterInMemoryCache();
         }
 
-        public static IServiceCollection UseRedisCaching(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection UseRedisCaching(this IServiceCollection services, IConfiguration configuration)
         {
             var redisConnectionInfo = configuration["RedisConnectionString"].Split(":");
             var host = redisConnectionInfo[0];
@@ -61,8 +78,6 @@ namespace Harmony.Caching.Extensions
 
             services.AddEasyCaching(option =>
             {
-                //option.WithSystemTextJson();
-
                 option.WithSystemTextJson((options) =>
                 {
                     options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
