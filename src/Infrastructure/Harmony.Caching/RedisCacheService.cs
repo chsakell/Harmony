@@ -30,8 +30,6 @@ namespace Harmony.Caching
             return cacheValue.Value;
         }
 
-
-
         public async Task<TItem?> GetOrCreateAsync<TItem>(string cacheKey,
         Func<Task<TItem>> dataRetriever, TimeSpan expiration,
         CancellationToken cancellationToken)
@@ -48,28 +46,13 @@ namespace Harmony.Caching
             await _provider.RemoveAsync(cacheKey, cancellationToken);
         }
 
-        #region Set
-
-        public async Task<long> SetAddAsync<T>(string cacheKey, IList<T> cacheValues, TimeSpan? expiration = null)
-        {
-            return await _redisCachingProvider.SAddAsync(cacheKey, cacheValues, expiration);
-        }
-
-        public async Task<List<T>> SetMembersAsync<T>(string cacheKey)
-        {
-            return await _redisCachingProvider.SMembersAsync<T>(cacheKey);
-        }
-
-
-        #endregion
-
         #region Hash
 
         public async Task<Dictionary<I, T>> HashGetAllAsync<I, T>(string cacheKey)
         {
             var result = new Dictionary<I, T>();
 
-            var hash = await _redisCachingProvider.HGetAllAsync(cacheKey);
+            var hash = await HashGetAllAsync(cacheKey);
 
             foreach (var kvp in hash)
             {
@@ -162,14 +145,14 @@ namespace Harmony.Caching
             return await _redisCachingProvider.HSetAsync(cacheKey, field, value);
         }
 
-        public async Task<long> HashDeleleteFields(string cacheKey, IList<string> fields = null)
+        public async Task<long> HashDeleleFields(string cacheKey, IList<string> fields = null)
         {
             return await _redisCachingProvider.HDelAsync(cacheKey, fields);
         }
 
-        public async Task<long> HashDeleleteField(string cacheKey, string field)
+        public async Task<long> HashDeleleField(string cacheKey, string field)
         {
-            return await HashDeleleteFields(cacheKey, new List<string> { field });
+            return await HashDeleleFields(cacheKey, new List<string> { field });
         }
 
         #endregion

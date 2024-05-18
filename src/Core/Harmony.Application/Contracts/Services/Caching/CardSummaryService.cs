@@ -52,7 +52,7 @@ namespace Harmony.Application.Contracts.Services.Caching
 
         public async Task DeleteCardSummary(Guid boardId, Guid cardId)
         {
-            await _cache.HashDeleleteField(CacheKeys
+            await _cache.HashDeleleField(CacheKeys
                     .ActiveCardSummaries(boardId),
                         cardId.ToString());
         }

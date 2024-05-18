@@ -1,14 +1,18 @@
 ﻿using EasyCaching.Core;
 using Harmony.Application.Contracts.Services;
+using Harmony.Application.Extensions;
 using Harmony.Domain.Contracts;
+using Harmony.Domain.Extensions;
 using Microsoft.Extensions.Caching.Memory;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Text.Json;
 
 namespace Harmony.Caching
 {
     public class InMemoryCacheService : ICacheService
     {
         private readonly IEasyCachingProvider _provider;
-
         public InMemoryCacheService(IEasyCachingProvider provider)
         {
             _provider = provider;
@@ -33,64 +37,150 @@ namespace Harmony.Caching
             return cacheValue.Value;
         }
 
-        public Task<long> HashDeleleteField(string cacheKey, string field)
+        public async Task<long> HashDeleleField(string cacheKey, string field)
         {
-            throw new NotImplementedException();
+            return await HashDeleleFields(cacheKey, new List<string> { field });
         }
 
-        public Task<long> HashDeleleteFields(string cacheKey, IList<string> fields = null)
+        public async Task<long> HashDeleleFields(string cacheKey, IList<string> fields = null)
         {
-            throw new NotImplementedException();
+            var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
+
+            if(dictionary == null || !dictionary.HasValue)
+            {
+                return default;
+            }
+
+            var dictVal = dictionary.Value;
+
+            foreach(var field in fields)
+            {
+                dictVal.Remove(field);
+            }
+
+            await HashMSetAsync(cacheKey, dictVal);
+
+            return default;
         }
 
-        public Task<Dictionary<I, T>> HashGetAllAsync<I, T>(string cacheKey)
+        public async Task<Dictionary<I, T>> HashGetAllAsync<I, T>(string cacheKey)
         {
-            throw new NotImplementedException();
+            var result = new Dictionary<I, T>();
+
+            var hash = await HashGetAllAsync(cacheKey);
+
+            if(hash == null)
+            {
+                return result;
+            }
+
+            foreach (var kvp in hash)
+            {
+                var key = kvp.Key.Convert<I>();
+                result[key] = JsonSerializer.Deserialize<T>(kvp.Value);
+            }
+
+            return result;
         }
 
-        public Task<Dictionary<string, string>> HashGetAllAsync(string cacheKey)
+        public async Task<Dictionary<string, string>> HashGetAllAsync(string cacheKey)
         {
-            throw new NotImplementedException();
+            var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
+
+            return dictionary.HasValue ? dictionary.Value : default;
         }
 
-        public Task<T> HashGetAllAsync<T>(string cacheKey, Func<Dictionary<string, string>, T> converter)
+        public async Task<T> HashGetAllAsync<T>(string cacheKey, Func<Dictionary<string, string>, T> converter)
         {
-            throw new NotImplementedException();
+            var dictionary = await HashGetAllAsync(cacheKey);
+
+            return converter(dictionary);
         }
 
-        public Task<T> HashGetAllOrCreateAsync<T>(string cacheKey, Func<Dictionary<string, string>, T> converter, Func<Task<T>> dataRetriever) where T : IHashable
+        public async Task<T> HashGetAllOrCreateAsync<T>(string cacheKey, Func<Dictionary<string, string>, T> converter, Func<Task<T>> dataRetriever) where T : IHashable
         {
-            throw new NotImplementedException();
+            var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
+
+            if (dictionary == null || !dictionary.HasValue || !dictionary.Value.Keys.Any())
+            {
+                var data = await dataRetriever();
+                var hashTable = data.ConvertToDictionary();
+
+                await HashMSetAsync(cacheKey, hashTable);
+
+                return converter(hashTable);
+            }
+
+            return converter(dictionary.Value);
         }
 
-        public Task<T> HashGetAsync<T>(string cacheKey, string field)
+        public async Task<T> HashGetAsync<T>(string cacheKey, string field)
         {
-            throw new NotImplementedException();
+            var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
+
+            if (dictionary == null || !dictionary.HasValue || !dictionary.Value.TryGetValue(field, out var fieldDictionary))
+            {
+                return default;
+            }
+
+            return JsonSerializer.Deserialize<T>(fieldDictionary, CacheDomainExtensions._jsonSerializerOptions);
         }
 
-        public Task<bool> HashHSetAsync(string cacheKey, string field, string value)
+        public async Task<bool> HashHSetAsync(string cacheKey, string field, string value)
         {
-            throw new NotImplementedException();
+            var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
+
+            dictionary.Value[field] = value;
+
+            await HashMSetAsync(cacheKey, dictionary.Value);
+
+            return true;
         }
 
-        public Task<Dictionary<I, T>> HashMGetFields<I, T>(string cacheKey, IList<string> fields)
+        public async Task<Dictionary<I, T>> HashMGetFields<I, T>(string cacheKey, List<string> fields)
         {
-            throw new NotImplementedException();
+            var result = new Dictionary<I, T>();
+
+            var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
+
+            var hash = dictionary.Value;
+
+            foreach (var kvp in hash)
+            {
+                if(!fields.Contains(kvp.Key))
+                {
+                    continue;
+                }
+
+                var key = kvp.Key.Convert<I>();
+                result[key] = JsonSerializer.Deserialize<T>(kvp.Value);
+            }
+
+            return result;
         }
 
-        public Task<Dictionary<I, T>> HashMGetFields<I, T>(string cacheKey, List<string> fields)
+        public async Task<bool> HashMSetAsync<I, T>(string cacheKey, Dictionary<I, T> vals, TimeSpan? expiration = null)
         {
-            throw new NotImplementedException();
+            var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
+
+            var result = dictionary.Value ?? new Dictionary<string, string>();
+
+            foreach (var kvp in vals)
+            {
+                var key = kvp.Key.ToString();
+                result[key] = JsonSerializer.Serialize(kvp.Value);
+            }
+
+            await _provider.SetAsync(cacheKey, result, expiration ?? TimeSpan.FromHours(1));
+
+            return true;
         }
 
-        public Task<bool> HashMSetAsync<I, T>(string cacheKey, Dictionary<I, T> vals, TimeSpan? expiration = null)
+        public async Task<bool> HashMSetAsync(string cacheKey, Dictionary<string, string> vals, TimeSpan? expiration = null)
         {
-            throw new NotImplementedException();
-        }
+            await _provider.SetAsync(cacheKey, vals, expiration ?? TimeSpan.FromHours(1));
 
-        public Task<bool> HashMSetAsync(string cacheKey, Dictionary<string, string> vals, TimeSpan? expiration = null)
-        {
-            throw new NotImplementedException();
+            return true;
         }
 
         public async Task RemoveAsync<TItem>(string cacheKey,
@@ -99,19 +189,9 @@ namespace Harmony.Caching
             await _provider.RemoveAsync(cacheKey, cancellationToken);
         }
 
-        public Task RemoveAsync(string cacheKey, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(string cacheKey, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<long> SetAddAsync<T>(string cacheKey, IList<T> cacheValues, TimeSpan? expiration = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<T>> SetMembersAsync<T>(string cacheKey)
-        {
-            throw new NotImplementedException();
+            await _provider.RemoveAsync(cacheKey, cancellationToken);
         }
     }
 }
