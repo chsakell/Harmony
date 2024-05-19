@@ -2,6 +2,20 @@
 
 The source code of the Harmony project management tool.
 
+## Stack
+| **Databases** 	| **Server** 	| **Front** 	|
+|---------------	|------------	|-----------	|
+| SQL Server    	| .NET 8.0   	| Blazor    	|
+| MongoDB       	| SignalR    	| MudBlazor 	|
+| Redis         	| gRPC       	|           	|
+
+| **Data access** 	| **Patterns**       	| **Messaging** 	|
+|-----------------	|--------------------	|---------------	|
+| EF Core         	| Clean Architecture 	| RabbitMQ      	|
+|                 	| CQRS MediaR        	|               	|
+
+**Docker** & **Kubernetes** support :ship: :rocket:
+
 ## Documentation
 Docs are maintained at [docs.harmony-teams.com](https://docs.harmony-teams.com/)
 
