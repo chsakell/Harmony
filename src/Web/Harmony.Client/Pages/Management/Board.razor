@@ -33,7 +33,7 @@ else
                     @if (!AddCardsDisabled)
                     {
                         <MudMenu Label="@KanbanStore.Board.SelectedSprint.Name" Variant="Variant.Filled"
-                                 EndIcon="@Icons.Material.Filled.KeyboardArrowDown" 
+                                 EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
                                  AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopRight"
                                  IconColor="Color.Secondary">
                             @foreach (var sprint in KanbanStore.Board.ActiveSprints)
@@ -150,14 +150,6 @@ else
                                 }
                             </MudToolBar>
                             <MudDropZone T="CardDto" Identifier="@item.Id.ToString()" Style="min-height:10px" AllowReorder="true" />
-                            @if (item.TotalPages > 1)
-                            {
-                                <div class="d-flex flex-column align-center my-4">
-                                    <MudPagination Size="Size.Small" Variant="Variant.Outlined"
-                                                   SelectedChanged="(page) => LoadListCards(item.Id, page)"
-                                                   BoundaryCount="1" MiddleCount="1" Count="@item.TotalPages" />
-                                </div>
-                            }
                             @if (item.CardStatus.HasValue && item.CardStatus
                            == Domain.Enums.BoardListCardStatus.DONE)
                             {

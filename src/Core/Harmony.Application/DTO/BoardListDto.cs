@@ -13,9 +13,6 @@ namespace Harmony.Application.DTO
 
         public BoardListStatus Status { get; set; }
 
-        // manual setup for pagination
-        public int TotalCards{ get; set; }
-        public int TotalPages { get; set; }
         public bool TitleEditing { get; set; }
         public BoardListCardStatus? CardStatus { get; set; }
     }

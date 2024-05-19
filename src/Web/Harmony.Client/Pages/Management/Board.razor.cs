@@ -414,25 +414,6 @@ namespace Harmony.Client.Pages.Management
             DisplayMessage(result);
         }
 
-        private async Task LoadListCards(Guid listId, int page)
-        {
-            var result = await _boardManager
-                .GetBoardListCardsAsync(new LoadBoardListQuery()
-                {
-                    BoardId = Guid.Parse(Id),
-                    BoardListId = listId,
-                    Page = page,
-                    PageSize = _listCardsSize,
-                    SprintId = _selectedSprintId
-                });
-
-            if (result.Succeeded)
-            {
-                KanbanStore.UpdateBoardListCards(listId, result.Data);
-                _dropContainer.Refresh();
-            }
-        }
-
         private void ToggleCardDescriptionVisibility(bool toggle)
         {
             CardDescriptionVisibility = toggle;
