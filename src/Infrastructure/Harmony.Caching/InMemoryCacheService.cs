@@ -131,9 +131,16 @@ namespace Harmony.Caching
         {
             var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
 
-            dictionary.Value[field] = value;
+            var dictionaryValue = dictionary.Value;
 
-            await HashMSetAsync(cacheKey, dictionary.Value);
+            if(!dictionary.HasValue)
+            {
+                dictionaryValue = new Dictionary<string, string>();
+            }
+
+            dictionaryValue[field] = value;
+
+            await HashMSetAsync(cacheKey, dictionaryValue);
 
             return true;
         }
