@@ -36,7 +36,13 @@ namespace Harmony.Application.Contracts.Services.Caching
             }
         }
 
-        public async Task UpdateCardSummaries(Guid boardId, List<Guid> cardIds, 
+        public async Task SaveCardSummaries(Guid boardId, Dictionary<Guid, CardSummary> summaries)
+        {
+            await _cache.HashMSetAsync(CacheKeys.ActiveCardSummaries(boardId), summaries, 
+                CacheKeys.ActiveCardSummariesExpiration);
+        }
+
+        public async Task UpdateCardSummaries(Guid boardId, List<Guid> cardIds,
             Action<Dictionary<Guid, CardSummary>> updateFunc)
         {
             var cardSummaries = await GetSummaries(boardId, cardIds);
@@ -63,18 +69,24 @@ namespace Harmony.Application.Contracts.Services.Caching
                         CacheKeys.ActiveCardSummaries(boardId), cardId.ToString());
         }
 
-        private async Task<Dictionary<Guid, CardSummary>> GetSummaries(Guid boardId, List<Guid> cardIds)
+        public async Task<Dictionary<Guid, CardSummary>> GetSummaries(Guid boardId, List<Guid> cardIds)
         {
             return await _cache.HashMGetFields<Guid, CardSummary>(
                         CacheKeys.ActiveCardSummaries(boardId),
                         cardIds.Select(c => c.ToString()).ToList());
         }
 
+        public async Task<Dictionary<Guid, CardSummary>> GetAllSummaries(Guid boardId)
+        {
+            return await _cache.HashGetAllAsync<Guid, CardSummary>(
+                        CacheKeys.ActiveCardSummaries(boardId));
+        }
+
         private async Task UpdateSummary(Guid boardId, Guid cardId, CardSummary summary)
         {
             await _cache.HashHSetAsync(CacheKeys.ActiveCardSummaries(boardId),
-                cardId.ToString(), 
-                JsonSerializer.Serialize(summary, 
+                cardId.ToString(),
+                JsonSerializer.Serialize(summary,
                 CacheDomainExtensions._jsonSerializerOptions));
         }
     }

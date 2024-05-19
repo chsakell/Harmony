@@ -27,7 +27,7 @@ namespace Harmony.Application.Contracts.Services
             Func<Dictionary<string, string>, T> converter);
         Task<T> HashGetAllOrCreateAsync<T>(string cacheKey,
             Func<Dictionary<string, string>, T> converter,
-            Func<Task<T>> dataRetriever) where T : IHashable;
+            Func<Task<T>> dataRetriever, TimeSpan? expiration = null) where T : IHashable;
 
         Task<T> HashGetAsync<T>(string cacheKey, string field);
         Task<bool> HashMSetAsync<I, T>(string cacheKey, Dictionary<I, T> vals, TimeSpan? expiration = null);

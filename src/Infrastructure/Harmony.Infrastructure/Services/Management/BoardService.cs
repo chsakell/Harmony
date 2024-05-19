@@ -21,6 +21,7 @@ using Harmony.Application.Contracts.Services;
 using Harmony.Application.Specifications.Cards;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
+using Harmony.Application.Contracts.Services.Caching;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -40,6 +41,7 @@ namespace Harmony.Infrastructure.Services.Management
         private readonly ICheckListItemRepository _checkListItemRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly ICardLabelRepository _cardLabelRepository;
+        private readonly ICardSummaryService _cardSummaryService;
         private readonly ILinkRepository _linkRepository;
         private readonly string _connectionString;
 
@@ -56,6 +58,7 @@ namespace Harmony.Infrastructure.Services.Management
             ICheckListItemRepository checkListItemRepository,
             ICommentRepository commentRepository,
             ICardLabelRepository cardLabelRepository,
+            ICardSummaryService cardSummaryService,
             ILinkRepository linkRepository)
         {
             _connectionString = configuration.GetConnectionString("HarmonyConnection");
@@ -73,6 +76,7 @@ namespace Harmony.Infrastructure.Services.Management
             _checkListItemRepository = checkListItemRepository;
             _commentRepository = commentRepository;
             _cardLabelRepository = cardLabelRepository;
+            _cardSummaryService = cardSummaryService;
             _linkRepository = linkRepository;
         }
 
@@ -144,7 +148,7 @@ namespace Harmony.Infrastructure.Services.Management
         {
             var board = await _cacheService.HashGetAllOrCreateAsync(CacheKeys.Board(boardId),
                 dict => CacheDomainExtensions.FromDictionary(boardId, dict),
-                async () => await GetBoard(boardId));
+                async () => await GetBoard(boardId), CacheKeys.BoardExpiration);
 
             var result = new BoardInfo()
             {
@@ -562,8 +566,7 @@ namespace Harmony.Infrastructure.Services.Management
                 .Specify(cardFilter)
                 .ToListAsync();
 
-            var cardSummaries = await _cacheService
-                    .HashGetAllAsync<Guid, CardSummary>(CacheKeys.ActiveCardSummaries(board.Id));
+            var cardSummaries = await _cardSummaryService.GetAllSummaries(board.Id);
 
             var cachedContainsCards = cardSummaries != null && cardSummaries.Count > 0;
 
@@ -578,9 +581,7 @@ namespace Harmony.Infrastructure.Services.Management
 
                 if (newCardSummaries.Any())
                 {
-                    await _cacheService.HashMSetAsync(
-                        CacheKeys.ActiveCardSummaries(board.Id),
-                        newCardSummaries);
+                    await _cardSummaryService.SaveCardSummaries(board.Id, newCardSummaries);
 
                     foreach (var cardSummary in newCardSummaries)
                     {

@@ -97,7 +97,8 @@ namespace Harmony.Caching
             return converter(dictionary);
         }
 
-        public async Task<T> HashGetAllOrCreateAsync<T>(string cacheKey, Func<Dictionary<string, string>, T> converter, Func<Task<T>> dataRetriever) where T : IHashable
+        public async Task<T> HashGetAllOrCreateAsync<T>(string cacheKey, Func<Dictionary<string, string>, T> converter,
+            Func<Task<T>> dataRetriever, TimeSpan? expiration = null) where T : IHashable
         {
             var dictionary = await _provider.GetAsync<Dictionary<string, string>>(cacheKey);
 
@@ -106,7 +107,7 @@ namespace Harmony.Caching
                 var data = await dataRetriever();
                 var hashTable = data.ConvertToDictionary();
 
-                await HashMSetAsync(cacheKey, hashTable);
+                await HashMSetAsync(cacheKey, hashTable, expiration);
 
                 return converter(hashTable);
             }
