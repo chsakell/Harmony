@@ -1,6 +1,6 @@
 # Harmony
 
-The source code of the [Harmony](docs.harmony-teams.com) project management tool.
+The source code of the [Harmony](https://docs.harmony-teams.com/) project management tool.
 
 > Manage your team projects with this free to use, simple yet powerfull management tool.
 
