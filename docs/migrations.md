@@ -33,6 +33,14 @@ dotnet tool install --global dotnet-ef
 dotnet ef database update --context HarmonyContext --startup-project "../../Services/Harmony.Api/Harmony.Api.csproj" -- --DatabaseProvider SqlServer
 ```
 
+```
+dotnet ef database update --context NotificationContext --startup-project "../../Services/Harmony.Notifications/Harmony.Notifications.csproj" -- --DatabaseProvider SqlServer
+```
+
+```
+dotnet ef database update --context AutomationContext --startup-project "../../Services/Harmony.Automations/Harmony.Automations.csproj" -- --DatabaseProvider SqlServer
+```
+
 ### Adding migrations (required only for new development)
 
 ```
@@ -40,11 +48,23 @@ dotnet ef migrations add Initial -o HarmonyContextMigrations --context HarmonyCo
 ```
 
 ```
+Add-Migration MyCustomMigrationName -OutputDir HarmonyContextMigrations -Context HarmonyContext -Project Harmony.Persistence.Migrations.SqlServer -StartUpProject Harmony.Api
+```
+
+```
 dotnet ef migrations add Initial -o AutomationContextMigrations --context AutomationContext --project ../Harmony.Persistence.Migrations.SqlServer --startup-project "../../Services/Harmony.Automations/Harmony.Automations.csproj" -- --DatabaseProvider SqlServer
 ```
 
 ```
+Add-Migration MyCustomMigrationName -OutputDir AutomationContextMigrations -Context AutomationContext -Project Harmony.Persistence.Migrations.SqlServer -StartUpProject Harmony.Automations
+```
+
+```
 dotnet ef migrations add Initial -o NotificationContextMigrations --context NotificationContext --project ../Harmony.Persistence.Migrations.SqlServer --startup-project "../../Services/Harmony.Notifications/Harmony.Notifications.csproj" -- --DatabaseProvider SqlServer
+```
+
+```
+Add-Migration MyCustomMigrationName -OutputDir NotificationContextMigrations -Context NotificationContext -Project Harmony.Persistence.Migrations.SqlServer -StartUpProject Harmony.Notifications
 ```
 
 ### PostgreSQL
@@ -55,6 +75,14 @@ dotnet ef migrations add Initial -o NotificationContextMigrations --context Noti
 dotnet ef database update --context HarmonyContext --startup-project "../../Services/Harmony.Api/Harmony.Api.csproj" -- --DatabaseProvider PostgreSQL
 ```
 
+```
+dotnet ef database update --context NotificationContext --startup-project "../../Services/Harmony.Notifications/Harmony.Notifications.csproj" -- --DatabaseProvider PostgreSQL
+```
+
+```
+dotnet ef database update --context AutomationContext --startup-project "../../Services/Harmony.Automations/Harmony.Automations.csproj" -- --DatabaseProvider PostgreSQL
+```
+
 ### Adding migrations (required only for new development)
 
 ```
@@ -62,9 +90,21 @@ dotnet ef migrations add Initial -o HarmonyContextMigrations --context HarmonyCo
 ```
 
 ```
+Add-Migration MyCustomMigrationName -OutputDir HarmonyContextMigrations -Context HarmonyContext -Project Harmony.Persistence.Migrations.PostgreSql -StartUpProject Harmony.Api
+```
+
+```
 dotnet ef migrations add Initial -o AutomationContextMigrations --context AutomationContext --project ../Harmony.Persistence.Migrations.PostgreSql --startup-project "../../Services/Harmony.Automations/Harmony.Automations.csproj" -- --DatabaseProvider PostgreSQL
 ```
 
 ```
+Add-Migration MyCustomMigrationName -OutputDir AutomationContextMigrations -Context AutomationContext -Project Harmony.Persistence.Migrations.PostgreSql -StartUpProject Harmony.Automations
+```
+
+```
 dotnet ef migrations add Initial -o NotificationContextMigrations --context NotificationContext --project ../Harmony.Persistence.Migrations.PostgreSql --startup-project "../../Services/Harmony.Notifications/Harmony.Notifications.csproj" -- --DatabaseProvider PostgreSQL
+```
+
+```
+Add-Migration MyCustomMigrationName -OutputDir NotificationContextMigrations -Context NotificationContext -Project Harmony.Persistence.Migrations.PostgreSql -StartUpProject Harmony.Notifications
 ```
