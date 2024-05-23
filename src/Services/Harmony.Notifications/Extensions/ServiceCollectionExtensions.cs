@@ -1,4 +1,6 @@
 ﻿using Algolia.Search.Clients;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Harmony.Application.Configurations;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Contracts.Services.Management;
@@ -21,6 +23,8 @@ namespace Harmony.Notifications.Extensions
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        const string HarmonyJobsConnection = "HarmonyJobsConnection";
+
         internal static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
@@ -104,17 +108,94 @@ namespace Harmony.Notifications.Extensions
                     options.EnableSensitiveDataLogging(true);
                 });
 
-        internal static IServiceCollection AddJobsDatabase(
+        internal static IServiceCollection AddDatabase(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var provider = (configuration.GetValue("DatabaseProvider", "SqlServer")).ToLower();
+
+            return provider switch
+            {
+                "sqlserver" => AddSqlServerDatabase(services, configuration),
+                "postgresql" => AddPostgreDatabase(services, configuration),
+                _ => throw new Exception($"Unsupported provider: {provider}")
+            };
+        }
+
+        internal static IServiceCollection AddSqlServerDatabase(
             this IServiceCollection services,
             IConfiguration configuration)
             => services
                 .AddDbContext<NotificationContext>(options =>
                 {
-                    options.UseSqlServer(configuration.GetConnectionString("HarmonyJobsConnection"));
+                    options.UseSqlServer(configuration.GetConnectionString(HarmonyJobsConnection),
+                        options => options.MigrationsAssembly("Harmony.Persistence.Migrations.SqlServer"));
+
                     options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
                     options.EnableDetailedErrors(true);
                     options.EnableSensitiveDataLogging(true);
                 });
+
+        internal static IServiceCollection AddPostgreDatabase(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            return services
+                        .AddDbContext<NotificationContext>(options =>
+                        {
+                            options.UseNpgsql(configuration
+                                .GetConnectionString(HarmonyJobsConnection),
+                                options => options.MigrationsAssembly("Harmony.Persistence.Migrations.PostgreSql"));
+
+                            options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
+                            options.EnableDetailedErrors(true);
+                            options.EnableSensitiveDataLogging(true);
+                        });
+        }
+
+        internal static IServiceCollection AddHangFire(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var provider = (configuration.GetValue("DatabaseProvider", "SqlServer")).ToLower();
+
+            return provider switch
+            {
+                "sqlserver" => AddSqlServerHangFire(services, configuration),
+                "postgresql" => AddPostgreSqlHangFire(services, configuration),
+                _ => throw new Exception($"Unsupported provider: {provider}")
+            };
+        }
+
+        internal static IServiceCollection AddSqlServerHangFire(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString(HarmonyJobsConnection);
+
+            return services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(connectionString));
+        }
+
+        internal static IServiceCollection AddPostgreSqlHangFire(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString(HarmonyJobsConnection);
+
+            return services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(options =>
+                {
+                    options.UseNpgsqlConnection(connectionString);
+                }));
+        }
 
         internal static IServiceCollection ConfigureBrevo(this IServiceCollection services, IConfiguration configuration)
         {

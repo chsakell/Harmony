@@ -1,49 +1,70 @@
-## Example migrations (add/remove/update)
+## Example migrations
 
-When running migrations through Visual Studio, open the `Package Manager Console` and set the `Default project` to __src\Infrastructure\Harmony.Persistence__.
+## dotnet ef
 
+- First you need to have installed [EF Core tools](https://learn.microsoft.com/en-us/ef/core/cli/dotnet). Run the following command to install them:
 ```
-Add-Migration Initial -Context HarmonyContext -StartUpProject Harmony.Api
+dotnet tool install --global dotnet-ef
 ```
+- Open a terminal and navigate to the **Harmony.Persistence** root folder
+- Select a database provider and configure the connection strings in the appsettings.json files for Harmony.Api, Harmony.Automations & Harmony.Notification projects.
 
-```
-Add-Migration LoadBoardSp_VX -Context HarmonyContext -StartUpProject Harmony.Api
-```
-
-```
-Add-Migration LoadBoardListCardsSp_VX -Context HarmonyContext -StartUpProject Harmony.Api
-```
+**Examples**:
 
 ```
-Remove-Migration PostCommentsInitial -Context HarmonyContext -StartUpProject Harmony.Api
+  "DatabaseProvider": "PostgreSQL",
+  "ConnectionStrings": {
+    "HarmonyConnection": "Host=localhost;Database=Harmony;Username=postgres;Password=MySuperSecretPassword"
+  },
+```
+```
+  "DatabaseProvider": "SqlServer",
+  "ConnectionStrings": {
+    "HarmonyConnection": "Server=.;Database=Harmony;Integrated Security=True;TrustServerCertificate=True"
+  },
+```
+- Based on your database provider, apply the alrealdy existing migrations
+
+### SQL Server
+
+### Apply migrations
+
+```
+dotnet ef database update --context HarmonyContext --startup-project "../../Services/Harmony.Api/Harmony.Api.csproj" -- --DatabaseProvider SqlServer
+```
+
+### Adding migrations (required only for new development)
+
+```
+dotnet ef migrations add Initial -o HarmonyContextMigrations --context HarmonyContext --project ../Harmony.Persistence.Migrations.SqlServer --startup-project "../../Services/Harmony.Api/Harmony.Api.csproj" -- --DatabaseProvider SqlServer
 ```
 
 ```
-Update-Database -Context HarmonyContext -StartUpProject Harmony.Api
+dotnet ef migrations add Initial -o AutomationContextMigrations --context AutomationContext --project ../Harmony.Persistence.Migrations.SqlServer --startup-project "../../Services/Harmony.Automations/Harmony.Automations.csproj" -- --DatabaseProvider SqlServer
 ```
 
 ```
-dotnet ef database update --context HarmonyContext --startup-project "../../Web/Harmony.Api.csproj"
+dotnet ef migrations add Initial -o NotificationContextMigrations --context NotificationContext --project ../Harmony.Persistence.Migrations.SqlServer --startup-project "../../Services/Harmony.Notifications/Harmony.Notifications.csproj" -- --DatabaseProvider SqlServer
+```
+
+### PostgreSQL
+
+### Apply migrations
+
+```
+dotnet ef database update --context HarmonyContext --startup-project "../../Services/Harmony.Api/Harmony.Api.csproj" -- --DatabaseProvider PostgreSQL
+```
+
+### Adding migrations (required only for new development)
+
+```
+dotnet ef migrations add Initial -o HarmonyContextMigrations --context HarmonyContext --project ../Harmony.Persistence.Migrations.PostgreSql --startup-project "../../Services/Harmony.Api/Harmony.Api.csproj" -- --DatabaseProvider PostgreSQL
 ```
 
 ```
-Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Notifications
+dotnet ef migrations add Initial -o AutomationContextMigrations --context AutomationContext --project ../Harmony.Persistence.Migrations.PostgreSql --startup-project "../../Services/Harmony.Automations/Harmony.Automations.csproj" -- --DatabaseProvider PostgreSQL
 ```
 
 ```
-Add-Migration Initial -Context NotificationContext -StartUpProject Harmony.Automations
+dotnet ef migrations add Initial -o NotificationContextMigrations --context NotificationContext --project ../Harmony.Persistence.Migrations.PostgreSql --startup-project "../../Services/Harmony.Notifications/Harmony.Notifications.csproj" -- --DatabaseProvider PostgreSQL
 ```
-
-```
-Update-Database -Context NotificationContext -StartUpProject Harmony.Notifications
-```
-
-```
-dotnet ef database update --context NotificationContext --startup-project "Harmony.Notifications.csproj"
-```
-
-## Notes
-In case you decide for some reason to clean/remove the migrations folder, make sure to keep the following migrations which add two stored procedures.
-
-1. `20231031152602_LoadBoardSp`
-2. `20231104191204_LoadBoardListCardsSp`

@@ -249,10 +249,26 @@ namespace Harmony.Api.Extensions
         internal static IServiceCollection AddDatabase(
             this IServiceCollection services,
             IConfiguration configuration)
+        {
+            var provider = (configuration.GetValue("DatabaseProvider", "SqlServer")).ToLower();
+
+            return provider switch
+            {
+                "sqlserver" => AddSqlServerDatabase(services, configuration),
+                "postgresql" => AddPostgreDatabase(services, configuration),
+                _ => throw new Exception($"Unsupported provider: {provider}")
+            };
+        }
+
+        internal static IServiceCollection AddSqlServerDatabase(
+            this IServiceCollection services,
+            IConfiguration configuration)
             => services
                 .AddDbContext<HarmonyContext>(options =>
                 {
-                    options.UseSqlServer(configuration.GetConnectionString("HarmonyConnection"));
+                    options.UseSqlServer(configuration.GetConnectionString("HarmonyConnection"),
+                        options => options.MigrationsAssembly("Harmony.Persistence.Migrations.SqlServer"));
+
                     options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
                     options.EnableDetailedErrors(true);
                     options.EnableSensitiveDataLogging(true);
@@ -260,6 +276,27 @@ namespace Harmony.Api.Extensions
                 .AddScoped<IDatabaseSeeder, DatabaseRolesSeeder>()
                 .AddScoped<IDatabaseSeeder, DatabaseUsersSeeder>()
                 .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>();
+
+        internal static IServiceCollection AddPostgreDatabase(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            return services
+                        .AddDbContext<HarmonyContext>(options =>
+                        {
+                            options.UseNpgsql(configuration
+                                .GetConnectionString("HarmonyConnection"), 
+                                options => options.MigrationsAssembly("Harmony.Persistence.Migrations.PostgreSql"));
+                            
+                            options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
+                            options.EnableDetailedErrors(true);
+                            options.EnableSensitiveDataLogging(true);
+                        })
+                        .AddScoped<IDatabaseSeeder, DatabaseRolesSeeder>()
+                        .AddScoped<IDatabaseSeeder, DatabaseUsersSeeder>()
+                        .AddScoped<IDatabaseSeeder, DatabaseWorkspaceSeeder>();
+        }
 
         internal static IServiceCollection AddIdentity(this IServiceCollection services)
         {

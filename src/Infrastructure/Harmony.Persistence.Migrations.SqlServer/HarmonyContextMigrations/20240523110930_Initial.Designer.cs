@@ -9,18 +9,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Harmony.Persistence.Migrations
+namespace Harmony.Persistence.Migrations.SqlServer.HarmonyContextMigrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20240406150824_CardLinks")]
-    partial class CardLinks
+    [Migration("20240523110930_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

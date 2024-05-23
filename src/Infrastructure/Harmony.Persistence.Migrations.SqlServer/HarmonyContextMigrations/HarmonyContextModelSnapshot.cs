@@ -4,23 +4,20 @@ using Harmony.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Harmony.Persistence.Migrations
+namespace Harmony.Persistence.Migrations.SqlServer.HarmonyContextMigrations
 {
     [DbContext(typeof(HarmonyContext))]
-    [Migration("20240402174010_Initial")]
-    partial class Initial
+    partial class HarmonyContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -464,6 +461,38 @@ namespace Harmony.Persistence.Migrations
                     b.HasIndex("BoardId");
 
                     b.ToTable("Labels", (string)null);
+                });
+
+            modelBuilder.Entity("Harmony.Domain.Entities.Link", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SourceCardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TargetCardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SourceCardId");
+
+                    b.ToTable("Links", (string)null);
                 });
 
             modelBuilder.Entity("Harmony.Domain.Entities.Retrospective", b =>
@@ -1129,6 +1158,17 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("Board");
                 });
 
+            modelBuilder.Entity("Harmony.Domain.Entities.Link", b =>
+                {
+                    b.HasOne("Harmony.Domain.Entities.Card", "SourceCard")
+                        .WithMany("Links")
+                        .HasForeignKey("SourceCardId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("SourceCard");
+                });
+
             modelBuilder.Entity("Harmony.Domain.Entities.Retrospective", b =>
                 {
                     b.HasOne("Harmony.Domain.Entities.Board", "ParentBoard")
@@ -1303,6 +1343,8 @@ namespace Harmony.Persistence.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Labels");
+
+                    b.Navigation("Links");
 
                     b.Navigation("Members");
                 });

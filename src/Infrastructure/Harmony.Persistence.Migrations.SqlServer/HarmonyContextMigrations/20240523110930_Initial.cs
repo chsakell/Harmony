@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Harmony.Persistence.Migrations
+namespace Harmony.Persistence.Migrations.SqlServer.HarmonyContextMigrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -627,6 +627,28 @@ namespace Harmony.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Links",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SourceCardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TargetCardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Links", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Links_Cards_SourceCardId",
+                        column: x => x.SourceCardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserCards",
                 columns: table => new
                 {
@@ -783,6 +805,11 @@ namespace Harmony.Persistence.Migrations
                 column: "BoardId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Links_SourceCardId",
+                table: "Links",
+                column: "SourceCardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Retrospectives_ParentBoardId",
                 table: "Retrospectives",
                 column: "ParentBoardId");
@@ -920,6 +947,9 @@ namespace Harmony.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Links");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims",

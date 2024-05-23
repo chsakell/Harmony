@@ -24,7 +24,7 @@ namespace Harmony.Notifications
             builder.Services.AddEndpointConfiguration(builder.Configuration);
 
             // Add DbContexts
-            builder.Services.AddJobsDatabase(builder.Configuration);
+            builder.Services.AddDatabase(builder.Configuration);
 
             builder.Services.Configure<BrokerConfiguration>(builder.Configuration.GetSection("BrokerConfiguration"));
 
@@ -50,11 +50,7 @@ namespace Harmony.Notifications
             builder.Services.AddSearchIndexNotificationServices(builder.Configuration);
 
             // Add Hangfire services.
-            builder.Services.AddHangfire(configuration => configuration
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HarmonyJobsConnection")));
+            builder.Services.AddHangFire(builder.Configuration);
 
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();
