@@ -12,11 +12,12 @@ The source code of the [Harmony](https://docs.harmony-teams.com/) project manage
 - [Automations](https://docs.harmony-teams.com/guide/automations)
 - GitHub [integration](https://docs.harmony-teams.com/integrations/github)
 - Instant updates across all connected clients
+- **Docker** & **Kubernetes** support :ship: :rocket:
 
 ### Stack
 | **Databases** 	| **Server** 	| **Front** 	|
 |---------------	|------------	|-----------	|
-| SQL Server 	| **.NET 8.0**   	| Blazor    	|
+| SQL Server or PostgreSQL 	| **.NET 8.0**   	| Blazor    	|
 | MongoDB       	| SignalR    	| MudBlazor 	|
 | Redis         	| gRPC       	|           	|
 
@@ -25,19 +26,15 @@ The source code of the [Harmony](https://docs.harmony-teams.com/) project manage
 | EF Core         	| Clean **Microservice** Architecture 	| RabbitMQ      	|
 |                 	| CQRS MediatR        	|               	|
 
-- **Docker** & **Kubernetes** support :ship: :rocket:
-- An option to use PostgreSQL instead of SQL Server is comming soon
-
 ## Documentation
 Docs are maintained at [docs.harmony-teams.com](https://docs.harmony-teams.com/)
 
 ## Installation
-- In a nutchel, all you need to do is have **SQL Server**, **MongoDB** & **RabbitMQ** installed on your machine and configure all connection strings to point to these instances.
+- For a detailed walkthrough on how to install and configure the dependencies, go through the [dependencies](https://docs.harmony-teams.com/configuration/dependencies) guide of the docs.
+- In a nutchel, all you need to do is have **SQL Server** or **PostgreSQL**, **MongoDB** & **RabbitMQ** installed on your machine and configure all connection strings to point to these instances.
 - By default, the connection strings use the default ports for all above installations.
 - Redis is optional and should be used in production environment in order to configure the SignalR Redis backplane & the Redis caching.
 - Configure the startup projects as explained on the [before-running](https://docs.harmony-teams.com/configuration/before-running) guide.
-- For more details, go through the [dependencies](https://docs.harmony-teams.com/configuration/dependencies) section of the docs.
-
 
 ## Support me
 You can support me :wave: using a [Sponsorship](https://github.com/sponsors/chsakell) or simply buy me a coffee :coffee: :pray:
