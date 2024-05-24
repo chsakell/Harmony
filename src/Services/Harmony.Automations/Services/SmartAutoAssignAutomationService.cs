@@ -17,16 +17,16 @@ namespace Harmony.Automations.Services
     public class SmartAutoAssignAutomationService : ISmartAutoAssignAutomationService
     {
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly AppEndpointConfiguration _endpointConfiguration;
+        private readonly UserCardService.UserCardServiceClient _userCardServiceClient;
 
         public SmartAutoAssignAutomationService(INotificationsPublisher notificationsPublisher,
-            IOptions<AppEndpointConfiguration> endpointsConfiguration)
+            UserCardService.UserCardServiceClient userCardServiceClient)
         {
             _notificationsPublisher = notificationsPublisher;
-            _endpointConfiguration = endpointsConfiguration.Value;
+            _userCardServiceClient = userCardServiceClient;
         }
 
-        public async Task Process(SmartAutoAssignAutomationDto automation, 
+        public async Task Process(SmartAutoAssignAutomationDto automation,
             CardCreatedMessage notification)
         {
             if (notification == null)
@@ -73,21 +73,11 @@ namespace Harmony.Automations.Services
             return;
         }
 
-        public async Task ScheduleAssignee(SmartAutoAssignAutomationDto automation, 
+        public async Task ScheduleAssignee(SmartAutoAssignAutomationDto automation,
             CardCreatedMessage notification)
         {
-            var userId = automation.Option == SmartAutoAssignOption.IssueCreator ? 
+            var userId = automation.Option == SmartAutoAssignOption.IssueCreator ?
                 notification.UserId : automation.UserId;
-
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-            var client = new UserCardService.UserCardServiceClient(channel);
 
             Metadata headers = new()
             {
@@ -99,7 +89,7 @@ namespace Harmony.Automations.Services
 
             if (automation.AssignIfNoneAssigned)
             {
-                var userAssignedResponse = await client.IsCardAssignedAsync(
+                var userAssignedResponse = await _userCardServiceClient.IsCardAssignedAsync(
                              new IsCardAssignedRequest
                              {
                                  CardId = notification.Card.Id.ToString(),
@@ -113,7 +103,7 @@ namespace Harmony.Automations.Services
 
             if (automation.SetFromParentIfSubtask && notification.Card.ParentCardId.HasValue)
             {
-                var userAssignedResponse = await client.IsCardAssignedAsync(
+                var userAssignedResponse = await _userCardServiceClient.IsCardAssignedAsync(
                              new IsCardAssignedRequest
                              {
                                  CardId = notification.Card.ParentCardId.Value.ToString(),
@@ -125,7 +115,7 @@ namespace Harmony.Automations.Services
                 }
             }
 
-            var cardResponse = await client.AddUserCardAsync(
+            await _userCardServiceClient.AddUserCardAsync(
                               new AddUserCardRequest
                               {
                                   BoardId = notification.BoardId.ToString(),

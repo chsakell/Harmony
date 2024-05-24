@@ -15,13 +15,22 @@ namespace Harmony.Notifications.Services.Notifications.Email
     public class CardCompletedNotificationService : BaseNotificationService, ICardCompletedNotificationService
     {
         private readonly IEmailService _emailNotificationService;
+        private readonly UserService.UserServiceClient _userServiceClient;
+        private readonly CardService.CardServiceClient _cardServiceClient;
+        private readonly UserNotificationService.UserNotificationServiceClient _userNotificationServiceClient;
         private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public CardCompletedNotificationService(IEmailService emailNotificationService,
             NotificationContext notificationContext,
-            IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
+            IOptions<AppEndpointConfiguration> endpointsConfiguration,
+            UserService.UserServiceClient userServiceClient,
+            CardService.CardServiceClient cardServiceClient,
+            UserNotificationService.UserNotificationServiceClient userNotificationServiceClient) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
+            _userServiceClient = userServiceClient;
+            _cardServiceClient = cardServiceClient;
+            _userNotificationServiceClient = userNotificationServiceClient;
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
@@ -50,17 +59,8 @@ namespace Harmony.Notifications.Services.Notifications.Email
         }
 
         public async Task Notify(Guid cardId)
-        {
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-            var cardServiceClient = new CardService.CardServiceClient(channel);
-            var cardResponse = await cardServiceClient.GetCardAsync(
+        {           
+            var cardResponse = await _cardServiceClient.GetCardAsync(
                               new CardFilterRequest
                               {
                                   CardId = cardId.ToString(),
@@ -77,21 +77,19 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var subject = $"{card.Title} in {card.BoardTitle} completed";
 
-            var userServiceClient = new UserService.UserServiceClient(channel);
             var usersFilterRequest = new UsersFilterRequest() {};
 
             usersFilterRequest.Users.AddRange(card.Members);
 
-            var usersResponse = await userServiceClient.GetUsersAsync(usersFilterRequest);
+            var usersResponse = await _userServiceClient.GetUsersAsync(usersFilterRequest);
             var cardMembers = usersResponse.Users;
 
-            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
             var userNotificationsFilterRequest = new GetUsersForNotificationTypeRequest() { };
 
             userNotificationsFilterRequest.Users.AddRange(card.Members);
             userNotificationsFilterRequest.Type = (int)EmailNotificationType.CardCompleted;
 
-            var registeredUsersResponse = await userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
+            var registeredUsersResponse = await _userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
 
             var slug = StringUtilities.SlugifyString(card.BoardTitle);
 

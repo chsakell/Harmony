@@ -14,6 +14,7 @@ using Harmony.Notifications.Services.Notifications.SearchIndex;
 using Harmony.Persistence.DbContext;
 using Harmony.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.Kestrel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Notifications.Extensions
@@ -200,6 +201,88 @@ namespace Harmony.Notifications.Extensions
         internal static IServiceCollection ConfigureBrevo(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<BrevoSettings>(configuration.GetSection("BrevoSettings"));
+
+            return services;
+        }
+
+        internal static IServiceCollection AddGrpcServices(
+            this IServiceCollection services,
+            AppEndpointConfiguration endpointConfiguration)
+        {
+            services.AddGrpc();
+            services.AddGrpcClient<Api.Protos.CardService.CardServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
+            services.AddGrpcClient<Api.Protos.UserService.UserServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
+            services.AddGrpcClient<Api.Protos.UserNotificationService.UserNotificationServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
+            services.AddGrpcClient<Api.Protos.BoardService.BoardServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
+            services.AddGrpcClient<Api.Protos.WorkspaceService.WorkspaceServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
+            services.AddGrpcClient<Api.Protos.UserCardService.UserCardServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
+
 
             return services;
         }

@@ -14,14 +14,29 @@ namespace Harmony.Notifications.Services.Notifications.Email
     public class MemberRemovedFromCardNotificationService : BaseNotificationService, IMemberRemovedFromCardNotificationService
     {
         private readonly IEmailService _emailNotificationService;
+        private readonly UserCardService.UserCardServiceClient _userCardServiceClient;
+        private readonly BoardService.BoardServiceClient _boardServiceClient;
+        private readonly CardService.CardServiceClient _cardServiceClient;
+        private readonly UserService.UserServiceClient _userServiceClient;
+        private readonly UserNotificationService.UserNotificationServiceClient _userNotificationServiceClient;
         private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberRemovedFromCardNotificationService(
             IEmailService emailNotificationService,
             NotificationContext notificationContext,
+            UserCardService.UserCardServiceClient userCardServiceClient,
+            BoardService.BoardServiceClient boardServiceClient,
+            CardService.CardServiceClient cardServiceClient,
+            UserService.UserServiceClient userServiceClient,
+            UserNotificationService.UserNotificationServiceClient userNotificationServiceClient,
             IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
+            _userCardServiceClient = userCardServiceClient;
+            _boardServiceClient = boardServiceClient;
+            _cardServiceClient = cardServiceClient;
+            _userServiceClient = userServiceClient;
+            _userNotificationServiceClient = userNotificationServiceClient;
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
@@ -49,18 +64,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task SendEmail(MemberRemovedFromCardNotification notification)
         {
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-
-            var client = new UserCardService.UserCardServiceClient(channel);
-
-            var userCard = await client.GetUserCardAsync(new UserCardFilterRequest()
+            var userCard = await _userCardServiceClient.GetUserCardAsync(new UserCardFilterRequest()
             {
                 CardId = notification.CardId.ToString(),
                 UserId = notification.UserId
@@ -71,9 +75,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
                 return;
             }
 
-            var boardServiceClient = new BoardService.BoardServiceClient(channel);
-
-            var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
+            var boardResponse = await _boardServiceClient.GetBoardAsync(new BoardFilterRequest()
             {
                 BoardId = notification.BoardId.ToString()
             });
@@ -85,8 +87,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var board = boardResponse.Board;
 
-            var cardServiceClient = new CardService.CardServiceClient(channel);
-            var cardResponse = await cardServiceClient.GetCardAsync(
+            var cardResponse = await _cardServiceClient.GetCardAsync(
                               new CardFilterRequest
                               {
                                   CardId = notification.CardId.ToString()
@@ -99,8 +100,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var card = cardResponse.Card;
 
-            var userServiceClient = new UserService.UserServiceClient(channel);
-            var userResponse = await userServiceClient.GetUserAsync(
+            var userResponse = await _userServiceClient.GetUserAsync(
                               new UserFilterRequest
                               {
                                   UserId = notification.UserId
@@ -112,8 +112,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             }
             var user = userResponse.User;
 
-            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
-            var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
+            var userIsRegisteredResponse = await _userNotificationServiceClient.UserIsRegisterForNotificationAsync(
                               new UserIsRegisterForNotificationRequest()
                               {
                                   UserId = user.Id,

@@ -17,13 +17,13 @@ namespace Harmony.Automations.Services
     public class SumUpStoryPointsAutomationService : ISumUpStoryPointsAutomationService
     {
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly AppEndpointConfiguration _endpointConfiguration;
+        private readonly CardService.CardServiceClient _cardServiceClient;
 
         public SumUpStoryPointsAutomationService(INotificationsPublisher notificationsPublisher,
-            IOptions<AppEndpointConfiguration> endpointsConfiguration)
+            CardService.CardServiceClient cardServiceClient)
         {
             _notificationsPublisher = notificationsPublisher;
-            _endpointConfiguration = endpointsConfiguration.Value;
+            _cardServiceClient = cardServiceClient;
         }
 
         public async Task Process(SumUpStoryPointsAutomationDto automation, CardStoryPointsChangedMessage notification)
@@ -33,18 +33,7 @@ namespace Harmony.Automations.Services
                 return;
             }
 
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-
-            var client = new CardService.CardServiceClient(channel);
-
-            var parentCardResponse = await client.GetCardAsync(
+            var parentCardResponse = await _cardServiceClient.GetCardAsync(
                               new CardFilterRequest { 
                                   CardId = notification.ParentCardId.ToString(),
                                   Children = true
@@ -62,7 +51,7 @@ namespace Harmony.Automations.Services
                 return;
             }
 
-            var syncStoryPointsResponse = await client
+            var syncStoryPointsResponse = await _cardServiceClient
                 .SyncParentStoryPointsAsync(new SyncParentCardStoryPointsRequest()
                 {
                     CardId = parentCard.CardId.ToString()

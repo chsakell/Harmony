@@ -16,14 +16,23 @@ namespace Harmony.Notifications.Services.Notifications.Email
     public class CardDueDateNotificationService : BaseNotificationService, ICardDueDateNotificationService
     {
         private readonly IEmailService _emailNotificationService;
+        private readonly CardService.CardServiceClient _cardServiceClient;
+        private readonly UserService.UserServiceClient _userServiceClient;
+        private readonly UserNotificationService.UserNotificationServiceClient _userNotificationServiceClient;
         private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public CardDueDateNotificationService(
             IEmailService emailNotificationService,
             NotificationContext notificationContext,
+            CardService.CardServiceClient cardServiceClient,
+            UserService.UserServiceClient userServiceClient,
+            UserNotificationService.UserNotificationServiceClient userNotificationServiceClient,
             IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
+            _cardServiceClient = cardServiceClient;
+            _userServiceClient = userServiceClient;
+            _userNotificationServiceClient = userNotificationServiceClient;
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
@@ -33,17 +42,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             await RemovePendingCardJobs(cardId, EmailNotificationType.CardDueDateUpdated);
 
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-
-            var cardServiceClient = new CardService.CardServiceClient(channel);
-            var cardResponse = await cardServiceClient.GetCardAsync(
+            var cardResponse = await _cardServiceClient.GetCardAsync(
                               new CardFilterRequest
                               {
                                   CardId = cardId.ToString(),
@@ -114,17 +113,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid cardId)
         {
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-
-            var cardServiceClient = new CardService.CardServiceClient(channel);
-            var cardResponse = await cardServiceClient.GetCardAsync(
+            var cardResponse = await _cardServiceClient.GetCardAsync(
                               new CardFilterRequest
                               {
                                   CardId = cardId.ToString(),
@@ -145,21 +134,19 @@ namespace Harmony.Notifications.Services.Notifications.Email
             var reminderType = (DueDateReminderType)card.DueDateReminderType;
             var subject = $"{card.Title} in {card.BoardTitle} is due {GetDueMessage(reminderType)}";
 
-            var userServiceClient = new UserService.UserServiceClient(channel);
             var usersFilterRequest = new UsersFilterRequest() { };
 
             usersFilterRequest.Users.AddRange(card.Members);
 
-            var usersResponse = await userServiceClient.GetUsersAsync(usersFilterRequest);
+            var usersResponse = await _userServiceClient.GetUsersAsync(usersFilterRequest);
             var cardMembers = usersResponse.Users;
 
-            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
             var userNotificationsFilterRequest = new GetUsersForNotificationTypeRequest() { };
 
             userNotificationsFilterRequest.Users.AddRange(card.Members);
             userNotificationsFilterRequest.Type = (int)EmailNotificationType.CardDueDateUpdated;
 
-            var registeredUsersResponse = await userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
+            var registeredUsersResponse = await _userNotificationServiceClient.GetUsersForNotificationTypeAsync(userNotificationsFilterRequest);
 
             var startDateIsNull = card.StartDate.Nanos == 0 && card.StartDate.Seconds == 0;
 

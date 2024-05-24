@@ -14,14 +14,23 @@ namespace Harmony.Notifications.Services.Notifications.Email
     public class MemberAddedToWorkspaceNotificationService : BaseNotificationService, IMemberAddedToWorkspaceNotificationService
     {
         private readonly IEmailService _emailNotificationService;
+        private readonly WorkspaceService.WorkspaceServiceClient _workspaceServiceClient;
+        private readonly UserService.UserServiceClient _userServiceClient;
+        private readonly UserNotificationService.UserNotificationServiceClient _userNotificationServiceClient;
         private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberAddedToWorkspaceNotificationService(
             IEmailService emailNotificationService,
             NotificationContext notificationContext,
+            WorkspaceService.WorkspaceServiceClient workspaceServiceClient,
+            UserService.UserServiceClient userServiceClient,
+            UserNotificationService.UserNotificationServiceClient userNotificationServiceClient,
             IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
+            _workspaceServiceClient = workspaceServiceClient;
+            _userServiceClient = userServiceClient;
+            _userNotificationServiceClient = userNotificationServiceClient;
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
@@ -51,17 +60,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid workspaceId, string userId, string workspaceUrl)
         {
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-
-            var workspaceServiceClient = new WorkspaceService.WorkspaceServiceClient(channel);
-            var workspaceResponse = await workspaceServiceClient.GetWorkspaceAsync(new WorkspaceFilterRequest
+            var workspaceResponse = await _workspaceServiceClient.GetWorkspaceAsync(new WorkspaceFilterRequest
             {
                 WorkspaceId = workspaceId.ToString()
             });
@@ -73,8 +72,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var workspace = workspaceResponse.Workspace;
 
-            var userServiceClient = new UserService.UserServiceClient(channel);
-            var userResponse = await userServiceClient.GetUserAsync(new UserFilterRequest
+            var userResponse = await _userServiceClient.GetUserAsync(new UserFilterRequest
             {
                 UserId = userId
             });
@@ -86,8 +84,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var user = userResponse.User;
 
-            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
-            var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
+            var userIsRegisteredResponse = await _userNotificationServiceClient.UserIsRegisterForNotificationAsync(
                               new UserIsRegisterForNotificationRequest()
                               {
                                   UserId = user.Id,

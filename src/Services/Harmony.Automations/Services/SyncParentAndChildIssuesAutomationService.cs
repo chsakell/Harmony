@@ -16,13 +16,13 @@ namespace Harmony.Automations.Services
     public class SyncParentAndChildIssuesAutomationService : ISyncParentAndChildIssuesAutomationService
     {
         private readonly INotificationsPublisher _notificationsPublisher;
-        private readonly AppEndpointConfiguration _endpointConfiguration;
+        private readonly CardService.CardServiceClient _cardServiceClient;
 
         public SyncParentAndChildIssuesAutomationService(INotificationsPublisher notificationsPublisher,
-            IOptions<AppEndpointConfiguration> endpointsConfiguration)
+            CardService.CardServiceClient cardServiceClient)
         {
             _notificationsPublisher = notificationsPublisher;
-            _endpointConfiguration = endpointsConfiguration.Value;
+            _cardServiceClient = cardServiceClient;
         }
 
         public async Task Process(SyncParentAndChildIssuesAutomationDto automation, CardMovedMessage notification)
@@ -32,18 +32,7 @@ namespace Harmony.Automations.Services
                 return;
             }
 
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-
-            var client = new CardService.CardServiceClient(channel);
-
-            var cardResponse = await client.GetCardAsync(
+            var cardResponse = await _cardServiceClient.GetCardAsync(
                               new CardFilterRequest { 
                                   CardId = notification.ParentCardId.ToString(),
                                   Children = true
@@ -71,7 +60,7 @@ namespace Harmony.Automations.Services
                 {
                     var currentBoardListId = card.BoardListId;
 
-                    var updateResult = await client.MoveCardToListAsync(
+                    var updateResult = await _cardServiceClient.MoveCardToListAsync(
                               new MoveCardToListRequest
                               {
                                   CardId = notification.ParentCardId.ToString(),

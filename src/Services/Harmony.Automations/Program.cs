@@ -26,6 +26,10 @@ namespace Harmony.Automations
             builder.Services.AddDbSeed();
             builder.Services.AddEndpointConfiguration(builder.Configuration);
 
+            var endpointConfiguration =
+                builder.Configuration.GetSection(nameof(AppEndpointConfiguration))
+                .Get<AppEndpointConfiguration>();
+
             // Add DbContexts
             builder.Services.AddDatabase(builder.Configuration);
 
@@ -38,11 +42,6 @@ namespace Harmony.Automations
 
             // Add Hangfire services.
             builder.Services.AddHangFire(builder.Configuration);
-            //builder.Services.AddHangfire(configuration => configuration
-            //    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-            //    .UseSimpleAssemblyNameTypeSerializer()
-            //    .UseRecommendedSerializerSettings()
-            //    .UseSqlServerStorage(builder.Configuration.GetConnectionString("HarmonyJobsConnection")));
 
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();
@@ -51,6 +50,30 @@ namespace Harmony.Automations
 
             // gRPC services
             builder.Services.AddGrpc();
+            builder.Services.AddGrpcClient<Api.Protos.CardService.CardServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
+            builder.Services.AddGrpcClient<Api.Protos.UserCardService.UserCardServiceClient>((services, options) =>
+            {
+                options.Address = new Uri(endpointConfiguration.HarmonyApiEndpoint);
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                return handler;
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

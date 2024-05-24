@@ -14,14 +14,23 @@ namespace Harmony.Notifications.Services.Notifications.Email
     public class MemberRemovedFromBoardNotificationService : BaseNotificationService, IMemberRemovedFromBoardNotificationService
     {
         private readonly IEmailService _emailNotificationService;
+        private readonly BoardService.BoardServiceClient _boardServiceClient;
+        private readonly UserService.UserServiceClient _userServiceClient;
+        private readonly UserNotificationService.UserNotificationServiceClient _userNotificationServiceClient;
         private readonly AppEndpointConfiguration _endpointConfiguration;
 
         public MemberRemovedFromBoardNotificationService(
             IEmailService emailNotificationService,
             NotificationContext notificationContext,
+            BoardService.BoardServiceClient boardServiceClient,
+            UserService.UserServiceClient userServiceClient,
+            UserNotificationService.UserNotificationServiceClient userNotificationServiceClient,
             IOptions<AppEndpointConfiguration> endpointsConfiguration) : base(notificationContext)
         {
             _emailNotificationService = emailNotificationService;
+            _boardServiceClient = boardServiceClient;
+            _userServiceClient = userServiceClient;
+            _userNotificationServiceClient = userNotificationServiceClient;
             _endpointConfiguration = endpointsConfiguration.Value;
         }
 
@@ -50,18 +59,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
         public async Task Notify(Guid boardId, string userId, string boardUrl)
         {
-            var httpHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            using var channel = GrpcChannel.ForAddress(_endpointConfiguration.HarmonyApiEndpoint,
-                new GrpcChannelOptions { HttpHandler = httpHandler });
-
-            var boardServiceClient = new BoardService.BoardServiceClient(channel);
-
-            var boardResponse = await boardServiceClient.GetBoardAsync(new BoardFilterRequest()
+            var boardResponse = await _boardServiceClient.GetBoardAsync(new BoardFilterRequest()
             {
                 BoardId = boardId.ToString(),
                 Workspace = true
@@ -74,8 +72,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
 
             var board = boardResponse.Board;
 
-            var userServiceClient = new UserService.UserServiceClient(channel);
-            var userResponse = await userServiceClient.GetUserAsync(
+            var userResponse = await _userServiceClient.GetUserAsync(
                               new UserFilterRequest
                               {
                                   UserId = userId
@@ -87,8 +84,7 @@ namespace Harmony.Notifications.Services.Notifications.Email
             }
             var user = userResponse.User;
 
-            var userNotificationServiceClient = new UserNotificationService.UserNotificationServiceClient(channel);
-            var userIsRegisteredResponse = await userNotificationServiceClient.UserIsRegisterForNotificationAsync(
+            var userIsRegisteredResponse = await _userNotificationServiceClient.UserIsRegisterForNotificationAsync(
                               new UserIsRegisterForNotificationRequest()
                               {
                                   UserId = userId,

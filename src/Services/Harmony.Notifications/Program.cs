@@ -22,6 +22,9 @@ namespace Harmony.Notifications
             builder.Host.UseSerilog(SeriLogger.Configure);
 
             builder.Services.AddEndpointConfiguration(builder.Configuration);
+            var endpointConfiguration =
+                builder.Configuration.GetSection(nameof(AppEndpointConfiguration))
+                .Get<AppEndpointConfiguration>();
 
             // Add DbContexts
             builder.Services.AddDatabase(builder.Configuration);
@@ -57,6 +60,9 @@ namespace Harmony.Notifications
             builder.Services.AddHostedService<EmailNotificationsConsumerHostedService>();
             builder.Services.AddHostedService<SearchIndexNotificationsConsumerHostedService>();
             builder.Services.AddMemoryCache();
+
+            // gRPC services
+            builder.Services.AddGrpcServices(endpointConfiguration);
 
             builder.Services.AddSingleton<RabbitMqHealthCheck>();
             builder.Services.AddHealthChecks()
