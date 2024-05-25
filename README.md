@@ -36,6 +36,9 @@ Docs are maintained at [docs.harmony-teams.com](https://docs.harmony-teams.com/)
 - Redis is optional and should be used in production environment in order to configure the SignalR Redis backplane & the Redis caching.
 - Configure the startup projects as explained on the [before-running](https://docs.harmony-teams.com/configuration/before-running) guide.
 
+## Contribute
+You are more than welcomed to contribute on Harmony's evolvement. Harmony will continue to grow in both technical & product directions so feel free to join this amazing journey. Read the [CONTRIBUTING](https://github.com/chsakell/Harmony/blob/main/CONTRIBUTING.md) section for more details.
+
 ## Support me
 You can support me :wave: using a [Sponsorship](https://github.com/sponsors/chsakell) or simply buy me a coffee :coffee: :pray:
 
