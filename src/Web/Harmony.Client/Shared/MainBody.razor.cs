@@ -1,6 +1,7 @@
 ﻿using Harmony.Client.Extensions;
 using Harmony.Client.Infrastructure.Configuration;
 using Harmony.Client.Infrastructure.Managers.Identity.Roles;
+using Harmony.Client.Infrastructure.Settings;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
@@ -18,6 +19,9 @@ namespace Harmony.Client.Shared
         public EventCallback OnDarkModeToggle { get; set; }
 
         [Parameter]
+        public EventCallback<bool> OnTransparentModeToggle { get; set; }
+
+        [Parameter]
         public EventCallback<bool> OnRightToLeftToggle { get; set; }
 
         private bool _drawerOpen = true;
@@ -32,10 +36,17 @@ namespace Harmony.Client.Shared
         private string LastName { get; set; }
         private string Email { get; set; }
         private string EmptyAvatarText { get; set; }
+        private bool _transparentBackground {  get; set; }
 
         public async Task ToggleDarkMode()
         {
             await OnDarkModeToggle.InvokeAsync();
+        }
+
+        public async Task ToggleTransparentMode(bool isTransparent)
+        {
+            _transparentBackground = isTransparent;
+            await OnTransparentModeToggle.InvokeAsync(isTransparent);
         }
 
         protected override async Task OnInitializedAsync()

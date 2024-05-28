@@ -12,7 +12,18 @@
         <CreateWorkspaceBoard />
         @* <LanguageSelector /> *@
         <MudTooltip Text="Toggle Dark Mode">
-            <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
+            <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Primary">
+                <MudMenuItem AutoClose="false">
+                    <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
+                </MudMenuItem>
+                <MudMenuItem AutoClose="false">
+                    <MudSwitch 
+                        @bind-Value:get="@_transparentBackground"
+                               @bind-Value:set="(val) => ToggleTransparentMode(val)"
+                        Label="Transparent" Color="Color.Success" />
+                </MudMenuItem>
+            </MudMenu>
+            
         </MudTooltip>
       @*   <MudTooltip Text="Fork Repository">
             <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/chsakell/harmony" Target="_blank" />

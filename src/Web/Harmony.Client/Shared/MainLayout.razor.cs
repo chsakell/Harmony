@@ -6,6 +6,14 @@ namespace Harmony.Client.Shared
     public partial class MainLayout : IDisposable
     {
         private MudTheme _currentTheme;
+        private bool _transparentBackground {  get; set; }
+
+        public string GetWrapperClasss()
+        {
+            var isDarkTheme = _currentTheme == HarmonyTheme.DarkTheme;
+
+            return _transparentBackground ?  (isDarkTheme ? "dark" : "default") + "-transparent " : "default-harmony";
+        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -20,6 +28,11 @@ namespace Harmony.Client.Shared
             _currentTheme = isDarkMode
                 ? HarmonyTheme.DefaultTheme
                 : HarmonyTheme.DarkTheme;
+        }
+
+        private void TransparentMode(bool isTransparent)
+        {
+            _transparentBackground = isTransparent;
         }
 
         public void Dispose()

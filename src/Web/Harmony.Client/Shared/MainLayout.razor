@@ -4,23 +4,32 @@
 <MudThemeProvider Theme="_currentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
-<AuthorizeView>
-    <NotAuthorized>
-        <MudAppBar Elevation="4" Color="Color.Primary">
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkMode())" />
-        </MudAppBar>
-        <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
-            <MudPaper Elevation="25" Class="pa-8" Style="width: 500px;">
-                @Body
-            </MudPaper>
-        </MudContainer>
-    </NotAuthorized>
-    <Authorized>
-        <MudLayout>
-            <MainBody OnDarkModeToggle="@DarkMode">
-                @Body
-            </MainBody>
-        </MudLayout>
-    </Authorized>
-</AuthorizeView>
+<div class="@GetWrapperClasss()">
+    <AuthorizeView>
+        <NotAuthorized>
+            <MudAppBar Elevation="4" Color="Color.Primary">
+                <MudSpacer />
+                <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default">
+                    <MudMenuItem AutoClose="false">
+                        <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkMode())" />
+                    </MudMenuItem>
+                    <MudMenuItem AutoClose="false">
+                        <MudSwitch @bind-Value="@_transparentBackground" Label="Transparent" Color="Color.Success" />
+                    </MudMenuItem>
+                </MudMenu>
+            </MudAppBar>
+            <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
+                <MudPaper Elevation="25" Class="pa-8" Style="width: 500px;">
+                    @Body
+                </MudPaper>
+            </MudContainer>
+        </NotAuthorized>
+        <Authorized>
+            <MudLayout>
+                <MainBody OnDarkModeToggle="@DarkMode" OnTransparentModeToggle="@TransparentMode">
+                    @Body
+                </MainBody>
+            </MudLayout>
+        </Authorized>
+    </AuthorizeView>
+</div>
