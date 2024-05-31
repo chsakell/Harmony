@@ -11,7 +11,8 @@
         <AppSearch />
         <CreateWorkspaceBoard />
         @* <LanguageSelector /> *@
-        <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default">
+        <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default"
+                 AnchorOrigin="Origin.BottomCenter">
             <MudMenuItem AutoClose="false">
                 <MudSwitch @bind-Value:get="@DarkModelEnabled" @bind-Value:set="@((isDark) => SetDarkMode(isDark))" Label="Dark mode" Color="Color.Success" />
             </MudMenuItem>
@@ -27,7 +28,8 @@
     </MudHidden>
     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
         @* <LanguageSelector /> *@
-        <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default">
+        <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default"
+                 AnchorOrigin="Origin.BottomCenter">
             <MudMenuItem AutoClose="false">
                 <MudSwitch @bind-Value:get="@DarkModelEnabled" @bind-Value:set="@((isDark) => SetDarkMode(isDark))" Label="Dark mode" Color="Color.Success" />
             </MudMenuItem>

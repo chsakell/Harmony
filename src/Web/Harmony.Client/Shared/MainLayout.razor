@@ -9,7 +9,8 @@
         <NotAuthorized>
             <MudAppBar Elevation="4" Color="Color.Primary">
                 <MudSpacer />
-                <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default">
+                <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default"
+                         AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopRight">
                     <MudMenuItem AutoClose="false">
                         <MudSwitch @bind-Value:get="@_darkMode" @bind-Value:set="@((isDark) => SetMode(isDark))" Label="Dark mode" Color="Color.Success" />
                     </MudMenuItem>
@@ -27,11 +28,10 @@
         </NotAuthorized>
         <Authorized>
             <MudLayout>
-                <MainBody
-                    DarkModelEnabled="_darkMode"
-                    BlendUiEnabled="_blendUIEnabled"
-                    OnDarkMode="@((isDark) => SetMode(isDark))" 
-                    OnBlendUI="@((blendUiEnabled) => SetBlendUi(blendUiEnabled))">
+                <MainBody DarkModelEnabled="_darkMode"
+                          BlendUiEnabled="_blendUIEnabled"
+                          OnDarkMode="@((isDark) => SetMode(isDark))"
+                          OnBlendUI="@((blendUiEnabled) => SetBlendUi(blendUiEnabled))">
                     @Body
                 </MainBody>
             </MudLayout>
