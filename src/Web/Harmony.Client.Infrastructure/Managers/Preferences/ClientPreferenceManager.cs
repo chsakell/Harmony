@@ -35,6 +35,32 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
             return false;
         }
 
+        public async Task<bool> SetDarkModeAsync(bool isDark)
+        {
+            var preference = await GetPreference() as ClientPreference;
+            if (preference != null)
+            {
+                preference.IsDarkMode = isDark;
+                await SetPreference(preference);
+                return preference.IsDarkMode;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> SetBlendUiAsync(bool blendUiEnabled)
+        {
+            var preference = await GetPreference() as ClientPreference;
+            if (preference != null)
+            {
+                preference.BlendUiEnabled = blendUiEnabled;
+                await SetPreference(preference);
+                return preference.BlendUiEnabled.Value;
+            }
+
+            return false;
+        }
+
         public async Task<IResult> ChangeLanguageAsync(string languageCode)
         {
             var preference = await GetPreference() as ClientPreference;
@@ -64,6 +90,16 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
                 if (preference.IsDarkMode == true) return HarmonyTheme.DarkTheme;
             }
             return HarmonyTheme.DefaultTheme;
+        }
+
+        public async Task<bool> IsBlendUiEnabled()
+        {
+            var preference = await GetPreference() as ClientPreference;
+            if (preference != null)
+            {
+                return preference.BlendUiEnabled ?? true;
+            }
+            return true;
         }
 
         public async Task<IPreference> GetPreference()

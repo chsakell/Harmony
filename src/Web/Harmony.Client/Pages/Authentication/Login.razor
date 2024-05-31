@@ -29,9 +29,9 @@
                           @bind-Value="_tokenModel.Password" For="@(() => _tokenModel.Password)"
                           InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
         </MudItem>
-        <MudItem xs="12" Class="d-flex justify-space-between align-center">
+        @* <MudItem xs="12" Class="d-flex justify-space-between align-center">
             <MudCheckBox T="bool" Label="Remember me?" Color="Color.Primary" Class="ml-n1"></MudCheckBox> <MudLink Href="/account/forgot-password">Forgot password?</MudLink>
-        </MudItem>
+        </MudItem> *@
         <MudItem xs="12" Class="d-flex justify-center">
             @if (_loggingIn)
             {

@@ -16,10 +16,16 @@ namespace Harmony.Client.Shared
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public EventCallback OnDarkModeToggle { get; set; }
+        public EventCallback<bool> OnDarkMode { get; set; }
 
         [Parameter]
-        public EventCallback<bool> OnTransparentModeToggle { get; set; }
+        public bool DarkModelEnabled { get; set; }
+
+        [Parameter]
+        public bool BlendUiEnabled { get; set; }
+
+        [Parameter]
+        public EventCallback<bool> OnBlendUI { get; set; }
 
         [Parameter]
         public EventCallback<bool> OnRightToLeftToggle { get; set; }
@@ -36,17 +42,15 @@ namespace Harmony.Client.Shared
         private string LastName { get; set; }
         private string Email { get; set; }
         private string EmptyAvatarText { get; set; }
-        private bool _transparentBackground {  get; set; }
 
-        public async Task ToggleDarkMode()
+        public async Task SetDarkMode(bool isDarkModel)
         {
-            await OnDarkModeToggle.InvokeAsync();
+            await OnDarkMode.InvokeAsync(isDarkModel);
         }
 
-        public async Task ToggleTransparentMode(bool isTransparent)
+        public async Task SetBlendUiMode(bool blendUiActive)
         {
-            _transparentBackground = isTransparent;
-            await OnTransparentModeToggle.InvokeAsync(isTransparent);
+            await OnBlendUI.InvokeAsync(blendUiActive);
         }
 
         protected override async Task OnInitializedAsync()

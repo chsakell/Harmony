@@ -56,6 +56,10 @@ function resetAppSearchWidth() {
     }
 }
 
+function setBodyCssClass(cssClass) {
+    document.body.className = cssClass;
+}
+
 window.clipboardCopy = {
     copyText: function (text) {
         navigator.clipboard.writeText(text).then(function () {

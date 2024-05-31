@@ -11,10 +11,11 @@
                 <MudSpacer />
                 <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default">
                     <MudMenuItem AutoClose="false">
-                        <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkMode())" />
+                        <MudSwitch @bind-Value:get="@_darkMode" @bind-Value:set="@((isDark) => SetMode(isDark))" Label="Dark mode" Color="Color.Success" />
                     </MudMenuItem>
                     <MudMenuItem AutoClose="false">
-                        <MudSwitch @bind-Value="@_transparentBackground" Label="Transparent" Color="Color.Success" />
+                        <MudSwitch @bind-Value:get="@_blendUIEnabled"
+                                   @bind-Value:set="@((blendUiEnabled) => SetBlendUi(blendUiEnabled))" Label="Blend UI" Color="Color.Success" />
                     </MudMenuItem>
                 </MudMenu>
             </MudAppBar>
@@ -26,7 +27,11 @@
         </NotAuthorized>
         <Authorized>
             <MudLayout>
-                <MainBody OnDarkModeToggle="@DarkMode" OnTransparentModeToggle="@TransparentMode">
+                <MainBody
+                    DarkModelEnabled="_darkMode"
+                    BlendUiEnabled="_blendUIEnabled"
+                    OnDarkMode="@((isDark) => SetMode(isDark))" 
+                    OnBlendUI="@((blendUiEnabled) => SetBlendUi(blendUiEnabled))">
                     @Body
                 </MainBody>
             </MudLayout>
