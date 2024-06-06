@@ -22,11 +22,23 @@ else
         <MudToolBar WrapContent="true">
             @if (!KanbanStore.IsRetrospective)
             {
-                <MudButton Variant="Variant.Text" OnClick="OpenCreateBoardListModal" StartIcon="@Icons.Material.Outlined.Checklist">Create list</MudButton>
-                @if (KanbanStore.KanbanLists.Count() > 1)
-                {
-                    <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">Reorder lists</MudButton>
-                }
+                <MudMenu AnchorOrigin="Origin.BottomRight" Size="Size.Small" TransformOrigin="Origin.TopRight" Icon="@Icons.Material.Filled.MoreVert" IconColor="Color.Secondary">
+                    <ActivatorContent>
+                        <MudButton StartIcon="@Icons.Material.Outlined.ViewColumn" Variant="Variant.Text" Color="Color.Default">LISTS</MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem>
+                            <MudButton Variant="Variant.Text" OnClick="OpenCreateBoardListModal" StartIcon="@Icons.Material.Outlined.AddChart">CREATE</MudButton>
+                        </MudMenuItem>
+                        @if (KanbanStore.KanbanLists.Count() > 1)
+                        {
+                            <MudMenuItem>
+                                <MudButton Variant="Variant.Text" OnClick="ReorderLists" StartIcon="@Icons.Material.Outlined.Reorder">REORDER</MudButton>
+                            </MudMenuItem>
+                        }
+                    </ChildContent>
+                </MudMenu>
+
                 @if (KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum)
                 {
                     <MudButton Variant="Variant.Text" OnClick="ViewBacklog" StartIcon="@Icons.Material.Outlined.ListAlt">Backlog</MudButton>
