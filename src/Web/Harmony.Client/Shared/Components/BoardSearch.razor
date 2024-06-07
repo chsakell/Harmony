@@ -1,13 +1,13 @@
 ﻿@using Harmony.Application.DTO
+@using Harmony.Application.Features.Boards.Queries.GetBoardUsers
 @using Harmony.Client.Infrastructure.Helper
 <MudToolBar WrapContent="true" Dense="true">
-
     <MudSpacer />
     @if (IssueTypes != null && IssueTypes.Any())
     {
         <MudSelect @bind-Value="_selectedIssueType"
                    @bind-SelectedValues:get="_selectedIssueTypes"
-                   @bind-SelectedValues:set="SetFromIssueTypes"
+                   @bind-SelectedValues:set="SetIssueTypes"
                    MultiSelection="true"
                    ToStringFunc="@issueTypeConverter" Clearable="true"
                    T="IssueTypeDto" Label="Issue types"
@@ -20,6 +20,32 @@
                         <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
                                  Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
                         <MudText>@type.Summary</MudText>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect @bind-SelectedValues:get="_selectedAssignees"
+                   @bind-SelectedValues:set="SetAssignees"
+                   MultiSelection="true"
+                   ToStringFunc="@assigneesConverter"
+                   Clearable="true"
+                   T="UserBoardResponse" Label="Assigned to"
+                   AnchorOrigin="Origin.BottomCenter">
+            @foreach (var member in BoardMembers)
+            {
+                <MudSelectItem Value="member">
+                    <MudStack Row="true">
+                        @if (string.IsNullOrEmpty(member.ProfilePicture))
+                        {
+                            <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                        }
+                        else
+                        {
+                            <MudAvatar Size="Size.Small" Color="Color.Default">
+                                <MudImage Src="@(_clientConfiguration.GetServerResource(member.ProfilePicture))" title="@member.FullName" />
+                            </MudAvatar>
+                        }
+                        <MudText>@member.FullName</MudText>
                     </MudStack>
                 </MudSelectItem>
             }

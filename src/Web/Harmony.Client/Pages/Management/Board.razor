@@ -90,9 +90,13 @@ else
         </MudToolBar>
         @if (_filtersVisible)
         {
-            <BoardSearch IssueTypes="KanbanStore.Board.IssueTypes"
+            <BoardSearch BoardId="Guid.Parse(Id)"
+                         IssueTypes="KanbanStore.Board.IssueTypes"
                          SelectedIssueTypeIds="_selectedIssueTypeIds"
-                         SelectedIssueTypeIdsChanged="FilterIssueTypes"></BoardSearch>
+                         SelectedIssueTypeIdsChanged="FilterIssueTypes"
+                         BoardMembers="_boardMembers"
+                         SelectedAssignees="_selectedAssignees"
+                         SelectedAssigneesChanged="FilterAssignees"></BoardSearch>
         }
     </MudPaper>
     @if (!KanbanStore.KanbanLists.Any())

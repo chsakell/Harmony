@@ -205,7 +205,8 @@ namespace Harmony.Infrastructure.Services.Management
                 page: 1,
                 maxCardsPerList: query.MaxCardsPerList,
                 sprintId: sprintId,
-                issueTypeIds: query.IssueTypeIds);
+                issueTypeIds: query.IssueTypeIds,
+                assignees: query.Assignees);
 
             foreach (var boardList in board.Lists)
             {
@@ -550,7 +551,8 @@ namespace Harmony.Infrastructure.Services.Management
             List<Guid> boardListIds, 
             int page,
             int maxCardsPerList, Guid? sprintId = null,
-            List<Guid>? issueTypeIds = null)
+            List<Guid>? issueTypeIds = null,
+            List<string>? assignees = null)
         {
             // cards
             var cardFilter = new CardItemFilterSpecification()
@@ -561,6 +563,7 @@ namespace Harmony.Infrastructure.Services.Management
                 SkipChildren = true,
                 IncludeCheckLists = true,
                 IssueTypes = issueTypeIds,
+                Assignees = assignees
             };
 
             if (sprintId.HasValue)

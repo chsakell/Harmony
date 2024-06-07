@@ -16,6 +16,7 @@ namespace Harmony.Application.Specifications.Cards
         public List<Guid>? IssueTypes { get; set; }
         public List<Guid>? BoardLists { get; set; }
         public List<Guid>? Sprints { get; set; }
+        public List<string>? Assignees { get; set; }
         public string Title { get; set; }
         public List<CardStatus>? Statuses { get; set; }
         public bool SkipChildren { get; set; }
@@ -26,6 +27,7 @@ namespace Harmony.Application.Specifications.Cards
         public bool IncludeAttachments { get; set; }
         public bool IncludeLinks { get; set; }
         public bool IncludeChildren { get; set; }
+        public bool IncludeMembers { get; set; }
 
         public void Build()
         {
@@ -74,6 +76,11 @@ namespace Harmony.Application.Specifications.Cards
             {
                 Criteria = And(card => card.ParentCardId == null);
             }
+
+            if (Assignees != null && Assignees.Any())
+            {
+                Criteria = And(card => card.Members.Any(uc => Assignees.Contains(uc.UserId)));
+            }
         }
 
         private void AddInclude()
@@ -107,6 +114,11 @@ namespace Harmony.Application.Specifications.Cards
             if (IncludeChildren)
             {
                 Includes.Add(card => card.Children);
+            }
+
+            if(IncludeMembers)
+            {
+                Includes.Add(card => card.Members);
             }
         }
     }

@@ -2,6 +2,7 @@
 using Harmony.Application.Events;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
+using Harmony.Application.Features.Boards.Queries.GetBoardUsers;
 using Harmony.Application.Features.Cards.Commands.CreateCard;
 using Harmony.Application.Features.Cards.Commands.MoveCard;
 using Harmony.Application.Features.Cards.Commands.UpdateCardStatus;
@@ -52,7 +53,9 @@ namespace Harmony.Client.Pages.Management
         private IDisposable registration;
 
         private bool _filtersVisible;
-        private List<Guid> _selectedIssueTypeIds = new ();
+        private List<Guid> _selectedIssueTypeIds = new();
+        private List<string> _selectedAssignees = new();
+        private List<UserBoardResponse> _boardMembers = new();
         private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum &&
             KanbanStore.Board.ActiveSprints.Count == 0;
 
@@ -69,19 +72,13 @@ namespace Harmony.Client.Pages.Management
             _selectedIssueTypeIds = issueTypes;
 
             await ReloadBoard();
-            await Task.Run(_dropContainer.Refresh);
         }
 
-        private IEnumerable<CardDto> FilteredCards(IEnumerable<CardDto> cards)
+        private async Task FilterAssignees(List<string> assignees)
         {
-            IEnumerable<CardDto> filteredCards = cards;
+            _selectedAssignees = assignees;
 
-            if(_selectedIssueTypeIds.Any())
-            {
-                filteredCards = filteredCards.Where(c => _selectedIssueTypeIds.Contains(c.IssueType.Id));
-            }
-
-            return filteredCards;
+            await ReloadBoard();
         }
 
         private bool HideCard(CardDto card)
@@ -96,6 +93,8 @@ namespace Harmony.Client.Pages.Management
                 await _hubSubscriptionManager.StopListeningForBoardEvents(Id);
             }
         }
+
+
 
         protected async override Task OnParametersSetAsync()
         {
@@ -116,6 +115,24 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if(firstRender)
+            {
+                await LoadBoardUsers();
+            }
+        }
+
+        private async Task LoadBoardUsers()
+        {
+            var boardMembersResult = await _boardManager.GetBoardMembersAsync(Id);
+
+            if (boardMembersResult.Succeeded)
+            {
+                _boardMembers = boardMembersResult.Data;
+            }
+        }
+
         private void ToggleFilters()
         {
             _filtersVisible = !_filtersVisible;
@@ -129,6 +146,7 @@ namespace Harmony.Client.Pages.Management
                 MaxCardsPerList = _listCardsSize,
                 SprintId = _selectedSprintId,
                 IssueTypeIds = _selectedIssueTypeIds,
+                Assignees = _selectedAssignees,
             };
 
             var result = await _boardManager.GetBoardAsync(query);
@@ -171,8 +189,8 @@ namespace Harmony.Client.Pages.Management
         private async Task ReloadBoard()
         {
             await CleanBoard(false);
-            KanbanStore.SetLoading(true);
             await LoadBoard();
+            //_dropContainer.Refresh();
         }
 
         private async Task RegisterBoardEvents()

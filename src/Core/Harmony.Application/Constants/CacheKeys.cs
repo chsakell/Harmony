@@ -7,6 +7,7 @@ namespace Harmony.Application.Constants
         public static string Board(Guid boardId) => $"board-{boardId}";
         public static TimeSpan BoardExpiration => TimeSpan.FromMinutes(2);
 
+        public static string BoardAssignees(Guid boardId) => $"board-assignees-{boardId}";
         public static string BoardMembers(Guid boardId) => $"board-members-{boardId}";
         public static string BoardLists(Guid boardId) => $"board-lists-{boardId}";
         public static string BoardLabels(Guid boardId) => $"board-labels-{boardId}";

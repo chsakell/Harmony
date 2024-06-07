@@ -92,7 +92,7 @@ namespace Harmony.Application.Features.Lists.Queries.LoadBoardList
 
         private async Task<List<UserResponse>> GetBoardUsers(Board board)
         {
-            return await _cacheService.GetOrCreateAsync(CacheKeys.BoardMembers(board.Id), async () =>
+            return await _cacheService.GetOrCreateAsync(CacheKeys.BoardAssignees(board.Id), async () =>
             {
                 var cards = board.Lists.SelectMany(l => l.Cards);
 
