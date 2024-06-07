@@ -1,4 +1,5 @@
-﻿using Harmony.Application.DTO;
+﻿using Google.Protobuf.Collections;
+using Harmony.Application.DTO;
 using Harmony.Application.Events;
 using Harmony.Application.Extensions;
 using Harmony.Application.Features.Boards.Queries.Get;
@@ -56,6 +57,7 @@ namespace Harmony.Client.Pages.Management
         private List<Guid> _selectedIssueTypeIds = new();
         private List<string> _selectedAssignees = new();
         private List<UserBoardResponse> _boardMembers = new();
+        private List<Guid> _selectedLists = new();
         private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum &&
             KanbanStore.Board.ActiveSprints.Count == 0;
 
@@ -77,6 +79,13 @@ namespace Harmony.Client.Pages.Management
         private async Task FilterAssignees(List<string> assignees)
         {
             _selectedAssignees = assignees;
+
+            await ReloadBoard();
+        }
+
+        private async Task FilterLists(List<Guid> lists)
+        {
+            _selectedLists = lists;
 
             await ReloadBoard();
         }
@@ -147,6 +156,7 @@ namespace Harmony.Client.Pages.Management
                 SprintId = _selectedSprintId,
                 IssueTypeIds = _selectedIssueTypeIds,
                 Assignees = _selectedAssignees,
+                ListIds = _selectedLists
             };
 
             var result = await _boardManager.GetBoardAsync(query);
@@ -190,7 +200,6 @@ namespace Harmony.Client.Pages.Management
         {
             await CleanBoard(false);
             await LoadBoard();
-            //_dropContainer.Refresh();
         }
 
         private async Task RegisterBoardEvents()

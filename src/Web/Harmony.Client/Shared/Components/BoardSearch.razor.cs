@@ -27,23 +27,32 @@ namespace Harmony.Client.Shared.Components
         [Parameter]
         public List<string> SelectedAssignees { get; set; }
 
-        private IssueTypeDto _selectedIssueType;
-        private IEnumerable<IssueTypeDto> _selectedIssueTypes { get; set; } = Enumerable.Empty<IssueTypeDto>();
-        
-        private IEnumerable<UserBoardResponse> _selectedAssignees { get; set; } = Enumerable.Empty<UserBoardResponse>();
+        [Parameter]
+        public IEnumerable<BoardListDto> BoardLists { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        [Parameter]
+        public List<Guid> SelectedLists { get; set; }
+
+        [Parameter]
+        public EventCallback<List<Guid>> SelectedListsChanged { get; set; }
+
+        private IssueTypeDto _selectedIssueType;
+        
+        private IEnumerable<IssueTypeDto> _selectedIssueTypes { get; set; } = Enumerable.Empty<IssueTypeDto>();
+        private IEnumerable<UserBoardResponse> _selectedAssignees { get; set; } = Enumerable.Empty<UserBoardResponse>();
+        private IEnumerable<BoardListDto> _selectedLists { get; set; } = Enumerable.Empty<BoardListDto>();
+
+        protected override void OnInitialized()
         {
             _selectedIssueTypes = IssueTypes.Where(it => SelectedIssueTypeIds.Contains(it.Id));
             _selectedAssignees = BoardMembers.Where(a => SelectedAssignees.Contains(a.Id));
+            _selectedLists = BoardLists.Where(it => SelectedLists.Contains(it.Id));
         }
 
         #region Issue Types
 
-        private async Task SetIssueTypes(IEnumerable<IssueTypeDto> issueTypes)
+        private async Task SetIssueTypes()
         {
-            _selectedIssueTypes = issueTypes;
-
             await SelectedIssueTypeIdsChanged.InvokeAsync(_selectedIssueTypes.Select(t => t.Id).ToList());
         }
 
@@ -56,10 +65,8 @@ namespace Harmony.Client.Shared.Components
 
         #region Assignees
 
-        private async Task SetAssignees(IEnumerable<UserBoardResponse> assignees)
+        private async Task SetAssignees()
         {
-            _selectedAssignees = assignees;
-
             await SelectedAssigneesChanged.InvokeAsync(_selectedAssignees.Select(a => a.Id).ToList());
         }
 
@@ -68,6 +75,25 @@ namespace Harmony.Client.Shared.Components
             return p?.UserName;
         };
 
+
+        #endregion
+
+        #region Lists
+
+        private string GetMultiSelectionBoardListsText(List<string> selectedValues)
+        {
+            if (!_selectedLists.Any())
+            {
+                return string.Empty;
+            }
+
+            return string.Join(", ", _selectedLists.Select(x => x.Title));
+        }
+
+        private async Task SetLists()
+        {
+            await SelectedListsChanged.InvokeAsync(_selectedLists.Select(a => a.Id).ToList());
+        }
 
         #endregion
     }

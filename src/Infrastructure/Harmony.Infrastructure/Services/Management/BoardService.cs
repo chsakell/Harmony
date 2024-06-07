@@ -200,8 +200,9 @@ namespace Harmony.Infrastructure.Services.Management
 
         public async Task<Board> LoadBoard(Board board, GetBoardQuery query, Guid? sprintId = null)
         {
+            var lists = query.ListIds.Count != 0 ? query.ListIds : board.Lists.Select(x => x.Id);
             var cards = await GetBoardListCards(board,
-                boardListIds: board.Lists.Select(x => x.Id).ToList(),
+                boardListIds: lists.ToList(),
                 page: 1,
                 maxCardsPerList: query.MaxCardsPerList,
                 sprintId: sprintId,

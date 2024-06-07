@@ -13,5 +13,6 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         public Guid? SprintId { get; set; }
         public List<Guid>? IssueTypeIds { get; set; }
         public List<string> Assignees { get; set; }
+        public List<Guid>? ListIds { get; set; }
     }
 }

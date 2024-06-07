@@ -96,7 +96,10 @@ else
                          SelectedIssueTypeIdsChanged="FilterIssueTypes"
                          BoardMembers="_boardMembers"
                          SelectedAssignees="_selectedAssignees"
-                         SelectedAssigneesChanged="FilterAssignees"></BoardSearch>
+                         SelectedAssigneesChanged="FilterAssignees"
+                         BoardLists="KanbanStore.KanbanLists"
+                         SelectedLists="_selectedLists"
+                         SelectedListsChanged="FilterLists"></BoardSearch>
         }
     </MudPaper>
     @if (!KanbanStore.KanbanLists.Any())
