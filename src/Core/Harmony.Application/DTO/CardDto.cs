@@ -31,5 +31,6 @@ namespace Harmony.Application.DTO
         public Guid? ParentCardId { get; set; }
         public short? StoryPoints { get; set; }
 		public List<LinkDetailsDto> Links { get; set; }
+		public bool Hidden { get; set; }
     }
 }

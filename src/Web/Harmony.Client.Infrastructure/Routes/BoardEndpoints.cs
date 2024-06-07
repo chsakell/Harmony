@@ -18,6 +18,11 @@ namespace Harmony.Client.Infrastructure.Routes
             return $"{Index}{query.BoardId}/?MaxCardsPerList={query.MaxCardsPerList}{sprintParam}";
         }
 
+        public static string LoadBoard(GetBoardQuery query)
+        {
+            return $"{Index}{query.BoardId}/load/";
+        }
+
         public static string GetInfo(string boardId)
         {
             return $"{Index}{boardId}/info/";

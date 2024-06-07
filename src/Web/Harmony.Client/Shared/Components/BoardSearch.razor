@@ -1,0 +1,28 @@
+﻿@using Harmony.Application.DTO
+@using Harmony.Client.Infrastructure.Helper
+<MudToolBar WrapContent="true" Dense="true">
+
+    <MudSpacer />
+    @if (IssueTypes != null && IssueTypes.Any())
+    {
+        <MudSelect @bind-Value="_selectedIssueType"
+                   @bind-SelectedValues:get="_selectedIssueTypes"
+                   @bind-SelectedValues:set="SetFromIssueTypes"
+                   MultiSelection="true"
+                   ToStringFunc="@issueTypeConverter" Clearable="true"
+                   T="IssueTypeDto" Label="Issue types"
+                   Placeholder="Leave blank to match all"
+                   AnchorOrigin="Origin.BottomCenter">
+            @foreach (var type in IssueTypes)
+            {
+                <MudSelectItem Value="type">
+                    <MudStack Row="true">
+                        <MudIcon Icon="@ColorHelper.GetIssueTypeIcon(type.Summary)"
+                                 Color="ColorHelper.GetIssueTypeColor(type.Summary)" />
+                        <MudText>@type.Summary</MudText>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
+    }
+</MudToolBar>

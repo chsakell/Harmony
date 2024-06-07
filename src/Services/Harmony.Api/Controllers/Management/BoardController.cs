@@ -38,8 +38,8 @@ namespace Harmony.Api.Controllers.Management
             return Ok(await _mediator.Send(command));
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> LoadBoard(Guid id, [FromQuery] GetBoardQuery query)
+        [HttpPost("{id:guid}/load")]
+        public async Task<IActionResult> LoadBoard(Guid id, [FromBody] GetBoardQuery query)
         {
             query.BoardId = id;
             return Ok(await _mediator.Send(query));

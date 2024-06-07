@@ -22,6 +22,7 @@ using Harmony.Application.Specifications.Cards;
 using Harmony.Application.DTO.Summaries;
 using Harmony.Domain.Extensions;
 using Harmony.Application.Contracts.Services.Caching;
+using Harmony.Application.Features.Boards.Queries.Get;
 
 namespace Harmony.Infrastructure.Services.Management
 {
@@ -197,10 +198,14 @@ namespace Harmony.Infrastructure.Services.Management
             return board;
         }
 
-        public async Task<Board> LoadBoard(Board board, int maxCardsPerList, Guid? sprintId = null)
+        public async Task<Board> LoadBoard(Board board, GetBoardQuery query, Guid? sprintId = null)
         {
             var cards = await GetBoardListCards(board,
-                 board.Lists.Select(x => x.Id).ToList(), 1, maxCardsPerList, sprintId);
+                boardListIds: board.Lists.Select(x => x.Id).ToList(),
+                page: 1,
+                maxCardsPerList: query.MaxCardsPerList,
+                sprintId: sprintId,
+                issueTypeIds: query.IssueTypeIds);
 
             foreach (var boardList in board.Lists)
             {
@@ -541,8 +546,11 @@ namespace Harmony.Infrastructure.Services.Management
             return cards;
         }
 
-        private async Task<List<Card>> GetBoardListCards(Board board, List<Guid> boardListIds, int page,
-            int maxCardsPerList, Guid? sprintId = null)
+        private async Task<List<Card>> GetBoardListCards(Board board, 
+            List<Guid> boardListIds, 
+            int page,
+            int maxCardsPerList, Guid? sprintId = null,
+            List<Guid>? issueTypeIds = null)
         {
             // cards
             var cardFilter = new CardItemFilterSpecification()
@@ -552,6 +560,7 @@ namespace Harmony.Infrastructure.Services.Management
                 BoardLists = boardListIds,
                 SkipChildren = true,
                 IncludeCheckLists = true,
+                IssueTypes = issueTypeIds,
             };
 
             if (sprintId.HasValue)

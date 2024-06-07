@@ -97,9 +97,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Application.SourceC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Caching", "src\Infrastructure\Harmony.Caching\Harmony.Caching.csproj", "{29DE5F2B-1A89-4D9F-9D9D-94A72556467C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Persistence.Migrations.SqlServer", "src\Infrastructure\Harmony.Persistence.Migrations.SqlServer\Harmony.Persistence.Migrations.SqlServer.csproj", "{AF4E738A-49A2-4BFC-AB11-CB8869C316E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Persistence.Migrations.SqlServer", "src\Infrastructure\Harmony.Persistence.Migrations.SqlServer\Harmony.Persistence.Migrations.SqlServer.csproj", "{AF4E738A-49A2-4BFC-AB11-CB8869C316E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony.Persistence.Migrations.PostgreSql", "src\Infrastructure\Harmony.Persistence.Migrations.PostgreSql\Harmony.Persistence.Migrations.PostgreSql.csproj", "{951DF9EE-277C-44B9-9EF5-128236F6A4E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony.Persistence.Migrations.PostgreSql", "src\Infrastructure\Harmony.Persistence.Migrations.PostgreSql\Harmony.Persistence.Migrations.PostgreSql.csproj", "{951DF9EE-277C-44B9-9EF5-128236F6A4E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

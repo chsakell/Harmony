@@ -18,9 +18,40 @@ namespace Harmony.Client.Infrastructure.Store.Kanban
 
         public void LoadBoard(GetBoardResponse board)
         {
+            FillMissingPositions(board);
+
             _board = board;
 
             _boardLoading = false;
+        }
+
+        private void FillMissingPositions(GetBoardResponse board)
+        {
+            foreach (var list in board.Lists)
+            {
+                if(!list.Cards.Any())
+                {
+                    continue;
+                }
+
+                var cardPositions = list.Cards.Select(c => (int)c.Position).OrderBy(p => p);
+
+                var missingPositions = Enumerable.Range(0, cardPositions.Max()).Except(cardPositions);
+
+                if(missingPositions.Any())
+                {
+                    foreach(var position in  missingPositions)
+                    {
+                        list.Cards.Add(new CardDto()
+                        {
+                            Id = Guid.NewGuid(),
+                            BoardListId = list.Id,
+                            Position = (short)position,
+                            Hidden = true,
+                        });
+                    }
+                }
+            }
         }
 
         public void SetLoading(bool loading)

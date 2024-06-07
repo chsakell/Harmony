@@ -116,7 +116,7 @@ namespace Harmony.Application.Features.Boards.Queries.Get
             }
 
             var userBoard = await _boardService
-                .LoadBoard(board, request.MaxCardsPerList, selectedSprintId);
+                .LoadBoard(board, request, selectedSprintId);
 
             var result = _mapper.Map<GetBoardResponse>(userBoard);
 

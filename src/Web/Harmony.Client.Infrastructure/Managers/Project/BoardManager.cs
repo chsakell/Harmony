@@ -69,7 +69,9 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 
 		public async Task<IResult<GetBoardResponse>> GetBoardAsync(GetBoardQuery query)
         {
-            var response = await _httpClient.GetAsync(Routes.BoardEndpoints.Get(query));
+            var response = await _httpClient
+                .PostAsJsonAsync(Routes.BoardEndpoints.LoadBoard(query), query);
+
             return await response.ToResult<GetBoardResponse>();
         }
 

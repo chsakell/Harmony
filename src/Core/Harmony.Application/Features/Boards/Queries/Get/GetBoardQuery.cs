@@ -11,5 +11,6 @@ namespace Harmony.Application.Features.Boards.Queries.Get
         public Guid BoardId { get; set; }
         public int MaxCardsPerList { get; set; }
         public Guid? SprintId { get; set; }
+        public List<Guid>? IssueTypeIds { get; set; }
     }
 }

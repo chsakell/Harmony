@@ -51,6 +51,8 @@ namespace Harmony.Client.Pages.Management
         private string _stopListeningBoardId = string.Empty;
         private IDisposable registration;
 
+        private bool _filtersVisible;
+        private List<Guid> _selectedIssueTypeIds = new ();
         private bool AddCardsDisabled => KanbanStore.Board.Type == Domain.Enums.BoardType.Scrum &&
             KanbanStore.Board.ActiveSprints.Count == 0;
 
@@ -60,6 +62,31 @@ namespace Harmony.Client.Pages.Management
             {
                 registration = _navigationManager.RegisterLocationChangingHandler(LocationChangingHandler);
             }
+        }
+
+        private async Task FilterIssueTypes(List<Guid> issueTypes)
+        {
+            _selectedIssueTypeIds = issueTypes;
+
+            await ReloadBoard();
+            await Task.Run(_dropContainer.Refresh);
+        }
+
+        private IEnumerable<CardDto> FilteredCards(IEnumerable<CardDto> cards)
+        {
+            IEnumerable<CardDto> filteredCards = cards;
+
+            if(_selectedIssueTypeIds.Any())
+            {
+                filteredCards = filteredCards.Where(c => _selectedIssueTypeIds.Contains(c.IssueType.Id));
+            }
+
+            return filteredCards;
+        }
+
+        private bool HideCard(CardDto card)
+        {
+            return card.Hidden;
         }
 
         private async ValueTask LocationChangingHandler(LocationChangingContext arg)
@@ -89,13 +116,19 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
+        private void ToggleFilters()
+        {
+            _filtersVisible = !_filtersVisible;
+        }
+
         private async Task LoadBoard()
         {
             var query = new GetBoardQuery()
             {
                 BoardId = Guid.Parse(Id),
                 MaxCardsPerList = _listCardsSize,
-                SprintId = _selectedSprintId
+                SprintId = _selectedSprintId,
+                IssueTypeIds = _selectedIssueTypeIds,
             };
 
             var result = await _boardManager.GetBoardAsync(query);
@@ -130,6 +163,13 @@ namespace Harmony.Client.Pages.Management
         {
             _selectedSprintId = sprintId;
 
+            await CleanBoard(false);
+            KanbanStore.SetLoading(true);
+            await LoadBoard();
+        }
+
+        private async Task ReloadBoard()
+        {
             await CleanBoard(false);
             KanbanStore.SetLoading(true);
             await LoadBoard();
@@ -429,6 +469,7 @@ namespace Harmony.Client.Pages.Management
 
             var currentPosition = info.Item.Position;
             var currentListId = info.Item.BoardListId;
+
             var newPosition = (short)info.IndexInZone;
             var moveToListId = Guid.Parse(info.DropzoneIdentifier);
 
@@ -436,6 +477,14 @@ namespace Harmony.Client.Pages.Management
             {
                 return;
             }
+
+            //var cardOnIndexZone = KanbanStore.KanbanCards
+            //    .FirstOrDefault(c => c.Position == info.IndexInZone && c.BoardListId == moveToListId);
+
+            //if(cardOnIndexZone != null)
+            //{
+            //    newPosition = cardOnIndexZone.Position;
+            //}
 
             await Task.Run(() =>
             {

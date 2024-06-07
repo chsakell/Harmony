@@ -76,6 +76,7 @@ else
                     </MudTooltip>
                 }
                 <MudSpacer />
+                <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.FilterList" OnClick="ToggleFilters">FILTERS</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="OpenShareBoardModal" StartIcon="@Icons.Material.Outlined.Share">Share board</MudButton>
                 <MudMenu AnchorOrigin="Origin.BottomRight" Size="Size.Small" TransformOrigin="Origin.TopRight" Icon="@Icons.Material.Filled.MoreVert" IconColor="Color.Secondary">
                     <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete"
@@ -87,7 +88,12 @@ else
                 <MudChip Icon="@Icons.Filled.Group" Label="true" Color="Color.Warning" Style="color:black;">@KanbanStore.Board.Title</MudChip>
             }
         </MudToolBar>
-
+        @if (_filtersVisible)
+        {
+            <BoardSearch IssueTypes="KanbanStore.Board.IssueTypes"
+                         SelectedIssueTypeIds="_selectedIssueTypeIds"
+                         SelectedIssueTypeIdsChanged="FilterIssueTypes"></BoardSearch>
+        }
     </MudPaper>
     @if (!KanbanStore.KanbanLists.Any())
     {
@@ -174,113 +180,120 @@ else
             </ChildContent>
             <ItemRenderer>
                 <span id="@context.Id.ToString()" />
-                <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-2 rounded-lg my-3 cursor-pointer">
-                    <MudCardHeader Class="pa-0">
-                        <MudText Typo="Typo.body1">@context.Title</MudText>
-                    </MudCardHeader>
-                    <MudCardContent Class="pa-0 mt-2">
-                        <MudStack Justify="Justify.SpaceBetween" Class="gap-0">
-                            @if (context.Labels.Any())
-                            {
-                                <MudPaper Class="d-flex flex-wrap" Elevation="0">
-                                    @foreach (var label in context.Labels)
-                                    {
-                                        <MudTooltip Text="@label.Title">
-                                            <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
-                                                      Height="8px" Width="40px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
-                                        </MudTooltip>
-                                    }
-                                </MudPaper>
-                            }
-                            @if (!string.IsNullOrEmpty(context.Description) && CardDescriptionVisibility)
-                            {
-                                <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;margin-bottom:10px;">@((MarkupString)context.Description)</MudPaper>
-                            }
-                            <MudStack Style="gap:0px !important">
-                                <div class="flex flex-wrap gap-4">
-                                    @if (context.StartDate != null || context.DueDate != null)
-                                    {
-                                        <MudChip Icon="@Icons.Material.Filled.DateRange" Label="true"
-                                                 Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
-                                    }
-                                    @if (context.TotalItems > 0)
-                                    {
-                                        <MudChip Icon="@Icons.Material.Filled.Checklist" Label="true"
-                                                 Size="Size.Small" Variant="Variant.Text" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Tertiary : Color.Default)">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
-                                    }
-                                    @if (context.TotalChildren > 0)
-                                    {
-                                        <MudTooltip Delay="2500" Text="@($"Card contains {context.TotalChildren} child issues")">
-                                            <MudChip Icon="@Icons.Material.Filled.Workspaces" Label="true"
-                                                     Size="Size.Small" Variant="Variant.Text" Color="@(Color.Default)">@context.TotalChildren</MudChip>
-                                        </MudTooltip>
-                                    }
-                                    @if (context.TotalAttachments > 0)
-                                    {
-                                        <MudChip Icon="@Icons.Material.Filled.Attachment" Label="true"
-                                                 Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalAttachments</MudChip>
-                                    }
-                                    @if (context.Links.Any())
-                                    {
-                                        <MudChip Icon="@Icons.Material.Filled.Link" Label="true"
-                                                 Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.Links.Count</MudChip>
-                                    }
-                                    @if (context.TotalComments > 0)
-                                    {
-                                        <MudChip Icon="@Icons.Material.Filled.Comment" Label="true"
-                                                 Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalComments</MudChip>
-                                    }
-                                </div>
-                                <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
-                                    @if (!KanbanStore.IsRetrospective)
-                                    {
-                                        <MudChip Label="true"
-                                                 Size="Size.Small"
-                                                 Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
-                                    }
-                                    @if (context.IssueType != null)
-                                    {
-                                        <MudStack Row="true" AlignItems="AlignItems.End">
-                                            <MudTooltip Text="@context.IssueType.Summary" Delay="2000">
-                                                <MudIcon Size="Size.Medium" Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
-                                                         Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                @if (HideCard(context))
+                {
+                    <div hidden>@context.Title</div>
+                }
+                else
+                {
+                    <MudCard @onclick="() => EditCard(context)" Elevation="25" Class="pa-2 rounded-lg my-3 cursor-pointer">
+                        <MudCardHeader Class="pa-0">
+                            <MudText Typo="Typo.body1">@context.Title</MudText>
+                        </MudCardHeader>
+                        <MudCardContent Class="pa-0 mt-2">
+                            <MudStack Justify="Justify.SpaceBetween" Class="gap-0">
+                                @if (context.Labels.Any())
+                                {
+                                    <MudPaper Class="d-flex flex-wrap" Elevation="0">
+                                        @foreach (var label in context.Labels)
+                                        {
+                                            <MudTooltip Text="@label.Title">
+                                                <MudPaper Style="@($"color:{Colors.LightGreen.Accent3}; background-color:{label.Colour};")"
+                                                          Height="8px" Width="40px" Elevation="5" Class=" mr-2 mb-2 rounded-lg"></MudPaper>
                                             </MudTooltip>
-                                        </MudStack>
-                                    }
-                                    @if (KanbanStore.IsScrum)
-                                    {
-                                        <MudChip Variant="Variant.Text" Color="Color.Primary">
-                                            @(context.StoryPoints?.ToString() ?? "-")
-                                        </MudChip>
-                                    }
-                                    @if (context.Members.Any())
-                                    {
-                                        <MudAvatarGroup Max="2" Spacing="2" MaxColor="Color.Primary" MaxSize="Size.Small">
-                                            @foreach (var member in context.Members)
-                                            {
-                                                if (string.IsNullOrEmpty(member.ProfilePicture))
+                                        }
+                                    </MudPaper>
+                                }
+                                @if (!string.IsNullOrEmpty(context.Description) && CardDescriptionVisibility)
+                                {
+                                    <MudPaper Style="max-height:170px;overflow-y:auto;padding:10px 0;margin-bottom:10px;">@((MarkupString)context.Description)</MudPaper>
+                                }
+                                <MudStack Style="gap:0px !important">
+                                    <div class="flex flex-wrap gap-4">
+                                        @if (context.StartDate != null || context.DueDate != null)
+                                        {
+                                            <MudChip Icon="@Icons.Material.Filled.DateRange" Label="true"
+                                                     Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
+                                        }
+                                        @if (context.TotalItems > 0)
+                                        {
+                                            <MudChip Icon="@Icons.Material.Filled.Checklist" Label="true"
+                                                     Size="Size.Small" Variant="Variant.Text" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Tertiary : Color.Default)">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
+                                        }
+                                        @if (context.TotalChildren > 0)
+                                        {
+                                            <MudTooltip Delay="2500" Text="@($"Card contains {context.TotalChildren} child issues")">
+                                                <MudChip Icon="@Icons.Material.Filled.Workspaces" Label="true"
+                                                         Size="Size.Small" Variant="Variant.Text" Color="@(Color.Default)">@context.TotalChildren</MudChip>
+                                            </MudTooltip>
+                                        }
+                                        @if (context.TotalAttachments > 0)
+                                        {
+                                            <MudChip Icon="@Icons.Material.Filled.Attachment" Label="true"
+                                                     Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalAttachments</MudChip>
+                                        }
+                                        @if (context.Links.Any())
+                                        {
+                                            <MudChip Icon="@Icons.Material.Filled.Link" Label="true"
+                                                     Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.Links.Count</MudChip>
+                                        }
+                                        @if (context.TotalComments > 0)
+                                        {
+                                            <MudChip Icon="@Icons.Material.Filled.Comment" Label="true"
+                                                     Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalComments</MudChip>
+                                        }
+                                    </div>
+                                    <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
+                                        @if (!KanbanStore.IsRetrospective)
+                                        {
+                                            <MudChip Label="true"
+                                                     Size="Size.Small"
+                                                     Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
+                                        }
+                                        @if (context.IssueType != null)
+                                        {
+                                            <MudStack Row="true" AlignItems="AlignItems.End">
+                                                <MudTooltip Text="@context.IssueType.Summary" Delay="2000">
+                                                    <MudIcon Size="Size.Medium" Icon="@ColorHelper.GetIssueTypeIcon(context.IssueType.Summary)"
+                                                             Color="ColorHelper.GetIssueTypeColor(context.IssueType.Summary)" />
+                                                </MudTooltip>
+                                            </MudStack>
+                                        }
+                                        @if (KanbanStore.IsScrum)
+                                        {
+                                            <MudChip Variant="Variant.Text" Color="Color.Primary">
+                                                @(context.StoryPoints?.ToString() ?? "-")
+                                            </MudChip>
+                                        }
+                                        @if (context.Members.Any())
+                                        {
+                                            <MudAvatarGroup Max="2" Spacing="2" MaxColor="Color.Primary" MaxSize="Size.Small">
+                                                @foreach (var member in context.Members)
                                                 {
-                                                    <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                                    if (string.IsNullOrEmpty(member.ProfilePicture))
+                                                    {
+                                                        <MudAvatar Size="Size.Small" Color="Color.Default">@member.FirstName[0]@member.LastName[0]</MudAvatar>
+                                                    }
+                                                    else
+                                                    {
+                                                        <MudAvatar Size="Size.Small" Color="Color.Default">
+                                                            <MudImage Src="@(_clientConfiguration.GetServerResource(member.ProfilePicture))" title="@member.FullName" />
+                                                        </MudAvatar>
+                                                    }
                                                 }
-                                                else
-                                                {
-                                                    <MudAvatar Size="Size.Small" Color="Color.Default">
-                                                        <MudImage Src="@(_clientConfiguration.GetServerResource(member.ProfilePicture))" title="@member.FullName" />
-                                                    </MudAvatar>
-                                                }
-                                            }
-                                        </MudAvatarGroup>
-                                    }
+                                            </MudAvatarGroup>
+                                        }
+                                    </MudStack>
+
                                 </MudStack>
-
                             </MudStack>
-                        </MudStack>
 
-                    </MudCardContent>
-                    <MudOverlay Visible="@context.IsUpdating" DarkBackground="true" Absolute="true">
-                        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-                    </MudOverlay>
-                </MudCard>
+                        </MudCardContent>
+                        <MudOverlay Visible="@context.IsUpdating" DarkBackground="true" Absolute="true">
+                            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                        </MudOverlay>
+                    </MudCard>
+                }
             </ItemRenderer>
         </MudDropContainer>
     }
