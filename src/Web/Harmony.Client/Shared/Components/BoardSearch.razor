@@ -7,7 +7,6 @@
     {
         <MudSelect @bind-Value="_selectedIssueType"
                    @bind-SelectedValues="_selectedIssueTypes"
-                   OnClose="SetIssueTypes"
                    MultiSelection="true"
                    ToStringFunc="@issueTypeConverter" Clearable="true"
                    T="IssueTypeDto" Label="Issue types"
@@ -26,7 +25,6 @@
         </MudSelect>
         <MudSelect @bind-SelectedValues="_selectedAssignees"
                    MultiSelection="true"
-                   OnClose="SetAssignees"
                    ToStringFunc="@assigneesConverter"
                    Clearable="true"
                    T="UserBoardResponse" Label="Assigned to"
@@ -53,7 +51,6 @@
         <MudSelect MultiSelection="true" T="BoardListDto" Clearable="true"
                    MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionBoardListsText))"
                    @bind-SelectedValues="_selectedLists"
-                   OnClose="SetLists"
                    FullWidth="false"
                    T="BoardListDto" Label="Status" AnchorOrigin="Origin.BottomCenter">
             @foreach (var list in BoardLists)
@@ -61,5 +58,6 @@
                 <MudSelectItem Value="list">@list.Title</MudSelectItem>
             }
         </MudSelect>
+        <MudButton StartIcon="@Icons.Material.Outlined.DoneAll" OnClick="ApplyFilters" Variant="Variant.Text" Color="Color.Tertiary">APLLY</MudButton>
     }
 </MudToolBar>

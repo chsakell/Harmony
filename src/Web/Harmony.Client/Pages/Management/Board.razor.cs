@@ -15,8 +15,10 @@ using Harmony.Application.Features.Lists.Queries.LoadBoardList;
 using Harmony.Application.Notifications;
 using Harmony.Client.Infrastructure.Models.Board;
 using Harmony.Client.Infrastructure.Store.Kanban;
+using Harmony.Client.Shared.Components;
 using Harmony.Client.Shared.Dialogs;
 using Harmony.Client.Shared.Modals;
+using Harmony.Domain.Entities;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
@@ -69,23 +71,11 @@ namespace Harmony.Client.Pages.Management
             }
         }
 
-        private async Task FilterIssueTypes(List<Guid> issueTypes)
+        private async Task ApplyFilters(BoardSearchFilters filters)
         {
-            _selectedIssueTypeIds = issueTypes;
-
-            await ReloadBoard();
-        }
-
-        private async Task FilterAssignees(List<string> assignees)
-        {
-            _selectedAssignees = assignees;
-
-            await ReloadBoard();
-        }
-
-        private async Task FilterLists(List<Guid> lists)
-        {
-            _selectedLists = lists;
+            _selectedIssueTypeIds = filters.SelectedIssueTypeIds;
+            _selectedAssignees = filters.SelectedAssignees;
+            _selectedLists = filters.SelectedLists;
 
             await ReloadBoard();
         }

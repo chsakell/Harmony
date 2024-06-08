@@ -4,6 +4,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace Harmony.Client.Shared.Components
 {
+    public class BoardSearchFilters
+    {
+        public List<Guid> SelectedIssueTypeIds { get; set; }
+        public List<string> SelectedAssignees { get; set; }
+        public List<Guid> SelectedLists { get; set; }
+    }
     public partial class BoardSearch
     {
         [Parameter]
@@ -16,13 +22,7 @@ namespace Harmony.Client.Shared.Components
         public List<Guid> SelectedIssueTypeIds { get; set; }
 
         [Parameter]
-        public EventCallback<List<Guid>> SelectedIssueTypeIdsChanged { get; set; }
-
-        [Parameter]
         public List<UserBoardResponse> BoardMembers { get; set; }
-
-        [Parameter]
-        public EventCallback<List<string>> SelectedAssigneesChanged { get; set; }
 
         [Parameter]
         public List<string> SelectedAssignees { get; set; }
@@ -34,7 +34,7 @@ namespace Harmony.Client.Shared.Components
         public List<Guid> SelectedLists { get; set; }
 
         [Parameter]
-        public EventCallback<List<Guid>> SelectedListsChanged { get; set; }
+        public EventCallback<BoardSearchFilters> SelectedFiltersChanged { get; set; }
 
         private IssueTypeDto _selectedIssueType;
         
@@ -49,12 +49,19 @@ namespace Harmony.Client.Shared.Components
             _selectedLists = BoardLists.Where(it => SelectedLists.Contains(it.Id));
         }
 
-        #region Issue Types
-
-        private async Task SetIssueTypes()
+        private async Task ApplyFilters()
         {
-            await SelectedIssueTypeIdsChanged.InvokeAsync(_selectedIssueTypes.Select(t => t.Id).ToList());
+            var filters = new BoardSearchFilters
+            {
+                SelectedIssueTypeIds = _selectedIssueTypes.Select(t => t.Id).ToList(),
+                SelectedAssignees = _selectedAssignees.Select(a => a.Id).ToList(),
+                SelectedLists = _selectedLists.Select(a => a.Id).ToList()
+            };
+
+            await SelectedFiltersChanged.InvokeAsync(filters);
         }
+
+        #region Issue Types
 
         Func<IssueTypeDto, string> issueTypeConverter = p =>
         {
@@ -64,11 +71,6 @@ namespace Harmony.Client.Shared.Components
         #endregion
 
         #region Assignees
-
-        private async Task SetAssignees()
-        {
-            await SelectedAssigneesChanged.InvokeAsync(_selectedAssignees.Select(a => a.Id).ToList());
-        }
 
         Func<UserBoardResponse, string> assigneesConverter = p =>
         {
@@ -88,11 +90,6 @@ namespace Harmony.Client.Shared.Components
             }
 
             return string.Join(", ", _selectedLists.Select(x => x.Title));
-        }
-
-        private async Task SetLists()
-        {
-            await SelectedListsChanged.InvokeAsync(_selectedLists.Select(a => a.Id).ToList());
         }
 
         #endregion

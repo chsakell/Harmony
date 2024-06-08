@@ -93,13 +93,11 @@ else
             <BoardSearch BoardId="Guid.Parse(Id)"
                          IssueTypes="KanbanStore.Board.IssueTypes"
                          SelectedIssueTypeIds="_selectedIssueTypeIds"
-                         SelectedIssueTypeIdsChanged="FilterIssueTypes"
                          BoardMembers="_boardMembers"
                          SelectedAssignees="_selectedAssignees"
-                         SelectedAssigneesChanged="FilterAssignees"
                          BoardLists="KanbanStore.KanbanLists"
                          SelectedLists="_selectedLists"
-                         SelectedListsChanged="FilterLists"></BoardSearch>
+                         SelectedFiltersChanged="ApplyFilters"></BoardSearch>
         }
     </MudPaper>
     @if (!KanbanStore.KanbanLists.Any())
