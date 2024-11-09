@@ -6,35 +6,49 @@ namespace Harmony.Client.Shared
 {
     public partial class MainLayout : IDisposable
     {
-        private MudTheme _currentTheme;
         private bool _blendUIEnabled {  get; set; }
-        private bool _darkMode { get; set; }
-
+        private bool _isDarkMode;
+        private MudThemeProvider _mudThemeProvider;
+        MudTheme _appTheme = new MudTheme()
+        {
+            PaletteLight = new PaletteLight()
+            {
+                AppbarBackground = "rgba(255, 0, 0, 0)"
+            },
+            PaletteDark = new PaletteDark()
+        };
         public string GetWrapperClasss()
         {
-            var isDarkTheme = _currentTheme == HarmonyTheme.DarkTheme;
-
-            return _blendUIEnabled ? "default-harmony" : (isDarkTheme ? "dark" : "default") + "-transparent ";
+            return _blendUIEnabled ? "default-harmony" : (IsDarkModeEnabled ? "dark" : "default") + "-transparent ";
         }
+
+        public bool IsDarkModeEnabled => _isDarkMode == true;
 
         protected override async Task OnInitializedAsync()
         {
-            _currentTheme = HarmonyTheme.DefaultTheme;
-            _currentTheme = await _clientPreferenceManager.GetCurrentThemeAsync();
-            _darkMode = _currentTheme == HarmonyTheme.DarkTheme;
             _blendUIEnabled = await _clientPreferenceManager.IsBlendUiEnabled();
             _interceptor.RegisterEvent();
 
+            //_mudThemeProvider.Theme.PaletteLight.AppbarBackground = "rgba(255, 0, 0, 0)";
             await SetBlendUi(_blendUIEnabled);
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                if (_mudThemeProvider != null)
+                {
+                    _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+                    StateHasChanged();
+                }
+            }
         }
 
         private async Task SetMode(bool isDark)
         {
-            _darkMode = isDark;
+            _isDarkMode = isDark;
             bool isDarkMode = await _clientPreferenceManager.SetDarkModeAsync(isDark);
-            _currentTheme = isDarkMode
-                ? HarmonyTheme.DarkTheme
-                : HarmonyTheme.DefaultTheme;
 
             await _jsRuntime.InvokeVoidAsync("setBodyCssClass", GetWrapperClasss());
         }

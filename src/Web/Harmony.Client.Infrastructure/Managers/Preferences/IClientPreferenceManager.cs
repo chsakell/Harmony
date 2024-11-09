@@ -5,7 +5,6 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
 {
     public interface IClientPreferenceManager : IPreferenceManager
     {
-        Task<MudTheme> GetCurrentThemeAsync();
         Task<bool> IsBlendUiEnabled();
         Task<bool> ToggleDarkModeAsync();
         Task<bool> SetDarkModeAsync(bool isDark);

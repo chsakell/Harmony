@@ -32,14 +32,14 @@
                     <MudPaper>
                         <MudStack Row="true" Class="justify-start align-center pa-4">
                             <MudText>@Reports.Sprint.Name</MudText>
-                                <MudChip Icon="@Icons.Material.Filled.DateRange" Label="true">@CardHelper.DisplayDates(Reports.Sprint.StartDate, Reports.Sprint.EndDate)</MudChip>
+                                <MudChip T="string" Icon="@Icons.Material.Filled.DateRange" Label="true">@CardHelper.DisplayDates(Reports.Sprint.StartDate, Reports.Sprint.EndDate)</MudChip>
                                 <b><MudText>Story Points: </MudText></b>
-                                <MudChip Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Tertiary">
+                            <MudChip T="string" Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Tertiary">
                                     Total: &nbsp;<b>@Reports.TotalStoryPoints</b>
                             </MudChip>
                             @if (Reports.RemainingStoryPoints > 0)
                             {
-                                <MudChip Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Warning">
+                                <MudChip T="string" Icon="@Icons.Material.Filled.Iso" Label="true" Color="Color.Warning">
                                     Remaining: &nbsp;<b>@Reports.RemainingStoryPoints</b>
                                 </MudChip>
                             }
@@ -83,7 +83,7 @@
                                     <div class="d-flex justify-center">
                                         <MudText Typo="Typo.h5" Color="Color.Secondary"><b>Story Points</b> are the report's core</MudText>
                                     </div>
-                                    <MudList Class="mx-auto mt-4">
+                                    <MudList T="string" Class="mx-auto mt-4">
                                         <MudListItem Icon="@Icons.Material.Filled.Iso">
                                             Make sure you <b>score</b> your sprint's items using <b>story points</b>
                                         </MudListItem>

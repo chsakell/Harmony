@@ -82,16 +82,6 @@ namespace Harmony.Client.Infrastructure.Managers.Preferences
             };
         }
 
-        public async Task<MudTheme> GetCurrentThemeAsync()
-        {
-            var preference = await GetPreference() as ClientPreference;
-            if (preference != null)
-            {
-                if (preference.IsDarkMode == true) return HarmonyTheme.DarkTheme;
-            }
-            return HarmonyTheme.DefaultTheme;
-        }
-
         public async Task<bool> IsBlendUiEnabled()
         {
             var preference = await GetPreference() as ClientPreference;

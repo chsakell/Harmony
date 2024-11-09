@@ -16,7 +16,7 @@
               T="GetBacklogItemResponse"
               MultiSelection="true"
               @bind-SelectedItems="_selectedCards"
-              ServerData="@(new Func<TableState, Task<TableData<GetBacklogItemResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+              ServerData="@ReloadData" Dense="true" Striped="true" @ref="_table">
         <ToolBarContent>
             <div class="justify-center mud-text-align-center">
                 <MudButton EndIcon="@Icons.Material.Outlined.AddCard" ButtonType="ButtonType.Button"
@@ -24,7 +24,7 @@
             </div>
             <div class="justify-center mud-text-align-center ml-2">
                 <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
-                         EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
+                         EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
                          AnchorOrigin="Origin.BottomLeft">
                     <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
                                  OnClick="MoveToSprint" Icon="@Icons.Material.Filled.ArrowRight">Move to sprint</MudMenuItem>
@@ -43,7 +43,7 @@
         <RowTemplate>
             <MudTd DataLabel="SerialKey">
                 <MudTooltip Text="Click for full editing" Delay="2500">
-                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@context.SerialKey</MudChip>
+                    <MudChip T="string" Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@context.SerialKey</MudChip>
                     </MudTooltip>
                 </MudTd>
                 <MudTd DataLabel="Title">
@@ -57,7 +57,7 @@
                     </MudStack>
                 </MudTd>
                 <MudTd Style="width:160px" DataLabel="StoryPoints">
-                    <MudChip Variant="Variant.Text" Color="Color.Primary">
+                <MudChip T="string" Variant="Variant.Text" Color="Color.Primary">
                         @(context.StoryPoints?.ToString() ?? "-")
                     </MudChip>
                 </MudTd>

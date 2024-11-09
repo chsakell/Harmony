@@ -11,7 +11,7 @@
                      AdornmentIcon="@Icons.Material.Filled.SavedSearch"
                      OnAdornmentClick="AdvancedSearch"
                      ShowProgressIndicator="true" ProgressIndicatorColor="Color.Default"
-                     SearchFuncWithCancel="@Search" Variant="Variant.Outlined">
+                     SearchFunc="@Search" Variant="Variant.Outlined">
         <ItemTemplate Context="card">
             <MudPaper Class="pa-4" @onclick="@(() => Navigate(card))">
                 <MudStack Row="true">
@@ -29,7 +29,7 @@
                         </MudStack>
                         @if (!string.IsNullOrEmpty(card.SerialKey))
                         {
-                            <MudChip Label="true" Size="Size.Small" Color="@(card.IsComplete ? Color.Tertiary : Color.Warning)">
+                            <MudChip T="string" Label="true" Size="Size.Small" Color="@(card.IsComplete ? Color.Tertiary : Color.Warning)">
                                 @card.SerialKey
                             </MudChip>
                         }

@@ -43,7 +43,7 @@ namespace Harmony.Client.Shared.Modals
             _loading = false;
         }
 
-        private async Task<IEnumerable<SearchWorkspaceUserResponse>> SearchUsers(string value)
+        private async Task<IEnumerable<SearchWorkspaceUserResponse>> SearchUsers(string value, CancellationToken token)
         {
             if(string.IsNullOrEmpty(value) || value.Length < 4 || _searching)
             {

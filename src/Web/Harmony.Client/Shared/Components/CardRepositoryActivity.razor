@@ -34,7 +34,7 @@ else if (_branches.Any())
                     <div class="d-flex flex-column flex-column justify-center align-center gap-2" style="height:100%">
                         <MudIcon Class="mx-auto" Icon="fa-solid fa-code-pull-request" Size="@Size.Large" />
                         <MudLink Href="@pullRequest.HtmlUrl" Target="_blank">@pullRequest.Title</MudLink>
-                        <MudChip Size="Size.Small" Color="@ColorHelper.GetPullRequestColor(pullRequest.State)">@pullRequest.State.ToString()</MudChip>
+                        <MudChip T="string" Size="Size.Small" Color="@ColorHelper.GetPullRequestColor(pullRequest.State)">@pullRequest.State.ToString()</MudChip>
                     </div>
 
                 </MudCarouselItem>
@@ -45,7 +45,7 @@ else if (_branches.Any())
 
                     <div class="d-flex flex-column flex-column justify-center align-center gap-2" style="height:100%">
                         <MudIcon Class="mx-auto" Icon="fa-solid fa-tag" Size="@Size.Large" />
-                        <MudChip Size="Size.Small" Color="@Color.Info">@tag</MudChip>
+                        <MudChip T="string" Size="Size.Small" Color="@Color.Info">@tag</MudChip>
                     </div>
 
                 </MudCarouselItem>

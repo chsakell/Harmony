@@ -134,7 +134,7 @@ namespace Harmony.Client.Shared.Components.Automation
             _selectedAutomationModel.Description = builder.ToString();
         }
 
-        private async Task<IEnumerable<SearchBoardUserResponse>> SearchUsers(string value)
+        private async Task<IEnumerable<SearchBoardUserResponse>> SearchUsers(string value, CancellationToken token)
         {
             if (string.IsNullOrEmpty(value) || value.Length < 4 || _searching)
             {

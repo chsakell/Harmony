@@ -4,10 +4,10 @@
 
 <MudTable Hover="true" Elevation="25"
           T="UserWorkspaceResponse"
-          ServerData="@(new Func<TableState, Task<TableData<UserWorkspaceResponse>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+          ServerData="@ReloadData" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
-            <MudCheckBox @bind-Checked:get="@_filterMembersOnly" @bind-Checked:set="ToggleFilterMembers" Label="Members only"></MudCheckBox>
+            <MudCheckBox @bind-Value:get="@_filterMembersOnly" @bind-Value:set="ToggleFilterMembers" Label="Members only"></MudCheckBox>
         </div>
         <MudSpacer />
         <MudTextField T="string" DebounceInterval="300" Immediate="true" ValueChanged="@(s=>OnSearch(s))" Clearable="true" Placeholder="Search user.." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -33,7 +33,7 @@
         <MudTd DataLabel="Email">
             <MudHighlighter Text="@context.Email" HighlightedText="@_searchString" />
         </MudTd>
-        <MudTd DataLabel="EmailConfirmed"><MudCheckBox @bind-Checked="@context.EmailConfirmed" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd>
+        <MudTd DataLabel="EmailConfirmed"><MudCheckBox @bind-Value="@context.EmailConfirmed" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd>
          <MudTd DataLabel="Actions" Style="text-align:right">
              @if (context.IsMember)
             {

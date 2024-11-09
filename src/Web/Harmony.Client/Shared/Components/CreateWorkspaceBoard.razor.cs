@@ -12,7 +12,7 @@ namespace Harmony.Client.Shared.Components
         private async Task OpenCreateWorkspaceModal()
         {
             var parameters = new DialogParameters();
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateWorkspaceModal>(_localizer["Create Workspace"], parameters, options);
 
             var result = await dialog.Result;
@@ -35,7 +35,7 @@ namespace Harmony.Client.Shared.Components
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             _dialogService.Show<CreateBoardModal>(_localizer["Create Board"], parameters, options);
         }
 

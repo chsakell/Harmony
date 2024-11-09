@@ -77,7 +77,7 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
-        private async Task<TableData<SprintDto>> ReloadData(TableState state)
+        private async Task<TableData<SprintDto>> ReloadData(TableState state, CancellationToken token)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {

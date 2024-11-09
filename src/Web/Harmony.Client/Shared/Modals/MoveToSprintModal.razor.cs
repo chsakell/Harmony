@@ -90,14 +90,14 @@ namespace Harmony.Client.Shared.Modals
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
             {
-                _newSprintPanel.Collapse();
-                _existingSprintsPanel.Expand();
+                await _newSprintPanel.CollapseAsync();
+                await _existingSprintsPanel.ExpandAsync();
 
 
                 //await _table.ReloadServerData();
@@ -111,7 +111,7 @@ namespace Harmony.Client.Shared.Modals
             }
         }
 
-        private async Task<TableData<SprintDto>> ReloadData(TableState state)
+        private async Task<TableData<SprintDto>> ReloadData(TableState state, CancellationToken token)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {

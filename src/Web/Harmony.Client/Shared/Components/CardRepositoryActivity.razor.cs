@@ -43,7 +43,7 @@ namespace Harmony.Client.Shared.Components
                 },
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<ViewRepositoryActivityModal>("View repository activity", parameters, options);
             var result = await dialog.Result;
         }

@@ -47,7 +47,7 @@ namespace Harmony.Client.Shared.Modals
             _processing = false;
         }
 
-        private async Task<TableData<CardDto>> ReloadData(TableState state)
+        private async Task<TableData<CardDto>> ReloadData(TableState state, CancellationToken token)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {

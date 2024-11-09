@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @* @inject Microsoft.Extensions.Localization.IStringLocalizer<NotFoundLayout> _localizer *@
 
-<MudThemeProvider Theme="HarmonyTheme.DefaultTheme" />
+<MudThemeProvider />
+<MudPopoverProvider />
 <MudSnackbarProvider />
 <MudContainer Class="mt-16">
     <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Page not found :(</MudText>
@@ -15,7 +16,7 @@
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
-                    <MudList Class="mx-auto mt-4">
+                    <MudList T="string" Class="mx-auto mt-4">
                         <MudListItem Icon="@Icons.Material.Filled.Dashboard">
                             Are you looking for a workspace? Make sure your administrator has given access to you.
                         </MudListItem>
@@ -34,6 +35,7 @@
 </MudContainer>
 
 @{
+
     void GoHome()
     {
         _navigationManager.NavigateTo("/");

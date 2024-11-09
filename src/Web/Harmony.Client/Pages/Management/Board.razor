@@ -85,7 +85,7 @@ else
             }
             else
             {
-                <MudChip Icon="@Icons.Filled.Group" Label="true" Color="Color.Warning" Style="color:black;">@KanbanStore.Board.Title</MudChip>
+                <MudChip T="string" Icon="@Icons.Material.Filled.Group" Label="true" Color="Color.Warning" Style="color:black;">@KanbanStore.Board.Title</MudChip>
             }
         </MudToolBar>
         @if (_filtersVisible)
@@ -114,7 +114,7 @@ else
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudList Class="mx-auto mt-4">
+                            <MudList T="string" Class="mx-auto mt-4">
                                 <MudListItem Icon="@Icons.Material.Filled.List">
                                     Create some basic board lists to track your project's progress. e.g. <i>TODO</i>, <i>IN PROGRESS</i>, <i>REVIEW</i> & <i>DONE</i>
                                 </MudListItem>
@@ -217,41 +217,42 @@ else
                                     <div class="flex flex-wrap gap-4">
                                         @if (context.StartDate != null || context.DueDate != null)
                                         {
-                                            <MudChip Icon="@Icons.Material.Filled.DateRange" Label="true"
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.DateRange" Label="true"
                                                      Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@CardHelper.DisplayDates(context.StartDate, context.DueDate)</MudChip>
                                         }
                                         @if (context.TotalItems > 0)
                                         {
-                                            <MudChip Icon="@Icons.Material.Filled.Checklist" Label="true"
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.Checklist" Label="true"
                                                      Size="Size.Small" Variant="Variant.Text" Color="@(context.TotalItemsCompleted == context.TotalItems ? Color.Tertiary : Color.Default)">@context.TotalItemsCompleted / @context.TotalItems</MudChip>
                                         }
                                         @if (context.TotalChildren > 0)
                                         {
                                             <MudTooltip Delay="2500" Text="@($"Card contains {context.TotalChildren} child issues")">
-                                                <MudChip Icon="@Icons.Material.Filled.Workspaces" Label="true"
+                                                <MudChip T="string" Icon="@Icons.Material.Filled.Workspaces" Label="true"
                                                          Size="Size.Small" Variant="Variant.Text" Color="@(Color.Default)">@context.TotalChildren</MudChip>
                                             </MudTooltip>
                                         }
                                         @if (context.TotalAttachments > 0)
                                         {
-                                            <MudChip Icon="@Icons.Material.Filled.Attachment" Label="true"
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.Attachment" Label="true"
                                                      Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalAttachments</MudChip>
                                         }
                                         @if (context.Links.Any())
                                         {
-                                            <MudChip Icon="@Icons.Material.Filled.Link" Label="true"
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.Link" Label="true"
                                                      Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.Links.Count</MudChip>
                                         }
                                         @if (context.TotalComments > 0)
                                         {
-                                            <MudChip Icon="@Icons.Material.Filled.Comment" Label="true"
+                                            <MudChip T="string" Icon="@Icons.Material.Filled.Comment" Label="true"
                                                      Size="Size.Small" Variant="Variant.Text" Color="Color.Default">@context.TotalComments</MudChip>
                                         }
                                     </div>
                                     <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
                                         @if (!KanbanStore.IsRetrospective)
                                         {
-                                            <MudChip Label="true"
+                                            <MudChip T="string" 
+                                                     Label="true"
                                                      Size="Size.Small"
                                                      Color="Color.Warning">@($"{KanbanStore.Board.Key}-{context.SerialNumber}")</MudChip>
                                         }
@@ -266,7 +267,7 @@ else
                                         }
                                         @if (KanbanStore.IsScrum)
                                         {
-                                            <MudChip Variant="Variant.Text" Color="Color.Primary">
+                                            <MudChip T="string" Variant="Variant.Text" Color="Color.Primary">
                                                 @(context.StoryPoints?.ToString() ?? "-")
                                             </MudChip>
                                         }

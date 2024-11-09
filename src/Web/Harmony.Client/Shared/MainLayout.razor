@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @inject Microsoft.Extensions.Localization.IStringLocalizer<MainLayout> _localizer
 
-<MudThemeProvider Theme="_currentTheme" />
+<MudThemeProvider Theme="_appTheme" @ref="@_mudThemeProvider" IsDarkMode="IsDarkModeEnabled" />
+<MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <div class="@GetWrapperClasss()">
@@ -12,7 +13,7 @@
                 <MudMenu Icon="@Icons.Material.Filled.Palette" Color="Color.Default"
                          AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopRight">
                     <MudMenuItem AutoClose="false">
-                        <MudSwitch @bind-Value:get="@_darkMode" @bind-Value:set="@((isDark) => SetMode(isDark))" Label="Dark mode" Color="Color.Success" />
+                        <MudSwitch @bind-Value:get="@_isDarkMode" @bind-Value:set="@((isDark) => SetMode(isDark))" Label="Dark mode" Color="Color.Success" />
                     </MudMenuItem>
                     <MudMenuItem AutoClose="false">
                         <MudSwitch @bind-Value:get="@_blendUIEnabled"
@@ -28,7 +29,7 @@
         </NotAuthorized>
         <Authorized>
             <MudLayout>
-                <MainBody DarkModelEnabled="_darkMode"
+                <MainBody DarkModelEnabled="_isDarkMode"
                           BlendUiEnabled="_blendUIEnabled"
                           OnDarkMode="@((isDark) => SetMode(isDark))"
                           OnBlendUI="@((blendUiEnabled) => SetBlendUi(blendUiEnabled))">

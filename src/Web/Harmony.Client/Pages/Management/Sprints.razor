@@ -17,7 +17,7 @@
 <MudTable Hover="true" Elevation="25"
           T="SprintSummary"
           Style="height:calc(100vh - 100px);overflow:auto"
-          ServerData="@(new Func<TableState, Task<TableData<SprintSummary>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+          ServerData="@ReloadData" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
             <MudButton ButtonType="ButtonType.Button" OnClick="CreateSprint" Variant="Variant.Filled" Color="Color.Default" Style="width: 100%;">CREATE SPRINT</MudButton>
@@ -38,7 +38,7 @@
             <MudHighlighter Text="@context.Name" HighlightedText="@_searchString" />
         </MudTd>
         <MudTd DataLabel="Status">
-            <MudChip Variant="Variant.Outlined" Color="GetSprintStatus(context)">@context.Status</MudChip>
+            <MudChip T="string" Variant="Variant.Outlined" Color="GetSprintStatus(context)">@context.Status</MudChip>
         </MudTd>
         <MudTd DataLabel="Date">
             <MudHighlighter Text="@($"{context.StartDate?.ToString("MMMM dd")} - {context.EndDate?.ToString("MMMM dd")}")" HighlightedText="@_searchString" />
@@ -47,7 +47,7 @@
             <MudHighlighter Text="@context.TotalCards.ToString()" HighlightedText="@_searchString" />
         </MudTd>
         <MudTd DataLabel="StoryPoints">
-            <MudChip Variant="Variant.Text" Color="Color.Primary">
+            <MudChip T="string" Variant="Variant.Text" Color="Color.Primary">
                 @(context.StoryPoints == 0 ? "-" : context.StoryPoints)
             </MudChip>
         </MudTd>

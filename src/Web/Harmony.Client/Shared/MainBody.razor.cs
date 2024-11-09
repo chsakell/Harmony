@@ -80,9 +80,9 @@ namespace Harmony.Client.Shared
             }
         }
 
-        private void ViewAccount()
+        private async Task ViewAccount()
         {
-            _menu.CloseMenu();
+            await _menu.CloseMenuAsync();
             _navigationManager.NavigateTo("/account/");
         }
 

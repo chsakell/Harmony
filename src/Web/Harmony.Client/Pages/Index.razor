@@ -16,7 +16,7 @@
                         <div class="d-flex justify-center">
                             <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Workspaces</MudText>
                         </div>
-                        <MudList Class="mx-auto mt-4" Style="width:300px;">
+                        <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
                             <MudListItem Icon="@Icons.Material.Filled.Workspaces">
                                 Create as many workspaces as you want
                             </MudListItem>
@@ -41,7 +41,7 @@
                         <div class="d-flex justify-center">
                             <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Kanban boards</MudText>
                         </div>
-                        <MudList Class="mx-auto mt-4" Style="width:300px;">
+                        <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
                             <MudListItem Icon="@Icons.Material.Filled.ViewKanban">
                                 Build as many <b>Kanban</b> boards as you wish
                             </MudListItem>
@@ -65,7 +65,7 @@
                         <div class="d-flex justify-center">
                             <MudText Typo="Typo.h5" Class="ml-1 mt-5" Color="Color.Secondary">Scrum Projects</MudText>
                         </div>
-                        <MudList Class="mx-auto mt-4" Style="width:300px;">
+                        <MudList T="string" Class="mx-auto mt-4" Style="width:300px;">
                             <MudListItem Icon="@Icons.Material.Filled.Update">
                                 Be <b>agile</b> and create as many scrum projects as you wish
                             </MudListItem>
@@ -107,7 +107,7 @@
     private async Task OpenCreateWorkspaceModal()
     {
         var parameters = new DialogParameters();
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
         var dialog = _dialogService.Show<CreateWorkspaceModal>(_localizer["Create Workspace"], parameters, options);
 
         var result = await dialog.Result;

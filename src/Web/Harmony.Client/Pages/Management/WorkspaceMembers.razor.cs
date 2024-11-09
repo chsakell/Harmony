@@ -25,7 +25,7 @@ namespace Harmony.Client.Pages.Management
         private bool _loading;
 
        
-        private async Task<TableData<UserWorkspaceResponse>> ReloadData(TableState state)
+        private async Task<TableData<UserWorkspaceResponse>> ReloadData(TableState state, CancellationToken token)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {

@@ -180,7 +180,7 @@ namespace Harmony.Client.Pages.Management
             return ColorHelper.GetBoardListColor(list);
         }
 
-        private async Task<TableData<CardDto>> ReloadData(TableState state)
+        private async Task<TableData<CardDto>> ReloadData(TableState state, CancellationToken token)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {
@@ -206,7 +206,7 @@ namespace Harmony.Client.Pages.Management
                     { c => c.BoardKey, _boardInfo?.Key }
                 };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = true };
             var dialog = await _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
 
             var editCardModal = dialog.Dialog as EditCardModal;

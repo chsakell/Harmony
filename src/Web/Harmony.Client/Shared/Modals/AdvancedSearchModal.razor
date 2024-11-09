@@ -19,7 +19,7 @@
             <MudGrid Style="">
                 <MudItem xs="12" md="4">
                     <MudPaper>
-                        <MudList>
+                        <MudList T="string">
                             <MudListItem>
                                 <MudSelect Disabled="!_userBoards.Any()" T="BoardDto" Clearable="true"
                                            @bind-Value:get="_selectedBoard"
@@ -57,7 +57,7 @@
                             </MudListItem>
                             <MudListItem>
                                 <MudCheckBox For="@(() => _advancedSearchCommandModel.HasAttachments)"
-                                             @bind-Checked="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary"
+                                             @bind-Value="_advancedSearchCommandModel.HasAttachments" Color="Color.Tertiary"
                                              Label="Has attachments"></MudCheckBox>
                             </MudListItem>
                             <MudListItem>
@@ -65,9 +65,9 @@
                                                For="@(() => _advancedSearchCommandModel.DueDate)"
                                                @bind-Date="_advancedSearchCommandModel.DueDate" AutoClose="true">
                                     <PickerActions Context="pickContext">
-                                        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker.Clear())">Clear</MudButton>
-                                        <MudButton OnClick="@(() => _datePicker.Close(false))">Cancel</MudButton>
-                                        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker.Close())">Ok</MudButton>
+                                        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _datePicker.ClearAsync())">Clear</MudButton>
+                                        <MudButton OnClick="@(() => _datePicker.CloseAsync(false))">Cancel</MudButton>
+                                        <MudButton Color="Color.Primary" OnClick="@(() => _datePicker.CloseAsync())">Ok</MudButton>
                                     </PickerActions>
                                 </MudDatePicker>
                             </MudListItem>
@@ -110,7 +110,7 @@
                             </HeaderContent>
                             <RowTemplate Context="card">
                                 <MudTd DataLabel="Serial Key">
-                                    <MudChip Label="true" Size="Size.Small" Color="@(card.IsComplete ? Color.Tertiary : Color.Warning)">
+                                    <MudChip T="string" Label="true" Size="Size.Small" Color="@(card.IsComplete ? Color.Tertiary : Color.Warning)">
                                         @card.SerialKey
                                     </MudChip>
                                 </MudTd>

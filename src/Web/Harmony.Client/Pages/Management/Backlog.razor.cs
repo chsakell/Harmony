@@ -60,7 +60,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<MoveToSprintModal>(_localizer["Move to sprint"], parameters, options);
             var result = await dialog.Result;
 
@@ -86,7 +86,7 @@ namespace Harmony.Client.Pages.Management
             DisplayMessage(result);
         }
 
-        private async Task<TableData<GetBacklogItemResponse>> ReloadData(TableState state)
+        private async Task<TableData<GetBacklogItemResponse>> ReloadData(TableState state, CancellationToken token)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {
@@ -110,7 +110,7 @@ namespace Harmony.Client.Pages.Management
                     { c => c.BoardKey, card.BoardKey }
                 };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = true };
             var dialog = await _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
 
             var editCardModal = dialog.Dialog as EditCardModal;
@@ -140,7 +140,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateBacklogModal>(_localizer["Create backlog item"], parameters, options);
             var result = await dialog.Result;
 

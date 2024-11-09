@@ -337,7 +337,7 @@ namespace Harmony.Client.Shared.Modals
                 },
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateChildIssueModal>(_localizer["Create child issue"], parameters, options);
             var result = await dialog.Result;
 
@@ -360,7 +360,7 @@ namespace Harmony.Client.Shared.Modals
                 },
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<AddLinkIssueModal>(_localizer["Add link"], parameters, options);
             var result = await dialog.Result;
 
@@ -417,7 +417,7 @@ namespace Harmony.Client.Shared.Modals
                     { c => c.BoardKey, BoardKey }
                 };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = true };
             var dialog = _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
 
             MudDialog.Cancel();
@@ -599,7 +599,7 @@ namespace Harmony.Client.Shared.Modals
                 { c => c.BoardId, BoardId }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateCheckListModal>(_localizer["Create check list"], parameters, options);
 
             var result = await dialog.Result;
@@ -619,7 +619,7 @@ namespace Harmony.Client.Shared.Modals
                 { c => c.BoardId, BoardId }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CardMembersModal>(_localizer["Add card member"], parameters, options);
 
             var result = await dialog.Result;
@@ -663,7 +663,7 @@ namespace Harmony.Client.Shared.Modals
 
         private async Task ListItemDueDateChanged(EditableCheckListItemModel item)
         {
-            item.DatePicker.Close();
+            await item.DatePicker.CloseAsync();
 
             var response = await _checkListItemManager
                 .UpdateListItemDueDateAsync(new
@@ -715,7 +715,7 @@ namespace Harmony.Client.Shared.Modals
                 { c => c.BoardId,  BoardId }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<EditCardLabelsModal>(_localizer["Edit labels"], parameters, options);
 
             var result = await dialog.Result;
@@ -733,7 +733,7 @@ namespace Harmony.Client.Shared.Modals
                 { c => c.DueDateReminder, _card.DueDateReminderType ?? Domain.Enums.DueDateReminderType.None }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<EditCardDatesModal>(_localizer["Edit dates"], parameters, options);
 
             var result = await dialog.Result;
@@ -842,7 +842,7 @@ namespace Harmony.Client.Shared.Modals
                 { c => c.DisplayCancelButton, false },
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, BackdropClick = true };
             dialog = _dialogService.Show<EditableTextEditorFieldModal>(_localizer["Edit comment"], parameters, options);
 
             var result = await dialog.Result;

@@ -21,7 +21,7 @@
         <DialogContent>
             <MudTextField For="@(() => _createWorkspaceModel.Name)" @bind-Value="_createWorkspaceModel.Name" Label="@_localizer["Title"]" />
             <MudTextField For="@(() => _createWorkspaceModel.Description)" @bind-Value="_createWorkspaceModel.Description" Label="@_localizer["Description"]" />
-            <MudSwitch @bind-Checked="@_createWorkspaceModel.IsPublic" Class="mt-4" Label="@_localizer["Public"]" Color="Color.Success" />
+            <MudSwitch @bind-Value="@_createWorkspaceModel.IsPublic" Class="mt-4" Label="@_localizer["Public"]" Color="Color.Success" />
         </DialogContent>
         <DialogActions>
             <MudButton Variant="Variant.Filled" OnClick="Cancel">@_localizer["Cancel"]</MudButton>

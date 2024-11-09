@@ -50,7 +50,7 @@
                               @bind-SelectedItem:set="SelectCard"
                               RowClass="cursor-pointer" 
                               RowClassFunc="@SelectedRowClassFunc" 
-                              ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Striped="true" @ref="_table">
+                              ServerData="ReloadData" Striped="true" @ref="_table">
                         <ToolBarContent>
                             <MudSelect T="LinkType" @bind-Value="@CreateLinkCommandModel.Type"
                                        Label="Link type" AnchorOrigin="Origin.BottomCenter"
@@ -70,7 +70,7 @@
                         </HeaderContent>
                         <RowTemplate Context="card">
                             <MudTd DataLabel="Title">
-                                <MudChip  Label="true" Size="Size.Small" Color="Color.Warning">@card.BoardKey - @card.SerialNumber</MudChip>
+                                <MudChip T="string" Label="true" Size="Size.Small" Color="Color.Warning">@card.BoardKey - @card.SerialNumber</MudChip>
                                 @card.Title
                             </MudTd>
                             <MudTd DataLabel="Type">

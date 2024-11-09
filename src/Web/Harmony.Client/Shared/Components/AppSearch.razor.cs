@@ -49,14 +49,14 @@ namespace Harmony.Client.Shared.Components
             {
             };
 
-            var options = new DialogOptions { CloseButton = true, FullScreen=true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, FullScreen = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = true };
             var dialog = _dialogService.Show<AdvancedSearchModal>("Advanced search", parameters, options);
             var result = await dialog.Result;
         }
 
         private async Task Navigate(SearchableCard card)
         {
-            _autoComplete.Clear();
+            await _autoComplete.ClearAsync();
 
             var slug = StringUtilities.SlugifyString(card.BoardTitle);
 
@@ -86,7 +86,7 @@ namespace Harmony.Client.Shared.Components
                 { c => c.BoardKey, boardKey }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = false };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = true };
             var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
             var result = await dialog.Result;
         }

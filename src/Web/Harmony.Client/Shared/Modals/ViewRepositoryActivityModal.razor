@@ -25,7 +25,7 @@
                                     <MudAvatar>
                                         <MudImage Src="@branch.Creator.AvatarUrl"></MudImage>
                                     </MudAvatar>
-                                    <MudChip Icon="@Icons.Custom.Brands.GitHub" Label="true" Color="Color.Primary">@branch.Creator.Login</MudChip>
+                                    <MudChip T="string" Icon="@Icons.Custom.Brands.GitHub" Label="true" Color="Color.Primary">@branch.Creator.Login</MudChip>
                                 </MudStack>
                             </TitleContent>
                             <ChildContent>
@@ -93,7 +93,7 @@
                                 <MudLink Href="@context.HtmlUrl" Target="_blank">@context.Title</MudLink>
                             </MudTd>
                             <MudTd DataLabel="Status">
-                                <MudChip Color="@ColorHelper.GetPullRequestColor(context.State)">@context.State.ToString()</MudChip>
+                                <MudChip T="string" Color="@ColorHelper.GetPullRequestColor(context.State)">@context.State.ToString()</MudChip>
                             </MudTd>
                             <MudTd DataLabel="Source/Target">
                                 <MudStack>
@@ -135,7 +135,7 @@
             {
                 <MudTabPanel Text="Tags" Icon="fa-solid fa-tag">
                     <MudPaper Width="300px">
-                        <MudList Clickable="true">
+                        <MudList T="string" Clickable="true">
                             @foreach(var tag in Branches.SelectMany(b => b.Tags))
                             {
                                 <MudListItem Text="@tag" />

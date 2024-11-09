@@ -15,7 +15,7 @@
               EditTrigger="TableEditTrigger.EditButton"
               T="CardDto"
               @bind-SelectedItems="_selectedCards"
-              ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table"
+              ServerData="@ReloadData" Dense="true" Striped="true" @ref="_table"
               Class="mt-4">
         <ToolBarContent>
             <div class="justify-center mud-text-align-center">
@@ -110,7 +110,7 @@
         <RowTemplate>
             <MudTd DataLabel="SerialKey">
                 <MudTooltip Text="Click for full editing" Delay="2500">
-                    <MudChip Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@($"{_boardInfo.Key}-{context.SerialNumber}")</MudChip>
+                    <MudChip T="string" Label="true" Size="Size.Small" OnClick="() => EditCard(context)" Color="Color.Warning">@($"{_boardInfo.Key}-{context.SerialNumber}")</MudChip>
                 </MudTooltip>
             </MudTd>
             <MudTd DataLabel="Title">
@@ -124,14 +124,14 @@
                 </MudStack>
             </MudTd>
             <MudTd Style="width:160px" DataLabel="Status">
-                <MudChip Variant="Variant.Text" Color="@GetBoardListColor(context.BoardListId)">
+                <MudChip T="string" Variant="Variant.Text" Color="@GetBoardListColor(context.BoardListId)">
                     @(GetBoardList(context.BoardListId))
                 </MudChip>
             </MudTd>
             @if (_boardInfo.Type == Domain.Enums.BoardType.Scrum)
             {
                 <MudTd Style="width:160px" DataLabel="StoryPoints">
-                    <MudChip Variant="Variant.Text" Color="Color.Primary">
+                    <MudChip T="string" Variant="Variant.Text" Color="Color.Primary">
                         @(context.StoryPoints?.ToString() ?? "-")
                     </MudChip>
                 </MudTd>
@@ -141,7 +141,7 @@
         </RowTemplate>
         <RowEditingTemplate>
             <MudTd DataLabel="SerialKey">
-                <MudChip Label="true" Size="Size.Small" Color="Color.Warning">@($"{_boardInfo.Key}-{context.SerialNumber}")</MudChip>
+                <MudChip T="string" Label="true" Size="Size.Small" Color="Color.Warning">@($"{_boardInfo.Key}-{context.SerialNumber}")</MudChip>
             </MudTd>
             <MudTd DataLabel="Title">
                 <MudTextField T="string" For="@(() => context.Title)" @bind-Value="context.Title" Label="Title"></MudTextField>
@@ -171,7 +171,7 @@
                 </MudStack>
             </MudTd>
             <MudTd Style="width:160px" DataLabel="Status">
-                <MudChip Variant="Variant.Text" Color="@GetBoardListColor(context.BoardListId)">
+                <MudChip T="string" Variant="Variant.Text" Color="@GetBoardListColor(context.BoardListId)">
                     @(GetBoardList(context.BoardListId))
                 </MudChip>
             </MudTd>

@@ -30,7 +30,7 @@ else if (!_userBoards.Any())
                         <div class="d-flex justify-center">
                             <MudText Typo="Typo.h5" Color="Color.Secondary">Add a Kanban or a Scrum project</MudText>
                         </div>
-                        <MudList Class="mx-auto mt-4">
+                        <MudList T="string" Class="mx-auto mt-4">
                             <MudListItem Icon="@Icons.Material.Filled.Update">
                                 If you create a Scrum project, start by creating your <b>backlog</b> and the <b>sprints</b>
                             </MudListItem>
@@ -78,8 +78,8 @@ else
                     <MudCardContent>
                         <MudText Typo="Typo.h6">@board.Description</MudText>
                         <MudStack Row="true" Justify="Justify.FlexEnd">
-                            <MudChip Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
-                            <MudChip Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
+                            <MudChip T="string" Icon="@Icons.Material.Filled.Visibility" IconColor="ColorHelper.GetVisibilityColor(board.Visibility)">@board.Visibility</MudChip>
+                            <MudChip T="string" Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.Dashboard :  Icons.Material.Filled.Update)" IconColor="ColorHelper.GetBoardTypeColor(board.Type)">@board.Type</MudChip>
                         </MudStack>
                         <MudDivider />
                         <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"

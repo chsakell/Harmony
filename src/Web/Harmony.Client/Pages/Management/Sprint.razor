@@ -21,17 +21,17 @@
           SelectOnRowClick="false"
           @bind-SelectedItems="_selectedCards"
           Style="height:calc(100vh - 100px);overflow:auto"
-          ServerData="@(new Func<TableState, Task<TableData<CardDto>>>(ReloadData))" Dense="true" Striped="true" @ref="_table">
+          ServerData="@ReloadData" Dense="true" Striped="true" @ref="_table">
     <ToolBarContent>
         <div class="justify-center mud-text-align-center">
-            <MudChip Icon="@Icons.Filled.Update" Label="true" Size="Size.Large" Color="Color.Default">@_sprint?.Board?.Title</MudChip>
+            <MudChip T="string" Icon="@Icons.Material.Filled.Update" Label="true" Size="Size.Large" Color="Color.Default">@_sprint?.Board?.Title</MudChip>
         </div>
         <div class="justify-center mud-text-align-center">
             <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Add" OnClick="CreateIssue" Variant="Variant.Filled" Color="Color.Primary" Style="width: 100%;">CREATE ISSUE</MudButton>
         </div>
         <div class="justify-center mud-text-align-center ml-2">
             <MudMenu Label="@_localizer["CARDS"]" Variant="Variant.Filled" DisableElevation="false"
-                     EndIcon="@Icons.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
+                     EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
                      AnchorOrigin="Origin.BottomLeft">
                 <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
                              OnClick="MoveToBacklog" Icon="@Icons.Material.Filled.ArrowRight">Move to backlog</MudMenuItem>
@@ -39,7 +39,7 @@
         </div>
         <div class="justify-center mud-text-align-center ml-2">
             <MudMenu Label="@_localizer["ACTIONS"]" Variant="Variant.Filled" DisableElevation="false"
-                     EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary"
+                     EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary"
                      AnchorOrigin="Origin.BottomLeft">
                 @switch (_sprint.Status)
                 {
@@ -79,7 +79,7 @@
     <RowTemplate>
         <MudTd DataLabel="Title">
             <MudStack Row="true" Class="align-center">
-                <MudChip Label="true" OnClick="() => EditCard(context)" Size="Size.Small" Color="Color.Warning">@($"{_sprint?.Board.Key}-{context.SerialNumber}")</MudChip>
+                <MudChip T="string" Label="true" OnClick="() => EditCard(context)" Size="Size.Small" Color="Color.Warning">@($"{_sprint?.Board.Key}-{context.SerialNumber}")</MudChip>
                 @if (context?.Completed == true)
                 {
                     <MudTooltip Text="Completed" Delay="2000">
@@ -101,7 +101,7 @@
             <MudHighlighter Text="@context.BoardList" HighlightedText="@_searchString" />
         </MudTd>
         <MudTd DataLabel="StoryPoints">
-            <MudChip Variant="Variant.Text" Color="Color.Primary">
+            <MudChip T="string" Variant="Variant.Text" Color="Color.Primary">
                 @(context.StoryPoints.HasValue && context.StoryPoints.Value > 0 ? context.StoryPoints : "-")
             </MudChip>
         </MudTd>

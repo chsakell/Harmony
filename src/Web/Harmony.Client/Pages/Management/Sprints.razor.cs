@@ -28,7 +28,7 @@ namespace Harmony.Client.Pages.Management
 
         private bool _loading;
 
-        private async Task<TableData<SprintSummary>> ReloadData(TableState state)
+        private async Task<TableData<SprintSummary>> ReloadData(TableState state, CancellationToken token)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {
@@ -100,7 +100,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Edit sprint"], parameters, options);
             var result = await dialog.Result;
 
@@ -120,7 +120,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
             var result = await dialog.Result;
 
@@ -176,7 +176,7 @@ namespace Harmony.Client.Pages.Management
                     { x => x.SprintId , sprint.Id },
                 };
 
-                var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+                var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
                 var dialog = _dialogService.Show<CompleteSprintModal>(_localizer["Complete sprint"], parameters, options);
 
                 var result = await dialog.Result;
@@ -215,7 +215,7 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = false, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = false, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<SprintReportsModal>(_localizer["Sprint reports"], parameters, options);
             var result = await dialog.Result;
         }

@@ -22,7 +22,7 @@
         {
             foreach (var workspace in _workspaceManager.UserWorkspaces)
             {
-                <MudList Clickable="true">
+                <MudList T="string" Clickable="true">
                     <MudListItem Text="@workspace?.Name"
                                  InitiallyExpanded="true">
                         <NestedList>

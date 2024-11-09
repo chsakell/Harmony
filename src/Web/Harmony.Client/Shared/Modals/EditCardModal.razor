@@ -39,10 +39,10 @@ else
                                        OnSave="(newTitle) => SaveTitle(newTitle)"
                                        Text="@_card.Title" Label="@_localizer["Title"]" />
                     <MudStack Row="true" Class="align-end">
-                        <MudChip Label="true" Color="Color.Warning">@BoardKey - @_card.SerialNumber</MudChip>
+                        <MudChip T="string" Label="true" Color="Color.Warning">@BoardKey - @_card.SerialNumber</MudChip>
                         @if (_card.Sprint != null)
                         {
-                            <MudChip Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
+                            <MudChip T="string" Label="true" Color="Color.Info">@_card.Sprint.Name</MudChip>
                         }
                         @if (_card.IssueType != null && !_card.IsChild)
                         {
@@ -98,7 +98,7 @@ else
                         }
                         @if (_card.StartDate != null || _card.DueDate != null)
                         {
-                            <MudChip Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(_card.StartDate, _card.DueDate)</MudChip>
+                            <MudChip T="string" Icon="@Icons.Material.Outlined.DateRange" Label="true">@CardHelper.DisplayDates(_card.StartDate, _card.DueDate)</MudChip>
                         }
                         @if (_card.Members.Any())
                         {
@@ -161,9 +161,9 @@ else
                                     {
                                         <MudStack Justify="Justify.SpaceBetween" Row="true">
                                             <MudStack Row="true">
-                                                <MudChip Variant="Variant.Text" Color="Color.Warning">@link.Type.GetDescription()</MudChip>
+                                                <MudChip T="string" Variant="Variant.Text" Color="Color.Warning">@link.Type.GetDescription()</MudChip>
                                                 <MudLink Href="@(GetLinkIssue(link))" Target="_blank">
-                                                    <MudChip Label="true" Variant="Variant.Text" Color="Color.Info" Class="cursor-pointer">
+                                                    <MudChip T="string" Label="true" Variant="Variant.Text" Color="Color.Info" Class="cursor-pointer">
                                                         <MudText Class="mr-2" Color="Color.Secondary">@link.TargetCardSerialKey</MudText>
                                                         <MudText>@link.TargetCardTitle</MudText>
                                                     </MudChip>
@@ -233,12 +233,12 @@ else
                                         <RowTemplate>
                                             <MudTd DataLabel="Serial Key">
                                                 <MudTooltip Text="Click for full editing" Delay="2500">
-                                                    <MudChip OnClick="() => EditCard(child)" Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
+                                                    <MudChip T="string" OnClick="() => EditCard(child)" Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
                                                 </MudTooltip>
                                             </MudTd>
                                             <MudTd DataLabel="Title">@child.Title</MudTd>
                                             <MudTd DataLabel="Title" Style="width:110px">
-                                                <MudChip Variant="Variant.Text" Color="Color.Primary">
+                                                <MudChip T="string" Variant="Variant.Text" Color="Color.Primary">
                                                     @(child.StoryPoints?.ToString() ?? "-")
                                                 </MudChip>
                                             </MudTd>
@@ -247,7 +247,7 @@ else
                                         <RowEditingTemplate>
                                             <MudTd DataLabel="Serial Key">
                                                 <MudTooltip Text="Click for full editing" Delay="2500">
-                                                    <MudChip OnClick="() => EditCard(child)" Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
+                                                    <MudChip T="string" OnClick="() => EditCard(child)" Label="true" Size="Size.Small" Color="Color.Warning">@BoardKey - @child.SerialNumber</MudChip>
                                                 </MudTooltip>
                                             </MudTd>
                                             <MudTd DataLabel="Title">@child.Title</MudTd>
@@ -294,7 +294,7 @@ else
                                         {
                                             <div class="d-flex flex-grow-1 gap-4 mb-4">
                                                 <MudPaper Class="flex-none d-flex" Elevation="0">
-                                                    <MudCheckBox Class="flex-none d-flex" @bind-Checked="@item.IsChecked" @onclick="() => ToggleListItemChecked(item)" Color="Color.Success" />
+                                                    <MudCheckBox Class="flex-none d-flex" @bind-Value="@item.IsChecked" @onclick="() => ToggleListItemChecked(item)" Color="Color.Success" />
                                                 </MudPaper>
                                                 <MudPaper Class="flex-auto d-flex" Width="60%" Elevation="0" Style="margin-top:-18px">
                                                     <EditableTextField For="@(() => item.Description)"
@@ -307,8 +307,8 @@ else
                                                                    DateFormat="yyyy-MM-dd"
                                                                    IsDateDisabledFunc="@((DateTime dt)=>(dt < DateTime.Now))">
                                                         <PickerActions>
-                                                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => item.DatePicker.Clear())">Clear</MudButton>
-                                                            <MudButton OnClick="@(() => item.DatePicker.Close(false))">Cancel</MudButton>
+                                                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => item.DatePicker.ClearAsync())">Clear</MudButton>
+                                                            <MudButton OnClick="@(() => item.DatePicker.CloseAsync(false))">Cancel</MudButton>
                                                             <MudButton Color="Color.Primary" OnClick="@(() => ListItemDueDateChanged(item))">Ok</MudButton>
                                                         </PickerActions>
                                                     </MudDatePicker>
@@ -467,7 +467,7 @@ else
                                    Variant="Variant.Outlined" FullWidth="true"
                                    Color="Color.Primary" OnClick="EditDates">DATES</MudButton>
                         <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
-                            <ButtonTemplate>
+                            <ActivatorContent>
                                 @if (_card.UploadingAttachment)
                                 {
                                     <MudButton Disabled="true" FullWidth="true">
@@ -481,12 +481,11 @@ else
                                                Variant="Variant.Outlined"
                                                Color="Color.Primary"
                                                FullWidth="true"
-                                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                                               for="@context">
+                                               StartIcon="@Icons.Material.Filled.CloudUpload">
                                         Upload Files
                                     </MudButton>
                                 }
-                            </ButtonTemplate>
+                            </ActivatorContent>
                         </MudFileUpload>
                         @if (!_card.IsChild)
                         {

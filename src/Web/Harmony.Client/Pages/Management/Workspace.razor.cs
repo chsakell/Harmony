@@ -76,7 +76,7 @@ namespace Harmony.Client.Pages.Management
                     { c => c.WorkspaceId, Guid.Parse(Id) },
                 };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateWorkspaceModal>(_localizer["Edit Workspace"], parameters, options);
 
             var result = await dialog.Result;
@@ -97,10 +97,10 @@ namespace Harmony.Client.Pages.Management
                 }
             };
 
-            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
             var dialog = _dialogService.Show<CreateBoardModal>(_localizer["Create Board"], parameters, options);
             var result = await dialog.Result;
-            if (!result.Cancelled)
+            if (!result.Canceled)
             {
                 // TODO update workspace list or navigate to it
             }

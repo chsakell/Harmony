@@ -30,7 +30,7 @@ else
                                                        OnSave="(labelTitle) => UpdateLabelTitle(label, labelTitle)"
                                                        Text="@label.Title" Label="@_localizer["Title"]" />
                                     <div class="d-flex align-center">
-                                        <MudCheckBox T="bool" @bind-Checked:get="label.IsChecked" @bind-Checked:set="(isChecked) => ToggleCardLabel(label, isChecked)" Dense="true" Color="Color.Success"></MudCheckBox>
+                                        <MudCheckBox T="bool" @bind-Value:get="label.IsChecked" @bind-Value:set="(isChecked) => ToggleCardLabel(label, isChecked)" Dense="true" Color="Color.Success"></MudCheckBox>
                                     </div>
                                     <div class="d-flex align-center">
                                         <MudIconButton Color="Color.Error" OnClick="() => DeleteLabel(label)"
@@ -51,7 +51,7 @@ else
                                               Placeholder="Optional title.."
                                 @bind-Text="_createLabelModel.Title" />
                                 <div class="d-flex align-center">
-                                    <MudCheckBox @bind-Checked="_createLabelModel.IsChecked" Dense="true" Color="Color.Success"></MudCheckBox>
+                                    <MudCheckBox @bind-Value="_createLabelModel.IsChecked" Dense="true" Color="Color.Success"></MudCheckBox>
                                 </div>
                                 <div class="d-flex align-center">
                                     <MudIconButton Icon="@Icons.Material.Filled.Save"
