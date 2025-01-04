@@ -1,16 +1,16 @@
 # Harmony
 
-The source code of the [Harmony](https://docs.harmony-teams.com/) project management tool.
+The source code of the [Harmony](https://chsakell.gitbook.io/harmony/) project management tool.
 
 > Manage your team projects with this free to use, simple yet powerfull management tool.
 
-<a href="https://docs.harmony-teams.com/configuration/dependencies" target="_blank"><img src="https://4051864592-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F9FS3EgJIfGPiZJAR9LaG%2Fuploads%2FIo7zVQE4xKC1af3GtQyy%2Fharmony-architecture.gif?alt=media&token=0fc3a580-b675-494f-b772-c6a544bfe55" alt="Harmony Architecture" width="600"></a>
+<a href="https://chsakell.gitbook.io/harmony/configuration/dependencies" target="_blank"><img src="https://4051864592-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F9FS3EgJIfGPiZJAR9LaG%2Fuploads%2FIo7zVQE4xKC1af3GtQyy%2Fharmony-architecture.gif?alt=media&token=0fc3a580-b675-494f-b772-c6a544bfe55" alt="Harmony Architecture" width="600"></a>
 
 ## Features
-- [Kanban](https://docs.harmony-teams.com/guide/kanban) boards
-- [Scrum](https://docs.harmony-teams.com/guide/scrum) projects with sprints & retrospectives
-- [Automations](https://docs.harmony-teams.com/guide/automations)
-- GitHub [integration](https://docs.harmony-teams.com/integrations/github)
+- [Kanban](https://chsakell.gitbook.io/harmony/guide/kanban) boards
+- [Scrum](https://chsakell.gitbook.io/harmony/guide/scrum) projects with sprints & retrospectives
+- [Automations](https://chsakell.gitbook.io/harmony/guide/automations)
+- GitHub [integration](https://chsakell.gitbook.io/harmony/integrations/github)
 - Instant updates across all connected clients
 - **Docker** & **Kubernetes** support :ship: :rocket:
 
@@ -27,14 +27,14 @@ The source code of the [Harmony](https://docs.harmony-teams.com/) project manage
 |                 	| CQRS MediatR        	|               	|
 
 ## Documentation
-Docs are maintained at [docs.harmony-teams.com](https://docs.harmony-teams.com/)
+Docs are maintained at [docs.harmony-teams.com](https://chsakell.gitbook.io/harmony/)
 
 ## Installation
-- For a detailed walkthrough on how to install and configure the dependencies, go through the [dependencies](https://docs.harmony-teams.com/configuration/dependencies) guide of the docs.
+- For a detailed walkthrough on how to install and configure the dependencies, go through the [dependencies](https://chsakell.gitbook.io/harmony/configuration/dependencies) guide of the docs.
 - In a nutchel, all you need to do is have **SQL Server** or **PostgreSQL**, **MongoDB** & **RabbitMQ** installed on your machine and configure all connection strings to point to these instances.
 - By default, the connection strings use the default ports for all above installations.
 - Redis is optional and should be used in production environment in order to configure the SignalR Redis backplane & the Redis caching.
-- Configure the startup projects as explained on the [before-running](https://docs.harmony-teams.com/configuration/before-running) guide.
+- Configure the startup projects as explained on the [before-running](https://chsakell.gitbook.io/harmony/configuration/before-running) guide.
 - Login with default user _administrator_ or _johndoe_ using the password: __Pa$$w0rd!__
 
 ## Contribute
