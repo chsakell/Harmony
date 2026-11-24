@@ -113,8 +113,8 @@ namespace Harmony.Application.Features.Boards.Commands.Create
                 await _boardRepository.LoadWorkspaceEntryAsync(board);
                 var indexName = StringUtilities.SlugifyString($"{board.Workspace.Name}-{board.Title}");
 
-                _notificationsPublisher
-                    .PublishSearchIndexNotification(new BoardCreatedIndexNotification()
+                await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new BoardCreatedIndexNotification()
                     {
                         ObjectID = board.Id.ToString(),
                         SearchableAttributes = new List<string> 

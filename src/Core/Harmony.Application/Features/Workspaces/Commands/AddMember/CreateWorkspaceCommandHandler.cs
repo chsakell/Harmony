@@ -62,8 +62,8 @@ namespace Harmony.Application.Features.Workspaces.Commands.AddMember
                 var slug = StringUtilities.SlugifyString(workspace.Name);
                 var workspaceUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/workspaces/{workspace.Id}/{slug}";
 
-                _notificationsPublisher
-                    .PublishEmailNotification(new MemberAddedToWorkspaceNotification(request.WorkspaceId, request.UserId, workspaceUrl));
+                await _notificationsPublisher
+                    .PublishEmailNotificationAsync(new MemberAddedToWorkspaceNotification(request.WorkspaceId, request.UserId, workspaceUrl));
 
                 return await Result<bool>.SuccessAsync(true, _localizer["User added to workspace"]);
             }

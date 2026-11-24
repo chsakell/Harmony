@@ -1,8 +1,9 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["src/Directory.Build.props", "src/Directory.Packages.props", "./"]
 COPY ["src/Web/Harmony.Client/Harmony.Client.csproj", "Web/Harmony.Client/"]
 COPY ["src/Web/Harmony.Client.Infrastructure/Harmony.Client.Infrastructure.csproj", "Web/Harmony.Client.Infrastructure/"]
 COPY ["src/Core/Harmony.Application/Harmony.Application.csproj", "Core/Harmony.Application/"]

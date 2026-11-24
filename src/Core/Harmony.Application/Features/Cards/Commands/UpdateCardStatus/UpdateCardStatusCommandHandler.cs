@@ -72,8 +72,8 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
-            _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardStatusUpdatedIndexNotification()
+            await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardStatusUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         Status = card.Status.ToString()
@@ -81,7 +81,7 @@ public class UpdateCardStatusCommandHandler : IRequestHandler<UpdateCardStatusCo
 
             var message = new CardStatusChangedMessage(request.BoardId, request.CardId, card.Status);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardStatusChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Status updated"]);

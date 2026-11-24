@@ -10,7 +10,7 @@ namespace Harmony.Client.Shared.Modals
 {
     public partial class ViewRepositoryActivityModal
     {
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
 
         [Parameter]

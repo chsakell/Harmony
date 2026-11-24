@@ -69,7 +69,7 @@ public class UpdateCardStoryPointsCommandHandler : IRequestHandler<UpdateCardSto
 				card.StoryPoints,
 				card.ParentCardId);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardStoryPointsChanged, routingKey: BrokerConstants.RoutingKeys.Notifications);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Story points updated"]);

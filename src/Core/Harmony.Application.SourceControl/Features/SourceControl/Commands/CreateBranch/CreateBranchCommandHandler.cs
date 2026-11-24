@@ -83,7 +83,7 @@ namespace Harmony.Application.Features.SourceControl.Commands.CreateBranch
                     RepositoryUrl = request.Repository.Url,
                 };
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.BranchCreated, routingKey: BrokerConstants.RoutingKeys.SignalR);
             }
 

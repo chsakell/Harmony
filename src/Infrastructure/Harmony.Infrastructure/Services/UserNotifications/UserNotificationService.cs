@@ -24,7 +24,7 @@ namespace Harmony.Infrastructure.Services.UserNotifications
 
             if (subscribedToNotification)
             {
-                _notificationsPublisher.PublishEmailNotification(notification);
+                await _notificationsPublisher.PublishEmailNotificationAsync(notification);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _processing;
         private bool _processingMember;
         private bool _loading;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         private List<CardMemberResponse> _boardMembers = new List<CardMemberResponse>();
         private SearchWorkspaceUserResponse _newBoardMember;
@@ -94,7 +94,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -128,7 +128,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Success }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var result = await dialog.Result;
 
             if (!result.Canceled)

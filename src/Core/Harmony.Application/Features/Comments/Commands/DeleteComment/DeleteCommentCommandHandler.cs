@@ -72,7 +72,7 @@ namespace Harmony.Application.Features.Comments.Commands.DeleteComment
                     CardId = request.CardId,
                 };
 
-                _notificationsPublisher.PublishMessage(cardCommentDeletedMessage,
+                await _notificationsPublisher.PublishMessageAsync(cardCommentDeletedMessage,
                     NotificationType.CardCommentDeleted,
                     routingKey: BrokerConstants.RoutingKeys.SignalR);
 

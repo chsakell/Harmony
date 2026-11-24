@@ -82,7 +82,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                         UpdateId = request.UpdateId,
                     };
 
-                    _notificationsPublisher.PublishMessage(cardMovedNotification,
+                    await _notificationsPublisher.PublishMessageAsync(cardMovedNotification,
                         NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Automation);
 
                     var result = _mapper.Map<CardDto>(card);
@@ -111,7 +111,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 				card.DateCompleted = DateTime.Now;
 				await _cardRepository.Update(card);
 
-                _notificationsPublisher.PublishEmailNotification(new CardCompletedNotification(card.Id));
+                await _notificationsPublisher.PublishEmailNotificationAsync(new CardCompletedNotification(card.Id));
             }
 			else if(card.DateCompleted.HasValue)
 			{
@@ -125,8 +125,8 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
             if (previousBoardListId != request.ListId)
 			{
-                _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardListUpdatedIndexNotification()
+                await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardListUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         ListId = request.ListId?.ToString(),
@@ -148,7 +148,7 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
                     UpdateId = request.UpdateId,
                 };
 
-                _notificationsPublisher.PublishMessage(cardMovedNotification,
+                await _notificationsPublisher.PublishMessageAsync(cardMovedNotification,
                     NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.Notifications);
             }
 

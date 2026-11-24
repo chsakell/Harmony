@@ -81,7 +81,7 @@ namespace Harmony.Application.Features.Lists.Commands.ArchiveList
 
                     var message = new BoardListArchivedMessage(list.BoardId, list.Id, newPositions);
 
-                    _notificationsPublisher.PublishMessage(message,
+                    await _notificationsPublisher.PublishMessageAsync(message,
                         NotificationType.BoardListArchived, routingKey: BrokerConstants.RoutingKeys.SignalR);
                 }
 

@@ -22,9 +22,9 @@
         {
             foreach (var workspace in _workspaceManager.UserWorkspaces)
             {
-                <MudList T="string" Clickable="true">
+                <MudList T="string" ReadOnly="false">
                     <MudListItem Text="@workspace?.Name"
-                                 InitiallyExpanded="true">
+                                 Expanded="true">
                         <NestedList>
                             <MudListItem Href="@($"{WorkspaceUrl(workspace)}/members")" Icon="@Icons.Material.Outlined.Groups2">
                                 Members
@@ -32,12 +32,12 @@
                             @if (workspace.Boards.Any())
                             {
                                 <MudDivider />
-                                <MudList Clickable="true">
+                                <MudList ReadOnly="false">
                                     @foreach (var board in workspace.Boards)
                                     {
                                         <MudListItem Text="@board.Title"
                                                      Icon="@(board.Type == Domain.Enums.BoardType.Kanban ? Icons.Material.Filled.ListAlt : Icons.Material.Filled.Update)"
-                                                     InitiallyExpanded="false">
+                                                     Expanded="false">
                                             <NestedList>
                                                 <MudListItem Href="@GetBoardUrl(board)" Icon="@Icons.Material.Filled.Dashboard">
                                                     Board

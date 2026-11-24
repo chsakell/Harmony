@@ -125,18 +125,18 @@ namespace Harmony.Application.Features.Cards.Commands.AddUserCard
 
                     var cardUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/boards/{userBoard.Board.Id}/{slug}/{request.CardId}";
                     
-                    _notificationsPublisher.PublishEmailNotification(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
+                    await _notificationsPublisher.PublishEmailNotificationAsync(new MemberAddedToCardNotification(request.BoardId, request.CardId, request.UserId , cardUrl));
 
                     var message = new CardMemberAddedMessage(request.BoardId, request.CardId, member);
 
-                    _notificationsPublisher.PublishMessage(message,
+                    await _notificationsPublisher.PublishMessageAsync(message,
                         NotificationType.CardMemberAdded, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                     var board = await _boardService.GetBoardInfo(request.BoardId);
                     var members = await _userCardRepository.GetCardMembers(request.CardId);
 
-                    _notificationsPublisher
-                            .PublishSearchIndexNotification(new CardMembersUpdatedIndexNotification()
+                    await _notificationsPublisher
+                            .PublishSearchIndexNotificationAsync(new CardMembersUpdatedIndexNotification()
                             {
                                 ObjectID = request.CardId.ToString(),
                                 Members = members

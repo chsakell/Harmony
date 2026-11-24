@@ -42,24 +42,21 @@ namespace Harmony.Infrastructure.Services.Search
                 return Enumerable.Empty<SearchableCard>().ToList();
             }
 
-            var indexQueries = new List<QueryMultiIndices>();
+            var indexQueries = new List<SearchForHits>();
 
             foreach (var index in indexedBoards)
             {
-                indexQueries.Add(new QueryMultiIndices(index, term)
+                indexQueries.Add(new SearchForHits
                 {
+                    IndexName = index,
+                    Query = term,
                     RestrictSearchableAttributes = new List<string> { "title", "serialKey" }
                 });
             }
 
-            MultipleQueriesRequest request = new MultipleQueriesRequest
-            {
-                Requests = indexQueries
-            };
+            var multiQueryResult = await _searchClient.SearchForHitsAsync<IndexedCard>(indexQueries);
 
-            var multiQueryResult = await _searchClient.MultipleQueriesAsync<IndexedCard>(request);
-
-            var hits = multiQueryResult.Results.SelectMany(x => x.Hits);
+            var hits = multiQueryResult.SelectMany(x => x.Hits);
 
             foreach (var indexedCard in hits)
             {
@@ -123,7 +120,7 @@ namespace Harmony.Infrastructure.Services.Search
                 return Enumerable.Empty<SearchableCard>().ToList();
             }
 
-            var indexQueries = new List<QueryMultiIndices>();
+            var indexQueries = new List<SearchForHits>();
 
             var queryBuilder = new StringBuilder();
             var filterBuilder = new StringBuilder();
@@ -168,21 +165,18 @@ namespace Harmony.Infrastructure.Services.Search
 
             foreach (var index in indexedBoards)
             {
-                indexQueries.Add(new QueryMultiIndices(index, queryBuilder.ToString())
+                indexQueries.Add(new SearchForHits
                 {
+                    IndexName = index,
+                    Query = queryBuilder.ToString(),
                     RestrictSearchableAttributes = restrictSearchableAttributes,
                     Filters = filterBuilder.ToString()
                 });
             }
 
-            MultipleQueriesRequest request = new MultipleQueriesRequest
-            {
-                Requests = indexQueries
-            };
+            var multiQueryResult = await _searchClient.SearchForHitsAsync<IndexedCard>(indexQueries);
 
-            var multiQueryResult = await _searchClient.MultipleQueriesAsync<IndexedCard>(request);
-
-            var hits = multiQueryResult.Results.SelectMany(x => x.Hits);
+            var hits = multiQueryResult.SelectMany(x => x.Hits);
 
             foreach (var indexedCard in hits)
             {
@@ -240,38 +234,45 @@ namespace Harmony.Infrastructure.Services.Search
                 return Enumerable.Empty<SearchableCard>().ToList();
             }
 
-            var indexQueries = new List<QueryMultiIndices>();
+            var indexQueries = new List<SearchForHits>();
 
             foreach (var index in indexedBoards)
             {
                 if (!string.IsNullOrEmpty(query.Title))
                 {
-                    indexQueries.Add(new QueryMultiIndices(index, query.Title)
+                    indexQueries.Add(new SearchForHits
                     {
+                        IndexName = index,
+                        Query = query.Title,
                         RestrictSearchableAttributes = new List<string> { "title" }
                     });
                 }
 
                 if (!string.IsNullOrEmpty(query.Description))
                 {
-                    indexQueries.Add(new QueryMultiIndices(index, query.Description)
+                    indexQueries.Add(new SearchForHits
                     {
+                        IndexName = index,
+                        Query = query.Description,
                         RestrictSearchableAttributes = new List<string> { "description" }
                     });
                 }
 
                 if (query.ListId.HasValue)
                 {
-                    indexQueries.Add(new QueryMultiIndices(index, query.ListId.ToString())
+                    indexQueries.Add(new SearchForHits
                     {
+                        IndexName = index,
+                        Query = query.ListId.ToString(),
                         RestrictSearchableAttributes = new List<string> { "listId" }
                     });
                 }
 
                 if (query.HasAttachments)
                 {
-                    indexQueries.Add(new QueryMultiIndices(index)
+                    indexQueries.Add(new SearchForHits
                     {
+                        IndexName = index,
                         RestrictSearchableAttributes = new List<string> { "hasAttachments" },
                         Filters = "hasAttachments:true"
                     });
@@ -286,22 +287,19 @@ namespace Harmony.Infrastructure.Services.Search
                     var endDate = startDate.AddDays(1);
                     long unixEndDateTime = (long)(endDate - sTime).TotalSeconds;
 
-                    indexQueries.Add(new QueryMultiIndices(index, query.ListId.ToString())
+                    indexQueries.Add(new SearchForHits
                     {
+                        IndexName = index,
+                        Query = query.ListId.ToString(),
                         RestrictSearchableAttributes = new List<string> { "dueDate" },
                         Filters = $"dueDate:{unixStartDateTime} TO {unixEndDateTime}"
                     });
                 }
             }
 
-            MultipleQueriesRequest request = new MultipleQueriesRequest
-            {
-                Requests = indexQueries
-            };
+            var multiQueryResult = await _searchClient.SearchForHitsAsync<IndexedCard>(indexQueries);
 
-            var multiQueryResult = await _searchClient.MultipleQueriesAsync<IndexedCard>(request);
-
-            var hits = multiQueryResult.Results.SelectMany(x => x.Hits);
+            var hits = multiQueryResult.SelectMany(x => x.Hits);
 
             foreach (var indexedCard in hits)
             {

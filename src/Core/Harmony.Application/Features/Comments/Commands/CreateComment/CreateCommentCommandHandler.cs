@@ -80,7 +80,7 @@ namespace Harmony.Application.Features.Comments.Commands.CreateComment
                     CardId = request.CardId,
                 };
 
-                _notificationsPublisher.PublishMessage(cardCommentCreatedMessage,
+                await _notificationsPublisher.PublishMessageAsync(cardCommentCreatedMessage,
                     NotificationType.CardCommentCreated, 
                     routingKey: BrokerConstants.RoutingKeys.SignalR);
 

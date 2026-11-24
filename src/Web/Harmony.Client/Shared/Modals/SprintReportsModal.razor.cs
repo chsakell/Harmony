@@ -8,11 +8,18 @@ namespace Harmony.Client.Shared.Modals
 {
     public partial class SprintReportsModal
     {
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
         private bool _loading = true;
-        private readonly ChartOptions _options = new()
+        private static readonly string[] ChartPalette = new[] { "#5F9DF7", "#C21292", "#711DB0", "#EF4040", "FFA732"};
+
+        private readonly LineChartOptions _lineOptions = new()
         {
-            ChartPalette = new[] { "#5F9DF7", "#C21292", "#711DB0", "#EF4040", "FFA732"}
+            ChartPalette = ChartPalette
+        };
+
+        private readonly DonutChartOptions _donutOptions = new()
+        {
+            ChartPalette = ChartPalette
         };
 
         [Parameter]
@@ -23,7 +30,9 @@ namespace Harmony.Client.Shared.Modals
 
         private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
 
-        public List<ChartSeries> BurnDownSeries = new List<ChartSeries>();
+        public List<ChartSeries<double>> BurnDownSeries = new List<ChartSeries<double>>();
+
+        public List<ChartSeries<double>> IssuesOverviewSeries = new List<ChartSeries<double>>();
 
         public string[] XAxisBurnDownLabels;
 
@@ -39,23 +48,32 @@ namespace Harmony.Client.Shared.Modals
             if(sprintReportsResult.Succeeded)
             {
                 Reports = sprintReportsResult.Data;
-                _options.YAxisTicks = 10;
+                _lineOptions.YAxisTicks = 10;
                 
                 if (Reports?.BurnDownReport != null)
                 {
-                    BurnDownSeries.Add(new ChartSeries()
+                    BurnDownSeries.Add(new ChartSeries<double>()
                     {
                         Name = "Guide Line",
                         Data = Reports.BurnDownReport.GuideLineStoryPoints.ToArray()
                     });
 
-                    BurnDownSeries.Add(new ChartSeries()
+                    BurnDownSeries.Add(new ChartSeries<double>()
                     {
                         Name = "Remaining Story Points",
                         Data = Reports.BurnDownReport.RemainingStoryPoints.ToArray()
                     });
 
                     XAxisBurnDownLabels = Reports.BurnDownReport.Dates.ToArray();
+                }
+
+                if (Reports?.IssuesOverviewReport != null)
+                {
+                    IssuesOverviewSeries.Add(new ChartSeries<double>()
+                    {
+                        Name = "Issues",
+                        Data = Reports.IssuesOverviewReport.TotalIssuesPerType.ToArray()
+                    });
                 }
             }
 

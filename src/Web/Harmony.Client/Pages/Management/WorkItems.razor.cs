@@ -31,9 +31,9 @@ namespace Harmony.Client.Pages.Management
         private BoardInfo? _boardInfo = new BoardInfo();
         private bool _reloadData = false;
 
-        private IEnumerable<IssueTypeDto> _selectedIssueTypes = new List<IssueTypeDto>();
-        private IEnumerable<BoardListDto> _selectedLists = new List<BoardListDto>();
-        private IEnumerable<SprintDto> _selectedSprints = new List<SprintDto>();
+        private IReadOnlyCollection<IssueTypeDto> _selectedIssueTypes = new List<IssueTypeDto>();
+        private IReadOnlyCollection<BoardListDto> _selectedLists = new List<BoardListDto>();
+        private IReadOnlyCollection<SprintDto> _selectedSprints = new List<SprintDto>();
 
         private SortableFields _sortableFields = new SortableFields()
         {
@@ -139,7 +139,7 @@ namespace Harmony.Client.Pages.Management
             return string.Join(", ", _selectedSprints.Select(x => x.Name));
         }
 
-        private void SetSelectedIssueTypes(IEnumerable<IssueTypeDto> newSelectedIssueTypes)
+        private void SetSelectedIssueTypes(IReadOnlyCollection<IssueTypeDto> newSelectedIssueTypes)
         {
 
             _selectedIssueTypes = newSelectedIssueTypes;
@@ -147,14 +147,14 @@ namespace Harmony.Client.Pages.Management
             _table.ReloadServerData();
         }
 
-        private void SetSelectedLists(IEnumerable<BoardListDto> newSelectedLists)
+        private void SetSelectedLists(IReadOnlyCollection<BoardListDto> newSelectedLists)
         {
             _selectedLists = newSelectedLists;
 
             _table.ReloadServerData();
         }
 
-        private void SetSelectedSprints(IEnumerable<SprintDto> newSelectedSprints)
+        private void SetSelectedSprints(IReadOnlyCollection<SprintDto> newSelectedSprints)
         {
             _selectedSprints = newSelectedSprints;
 

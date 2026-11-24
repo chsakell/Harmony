@@ -113,8 +113,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 
                 var board = await _boardService.GetBoardInfo(request.BoardId);
 
-                _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardCreatedIndexNotification()
+                await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardCreatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         BoardId = board.Id,
@@ -129,7 +129,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChildIssue
 
                 var cardCreatedNotification = new CardCreatedMessage(board.Id, result, userId);
 
-                _notificationsPublisher.PublishMessage(cardCreatedNotification,
+                await _notificationsPublisher.PublishMessageAsync(cardCreatedNotification,
                     NotificationType.CardCreated, routingKey: BrokerConstants.RoutingKeys.Notifications);
 
                 return await Result<CardDto>.SuccessAsync(result, _localizer["Child issue created"]);

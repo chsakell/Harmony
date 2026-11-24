@@ -61,7 +61,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<MoveToSprintModal>(_localizer["Move to sprint"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<MoveToSprintModal>(_localizer["Move to sprint"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -141,7 +141,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateBacklogModal>(_localizer["Create backlog item"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateBacklogModal>(_localizer["Create backlog item"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)

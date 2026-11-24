@@ -82,7 +82,7 @@ namespace Harmony.Application.Features.Lists.Commands.CreateList
                     BoardList = result
                 };
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.BoardListCreated, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<BoardListDto>.SuccessAsync(result, _localizer["List Created"]);

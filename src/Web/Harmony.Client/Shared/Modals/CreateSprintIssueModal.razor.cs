@@ -10,7 +10,7 @@ namespace Harmony.Client.Shared.Modals
     public partial class CreateSprintIssueModal
     {
         private bool _processing;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public CreateSprintIssueCommand CreateSprintIssueCommandModel { get; set; }

@@ -46,7 +46,7 @@ namespace Harmony.Client.Shared.Modals
         private CreateCommentCommand CreateCommentCommandModel = new CreateCommentCommand();
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         public EditableTextEditorField _commentsTextEditor;
         private bool _historyLoaded = false;
@@ -256,7 +256,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -292,7 +292,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -338,7 +338,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateChildIssueModal>(_localizer["Create child issue"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateChildIssueModal>(_localizer["Create child issue"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -361,7 +361,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<AddLinkIssueModal>(_localizer["Add link"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<AddLinkIssueModal>(_localizer["Add link"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -387,7 +387,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -600,7 +600,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateCheckListModal>(_localizer["Create check list"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateCheckListModal>(_localizer["Create check list"], parameters, options);
 
             var result = await dialog.Result;
 
@@ -620,7 +620,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CardMembersModal>(_localizer["Add card member"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CardMembersModal>(_localizer["Add card member"], parameters, options);
 
             var result = await dialog.Result;
         }
@@ -685,7 +685,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -716,7 +716,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<EditCardLabelsModal>(_localizer["Edit labels"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<EditCardLabelsModal>(_localizer["Edit labels"], parameters, options);
 
             var result = await dialog.Result;
         }
@@ -734,7 +734,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<EditCardDatesModal>(_localizer["Edit dates"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<EditCardDatesModal>(_localizer["Edit dates"], parameters, options);
 
             var result = await dialog.Result;
         }
@@ -843,7 +843,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, CloseOnEscapeKey = true, BackdropClick = true };
-            dialog = _dialogService.Show<EditableTextEditorFieldModal>(_localizer["Edit comment"], parameters, options);
+            dialog = await _dialogService.ShowAsync<EditableTextEditorFieldModal>(_localizer["Edit comment"], parameters, options);
 
             var result = await dialog.Result;
         }
@@ -857,7 +857,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)

@@ -46,7 +46,7 @@ namespace Harmony.Client.Pages.Management
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -77,7 +77,7 @@ namespace Harmony.Client.Pages.Management
                 };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateWorkspaceModal>(_localizer["Edit Workspace"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateWorkspaceModal>(_localizer["Edit Workspace"], parameters, options);
 
             var result = await dialog.Result;
             if (!result.Canceled)
@@ -98,7 +98,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateBoardModal>(_localizer["Create Board"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateBoardModal>(_localizer["Create Board"], parameters, options);
             var result = await dialog.Result;
             if (!result.Canceled)
             {

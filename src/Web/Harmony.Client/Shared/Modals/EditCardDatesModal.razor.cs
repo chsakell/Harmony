@@ -12,7 +12,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _processing;
         private MudColorPicker colorPicker;
         private CreateLabelModel _createLabelModel = new();
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         private MudDateRangePicker _picker;
         private DateRange _dateRange = new();
@@ -50,8 +50,7 @@ namespace Harmony.Client.Shared.Modals
 
             if(result.Succeeded)
             {
-                _dateRange.Start = null;
-                _dateRange.End = null;
+                _dateRange = new DateRange(null, null);
             }
 
             DisplayMessage(result);

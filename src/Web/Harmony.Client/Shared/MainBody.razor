@@ -2,7 +2,7 @@
 
 <MudAppBar Elevation="25">
     <MudLink Href="/" Color="Color.Inherit">Harmony</MudLink>
-    <MudToolBar DisableGutters="true">
+    <MudToolBar Gutters="false">
         <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
     </MudToolBar>
     <WorkspaceSelector />
@@ -48,7 +48,7 @@
             }
             else
             {
-                <MudAvatar Image="@(_clientConfiguration.GetServerResource(ImageDataUrl))" Style="height:50px; width:50px;"> </MudAvatar>
+                <MudAvatar Style="height:50px; width:50px;"><MudImage Src="@(_clientConfiguration.GetServerResource(ImageDataUrl))" /></MudAvatar>
             }
         </ActivatorContent>
         <ChildContent>

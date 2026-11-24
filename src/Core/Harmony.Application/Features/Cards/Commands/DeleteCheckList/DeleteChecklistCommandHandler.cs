@@ -77,7 +77,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteChecklist
 
                 var message = new CheckListRemovedMessage(boardId, checkList.Id, checkList.CardId, totalItems, totalItemsCompleted);
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.CheckListRemoved, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<bool>.SuccessAsync(true, _localizer["Check List deleted successfully"]);

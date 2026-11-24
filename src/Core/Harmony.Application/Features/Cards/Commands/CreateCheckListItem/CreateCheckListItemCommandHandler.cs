@@ -86,7 +86,7 @@ namespace Harmony.Application.Features.Cards.Commands.CreateChecklist
 
                 var message = new CardItemAddedMessage(request.BoardId, request.CardId);
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.CardItemAdded, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<CheckListItemDto>.SuccessAsync(result, _localizer["Item Created"]);

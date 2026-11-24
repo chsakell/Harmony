@@ -57,7 +57,7 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListsPositions
 
                 var message = new BoardListsPositionsChangedMessage(request.BoardId, result.ListPositions);
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.BoardListsPositionChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<UpdateListsPositionsResponse>.SuccessAsync(result, _localizer["List re ordered"]);

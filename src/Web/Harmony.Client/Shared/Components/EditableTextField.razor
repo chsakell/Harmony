@@ -4,7 +4,7 @@
     <MudForm @ref="_form" Style="@Style" IsValidChanged="FormValidChanged" @onkeydown="OnEnter">
         <MudStack Row="true">
             <MudTextField Immediate="true" @ref="_textReference" Class="editable-text"
-                          For="For" @bind-Value="Text" DisableUnderLine="true"
+                          For="For" @bind-Value="Text" Underline="false"
                           Label="@Label" />
             <MudStack Justify="Justify.FlexEnd" Class="align-end" Style="padding-bottom:4px;gap:0;" Row="true">
                 @if (!_isSaving)
@@ -27,7 +27,7 @@
 }
 else
 {
-    <MudTextField Style="@Style" DisableUnderLine="true" Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="Edit" />
+    <MudTextField Style="@Style" Underline="false" Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon" ReadOnly="true" @bind-Value="@Text" Class="cursor-pointer" @onclick="Edit" />
 }
 
 @code {

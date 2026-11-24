@@ -1,0 +1,79 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="global.json" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/docker/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/docker/k8s/">
+    <File Path=".k8s/api-deployment.yaml" />
+    <File Path=".k8s/api-gateway-deployment.yaml" />
+    <File Path=".k8s/api-gateway-service.yaml" />
+    <File Path=".k8s/api-service.yaml" />
+    <File Path=".k8s/automations-deployment.yaml" />
+    <File Path=".k8s/automations-service.yaml" />
+    <File Path=".k8s/client-deployment.yaml" />
+    <File Path=".k8s/client-service.yaml" />
+    <File Path=".k8s/elasticsearch-deployment.yaml" />
+    <File Path=".k8s/elasticsearch-service.yaml" />
+    <File Path=".k8s/kibana-deployment.yaml" />
+    <File Path=".k8s/kibana-service.yaml" />
+    <File Path=".k8s/mongodb-deployment.yaml" />
+    <File Path=".k8s/mongodb-service.yaml" />
+    <File Path=".k8s/notifications-deployment.yaml" />
+    <File Path=".k8s/notifications-service.yaml" />
+    <File Path=".k8s/rabbitmq-deployment.yaml" />
+    <File Path=".k8s/rabbitmq-service.yaml" />
+    <File Path=".k8s/signalr-deployment.yaml" />
+    <File Path=".k8s/signalr-service.yaml" />
+    <File Path=".k8s/sourcecontrol-deployment.yaml" />
+    <File Path=".k8s/sourcecontrol-service.yaml" />
+    <File Path=".k8s/sql-server-deployment.yaml" />
+    <File Path=".k8s/sql-server-service.yaml" />
+  </Folder>
+  <Folder Name="/docs/">
+    <File Path="docs/docker.md" />
+    <File Path="docs/documentation.md" />
+    <File Path="docs/documentation.pdf" />
+    <File Path="docs/migrations.md" />
+    <File Path="docs/migrations.pdf" />
+    <File Path="docs/README.md" />
+    <File Path="docs/README.pdf" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/ApiGateways/">
+    <Project Path="src/ApiGateways/Harmony.ApiGateway/Harmony.ApiGateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/Harmony.Application.SourceControl/Harmony.Application.SourceControl.csproj" />
+    <Project Path="src/Core/Harmony.Application/Harmony.Application.csproj" />
+    <Project Path="src/Core/Harmony.Domain/Harmony.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/Harmony.Caching/Harmony.Caching.csproj" />
+    <Project Path="src/Infrastructure/Harmony.Infrastructure/Harmony.Infrastructure.csproj" />
+    <Project Path="src/Infrastructure/Harmony.Logging/Harmony.Logging.csproj" />
+    <Project Path="src/Infrastructure/Harmony.Messaging/Harmony.Messaging.csproj" />
+    <Project Path="src/Infrastructure/Harmony.Persistence.Migrations.PostgreSql/Harmony.Persistence.Migrations.PostgreSql.csproj" />
+    <Project Path="src/Infrastructure/Harmony.Persistence.Migrations.SqlServer/Harmony.Persistence.Migrations.SqlServer.csproj" />
+    <Project Path="src/Infrastructure/Harmony.Persistence/Harmony.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/src/Integrations/">
+    <Project Path="src/Integrations/Harmony.Integrations.SourceControl/Harmony.Integrations.SourceControl.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/">
+    <Project Path="src/Services/Harmony.Api/Harmony.Api.csproj" />
+    <Project Path="src/Services/Harmony.Automations/Harmony.Automations.csproj" />
+    <Project Path="src/Services/Harmony.Notifications/Harmony.Notifications.csproj" />
+    <Project Path="src/Services/Harmony.SignalR/Harmony.SignalR.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Harmony.Shared/Harmony.Shared.csproj" />
+  </Folder>
+  <Folder Name="/src/Web/">
+    <Project Path="src/Web/Harmony.Client.Infrastructure/Harmony.Client.Infrastructure.csproj" />
+    <Project Path="src/Web/Harmony.Client/Harmony.Client.csproj" />
+  </Folder>
+</Solution>

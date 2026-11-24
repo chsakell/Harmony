@@ -68,15 +68,15 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
                 CardActivityType.CardDatesUpdated, card.DateUpdated.Value,
                 CardHelper.DisplayDates(card.StartDate, card.DueDate));
 
-			_notificationsPublisher.PublishEmailNotification(new CardDueTimeUpdatedNotification(card.Id));
+			await _notificationsPublisher.PublishEmailNotificationAsync(new CardDueTimeUpdatedNotification(card.Id));
 
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
             DateTime sTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             long? unixTime = card.DueDate.HasValue ? (long)(card.DueDate.Value - sTime).TotalSeconds : null;
 
-            _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardDueDateUpdatedIndexNotification()
+            await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardDueDateUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         DueDate = unixTime
@@ -84,7 +84,7 @@ public class UpdateCardDatesCommandHandler : IRequestHandler<UpdateCardDatesComm
 
             var message = new CardDatesChangedMessage(request.BoardId, request.CardId, card.StartDate, card.DueDate);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardDatesChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Dates updated"]);

@@ -20,7 +20,7 @@ namespace Harmony.Client.Shared.Modals
 
         private int selectedRowNumber = -1;
         private CardDto _selectedCard;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public CreateLinkCommand CreateLinkCommandModel { get; set; }

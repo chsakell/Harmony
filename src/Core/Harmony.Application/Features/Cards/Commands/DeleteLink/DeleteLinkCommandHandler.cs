@@ -136,7 +136,7 @@ namespace Harmony.Application.Features.Cards.Commands.DeleteLink
                 return;
             }
 
-            _notificationsPublisher.PublishMessage(new CardLinkDeletedMessage(link.Id, card.IssueType.BoardId),
+            await _notificationsPublisher.PublishMessageAsync(new CardLinkDeletedMessage(link.Id, card.IssueType.BoardId),
                     NotificationType.CardLinkDeleted,
                     routingKey: BrokerConstants.RoutingKeys.SignalR);
         }

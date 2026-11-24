@@ -10,7 +10,7 @@ namespace Harmony.Client.Shared.Modals
     public partial class ReactivateCardsModal
     {
         private bool _processing;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public Guid BoardId { get; set; }

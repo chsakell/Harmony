@@ -343,7 +343,7 @@ else
                             }
                         </MudItem>
                         <MudItem xs="12">
-                            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6">
                                 <MudTabPanel Text="Comments" Icon="@Icons.Material.Filled.Comment">
                                     <div class="mb-4">
                                         <EditableTextEditorField @ref="_commentsTextEditor"
@@ -467,7 +467,7 @@ else
                                    Variant="Variant.Outlined" FullWidth="true"
                                    Color="Color.Primary" OnClick="EditDates">DATES</MudButton>
                         <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="20">
-                            <ActivatorContent>
+                            <CustomContent>
                                 @if (_card.UploadingAttachment)
                                 {
                                     <MudButton Disabled="true" FullWidth="true">
@@ -477,7 +477,7 @@ else
                                 }
                                 else
                                 {
-                                    <MudButton HtmlTag="label"
+                                    <MudButton OnClick="@context.OpenFilePickerAsync"
                                                Variant="Variant.Outlined"
                                                Color="Color.Primary"
                                                FullWidth="true"
@@ -485,7 +485,7 @@ else
                                         Upload Files
                                     </MudButton>
                                 }
-                            </ActivatorContent>
+                            </CustomContent>
                         </MudFileUpload>
                         @if (!_card.IsChild)
                         {
@@ -505,12 +505,12 @@ else
                                 @if (_card.Status == CardStatus.Active)
                                 {
                                     <MudMenuItem OnClick="@(() => ViewBoard(_card.BoardId, _card.BoardTitle))"
-                                                 IconSize="Size.Small" IconColor="Color.Primary"
+                                                 IconColor="Color.Primary"
                                                  Icon="@Icons.Material.Filled.Dashboard">View board</MudMenuItem>
                                 }
                                 else if (_card.Status == CardStatus.Backlog)
                                 {
-                                    <MudMenuItem OnClick="@(() => ViewBacklog(BoardId))" IconSize="Size.Small" IconColor="Color.Primary" Icon="@Icons.Material.Filled.FormatListBulleted">View backlog</MudMenuItem>
+                                    <MudMenuItem OnClick="@(() => ViewBacklog(BoardId))" IconColor="Color.Primary" Icon="@Icons.Material.Filled.FormatListBulleted">View backlog</MudMenuItem>
                                 }
                             </MudMenu>
                         }

@@ -586,7 +586,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = false, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateBoardListModal>(_localizer["Create board list"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateBoardListModal>(_localizer["Create board list"], parameters, options);
             var result = await dialog.Result;
             if (!result.Canceled)
             {
@@ -617,7 +617,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<ReorderBoardListsModal>(_localizer["Reorder lists"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<ReorderBoardListsModal>(_localizer["Reorder lists"], parameters, options);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled &&
@@ -654,7 +654,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<BoardMembersModal>(_localizer["Share board"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<BoardMembersModal>(_localizer["Share board"], parameters, options);
             var result = await dialog.Result;
         }
 
@@ -698,7 +698,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateCardModal>(_localizer["Create card"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateCardModal>(_localizer["Create card"], parameters, options);
             return await dialog.Result;
         }
 
@@ -719,7 +719,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateRetrospectiveCardModal>(_localizer["Create card"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateRetrospectiveCardModal>(_localizer["Create card"], parameters, options);
             return await dialog.Result;
         }
 
@@ -732,7 +732,7 @@ namespace Harmony.Client.Pages.Management
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -763,7 +763,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = KanbanStore.IsRetrospective ? MaxWidth.Medium : MaxWidth.Large, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
             var result = await dialog.Result;
 
             if (result.Data is UpdateCardStatusCommand command &&

@@ -8,7 +8,7 @@ namespace Harmony.Client.Shared.Modals
     {
         private readonly CreateOrEditWorkspaceCommand _createWorkspaceModel = new();
         private bool _processing;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter] public Guid? WorkspaceId { get; set; }
 

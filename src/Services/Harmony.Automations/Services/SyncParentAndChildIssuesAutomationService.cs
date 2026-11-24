@@ -81,7 +81,7 @@ namespace Harmony.Automations.Services
                             UpdateId = notification.UpdateId ?? Guid.NewGuid(),
                         };
 
-                        _notificationsPublisher.PublishMessage(cardMovedNotification,
+                        await _notificationsPublisher.PublishMessageAsync(cardMovedNotification,
                             NotificationType.CardMoved, routingKey: BrokerConstants.RoutingKeys.SignalR);
                     }
                 }

@@ -141,7 +141,7 @@ namespace Harmony.Infrastructure.Repositories
                 .Regex(branch => branch.Name,
                 new BsonRegularExpression($"/{term}/i"));
 
-            return await branchesCollection.Find(filter).CountAsync();
+            return await branchesCollection.CountDocumentsAsync(filter);
         }
 
         //public async Task<long> GetTotalPushes(string term)

@@ -21,7 +21,7 @@ namespace Harmony.Client.Shared.Modals
 
         private MudColorPicker colorPicker;
         private CreateLabelModel _createLabelModel = new();
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public Guid CardId { get; set; }
@@ -59,7 +59,7 @@ namespace Harmony.Client.Shared.Modals
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)

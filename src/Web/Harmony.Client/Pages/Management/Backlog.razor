@@ -23,10 +23,10 @@
                            Variant="Variant.Filled" Color="Color.Default" OnClick="CreateIssue">Create issue</MudButton>
             </div>
             <div class="justify-center mud-text-align-center ml-2">
-                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="false"
+                <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DropShadow="true"
                          EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Disabled="!_selectedCards.Any()" IconColor="Color.Secondary"
                          AnchorOrigin="Origin.BottomLeft">
-                    <MudMenuItem IconSize="Size.Large" IconColor="Color.Primary"
+                    <MudMenuItem IconColor="Color.Primary"
                                  OnClick="MoveToSprint" Icon="@Icons.Material.Filled.ArrowRight">Move to sprint</MudMenuItem>
                 </MudMenu>
             </div>

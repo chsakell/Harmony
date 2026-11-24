@@ -101,7 +101,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Edit sprint"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateEditSprintModal>(_localizer["Edit sprint"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -121,7 +121,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -140,7 +140,7 @@ namespace Harmony.Client.Pages.Management
                 { x => x.Color, Color.Warning }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -177,7 +177,7 @@ namespace Harmony.Client.Pages.Management
                 };
 
                 var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-                var dialog = _dialogService.Show<CompleteSprintModal>(_localizer["Complete sprint"], parameters, options);
+                var dialog = await _dialogService.ShowAsync<CompleteSprintModal>(_localizer["Complete sprint"], parameters, options);
 
                 var result = await dialog.Result;
 
@@ -216,7 +216,7 @@ namespace Harmony.Client.Pages.Management
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullScreen = false, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<SprintReportsModal>(_localizer["Sprint reports"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<SprintReportsModal>(_localizer["Sprint reports"], parameters, options);
             var result = await dialog.Result;
         }
 

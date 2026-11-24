@@ -95,7 +95,7 @@ namespace Harmony.Client.Pages.Management
                 { x => x.Color, Color.Success }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -137,7 +137,7 @@ namespace Harmony.Client.Pages.Management
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var result = await dialog.Result;
 
             if (!result.Canceled)

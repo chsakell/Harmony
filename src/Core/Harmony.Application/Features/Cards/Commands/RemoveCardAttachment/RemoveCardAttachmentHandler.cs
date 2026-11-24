@@ -78,7 +78,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
 
                     var message = new AttachmentRemovedMessage(command.BoardId, card.Id, command.AttachmentId);
 
-                    _notificationsPublisher.PublishMessage(message,
+                    await _notificationsPublisher.PublishMessageAsync(message,
                         NotificationType.CardAttachmentRemoved, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                     if (card.Attachments.Count == 0)
@@ -86,8 +86,8 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveCardAttachment
                         var boardId = await _cardRepository.GetBoardId(card.Id);
                         var board = await _boardService.GetBoardInfo(boardId);
 
-                        _notificationsPublisher
-                                .PublishSearchIndexNotification(new CardHasAttachmentsUpdatedIndexNotification()
+                        await _notificationsPublisher
+                                .PublishSearchIndexNotificationAsync(new CardHasAttachmentsUpdatedIndexNotification()
                                 {
                                     ObjectID = card.Id.ToString(),
                                     HasAttachments = false

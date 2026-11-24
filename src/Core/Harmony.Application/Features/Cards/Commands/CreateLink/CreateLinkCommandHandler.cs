@@ -155,11 +155,11 @@ namespace Harmony.Application.Features.Cards.Commands.CreateLink
                     counterPartResult.Id = targetLink.Id;
                 }
                 
-                _notificationsPublisher.PublishMessage(LinkMessageExtensions.GetCreateMessageFromLink(result),
+                await _notificationsPublisher.PublishMessageAsync(LinkMessageExtensions.GetCreateMessageFromLink(result),
                     NotificationType.CardLinkCreated, 
                     routingKey: BrokerConstants.RoutingKeys.SignalR);
 
-                _notificationsPublisher.PublishMessage(LinkMessageExtensions.GetCreateMessageFromLink(counterPartResult),
+                await _notificationsPublisher.PublishMessageAsync(LinkMessageExtensions.GetCreateMessageFromLink(counterPartResult),
                     NotificationType.CardLinkCreated,
                     routingKey: BrokerConstants.RoutingKeys.SignalR);
 

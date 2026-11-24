@@ -38,15 +38,15 @@ namespace Harmony.Client.Shared.Components
 
         private IssueTypeDto _selectedIssueType;
         
-        private IEnumerable<IssueTypeDto> _selectedIssueTypes { get; set; } = Enumerable.Empty<IssueTypeDto>();
-        private IEnumerable<UserBoardResponse> _selectedAssignees { get; set; } = Enumerable.Empty<UserBoardResponse>();
-        private IEnumerable<BoardListDto> _selectedLists { get; set; } = Enumerable.Empty<BoardListDto>();
+        private IReadOnlyCollection<IssueTypeDto> _selectedIssueTypes { get; set; } = Array.Empty<IssueTypeDto>();
+        private IReadOnlyCollection<UserBoardResponse> _selectedAssignees { get; set; } = Array.Empty<UserBoardResponse>();
+        private IReadOnlyCollection<BoardListDto> _selectedLists { get; set; } = Array.Empty<BoardListDto>();
 
         protected override void OnInitialized()
         {
-            _selectedIssueTypes = IssueTypes.Where(it => SelectedIssueTypeIds.Contains(it.Id));
-            _selectedAssignees = BoardMembers.Where(a => SelectedAssignees.Contains(a.Id));
-            _selectedLists = BoardLists.Where(it => SelectedLists.Contains(it.Id));
+            _selectedIssueTypes = IssueTypes.Where(it => SelectedIssueTypeIds.Contains(it.Id)).ToList();
+            _selectedAssignees = BoardMembers.Where(a => SelectedAssignees.Contains(a.Id)).ToList();
+            _selectedLists = BoardLists.Where(it => SelectedLists.Contains(it.Id)).ToList();
         }
 
         private async Task ApplyFilters()

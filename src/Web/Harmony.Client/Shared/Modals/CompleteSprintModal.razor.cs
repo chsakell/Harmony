@@ -12,7 +12,7 @@ namespace Harmony.Client.Shared.Modals
         private static Guid BackLogSprint = Guid.Parse("691dab90-563e-441d-963d-e75f4c4d7c99");
         private static Guid NewSprint = Guid.Parse("7337d664-c1de-4a1b-81f1-f45ab330da0c");
 
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public Guid BoardId { get; set; }

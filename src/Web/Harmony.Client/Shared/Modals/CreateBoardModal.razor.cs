@@ -10,7 +10,7 @@ namespace Harmony.Client.Shared.Modals
     {
         private readonly CreateBoardCommand _createBoardModel = new();
         private bool _processing;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
         List<WorkspaceDto> _ownedWorkspaces = new List<WorkspaceDto>();
         WorkspaceDto? _selectedWorkspace;
 

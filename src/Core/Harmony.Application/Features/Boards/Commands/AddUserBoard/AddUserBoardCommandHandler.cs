@@ -93,8 +93,8 @@ namespace Harmony.Application.Features.Boards.Commands.AddUserBoard
 
                 var boardUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/boards/{board.Id}/{slug}/";
 
-                _notificationsPublisher
-                    .PublishEmailNotification(new MemberAddedToBoardNotification(request.BoardId, request.UserId, boardUrl));
+                await _notificationsPublisher
+                    .PublishEmailNotificationAsync(new MemberAddedToBoardNotification(request.BoardId, request.UserId, boardUrl));
 
                 var user = await _userBoardRepository.GetBoardAccessMember(request.BoardId, request.UserId);
 

@@ -31,9 +31,9 @@ namespace Harmony.Client.Shared.Components.Automation
         private List<GetBoardListResponse> _boardLists = new List<GetBoardListResponse>();
 
         private GetBoardListResponse _fromStatusBoardList;
-        private IEnumerable<GetBoardListResponse> _fromStatusBoardLists { get; set; } = Enumerable.Empty<GetBoardListResponse>();
+        private IReadOnlyCollection<GetBoardListResponse> _fromStatusBoardLists { get; set; } = Array.Empty<GetBoardListResponse>();
         private GetBoardListResponse _toStatusBoardList;
-        private IEnumerable<GetBoardListResponse> _toStatusBoardLists { get; set; } = Enumerable.Empty<GetBoardListResponse>();
+        private IReadOnlyCollection<GetBoardListResponse> _toStatusBoardLists { get; set; } = Array.Empty<GetBoardListResponse>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -75,14 +75,14 @@ namespace Harmony.Client.Shared.Components.Automation
             _loaded = true;
         }
 
-        private void SetFromStatusBoardLists(IEnumerable<GetBoardListResponse> statusBoardLists)
+        private void SetFromStatusBoardLists(IReadOnlyCollection<GetBoardListResponse> statusBoardLists)
         {
             _fromStatusBoardLists = statusBoardLists;
 
             SetDescription();
         }
 
-        private void SetToStatusBoardLists(IEnumerable<GetBoardListResponse> statusBoardLists)
+        private void SetToStatusBoardLists(IReadOnlyCollection<GetBoardListResponse> statusBoardLists)
         {
             _toStatusBoardLists = statusBoardLists;
 
@@ -148,7 +148,7 @@ namespace Harmony.Client.Shared.Components.Automation
                 { x => x.Color, Color.Warning }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -174,7 +174,7 @@ namespace Harmony.Client.Shared.Components.Automation
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -199,8 +199,8 @@ namespace Harmony.Client.Shared.Components.Automation
 
             if (string.IsNullOrEmpty(automation.Id))
             {
-                _fromStatusBoardLists = Enumerable.Empty<GetBoardListResponse>();
-                _toStatusBoardLists = Enumerable.Empty<GetBoardListResponse>();
+                _fromStatusBoardLists = Array.Empty<GetBoardListResponse>();
+                _toStatusBoardLists = Array.Empty<GetBoardListResponse>();
             }
             else
             {

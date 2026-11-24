@@ -104,8 +104,8 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
                 {
                     var board = await _boardService.GetBoardInfo(command.BoardId);
 
-                    _notificationsPublisher
-                            .PublishSearchIndexNotification(new CardHasAttachmentsUpdatedIndexNotification()
+                    await _notificationsPublisher
+                            .PublishSearchIndexNotificationAsync(new CardHasAttachmentsUpdatedIndexNotification()
                             {
                                 ObjectID = card.Id.ToString(),
                                 HasAttachments = true
@@ -117,7 +117,7 @@ namespace Harmony.Application.Features.Cards.Commands.UploadCardFile
 
             var message = new AttachmentAddedMessage(command.BoardId, card.Id, attachmentDto);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardAttachmentAdded, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             var result = new UploadCardFileResponse(command.CardId, attachmentDto);

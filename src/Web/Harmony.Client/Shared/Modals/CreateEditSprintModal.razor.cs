@@ -8,7 +8,7 @@ namespace Harmony.Client.Shared.Modals
     public partial class CreateEditSprintModal
     {
         private bool _processing;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public CreateEditSprintCommand CreateEditSprintCommandModel { get; set; }

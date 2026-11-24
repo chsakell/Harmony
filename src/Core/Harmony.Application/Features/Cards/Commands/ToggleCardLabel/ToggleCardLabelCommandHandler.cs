@@ -92,7 +92,7 @@ public class ToggleCardLabelCommandHandler : IRequestHandler<ToggleCardLabelComm
 
             var message = new CardLabelToggledMessage(request.BoardId, request.CardId, labelDto);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardLabelToggled, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<LabelDto>.SuccessAsync(labelDto, _localizer["Card label updated"]);

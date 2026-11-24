@@ -9,7 +9,7 @@ namespace Harmony.Client.Shared.Modals
     {
         private readonly CreateCheckListCommand _createCheckListModel = new();
         private bool _processing;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public Guid CardId { get; set; }

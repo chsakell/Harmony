@@ -53,20 +53,20 @@
         </MudTd>
         <MudTd DataLabel="Actions" Style="text-align:right">
             <MudMenu Label="Actions" AnchorOrigin="Origin.BottomLeft" Variant="Variant.Filled">
-                <MudMenuItem OnClick="@(() => EditSprint(context))" IconSize="Size.Small"
+                <MudMenuItem OnClick="@(() => EditSprint(context))"
                              IconColor="Color.Primary" Icon="@Icons.Material.Filled.Edit">EDIT</MudMenuItem>
                 @switch (context.Status)
                 {
                     case SprintStatus.Idle:
-                        <MudMenuItem OnClick="@(() => StartSprint(context))" IconSize="Size.Small"
+                        <MudMenuItem OnClick="@(() => StartSprint(context))"
                                      IconColor="Color.Tertiary" Icon="@Icons.Material.Filled.Start">START</MudMenuItem>
                         break;
                     case SprintStatus.Active:
-                        <MudMenuItem OnClick="@(() => CompleteSprint(context))" IconSize="Size.Small"
+                        <MudMenuItem OnClick="@(() => CompleteSprint(context))"
                                      IconColor="Color.Tertiary" Icon="@Icons.Material.Filled.Close">COMPLETE</MudMenuItem>
                         break;
                 }
-                <MudMenuItem OnClick="@(() => ViewReports(context.Id))" IconSize="Size.Small"
+                <MudMenuItem OnClick="@(() => ViewReports(context.Id))"
                              IconColor="Color.Primary" Icon="@Icons.Material.Filled.MultilineChart">VIEW REPORTS</MudMenuItem>
             </MudMenu>
             <MudIconButton Color="Color.Primary" OnClick="@(() => ViewSprint(context))" Icon="@Icons.Material.Filled.ArrowRight" aria-label="delete"></MudIconButton>

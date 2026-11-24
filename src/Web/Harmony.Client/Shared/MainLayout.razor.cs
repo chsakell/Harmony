@@ -39,7 +39,7 @@ namespace Harmony.Client.Shared
             {
                 if (_mudThemeProvider != null)
                 {
-                    _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+                    _isDarkMode = await _mudThemeProvider.GetSystemDarkModeAsync();
                     StateHasChanged();
                 }
             }

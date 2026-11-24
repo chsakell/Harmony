@@ -73,7 +73,7 @@ namespace Harmony.Application.Features.Labels.Commands.RemoveCardLabel
 
                 var message = new CardLabelRemovedMessage(label.BoardId, label.Id);
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.CardLabelRemoved, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<bool>.SuccessAsync(true, _localizer["Label removed"]);

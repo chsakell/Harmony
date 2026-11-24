@@ -5,7 +5,7 @@ namespace Harmony.Client.Shared.Modals
 {
     public partial class EditableTextEditorFieldModal
     {
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public string Text { get; set; }

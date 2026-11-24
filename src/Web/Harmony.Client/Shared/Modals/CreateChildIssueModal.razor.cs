@@ -11,7 +11,7 @@ namespace Harmony.Client.Shared.Modals
         private bool _processing;
         private List<GetBoardListResponse> _boardLists = new List<GetBoardListResponse>();
         private GetBoardListResponse _selectedBoardList;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public CreateChildIssueCommand CreateChildIssueCommandModel { get; set; }

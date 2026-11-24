@@ -11,7 +11,7 @@ namespace Harmony.Client.Shared.Modals
     public partial class AdvancedSearchModal
     {
         private bool _searching;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         private BoardDto _selectedBoard { get; set; }
         private BoardListDto _selectedBoardList { get; set; }

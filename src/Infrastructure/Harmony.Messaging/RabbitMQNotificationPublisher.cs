@@ -14,11 +14,13 @@ using static Harmony.Shared.Constants.Application.ApplicationConstants;
 
 namespace Harmony.Messaging
 {
-    public class RabbitMQNotificationPublisher : INotificationsPublisher
+    public class RabbitMQNotificationPublisher : INotificationsPublisher, IAsyncDisposable
     {
         private readonly ILogger<RabbitMQNotificationPublisher> _logger;
-        IConnection connection;
         private readonly BrokerConfiguration? _brokerConfiguration;
+        private readonly Task _initialization;
+        private IConnection? _connection;
+
         public RabbitMQNotificationPublisher(IOptions<BrokerConfiguration> brokerConfig,
             ResiliencePipelineProvider<string> resiliencePipelineProvider,
             ILogger<RabbitMQNotificationPublisher> logger)
@@ -26,14 +28,18 @@ namespace Harmony.Messaging
             _brokerConfiguration = brokerConfig.Value;
             _logger = logger;
 
+            // RabbitMQ.Client 7 is async-only: connect in the background instead of blocking the constructor.
+            // Publishers await this task, so nothing is published before the connection attempt completes.
+            _initialization = InitializeAsync(resiliencePipelineProvider);
+        }
+
+        private async Task InitializeAsync(ResiliencePipelineProvider<string> resiliencePipelineProvider)
+        {
             try
             {
                 var pipeline = resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
 
-                pipeline.Execute(token =>
-                {
-                    InitRabbitMQ();
-                });
+                await pipeline.ExecuteAsync(async token => await InitRabbitMQAsync(token));
             }
             catch (Exception ex)
             {
@@ -41,7 +47,7 @@ namespace Harmony.Messaging
             }
         }
 
-        private void InitRabbitMQ()
+        private async Task InitRabbitMQAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port} ");
 
@@ -59,25 +65,28 @@ namespace Harmony.Messaging
 
             try
             {
-                connection = factory.CreateConnection();
+                _connection = await factory.CreateConnectionAsync(cancellationToken);
 
-                using var channel = connection.CreateModel();
+                await using var channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-                channel.ExchangeDeclare(exchange: BrokerConstants.NotificationsExchange, type: ExchangeType.Topic);
+                await channel.ExchangeDeclareAsync(exchange: BrokerConstants.NotificationsExchange, type: ExchangeType.Topic,
+                    cancellationToken: cancellationToken);
 
-                channel.QueueDeclare(
+                await channel.QueueDeclareAsync(
                     queue: BrokerConstants.EmailNotificationsQueue,
                     durable: true,
                     exclusive: false,
                     autoDelete: false,
-                    arguments: null);
+                    arguments: null,
+                    cancellationToken: cancellationToken);
 
-                channel.QueueDeclare(
+                await channel.QueueDeclareAsync(
                     queue: BrokerConstants.SearchIndexNotificationsQueue,
                     durable: true,
                     exclusive: false,
                     autoDelete: false,
-                    arguments: null);
+                    arguments: null,
+                    cancellationToken: cancellationToken);
 
                 _logger.LogInformation($"Connected to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
             }
@@ -87,86 +96,78 @@ namespace Harmony.Messaging
             }
         }
 
-        public void PublishMessage<T>(T message, NotificationType type, string routingKey)
+        public Task PublishMessageAsync<T>(T message, NotificationType type, string routingKey)
         {
-            if (connection == null || !connection.IsOpen)
-            {
-                return;
-            }
-
-            using var channel = connection.CreateModel();
-
-            var json = JsonConvert.SerializeObject(message);
-            var body = Encoding.UTF8.GetBytes(json);
-
-            var props = channel.CreateBasicProperties();
-            props.ContentType = "text/plain";
-            props.DeliveryMode = 2;
-            props.Headers = new Dictionary<string, object>
-            {
-                { BrokerConstants.NotificationHeader, type.ToString() }
-            };
-
-            channel.BasicPublish(
+            return PublishAsync(message,
                 exchange: BrokerConstants.NotificationsExchange,
                 routingKey: routingKey,
-                basicProperties: props,
-                body: body);
+                headers: new Dictionary<string, object?>
+                {
+                    { BrokerConstants.NotificationHeader, type.ToString() }
+                });
         }
 
-        public void PublishEmailNotification<T>(T notification) where T : BaseEmailNotification
+        public Task PublishEmailNotificationAsync<T>(T notification) where T : BaseEmailNotification
         {
-            if(connection == null || !connection.IsOpen)
-            {
-                return;
-            }
-
-            using var channel = connection.CreateModel();
-
-            var json = JsonConvert.SerializeObject(notification);
-            var body = Encoding.UTF8.GetBytes(json);
-
-            var props = channel.CreateBasicProperties();
-            props.ContentType = "text/plain";
-            props.DeliveryMode = 2;
-            props.Headers = new Dictionary<string, object>
-            {
-                { BrokerConstants.NotificationHeader, notification.Type.ToString() }
-            };
-
-            channel.BasicPublish(
-                exchange: "", 
-                routingKey: BrokerConstants.EmailNotificationsQueue, 
-                basicProperties: props,
-                body: body);
+            return PublishAsync(notification,
+                exchange: "",
+                routingKey: BrokerConstants.EmailNotificationsQueue,
+                headers: new Dictionary<string, object?>
+                {
+                    { BrokerConstants.NotificationHeader, notification.Type.ToString() }
+                });
         }
 
-        public void PublishSearchIndexNotification<T>(T notification, string index) where T : BaseSearchIndexNotification
+        public Task PublishSearchIndexNotificationAsync<T>(T notification, string index) where T : BaseSearchIndexNotification
         {
-            if (connection == null || !connection.IsOpen)
-            {
-                return;
-            }
-
-            using var channel = connection.CreateModel();
-
-            var json = JsonConvert.SerializeObject(notification);
-            var body = Encoding.UTF8.GetBytes(json);
-
-            var props = channel.CreateBasicProperties();
-            props.ContentType = "text/plain";
-            props.DeliveryMode = 2;
-            props.Headers = new Dictionary<string, object>
-            {
-                { BrokerConstants.NotificationHeader, notification.Type.ToString() },
-                { BrokerConstants.IndexNameHeader, index }
-            };
-
-            channel.BasicPublish(
+            return PublishAsync(notification,
                 exchange: "",
                 routingKey: BrokerConstants.SearchIndexNotificationsQueue,
+                headers: new Dictionary<string, object?>
+                {
+                    { BrokerConstants.NotificationHeader, notification.Type.ToString() },
+                    { BrokerConstants.IndexNameHeader, index }
+                });
+        }
+
+        private async Task PublishAsync<T>(T payload, string exchange, string routingKey, IDictionary<string, object?> headers)
+        {
+            await _initialization;
+
+            if (_connection == null || !_connection.IsOpen)
+            {
+                return;
+            }
+
+            await using var channel = await _connection.CreateChannelAsync();
+
+            var json = JsonConvert.SerializeObject(payload);
+            var body = Encoding.UTF8.GetBytes(json);
+
+            var props = new BasicProperties
+            {
+                ContentType = "text/plain",
+                DeliveryMode = DeliveryModes.Persistent,
+                Headers = headers
+            };
+
+            await channel.BasicPublishAsync(
+                exchange: exchange,
+                routingKey: routingKey,
+                mandatory: false,
                 basicProperties: props,
                 body: body);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_connection != null)
+            {
+                await _connection.CloseAsync();
+                await _connection.DisposeAsync();
+            }
+
+            GC.SuppressFinalize(this);
         }
     }
 }

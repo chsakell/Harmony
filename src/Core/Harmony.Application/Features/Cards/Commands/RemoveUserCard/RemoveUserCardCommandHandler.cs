@@ -91,7 +91,7 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                     var message = new CardMemberRemovedMessage(request.BoardId, request.CardId, member);
 
-                    _notificationsPublisher.PublishMessage(message,
+                    await _notificationsPublisher.PublishMessageAsync(message,
                         NotificationType.CardMemberRemoved, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                     var board = await _boardService.GetBoardInfo(request.BoardId);
@@ -100,12 +100,12 @@ namespace Harmony.Application.Features.Cards.Commands.RemoveUserCard
 
                     var cardUrl = $"{_endpointsConfiguration.Value.FrontendUrl}/boards/{board.Id}/{slug}/{request.CardId}";
 
-                    _notificationsPublisher.PublishEmailNotification(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
+                    await _notificationsPublisher.PublishEmailNotificationAsync(new MemberRemovedFromCardNotification(request.BoardId, request.CardId, request.UserId, cardUrl));
                     
                     var members = await _userCardRepository.GetCardMembers(request.CardId);
 
-                    _notificationsPublisher
-                            .PublishSearchIndexNotification(new CardMembersUpdatedIndexNotification()
+                    await _notificationsPublisher
+                            .PublishSearchIndexNotificationAsync(new CardMembersUpdatedIndexNotification()
                             {
                                 ObjectID = request.CardId.ToString(),
                                 Members = members

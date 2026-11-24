@@ -115,7 +115,7 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                     }
                 };
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.BranchPullRequestCreated, routingKey: BrokerConstants.RoutingKeys.SignalR);
             }
 

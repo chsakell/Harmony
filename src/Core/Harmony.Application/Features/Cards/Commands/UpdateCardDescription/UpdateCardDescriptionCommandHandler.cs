@@ -64,8 +64,8 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
-            _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardDescriptionUpdatedIndexNotification()
+            await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardDescriptionUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         Description = card.Description
@@ -73,7 +73,7 @@ public class UpdateCardDescriptionCommandHandler : IRequestHandler<UpdateCardDes
 
             var message = new CardDescriptionChangedMessage(request.BoardId, request.CardId, card.Description);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardDescriptionChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Description updated"]);

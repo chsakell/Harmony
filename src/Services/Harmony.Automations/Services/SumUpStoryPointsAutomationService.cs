@@ -64,7 +64,7 @@ namespace Harmony.Automations.Services
                     Guid.Parse(parentCard.CardId),
                     (short?)syncStoryPointsResponse.TotalStoryPoints, null);
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.CardStoryPointsChanged, 
                     routingKey: BrokerConstants.RoutingKeys.SignalR);
             }

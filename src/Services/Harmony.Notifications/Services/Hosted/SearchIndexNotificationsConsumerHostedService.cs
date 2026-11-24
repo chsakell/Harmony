@@ -22,7 +22,7 @@ namespace Harmony.Notifications.Services.Hosted
         private readonly RabbitMqHealthCheck _rabbitMqHealthCheck;
         private readonly IServiceProvider _serviceProvider;
         private IConnection? _connection;
-        private IModel? _channel;
+        private IChannel? _channel;
         private BrokerConfiguration _brokerConfiguration;
 
         public SearchIndexNotificationsConsumerHostedService(ILoggerFactory loggerFactory,
@@ -38,7 +38,7 @@ namespace Harmony.Notifications.Services.Hosted
             _serviceProvider = serviceProvider;
         }
 
-        private void InitRabbitMQ()
+        private async Task InitRabbitMQAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
 
@@ -56,21 +56,22 @@ namespace Harmony.Notifications.Services.Hosted
             };
 
             // create connection  
-            _connection = factory.CreateConnection(AppServices.Notifications);
+            _connection = await factory.CreateConnectionAsync(AppServices.Notifications, cancellationToken);
 
             // create channel  
-            _channel = _connection.CreateModel();
+            _channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-            _channel.QueueDeclare(
+            await _channel.QueueDeclareAsync(
                 queue: BrokerConstants.SearchIndexNotificationsQueue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
-                arguments: null);
+                arguments: null,
+                cancellationToken: cancellationToken);
 
-            _channel.BasicQos(0, 1, false);
+            await _channel.BasicQosAsync(0, 1, false, cancellationToken);
 
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+            _connection.ConnectionShutdownAsync += RabbitMQ_ConnectionShutdownAsync;
 
             _logger.LogInformation($"Connected to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
         }
@@ -79,13 +80,13 @@ namespace Harmony.Notifications.Services.Hosted
         {
             try
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
                     var pipeline = _resiliencePipelineProvider.GetPipeline(HarmonyRetryPolicy.WaitAndRetry);
 
-                    pipeline.Execute(token =>
+                    await pipeline.ExecuteAsync(async token =>
                     {
-                        InitRabbitMQ();
+                        await InitRabbitMQAsync(token);
 
                         if (_channel == null)
                         {
@@ -93,8 +94,8 @@ namespace Harmony.Notifications.Services.Hosted
                         }
 
                         stoppingToken.ThrowIfCancellationRequested();
-                        var consumer = new EventingBasicConsumer(_channel);
-                        consumer.Received += async (ch, ea) =>
+                        var consumer = new AsyncEventingBasicConsumer(_channel);
+                        consumer.ReceivedAsync += async (ch, ea) =>
                         {
                             if (ea.BasicProperties.Headers
                                  .TryGetValue(BrokerConstants.NotificationHeader, out var notificationTypeRaw) &&
@@ -145,15 +146,14 @@ namespace Harmony.Notifications.Services.Hosted
                             }
                         };
 
-                        consumer.Shutdown += OnConsumerShutdown;
-                        consumer.Registered += OnConsumerRegistered;
-                        consumer.Unregistered += OnConsumerUnregistered;
-                        consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
+                        consumer.ShutdownAsync += OnConsumerShutdownAsync;
+                        consumer.RegisteredAsync += OnConsumerRegisteredAsync;
+                        consumer.UnregisteredAsync += OnConsumerUnregisteredAsync;
 
-                        _channel.BasicConsume(BrokerConstants.SearchIndexNotificationsQueue, true, consumer);
+                        await _channel.BasicConsumeAsync(BrokerConstants.SearchIndexNotificationsQueue, true, consumer, token);
 
                         _rabbitMqHealthCheck.Connected = true;
-                    });
+                    }, stoppingToken);
                 });
             }
             catch (Exception ex)
@@ -196,34 +196,49 @@ namespace Harmony.Notifications.Services.Hosted
             }
         }
 
-        private void OnConsumerConsumerCancelled(object? sender, ConsumerEventArgs e)
+
+        private Task OnConsumerUnregisteredAsync(object sender, ConsumerEventArgs e)
         {
             _rabbitMqHealthCheck.Connected = false;
+            return Task.CompletedTask;
         }
 
-        private void OnConsumerUnregistered(object? sender, ConsumerEventArgs e)
-        {
-            _rabbitMqHealthCheck.Connected = false;
-        }
-
-        private void OnConsumerRegistered(object? sender, ConsumerEventArgs e)
+        private Task OnConsumerRegisteredAsync(object sender, ConsumerEventArgs e)
         {
             _rabbitMqHealthCheck.Connected = true;
+            return Task.CompletedTask;
         }
 
-        private void OnConsumerShutdown(object? sender, ShutdownEventArgs e)
+        private Task OnConsumerShutdownAsync(object sender, ShutdownEventArgs e)
         {
             _rabbitMqHealthCheck.Connected = false;
+            return Task.CompletedTask;
         }
 
-        private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e)
+        private Task RabbitMQ_ConnectionShutdownAsync(object sender, ShutdownEventArgs e)
         {
             _rabbitMqHealthCheck.Connected = false;
+            return Task.CompletedTask;
         }
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await base.StopAsync(cancellationToken);
+
+            if (_channel != null)
+            {
+                await _channel.CloseAsync(cancellationToken);
+            }
+
+            if (_connection != null)
+            {
+                await _connection.CloseAsync(cancellationToken);
+            }
+        }
+
         public override void Dispose()
         {
-            _channel?.Close();
-            _connection?.Close();
+            _channel?.Dispose();
+            _connection?.Dispose();
             base.Dispose();
         }
     }

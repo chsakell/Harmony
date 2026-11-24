@@ -17,7 +17,7 @@ The source code of the [Harmony](https://chsakell.gitbook.io/harmony/) project m
 ### Stack
 | **Databases** 	| **Server** 	| **Front** 	|
 |---------------	|------------	|-----------	|
-| SQL Server or PostgreSQL 	| **.NET 8.0**   	| Blazor    	|
+| SQL Server or PostgreSQL 	| **.NET 10**   	| Blazor    	|
 | MongoDB       	| SignalR    	| MudBlazor 	|
 | Redis         	| gRPC       	|           	|
 

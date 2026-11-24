@@ -68,7 +68,7 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListItemChecked
                 var message = new CardItemCheckedChangedMessage(request.BoardId, request.CardId, 
                     listItem.Id, listItem.IsChecked);
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.CardItemCheckedChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<bool>.SuccessAsync(true, _localizer["List item Checked updated"]);

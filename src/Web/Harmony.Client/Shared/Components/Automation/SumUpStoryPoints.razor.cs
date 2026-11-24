@@ -31,7 +31,7 @@ namespace Harmony.Client.Shared.Components.Automation
 
         private List<IssueTypeDto> _issueTypes;
         private IssueTypeDto _selectedIssueType;
-        private IEnumerable<IssueTypeDto> _selectedIssueTypes { get; set; } = Enumerable.Empty<IssueTypeDto>();
+        private IReadOnlyCollection<IssueTypeDto> _selectedIssueTypes { get; set; } = Array.Empty<IssueTypeDto>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -82,7 +82,7 @@ namespace Harmony.Client.Shared.Components.Automation
             }
         }
 
-        private void SetFromIssueTypes(IEnumerable<IssueTypeDto> issueTypes)
+        private void SetFromIssueTypes(IReadOnlyCollection<IssueTypeDto> issueTypes)
         {
             _selectedIssueTypes = issueTypes;
 
@@ -147,7 +147,7 @@ namespace Harmony.Client.Shared.Components.Automation
                 { x => x.Color, Color.Warning }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -172,7 +172,7 @@ namespace Harmony.Client.Shared.Components.Automation
                 { x => x.Color, Color.Error }
             };
 
-            var dialog = _dialogService.Show<Confirmation>("Confirm", parameters);
+            var dialog = await _dialogService.ShowAsync<Confirmation>("Confirm", parameters);
             var dialogResult = await dialog.Result;
 
             if (!dialogResult.Canceled)
@@ -197,12 +197,12 @@ namespace Harmony.Client.Shared.Components.Automation
 
             if (string.IsNullOrEmpty(automation.Id))
             {
-                _selectedIssueTypes = Enumerable.Empty<IssueTypeDto>();
+                _selectedIssueTypes = Array.Empty<IssueTypeDto>();
             }
             else
             {
                 _selectedIssueTypes = _issueTypes.Where(l => _selectedAutomationModel
-                    .IssueTypes.ToList().Contains(l.Id.ToString())).ToList();
+                    .IssueTypes.ToList().Contains(l.Id.ToString())).ToList().ToList();
             }
 
             SetDescription();

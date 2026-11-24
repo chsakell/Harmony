@@ -59,8 +59,8 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
-            _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardIssueTypeUpdatedIndexNotification()
+            await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardIssueTypeUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         IssueType = issueType.Summary
@@ -68,7 +68,7 @@ public class UpdateCardIssueTypeCommandHandler : IRequestHandler<UpdateCardIssue
 
             var message = new CardIssueTypeChangedMessage(request.BoardId, request.CardId, issueType);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardIssueTypeChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
             return await Result<bool>.SuccessAsync(true, _localizer["Issue type updated"]);

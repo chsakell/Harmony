@@ -68,8 +68,8 @@ namespace Harmony.Application.Features.Cards.Commands.CreateBacklog
             {
                 var board = await _boardService.GetBoardInfo(request.BoardId);
 
-                _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardCreatedIndexNotification()
+                await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardCreatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         Title = card.Title,

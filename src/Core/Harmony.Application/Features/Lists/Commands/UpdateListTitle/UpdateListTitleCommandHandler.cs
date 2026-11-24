@@ -52,7 +52,7 @@ namespace Harmony.Application.Features.Lists.Commands.UpdateListTitle
                 
                 var message = new BoardListTitleChangedMessage(request.BoardId, list.Id, list.Title);
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.BoardListTitleChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
                 return await Result<UpdateListTitleResponse>.SuccessAsync(result, _localizer["List title updated"]);

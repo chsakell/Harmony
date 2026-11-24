@@ -14,7 +14,7 @@ namespace Harmony.Client.Shared.Modals
     public partial class MoveToSprintModal
     {
         private bool _processing;
-        [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+        [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
         [Parameter]
         public Guid BoardId { get; set; }
@@ -91,7 +91,7 @@ namespace Harmony.Client.Shared.Modals
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-            var dialog = _dialogService.Show<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<CreateEditSprintModal>(_localizer["Create sprint"], parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -104,7 +104,7 @@ namespace Harmony.Client.Shared.Modals
 
                 if (result.Data is SprintDto sprint)
                 {
-                    await _searchField.SetText(sprint.Name);
+                    await _searchField.SetTextAsync(sprint.Name);
                     StateHasChanged();
                 }
 

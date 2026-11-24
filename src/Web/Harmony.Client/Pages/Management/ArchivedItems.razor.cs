@@ -67,7 +67,7 @@ namespace Harmony.Client.Pages.Management
                     };
 
                     var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-                    var dialog = _dialogService.Show<ReactivateCardsModal>(_localizer["Reactivate cards"], parameters, options);
+                    var dialog = await _dialogService.ShowAsync<ReactivateCardsModal>(_localizer["Reactivate cards"], parameters, options);
                     var result = await dialog.Result;
 
                     if (!result.Canceled)
@@ -87,7 +87,7 @@ namespace Harmony.Client.Pages.Management
                     };
 
                     var moveSprintOptions = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = false };
-                    var moveSprintOptionsDialog = _dialogService.Show<ReactivateScrumCardsModal>(_localizer["Reactivate cards"], moveSprintParams, moveSprintOptions);
+                    var moveSprintOptionsDialog = await _dialogService.ShowAsync<ReactivateScrumCardsModal>(_localizer["Reactivate cards"], moveSprintParams, moveSprintOptions);
                     var moveSprintResult = await moveSprintOptionsDialog.Result;
 
                     if (!moveSprintResult.Canceled)

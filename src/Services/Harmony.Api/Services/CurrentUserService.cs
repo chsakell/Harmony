@@ -1,4 +1,5 @@
-﻿using Harmony.Application.Constants;
+﻿using Microsoft.Extensions.Primitives;
+using Harmony.Application.Constants;
 using Harmony.Application.Contracts.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -35,7 +36,7 @@ namespace Harmony.Api.Services
                 var trustedClientHeader = _httpContextAccessor.HttpContext.Request
                     .Headers[ServiceConstants.TrustedClientHeader];
 
-                if (!trustedClientHeader.IsNullOrEmpty() && 
+                if (!StringValues.IsNullOrEmpty(trustedClientHeader) && 
                     TRUSTED_CLIENTS.Contains(trustedClientHeader.ToString()))
                 {
                     return true;
@@ -54,7 +55,7 @@ namespace Harmony.Api.Services
 
             var header = _httpContextAccessor?.HttpContext?.Request?.Headers[name];
 
-            if (header.HasValue && !header.Value.IsNullOrEmpty())
+            if (header.HasValue && !StringValues.IsNullOrEmpty(header.Value))
             {
                 return _httpContextAccessor?.HttpContext?.Request?.Headers["trustedClientId"].ToString();
             }

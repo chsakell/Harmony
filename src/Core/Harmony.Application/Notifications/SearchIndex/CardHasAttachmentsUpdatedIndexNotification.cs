@@ -5,7 +5,7 @@ namespace Harmony.Application.Notifications.SearchIndex
     {
         public override SearchIndexNotificationType Type =>  SearchIndexNotificationType.CardHasAttachmentsUpdated;
 
-        public string ObjectID { get; set; }  // Card Id
+        public override string ObjectID { get; set; }  // Card Id
         public bool HasAttachments { get; set; }
     }
 }

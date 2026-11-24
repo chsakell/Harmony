@@ -130,7 +130,7 @@ namespace Harmony.Client.Shared
             _drawerOpen = !_drawerOpen;
         }
 
-        private void Logout()
+        private async Task Logout()
         {
             var parameters = new DialogParameters
             {
@@ -143,7 +143,7 @@ namespace Harmony.Client.Shared
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
 
-            _dialogService.Show<Dialogs.Logout>("Logout", parameters, options);
+            await _dialogService.ShowAsync<Dialogs.Logout>("Logout", parameters, options);
         }
 
         private HubConnection hubConnection;

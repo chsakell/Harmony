@@ -50,7 +50,7 @@ namespace Harmony.Client.Shared.Components
             };
 
             var options = new DialogOptions { CloseButton = true, FullScreen = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = true };
-            var dialog = _dialogService.Show<AdvancedSearchModal>("Advanced search", parameters, options);
+            var dialog = await _dialogService.ShowAsync<AdvancedSearchModal>("Advanced search", parameters, options);
             var result = await dialog.Result;
         }
 
@@ -87,7 +87,7 @@ namespace Harmony.Client.Shared.Components
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true, BackdropClick = true };
-            var dialog = _dialogService.Show<EditCardModal>(_localizer["Edit card"], parameters, options);
+            var dialog = await _dialogService.ShowAsync<EditCardModal>(_localizer["Edit card"], parameters, options);
             var result = await dialog.Result;
         }
 

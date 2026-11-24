@@ -1,15 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!--
+      MMLib.SwaggerForOcelot -> Kros.Utils requires Microsoft.Data.SqlClient >= 7, while the data services pin 6.1.x
+      (the line EF Core 10 is built against). The gateway never talks to SQL, so it alone moves to 7.x.
+    -->
+    <SqlClientVersion>7.1.2</SqlClientVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
-    <PackageReference Include="MMLib.SwaggerForOcelot" Version="8.3.0" />
-    <PackageReference Include="Ocelot" Version="23.3.3" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="MMLib.SwaggerForOcelot" />
+    <PackageReference Include="Ocelot" />
   </ItemGroup>
 
 </Project>

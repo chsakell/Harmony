@@ -1,0 +1,120 @@
+<Project>
+
+  <!--
+    Central Package Management: every NuGet version used by the solution lives here.
+    Project files reference packages without a Version attribute.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <AspNetCoreVersion>10.0.15</AspNetCoreVersion>
+    <EfCoreVersion>10.0.15</EfCoreVersion>
+    <GrpcVersion>2.85.0</GrpcVersion>
+    <HangfireVersion>1.8.25</HangfireVersion>
+    <SqlClientVersion Condition="'$(SqlClientVersion)' == ''">6.1.8</SqlClientVersion>
+  </PropertyGroup>
+
+  <!-- Microsoft / ASP.NET Core / Blazor -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
+  </ItemGroup>
+
+  <!-- Data access -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfCoreVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfCoreVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfCoreVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfCoreVersion)" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.4" />
+    <!--
+      Kept on the 6.1.x line: this is the major version EF Core 10 (SqlServer provider) is built and tested against.
+      A project can override SqlClientVersion (properties are evaluated before items) - see Harmony.ApiGateway.
+    -->
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="$(SqlClientVersion)" />
+    <PackageVersion Include="Dapper" Version="2.1.100" />
+    <PackageVersion Include="MongoDB.Bson" Version="3.14.1" />
+    <PackageVersion Include="MongoDB.Driver" Version="3.14.1" />
+    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.4" />
+  </ItemGroup>
+
+  <!-- gRPC -->
+  <ItemGroup>
+    <PackageVersion Include="Google.Protobuf" Version="3.36.2" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcVersion)" />
+    <PackageVersion Include="Grpc.Net.Client" Version="$(GrpcVersion)" />
+    <PackageVersion Include="Grpc.Tools" Version="$(GrpcVersion)" />
+  </ItemGroup>
+
+  <!-- Application -->
+  <ItemGroup>
+    <!-- AutoMapper 15+ and MediatR 13+ are commercially licensed; these are the last OSS (MIT / Apache-2.0) releases. -->
+    <PackageVersion Include="AutoMapper" Version="14.0.0" />
+    <PackageVersion Include="MediatR" Version="12.5.0" />
+    <PackageVersion Include="FluentValidation" Version="12.2.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+    <PackageVersion Include="Polly.Core" Version="8.9.1" />
+    <PackageVersion Include="Polly.Extensions" Version="8.9.1" />
+    <PackageVersion Include="Slugify.Core" Version="5.2.0" />
+    <PackageVersion Include="Bogus" Version="35.6.5" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <!-- Infrastructure -->
+  <ItemGroup>
+    <PackageVersion Include="Algolia.Search" Version="7.55.0" />
+    <PackageVersion Include="EasyCaching.InMemory" Version="1.9.2" />
+    <PackageVersion Include="EasyCaching.Redis" Version="1.9.2" />
+    <PackageVersion Include="EasyCaching.Serialization.SystemTextJson" Version="1.9.2" />
+    <PackageVersion Include="Hangfire.AspNetCore" Version="$(HangfireVersion)" />
+    <PackageVersion Include="Hangfire.Core" Version="$(HangfireVersion)" />
+    <PackageVersion Include="Hangfire.SqlServer" Version="$(HangfireVersion)" />
+    <PackageVersion Include="Hangfire.PostgreSql" Version="1.21.1" />
+    <PackageVersion Include="RabbitMQ.Client" Version="7.3.0" />
+    <PackageVersion Include="NETCore.MailKit" Version="2.1.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+    <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- API surface / gateway -->
+  <ItemGroup>
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="11.0.1" />
+    <PackageVersion Include="Ocelot" Version="25.0.3" />
+    <PackageVersion Include="MMLib.SwaggerForOcelot" Version="11.0.0" />
+  </ItemGroup>
+
+  <!-- Blazor client -->
+  <ItemGroup>
+    <PackageVersion Include="MudBlazor" Version="9.14.0" />
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageVersion Include="Blazored.TextEditor" Version="1.1.3" />
+    <PackageVersion Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
+  </ItemGroup>
+
+  <!-- Transitive security pins (CentralPackageTransitivePinningEnabled) -->
+  <ItemGroup>
+    <!-- NETCore.MailKit 2.1.0 (unmaintained) pulls MailKit 3.2.0 which has known vulnerabilities. -->
+    <PackageVersion Include="MailKit" Version="4.18.2" />
+    <!--
+      EasyCaching.Redis 1.9.2 pulls StackExchange.Redis 2.5.43, which drags in System.Drawing.Common 5.0.0 (critical CVE)
+      via PerformanceCounter. Latest 2.x stays binary-compatible with EasyCaching and the SignalR Redis backplane (>= 2.7.27).
+    -->
+    <PackageVersion Include="StackExchange.Redis" Version="2.13.23" />
+  </ItemGroup>
+
+</Project>

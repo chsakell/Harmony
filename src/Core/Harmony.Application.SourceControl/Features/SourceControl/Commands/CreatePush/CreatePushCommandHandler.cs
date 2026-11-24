@@ -77,7 +77,7 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                     Tag = request.Ref
                 };
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.TagPushed, routingKey: BrokerConstants.RoutingKeys.SignalR);
             }
         }
@@ -121,7 +121,7 @@ namespace Harmony.Application.SourceControl.Features.SourceControl.Commands.Crea
                     }).ToList()
                 };
 
-                _notificationsPublisher.PublishMessage(message,
+                await _notificationsPublisher.PublishMessageAsync(message,
                     NotificationType.BranchCommitsPushed, routingKey: BrokerConstants.RoutingKeys.SignalR);
             }
         }

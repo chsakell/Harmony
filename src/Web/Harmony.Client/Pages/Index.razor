@@ -108,7 +108,7 @@
     {
         var parameters = new DialogParameters();
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = false };
-        var dialog = _dialogService.Show<CreateWorkspaceModal>(_localizer["Create Workspace"], parameters, options);
+        var dialog = await _dialogService.ShowAsync<CreateWorkspaceModal>(_localizer["Create Workspace"], parameters, options);
 
         var result = await dialog.Result;
         if (!result.Canceled)

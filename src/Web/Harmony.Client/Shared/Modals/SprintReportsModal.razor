@@ -46,18 +46,18 @@
                         </MudStack>
 
                     </MudPaper>
-                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6">
                         <MudTabPanel Text="BurnDown Chart">
-                            <MudChart ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
-                                      ChartOptions="@_options" XAxisLabels="@XAxisBurnDownLabels"
+                            <MudChart T="double" ChartType="ChartType.Line" ChartSeries="@BurnDownSeries" @bind-SelectedIndex="Index"
+                                      ChartOptions="@_lineOptions" ChartLabels="@XAxisBurnDownLabels"
                                       Width="100%" Height="400px"></MudChart>
                         </MudTabPanel>
                         <MudTabPanel Text="Issues Overview">
-                            <MudChart ChartType="ChartType.Donut"
+                            <MudChart T="double" ChartType="ChartType.Donut"
                                       Width="100%" Height="400px"
-                                      ChartOptions="@_options"
-                                      InputData="@Reports.IssuesOverviewReport.TotalIssuesPerType.ToArray()"
-                                      InputLabels="@Reports.IssuesOverviewReport.IssueTypes.ToArray()">
+                                      ChartOptions="@_donutOptions"
+                                      ChartSeries="@IssuesOverviewSeries"
+                                      ChartLabels="@Reports.IssuesOverviewReport.IssueTypes.ToArray()">
                                 <CustomGraphics>
                                     <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="var(--mud-palette-primary)" font-family="Helvetica" font-size="2">Total Issues</text>
                                     <text class="donut-inner-text" x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="var(--mud-palette-primary)" font-family="Helvetica" font-size="5">@Reports.IssuesOverviewReport.TotalIssues</text>

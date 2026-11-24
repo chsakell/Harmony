@@ -149,7 +149,7 @@ else
                         <MudPaper Elevation="0" Width="300px"
                                   Style="height:calc(100vh - 180px);overflow:auto"
                                   Class="px-4 my-4 flex-none mud-background-gray rounded-lg mud-height-full">
-                            <MudToolBar DisableGutters="true">
+                            <MudToolBar Gutters="false">
                                 <EditableTextField For="@(() => item.Title)" OnEdit="(editing) => item.TitleEditing = editing"
                                                    OnSave="(text) => SaveBoardListTitle(item.Id, text)"
                                                    Text="@item.Title" />

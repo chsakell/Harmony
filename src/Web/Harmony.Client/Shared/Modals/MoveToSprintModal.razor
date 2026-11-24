@@ -42,7 +42,7 @@
             <MudExpansionPanel Text="Create and move to a new sprint" @ref="_newSprintPanel">
                 <MudButton FullWidth="true" Variant="Variant.Filled" OnClick="CreateSprint" Color="Color.Primary">CREATE NEW SPRINT</MudButton>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="Move to an existing sprint" IsInitiallyExpanded="true" @ref="_existingSprintsPanel">
+            <MudExpansionPanel Text="Move to an existing sprint" Expanded="true" @ref="_existingSprintsPanel">
                 <MudTable Hover="true" Elevation="25"
                           T="SprintDto"
                           Height="400px"

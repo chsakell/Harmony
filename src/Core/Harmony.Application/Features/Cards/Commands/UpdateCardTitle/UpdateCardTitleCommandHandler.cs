@@ -65,8 +65,8 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 
             var board = await _boardService.GetBoardInfo(request.BoardId);
 
-            _notificationsPublisher
-                    .PublishSearchIndexNotification(new CardTitleUpdatedIndexNotification()
+            await _notificationsPublisher
+                    .PublishSearchIndexNotificationAsync(new CardTitleUpdatedIndexNotification()
                     {
                         ObjectID = card.Id.ToString(),
                         Title = card.Title
@@ -74,7 +74,7 @@ public class UpdateCardTitleCommandHandler : IRequestHandler<UpdateCardTitleComm
 
             var message = new CardTitleChangedMessage(request.BoardId,request.CardId, card.Title);
 
-            _notificationsPublisher.PublishMessage(message,
+            await _notificationsPublisher.PublishMessageAsync(message,
                 NotificationType.CardTitleChanged, routingKey: BrokerConstants.RoutingKeys.SignalR);
 
 			return await Result<bool>.SuccessAsync(true, _localizer["Title updated"]);
