@@ -1,0 +1,54 @@
+# Adds the SQL Server settings to the services that use a relational database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  template:
+    spec:
+      containers:
+        - name: harmony-api
+          env:
+            - name: DatabaseProvider
+              value: SqlServer
+            - name: SQL_SA_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: sql-sa-password }
+            - name: ConnectionStrings__HarmonyConnection
+              value: Server=harmony-sql-server;Database=Harmony;User Id=sa;Password=$(SQL_SA_PASSWORD);TrustServerCertificate=True
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automations
+spec:
+  template:
+    spec:
+      containers:
+        - name: harmony-automations
+          env:
+            - name: DatabaseProvider
+              value: SqlServer
+            - name: SQL_SA_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: sql-sa-password }
+            - name: ConnectionStrings__HarmonyJobsConnection
+              value: Server=harmony-sql-server;Database=Harmony.Automations.Jobs;User Id=sa;Password=$(SQL_SA_PASSWORD);TrustServerCertificate=True
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications
+spec:
+  template:
+    spec:
+      containers:
+        - name: harmony-notifications
+          env:
+            - name: DatabaseProvider
+              value: SqlServer
+            - name: SQL_SA_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: sql-sa-password }
+            - name: ConnectionStrings__HarmonyJobsConnection
+              value: Server=harmony-sql-server;Database=Harmony.Notifications.Jobs;User Id=sa;Password=$(SQL_SA_PASSWORD);TrustServerCertificate=True

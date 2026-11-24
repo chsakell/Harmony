@@ -72,9 +72,11 @@ namespace Harmony.Caching.Extensions
 
         private static IServiceCollection UseRedisCaching(this IServiceCollection services, IConfiguration configuration)
         {
-            var redisConnectionInfo = configuration["RedisConnectionString"].Split(":");
-            var host = redisConnectionInfo[0];
-            var port = int.Parse(redisConnectionInfo[1]);
+            // Accepts any StackExchange.Redis connection string, e.g. "127.0.0.1:6379" or the
+            // "localhost:6379,password=..." form injected by .NET Aspire / docker-compose / Kubernetes.
+            var redisConfiguration = StackExchange.Redis.ConfigurationOptions
+                .Parse(configuration["RedisConnectionString"]);
+            redisConfiguration.AbortOnConnectFail = false;
 
             services.AddEasyCaching(option =>
             {
@@ -85,7 +87,7 @@ namespace Harmony.Caching.Extensions
 
                 option.UseRedis(config =>
                 {
-                    config.DBConfig.Endpoints.Add(new ServerEndPoint(host, port));
+                    config.DBConfig.ConfigurationOptions = redisConfiguration;
                 }, "json");
             });
 

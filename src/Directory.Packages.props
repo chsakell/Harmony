@@ -106,6 +106,33 @@
     <PackageVersion Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
   </ItemGroup>
 
+  <!--
+    .NET Aspire (local orchestration) and OpenTelemetry (traces / metrics / logs).
+    Aspire 13.6.x is the stable line that targets net10.0. The AppHost SDK version lives in
+    src/Aspire/Harmony.AppHost/Harmony.AppHost.csproj (Sdk="Aspire.AppHost.Sdk/...") and must match AspireVersion.
+    Aspire.Hosting.AppHost is referenced implicitly by that SDK, so it must not be listed here (NU1009).
+  -->
+  <PropertyGroup>
+    <AspireVersion>13.6.5</AspireVersion>
+    <OpenTelemetryVersion>1.21.0</OpenTelemetryVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.MongoDB" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.11.1" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.11.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.21.0-beta.2" />
+    <PackageVersion Include="MongoDB.Driver.Core.Extensions.DiagnosticSources" Version="3.0.0" />
+  </ItemGroup>
+
   <!-- Transitive security pins (CentralPackageTransitivePinningEnabled) -->
   <ItemGroup>
     <!-- NETCore.MailKit 2.1.0 (unmaintained) pulls MailKit 3.2.0 which has known vulnerabilities. -->

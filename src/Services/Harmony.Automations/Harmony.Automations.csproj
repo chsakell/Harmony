@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Aspire\Harmony.ServiceDefaults\Harmony.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Core\Harmony.Application\Harmony.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Caching\Harmony.Caching.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Harmony.Infrastructure\Harmony.Infrastructure.csproj" />

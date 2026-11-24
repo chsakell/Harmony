@@ -42,18 +42,7 @@ namespace Harmony.Notifications.Services.Hosted
         {
             _logger.LogInformation($"Trying to connect to {_brokerConfiguration.Host}:{_brokerConfiguration.Port}");
 
-            var factory = new ConnectionFactory
-            {
-                HostName = _brokerConfiguration.Host,
-                Port = _brokerConfiguration.Port,
-                AutomaticRecoveryEnabled = true,
-                UserName = string.IsNullOrEmpty(_brokerConfiguration.Username)
-                    ? ConnectionFactory.DefaultUser : _brokerConfiguration.Username,
-                Password = string.IsNullOrEmpty(_brokerConfiguration.Password)
-                    ? ConnectionFactory.DefaultPass : _brokerConfiguration.Password,
-                VirtualHost = string.IsNullOrEmpty(_brokerConfiguration.VirtualHost) ?
-                    ConnectionFactory.DefaultVHost : _brokerConfiguration.VirtualHost,
-            };
+            var factory = RabbitMqConnectionFactoryBuilder.Create(_brokerConfiguration, automaticRecovery: true);
 
             // create connection  
             _connection = await factory.CreateConnectionAsync(AppServices.Notifications, cancellationToken);

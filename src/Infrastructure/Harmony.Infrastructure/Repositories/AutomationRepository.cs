@@ -16,20 +16,12 @@ namespace Harmony.Infrastructure.Repositories
 {
     public class AutomationRepository : IAutomationRepository
     {
-        private readonly MongoClient _client;
+        private readonly IMongoClient _client;
 
-        public AutomationRepository(IOptions<MongoDbConfiguration> mongoConfiguration,
-            ILogger<AutomationRepository> logger)
+        // The singleton client is registered by MongoDbClientExtensions.AddHarmonyMongoClient
+        public AutomationRepository(IMongoClient client)
         {
-            var mongoConnectionUrl = new MongoUrl(mongoConfiguration.Value.ConnectionURI);
-            var mongoClientSettings = MongoClientSettings.FromUrl(mongoConnectionUrl);
-            mongoClientSettings.ClusterConfigurator = cb => {
-                cb.Subscribe<CommandStartedEvent>(e => {
-                    logger.LogInformation($"{e.CommandName} - {e.Command.ToJson()}");
-                });
-            };
-
-            _client = new MongoClient(mongoClientSettings);
+            _client = client;
         }
 
         public async Task CreateAsync(IAutomationDto automation)

@@ -1,0 +1,39 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.6.5">
+
+  <!--
+    .NET Aspire AppHost: starts the whole Harmony stack (infrastructure containers + all services) with one F5 / `aspire run`.
+    Keep the SDK version above in sync with AspireVersion in src/Directory.Packages.props.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>harmony-apphost-7c3e2a4d-1f7b-4f52-9a3e-6b1f0c9d2e81</UserSecretsId>
+    <!-- Aspire.Hosting.SqlServer requires Microsoft.Data.SqlClient >= 7 (see the note in Directory.Packages.props). -->
+    <SqlClientVersion>7.1.2</SqlClientVersion>
+    <!--
+      DCP and the dashboard come from NuGet packages, so F5 in Visual Studio / `dotnet run` work without the Aspire CLI.
+      `aspire run` works as well. Set AspireUseCliBundle=true to use the binaries bundled with the Aspire CLI instead.
+    -->
+    <NoWarn>$(NoWarn);ASPIRE010</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.MongoDB" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+    <PackageReference Include="Aspire.Hosting.Redis" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ApiGateways\Harmony.ApiGateway\Harmony.ApiGateway.csproj" />
+    <ProjectReference Include="..\..\Services\Harmony.Api\Harmony.Api.csproj" />
+    <ProjectReference Include="..\..\Services\Harmony.Automations\Harmony.Automations.csproj" />
+    <ProjectReference Include="..\..\Services\Harmony.Notifications\Harmony.Notifications.csproj" />
+    <ProjectReference Include="..\..\Services\Harmony.SignalR\Harmony.SignalR.csproj" />
+    <ProjectReference Include="..\..\Integrations\Harmony.Integrations.SourceControl\Harmony.Integrations.SourceControl.csproj" />
+    <ProjectReference Include="..\..\Web\Harmony.Client\Harmony.Client.csproj" />
+  </ItemGroup>
+
+</Project>

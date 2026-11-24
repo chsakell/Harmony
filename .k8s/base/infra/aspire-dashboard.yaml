@@ -1,0 +1,44 @@
+# Standalone Aspire dashboard - every Harmony service exports OpenTelemetry (traces, metrics, logs) to it over OTLP.
+apiVersion: v1
+kind: Service
+metadata:
+  name: aspire-dashboard
+  labels:
+    app: aspire-dashboard
+spec:
+  type: LoadBalancer
+  selector:
+    app: aspire-dashboard
+  ports:
+    - name: frontend
+      port: 18888
+      targetPort: 18888
+    - name: otlp-grpc
+      port: 18889
+      targetPort: 18889
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aspire-dashboard
+  labels:
+    app: aspire-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aspire-dashboard
+  template:
+    metadata:
+      labels:
+        app: aspire-dashboard
+    spec:
+      containers:
+        - name: aspire-dashboard
+          image: mcr.microsoft.com/dotnet/aspire-dashboard:13.6.5
+          env:
+            - name: ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS
+              value: "true"
+          ports:
+            - containerPort: 18888
+            - containerPort: 18889

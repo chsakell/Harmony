@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="MongoDB.Bson" />
     <PackageReference Include="MongoDB.Driver" />
+    <PackageReference Include="MongoDB.Driver.Core.Extensions.DiagnosticSources" />
   </ItemGroup>
 
   <ItemGroup>

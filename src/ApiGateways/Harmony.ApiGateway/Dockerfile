@@ -7,6 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Directory.Build.props", "src/Directory.Packages.props", "./"]
+COPY ["src/Aspire/Harmony.ServiceDefaults/Harmony.ServiceDefaults.csproj", "Aspire/Harmony.ServiceDefaults/"]
 COPY ["src/ApiGateways/Harmony.ApiGateway/Harmony.ApiGateway.csproj", "ApiGateways/Harmony.ApiGateway/"]
 RUN dotnet restore "ApiGateways/Harmony.ApiGateway/Harmony.ApiGateway.csproj"
 COPY src/ .

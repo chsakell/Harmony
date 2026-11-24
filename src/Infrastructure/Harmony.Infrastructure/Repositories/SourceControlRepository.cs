@@ -18,24 +18,12 @@ namespace Harmony.Infrastructure.Repositories
 {
     public class SourceControlRepository : ISourceControlRepository
     {
-        private readonly MongoClient _client;
+        private readonly IMongoClient _client;
 
-        public SourceControlRepository(IOptions<MongoDbConfiguration> mongoConfiguration,
-            ILogger<SourceControlRepository> logger)
+        // The singleton client is registered by MongoDbClientExtensions.AddHarmonyMongoClient
+        public SourceControlRepository(IMongoClient client)
         {
-            var mongoConnectionUrl = new MongoUrl(mongoConfiguration.Value.ConnectionURI);
-            var mongoClientSettings = MongoClientSettings.FromUrl(mongoConnectionUrl);
-            mongoClientSettings.ConnectTimeout = TimeSpan.FromSeconds(10);
-            mongoClientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(10);
-            mongoClientSettings.ClusterConfigurator = cb =>
-            {
-                cb.Subscribe<CommandStartedEvent>(e =>
-                {
-                    logger.LogInformation($"{e.CommandName} - {e.Command.ToJson()}");
-                });
-            };
-
-            _client = new MongoClient(mongoClientSettings);
+            _client = client;
         }
 
         public async Task CreateRepository(Repository repo)

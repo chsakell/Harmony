@@ -1,0 +1,72 @@
+# PostgreSQL overlay - runs Harmony on PostgreSQL instead of SQL Server
+#
+#   docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d
+#
+# Adds the postgres service (persistent volume harmony_postgres-data), switches DatabaseProvider and the connection
+# strings of api / automations / notifications, and disables the sql_server service.
+# Requires Docker Compose v2.24+ (!override tag).
+
+services:
+  api:
+    environment:
+      DatabaseProvider: PostgreSQL
+      ConnectionStrings__HarmonyConnection: Host=harmony-postgres;Port=5432;Database=Harmony;Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-HarmonyPostgres100}
+    depends_on: !override
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  automations:
+    environment:
+      DatabaseProvider: PostgreSQL
+      ConnectionStrings__HarmonyJobsConnection: Host=harmony-postgres;Port=5432;Database=Harmony.Automations.Jobs;Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-HarmonyPostgres100}
+    depends_on: !override
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  notifications:
+    environment:
+      DatabaseProvider: PostgreSQL
+      ConnectionStrings__HarmonyJobsConnection: Host=harmony-postgres;Port=5432;Database=Harmony.Notifications.Jobs;Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-HarmonyPostgres100}
+    depends_on: !override
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: harmony-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-HarmonyPostgres100}
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  # Not needed with PostgreSQL: only started when explicitly requested (docker compose --profile sqlserver ...)
+  sql_server:
+    profiles: ["sqlserver"]
+
+volumes:
+  postgres-data:

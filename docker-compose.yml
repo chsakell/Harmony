@@ -1,193 +1,337 @@
-version: "3.9"
+# Harmony - docker compose (SQL Server by default)
+#
+#   docker compose build
+#   docker compose up -d
+#   docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d     # PostgreSQL instead of SQL Server
+#
+# Harmony          http://localhost:7096
+# Aspire dashboard http://localhost:18888   (traces, metrics, structured logs - OpenTelemetry)
+# Kibana           http://localhost:5601    (Serilog -> Elasticsearch)
+# RabbitMQ UI      http://localhost:15672
+#
+# Credentials come from .env (copy .env.example to .env); the defaults below are for local development only.
+# Database data lives in named volumes (harmony_*-data) and survives `docker compose down` / container re-creation.
+# `docker compose down -v` deletes the volumes (and all data).
+
+name: harmony
+
+x-harmony-service-env: &harmony-service-env
+  ASPNETCORE_ENVIRONMENT: Development
+  ASPNETCORE_URLS: https://+:443;http://+:80
+  ASPNETCORE_Kestrel__Certificates__Default__Password: ${HARMONY_CERT_PASSWORD:-HarmonyTeamsSecretKey}
+  ASPNETCORE_Kestrel__Certificates__Default__Path: /https/harmony.pfx
+  # OpenTelemetry -> Aspire dashboard
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://aspire-dashboard:18889
+  OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+  # Serilog -> Elasticsearch
+  ElasticConfiguration__Uri: http://elasticsearch:9200
+
+x-broker-env: &broker-env
+  BrokerConfiguration__Host: harmony-rabbitmq
+  BrokerConfiguration__Port: 5672
+  BrokerConfiguration__Username: ${RABBITMQ_USER:-harmony}
+  BrokerConfiguration__Password: ${RABBITMQ_PASSWORD:-HarmonyRabbit100}
+  BrokerConfiguration__VirtualHost: /
+
+x-https-cert-volume: &https-cert-volume
+  # Development certificate, see docs: dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\harmony.pfx -p HarmonyTeamsSecretKey
+  - ${HARMONY_CERT_DIR:-${USERPROFILE:-~}/.aspnet/https}:/https/:ro
+
 services:
-   api:
-    build: 
-        context: .
-        dockerfile: src/Services/Harmony.Api/Dockerfile
-        args:
-          BUILD_CONFIGURATION: Debug
+  # ---------------------------------------------------------------------------------------------------------------
+  # Harmony services
+  # ---------------------------------------------------------------------------------------------------------------
+  api:
+    image: harmony-api:latest
+    build:
+      context: .
+      dockerfile: src/Services/Harmony.Api/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
     container_name: harmony-api
     ports:
-        - "7097:443"
+      - "7097:443"
     restart: always
     environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=https://+:443;http://+:80
-        - ASPNETCORE_HTTPS_PORT=7097
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
-        - ConnectionStrings__HarmonyConnection=Server=harmony-sql-server;database=harmony;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
-        - AppEndpointConfiguration__AutomationEndpoint=https://harmony-automations:443/
-        - BrokerConfiguration__Host=harmony-rabbitmq
-        - ElasticConfiguration:Uri=http://elasticsearch:9200
-    volumes:
-        - $USERPROFILE/.aspnet/https:/https/
+      <<: [*harmony-service-env, *broker-env]
+      ASPNETCORE_HTTPS_PORT: 7097
+      OTEL_SERVICE_NAME: api
+      DatabaseProvider: SqlServer
+      ConnectionStrings__HarmonyConnection: Server=harmony-sql-server;Database=Harmony;User Id=sa;Password=${SQL_SA_PASSWORD:-%HarmonyTeams100};TrustServerCertificate=True
+      AppEndpointConfiguration__AutomationEndpoint: https://harmony-automations:443/
+      AppEndpointConfiguration__SourceControlEndpoint: https://harmony-integrations-sourcecontrol:443/
+      AppEndpointConfiguration__FrontendUrl: http://localhost:7096
+      CacheProvider: Redis
+      RedisConnectionString: harmony-redis:6379,password=${REDIS_PASSWORD:-HarmonyRedis100}
+    volumes: *https-cert-volume
     depends_on:
-        - sql_server
-        - rabbitmq
-   automations:
-    build: 
-        context: .
-        dockerfile: src/Services/Harmony.Automations/Dockerfile
-        args:
-          BUILD_CONFIGURATION: Debug
+      sql_server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  automations:
+    image: harmony-automations:latest
+    build:
+      context: .
+      dockerfile: src/Services/Harmony.Automations/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
     container_name: harmony-automations
     ports:
-        - "7277:443"
+      - "7277:443"
     restart: always
     environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=https://+:443;http://+:80
-        - ASPNETCORE_HTTPS_PORT=7277
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
-        - AppEndpointConfiguration__HarmonyApiEndpoint=https://harmony-api:443/
-        - BrokerConfiguration__Host=harmony-rabbitmq 
-        - ConnectionStrings__HarmonyJobsConnection=Server=harmony-sql-server;database=Harmony.Automations.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
-        - MongoDB__ConnectionURI=mongodb://harmony-mongodb-server:27017
-        - ElasticConfiguration:Uri=http://elasticsearch:9200
-    volumes:
-        - $USERPROFILE/.aspnet/https:/https/
+      <<: [*harmony-service-env, *broker-env]
+      ASPNETCORE_HTTPS_PORT: 7277
+      OTEL_SERVICE_NAME: automations
+      DatabaseProvider: SqlServer
+      ConnectionStrings__HarmonyJobsConnection: Server=harmony-sql-server;Database=Harmony.Automations.Jobs;User Id=sa;Password=${SQL_SA_PASSWORD:-%HarmonyTeams100};TrustServerCertificate=True
+      AppEndpointConfiguration__HarmonyApiEndpoint: https://harmony-api:443/
+      MongoDB__ConnectionURI: mongodb://${MONGO_USER:-harmony}:${MONGO_PASSWORD:-HarmonyMongo100}@harmony-mongodb-server:27017/?authSource=admin
+      CacheProvider: Redis
+      RedisConnectionString: harmony-redis:6379,password=${REDIS_PASSWORD:-HarmonyRedis100}
+    volumes: *https-cert-volume
     depends_on:
-        - sql_server
-        - rabbitmq
-        - mongodb
-   notifications:
-    build: 
-        context: .
-        dockerfile: src/Services/Harmony.Notifications/Dockerfile
-        args:
-          BUILD_CONFIGURATION: Debug
+      sql_server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  notifications:
+    image: harmony-notifications:latest
+    build:
+      context: .
+      dockerfile: src/Services/Harmony.Notifications/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
     container_name: harmony-notifications
     ports:
-        - "7121:443"
+      - "7121:443"
     restart: always
     environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=https://+:443;http://+:80
-        - ASPNETCORE_HTTPS_PORT=7121
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
-        - AppEndpointConfiguration__HarmonyApiEndpoint=https://harmony.api:443/
-        - BrokerConfiguration__Host=harmony-rabbitmq 
-        - ConnectionStrings__HarmonyJobsConnection=Server=harmony-sql-server;database=Harmony.Notifications.Jobs;User Id=sa;Password=%HarmonyTeams100;TrustServerCertificate=True
-        - ElasticConfiguration:Uri=http://elasticsearch:9200
-    volumes:
-        - $USERPROFILE/.aspnet/https:/https/
+      <<: [*harmony-service-env, *broker-env]
+      ASPNETCORE_HTTPS_PORT: 7121
+      OTEL_SERVICE_NAME: notifications
+      DatabaseProvider: SqlServer
+      ConnectionStrings__HarmonyJobsConnection: Server=harmony-sql-server;Database=Harmony.Notifications.Jobs;User Id=sa;Password=${SQL_SA_PASSWORD:-%HarmonyTeams100};TrustServerCertificate=True
+      AppEndpointConfiguration__HarmonyApiEndpoint: https://harmony-api:443/
+      AppEndpointConfiguration__FrontendUrl: http://localhost:7096
+    volumes: *https-cert-volume
     depends_on:
-        - sql_server
-        - rabbitmq
-   signalr:
-    build: 
-        context: .
-        dockerfile: src/Services/Harmony.SignalR/Dockerfile
-        args:
-          BUILD_CONFIGURATION: Debug
+      sql_server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  signalr:
+    image: harmony-signalr:latest
+    build:
+      context: .
+      dockerfile: src/Services/Harmony.SignalR/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
     container_name: harmony-signalr
     ports:
-        - "7262:443"
-    environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=https://+:443;http://+:80
-        - ASPNETCORE_HTTPS_PORT=7262
-        - BrokerConfiguration__Host=harmony-rabbitmq
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
-        - ElasticConfiguration:Uri=http://elasticsearch:9200
-    volumes:
-        - $USERPROFILE/.aspnet/https:/https/
-    depends_on:
-        - rabbitmq
-   integrations-sourcecontrol:
-    build: 
-        context: .
-        dockerfile: src/Integrations/Harmony.Integrations.SourceControl/Dockerfile
-        args:
-          BUILD_CONFIGURATION: Debug
-    container_name: harmony-integrations-sourcecontrol
-    ports:
-        - "7113:443"
-    environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=https://+:443;http://+:80
-        - ASPNETCORE_HTTPS_PORT=7113
-        - BrokerConfiguration__Host=harmony-rabbitmq
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
-        - MongoDB__ConnectionURI=mongodb://harmony-mongodb-server:27017
-        - ElasticConfiguration:Uri=http://elasticsearch:9200
-    volumes:
-        - $USERPROFILE/.aspnet/https:/https/
-    depends_on:
-        - rabbitmq
-        - mongodb
-   client:
-    build: 
-        context: .
-        dockerfile: src/Web/Harmony.Client/Dockerfile
-        args:
-          BUILD_CONFIGURATION: Debug
-    container_name: harmony-client
-    ports:
-        - "7096:80"
-    environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=https://+:443;http://+:80
-        - ASPNETCORE_HTTPS_PORT=7096
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
-    volumes:
-        - $USERPROFILE/.aspnet/https:/https/
-    depends_on:
-        - signalr
-        - api
-        - api_gateway
-   api_gateway:
-    build: 
-        context: .
-        dockerfile: src/ApiGateways/Harmony.ApiGateway/Dockerfile
-        args:
-          BUILD_CONFIGURATION: Debug
-    container_name: harmony-apigateway
-    ports:
-        - "7108:443"
+      - "7262:443"
     restart: always
     environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=https://+:443;http://+:80
-        - ASPNETCORE_HTTPS_PORT=7108
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=HarmonyTeamsSecretKey 
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx 
+      <<: [*harmony-service-env, *broker-env]
+      ASPNETCORE_HTTPS_PORT: 7262
+      OTEL_SERVICE_NAME: signalr
+      # SignalR Redis backplane
+      RedisConnectionString: harmony-redis:6379,password=${REDIS_PASSWORD:-HarmonyRedis100}
+    volumes: *https-cert-volume
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  integrations-sourcecontrol:
+    image: harmony-integrations-sourcecontrol:latest
+    build:
+      context: .
+      dockerfile: src/Integrations/Harmony.Integrations.SourceControl/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    container_name: harmony-integrations-sourcecontrol
+    ports:
+      - "7113:443"
+    restart: always
+    environment:
+      <<: [*harmony-service-env, *broker-env]
+      ASPNETCORE_HTTPS_PORT: 7113
+      OTEL_SERVICE_NAME: sourcecontrol
+      MongoDB__ConnectionURI: mongodb://${MONGO_USER:-harmony}:${MONGO_PASSWORD:-HarmonyMongo100}@harmony-mongodb-server:27017/?authSource=admin
+    volumes: *https-cert-volume
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+
+  api_gateway:
+    image: harmony-api_gateway:latest
+    build:
+      context: .
+      dockerfile: src/ApiGateways/Harmony.ApiGateway/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    container_name: harmony-apigateway
+    ports:
+      - "7108:443"
+    restart: always
+    environment:
+      <<: *harmony-service-env
+      ASPNETCORE_HTTPS_PORT: 7108
+      OTEL_SERVICE_NAME: gateway
+    volumes: *https-cert-volume
+    depends_on:
+      - api
+      - automations
+      - integrations-sourcecontrol
+      - signalr
+
+  client:
+    # Blazor WebAssembly served by nginx over http (wwwroot/appsettings.json -> gatewayUrl https://localhost:7108)
+    image: harmony-client:latest
+    build:
+      context: .
+      dockerfile: src/Web/Harmony.Client/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    container_name: harmony-client
+    ports:
+      - "7096:80"
+    restart: always
+    depends_on:
+      - api_gateway
+
+  # ---------------------------------------------------------------------------------------------------------------
+  # Infrastructure (persistent named volumes)
+  # ---------------------------------------------------------------------------------------------------------------
+  sql_server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: harmony-sql-server
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SQL_SA_PASSWORD:-%HarmonyTeams100}
+    ports:
+      - "${SQL_HOST_PORT:-1433}:1433"
     volumes:
-        - $USERPROFILE/.aspnet/https:/https/
-   elasticsearch:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -b -Q 'SELECT 1' -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:8.3
+    container_name: harmony-mongodb-server
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-harmony}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-HarmonyMongo100}
+    ports:
+      - "${MONGO_HOST_PORT:-27017}:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4.3-management-alpine
+    container_name: harmony-rabbitmq
+    # A fixed hostname keeps the RabbitMQ node name (and therefore its data directory) stable across re-creations
+    hostname: harmony-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-harmony}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-HarmonyRabbit100}
+    ports:
+      - "${RABBITMQ_HOST_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_HOST_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+  redis:
+    image: redis:8.6-alpine
+    container_name: harmony-redis
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:-HarmonyRedis100}", "--save", "60", "1"]
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"${REDIS_PASSWORD:-HarmonyRedis100}\" --no-auth-warning ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
     container_name: elasticsearch
     environment:
-        - xpack.monitoring.enabled=true
-        - xpack.watcher.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-        - discovery.type=single-node
+      xpack.monitoring.enabled: "true"
+      xpack.watcher.enabled: "false"
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      discovery.type: single-node
     ports:
-        - "9200:9200"
-   kibana:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  kibana:
     image: docker.elastic.co/kibana/kibana:7.17.18
     container_name: kibana
     environment:
-        - ELASTICSEARCH_URL=http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     depends_on:
-        - elasticsearch
+      - elasticsearch
     ports:
-        - "5601:5601" 
-   rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: harmony-rabbitmq
-   sql_server:
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
-    container_name: harmony-sql-server
+      - "5601:5601"
+    restart: unless-stopped
+
+  aspire-dashboard:
+    # Standalone Aspire dashboard: receives OTLP from every service (traces, metrics, logs)
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:13.6.5
+    container_name: harmony-aspire-dashboard
     environment:
-      - ACCEPT_EULA=y
-      - SA_PASSWORD=%HarmonyTeams100
-   mongodb:
-    image: mongo:latest
-    container_name: harmony-mongodb-server
+      ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+    ports:
+      - "18888:18888"
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:
+  mongodb-data:
+  rabbitmq-data:
+  redis-data:
+  elasticsearch-data:

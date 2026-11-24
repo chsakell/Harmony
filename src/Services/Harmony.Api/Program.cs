@@ -22,7 +22,10 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog(SeriLogger.Configure);
+builder.AddServiceDefaults();
+
+// writeToProviders: Serilog events also flow to the OpenTelemetry logger (Aspire dashboard / OTLP)
+builder.Host.UseSerilog(SeriLogger.Configure, writeToProviders: true);
 
 // Add services to the container.
 builder.Services.AddLocalization(options =>

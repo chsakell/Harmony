@@ -1,0 +1,66 @@
+# Ocelot gateway (image uses ocelot.docker.json -> harmony-api, harmony-automations, ... service names)
+apiVersion: v1
+kind: Service
+metadata:
+  name: harmony-gateway
+  labels:
+    app: api-gateway
+spec:
+  type: LoadBalancer
+  selector:
+    app: api-gateway
+  ports:
+    - name: https
+      port: 7108
+      targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: harmony-apigateway
+          image: harmony-api_gateway:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: harmony-common
+          env:
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "7108"
+            - name: OTEL_SERVICE_NAME
+              value: gateway
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: cert-password }
+          ports:
+            - containerPort: 443
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: cert-config-map
+              mountPath: /https/harmony.pfx
+              subPath: harmony.pfx
+      volumes:
+        - name: cert-config-map
+          configMap:
+            name: cert-config-map

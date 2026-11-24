@@ -10,6 +10,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Directory.Build.props", "src/Directory.Packages.props", "./"]
+COPY ["src/Aspire/Harmony.ServiceDefaults/Harmony.ServiceDefaults.csproj", "Aspire/Harmony.ServiceDefaults/"]
 COPY ["src/Services/Harmony.Automations/Harmony.Automations.csproj", "Services/Harmony.Automations/"]
 COPY ["src/Core/Harmony.Application/Harmony.Application.csproj", "Core/Harmony.Application/"]
 COPY ["src/Shared/Harmony.Shared/Harmony.Shared.csproj", "Shared/Harmony.Shared/"]

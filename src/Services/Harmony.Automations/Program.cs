@@ -19,7 +19,10 @@ namespace Harmony.Automations
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Host.UseSerilog(SeriLogger.Configure);
+            builder.AddServiceDefaults();
+
+            // writeToProviders: Serilog events also flow to the OpenTelemetry logger (Aspire dashboard / OTLP)
+            builder.Host.UseSerilog(SeriLogger.Configure, writeToProviders: true);
 
             builder.Services.AddSwaggerGen();
             builder.Services.AddMongoDbRepositories();

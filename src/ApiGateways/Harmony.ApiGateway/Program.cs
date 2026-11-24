@@ -3,6 +3,9 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// OpenTelemetry (Ocelot downstream calls are traced through HttpClient instrumentation), health checks
+builder.AddServiceDefaults();
+
 builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -28,6 +31,9 @@ app.UseSwaggerForOcelotUI(option =>
 app.MapControllers();
 
 app.UseWebSockets();
+
+// Must run before Ocelot, which terminates the pipeline
+app.UseDefaultHealthChecks();
 
 await app.UseOcelot();
 

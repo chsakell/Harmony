@@ -1,0 +1,63 @@
+# Adds the PostgreSQL settings to the services that use a relational database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  template:
+    spec:
+      containers:
+        - name: harmony-api
+          env:
+            - name: DatabaseProvider
+              value: PostgreSQL
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: postgres-user }
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: postgres-password }
+            - name: ConnectionStrings__HarmonyConnection
+              value: Host=harmony-postgres;Port=5432;Database=Harmony;Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automations
+spec:
+  template:
+    spec:
+      containers:
+        - name: harmony-automations
+          env:
+            - name: DatabaseProvider
+              value: PostgreSQL
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: postgres-user }
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: postgres-password }
+            - name: ConnectionStrings__HarmonyJobsConnection
+              value: Host=harmony-postgres;Port=5432;Database=Harmony.Automations.Jobs;Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications
+spec:
+  template:
+    spec:
+      containers:
+        - name: harmony-notifications
+          env:
+            - name: DatabaseProvider
+              value: PostgreSQL
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: postgres-user }
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: postgres-password }
+            - name: ConnectionStrings__HarmonyJobsConnection
+              value: Host=harmony-postgres;Port=5432;Database=Harmony.Notifications.Jobs;Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD)

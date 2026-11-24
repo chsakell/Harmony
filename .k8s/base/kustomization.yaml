@@ -1,0 +1,54 @@
+# Harmony - Kubernetes base (everything except the relational database).
+# Don't apply the base on its own: apply one of the overlays, which add SQL Server or PostgreSQL:
+#
+#   kubectl apply -k .k8s/overlays/sqlserver
+#   kubectl apply -k .k8s/overlays/postgres
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: harmony
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: harmony
+
+resources:
+  - namespace.yaml
+  # infrastructure (StatefulSets with persistent volume claims)
+  - infra/mongodb.yaml
+  - infra/rabbitmq.yaml
+  - infra/redis.yaml
+  - infra/elasticsearch.yaml
+  - infra/kibana.yaml
+  - infra/aspire-dashboard.yaml
+  # Harmony services
+  - apps/api.yaml
+  - apps/automations.yaml
+  - apps/notifications.yaml
+  - apps/signalr.yaml
+  - apps/sourcecontrol.yaml
+  - apps/api-gateway.yaml
+  - apps/client.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  # Settings shared by every Harmony service (envFrom)
+  - name: harmony-common
+    literals:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/harmony.pfx
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - ElasticConfiguration__Uri=http://elasticsearch:9200
+      - BrokerConfiguration__Host=harmony-rabbitmq
+      - BrokerConfiguration__Port=5672
+      - BrokerConfiguration__VirtualHost=/
+
+secretGenerator:
+  # Development defaults only - replace secrets.env (or create the secret yourself) for any shared environment.
+  - name: harmony-secrets
+    envs:
+      - secrets.env

@@ -5,33 +5,44 @@
     <File Path="src/Directory.Packages.props" />
   </Folder>
   <Folder Name="/docker/">
+    <File Path=".env.example" />
+    <File Path="docker-compose.postgres.yml" />
     <File Path="docker-compose.yml" />
   </Folder>
   <Folder Name="/docker/k8s/">
-    <File Path=".k8s/api-deployment.yaml" />
-    <File Path=".k8s/api-gateway-deployment.yaml" />
-    <File Path=".k8s/api-gateway-service.yaml" />
-    <File Path=".k8s/api-service.yaml" />
-    <File Path=".k8s/automations-deployment.yaml" />
-    <File Path=".k8s/automations-service.yaml" />
-    <File Path=".k8s/client-deployment.yaml" />
-    <File Path=".k8s/client-service.yaml" />
-    <File Path=".k8s/elasticsearch-deployment.yaml" />
-    <File Path=".k8s/elasticsearch-service.yaml" />
-    <File Path=".k8s/kibana-deployment.yaml" />
-    <File Path=".k8s/kibana-service.yaml" />
-    <File Path=".k8s/mongodb-deployment.yaml" />
-    <File Path=".k8s/mongodb-service.yaml" />
-    <File Path=".k8s/notifications-deployment.yaml" />
-    <File Path=".k8s/notifications-service.yaml" />
-    <File Path=".k8s/rabbitmq-deployment.yaml" />
-    <File Path=".k8s/rabbitmq-service.yaml" />
-    <File Path=".k8s/signalr-deployment.yaml" />
-    <File Path=".k8s/signalr-service.yaml" />
-    <File Path=".k8s/sourcecontrol-deployment.yaml" />
-    <File Path=".k8s/sourcecontrol-service.yaml" />
-    <File Path=".k8s/sql-server-deployment.yaml" />
-    <File Path=".k8s/sql-server-service.yaml" />
+    <File Path=".k8s/README.md" />
+  </Folder>
+  <Folder Name="/docker/k8s/base/">
+    <File Path=".k8s/base/kustomization.yaml" />
+    <File Path=".k8s/base/namespace.yaml" />
+    <File Path=".k8s/base/secrets.env" />
+  </Folder>
+  <Folder Name="/docker/k8s/base/apps/">
+    <File Path=".k8s/base/apps/api-gateway.yaml" />
+    <File Path=".k8s/base/apps/api.yaml" />
+    <File Path=".k8s/base/apps/automations.yaml" />
+    <File Path=".k8s/base/apps/client.yaml" />
+    <File Path=".k8s/base/apps/notifications.yaml" />
+    <File Path=".k8s/base/apps/signalr.yaml" />
+    <File Path=".k8s/base/apps/sourcecontrol.yaml" />
+  </Folder>
+  <Folder Name="/docker/k8s/base/infra/">
+    <File Path=".k8s/base/infra/aspire-dashboard.yaml" />
+    <File Path=".k8s/base/infra/elasticsearch.yaml" />
+    <File Path=".k8s/base/infra/kibana.yaml" />
+    <File Path=".k8s/base/infra/mongodb.yaml" />
+    <File Path=".k8s/base/infra/rabbitmq.yaml" />
+    <File Path=".k8s/base/infra/redis.yaml" />
+  </Folder>
+  <Folder Name="/docker/k8s/overlays/postgres/">
+    <File Path=".k8s/overlays/postgres/database-env.yaml" />
+    <File Path=".k8s/overlays/postgres/kustomization.yaml" />
+    <File Path=".k8s/overlays/postgres/postgres.yaml" />
+  </Folder>
+  <Folder Name="/docker/k8s/overlays/sqlserver/">
+    <File Path=".k8s/overlays/sqlserver/database-env.yaml" />
+    <File Path=".k8s/overlays/sqlserver/kustomization.yaml" />
+    <File Path=".k8s/overlays/sqlserver/sql-server.yaml" />
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs/docker.md" />
@@ -45,6 +56,10 @@
   <Folder Name="/src/" />
   <Folder Name="/src/ApiGateways/">
     <Project Path="src/ApiGateways/Harmony.ApiGateway/Harmony.ApiGateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Aspire/">
+    <Project Path="src/Aspire/Harmony.AppHost/Harmony.AppHost.csproj" />
+    <Project Path="src/Aspire/Harmony.ServiceDefaults/Harmony.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/src/Core/">
     <Project Path="src/Core/Harmony.Application.SourceControl/Harmony.Application.SourceControl.csproj" />

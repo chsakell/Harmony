@@ -12,6 +12,7 @@ The source code of the [Harmony](https://chsakell.gitbook.io/harmony/) project m
 - [Automations](https://chsakell.gitbook.io/harmony/guide/automations)
 - GitHub [integration](https://chsakell.gitbook.io/harmony/integrations/github)
 - Instant updates across all connected clients
+- **.NET Aspire** local orchestration with end-to-end **OpenTelemetry** tracing :telescope:
 - **Docker** & **Kubernetes** support :ship: :rocket:
 
 ### Stack
@@ -26,12 +27,42 @@ The source code of the [Harmony](https://chsakell.gitbook.io/harmony/) project m
 | EF Core         	| Clean **Microservice** Architecture 	| RabbitMQ      	|
 |                 	| CQRS MediatR        	|               	|
 
+| **Orchestration & observability** |
+|-----------------------------------|
+| .NET Aspire, OpenTelemetry, Serilog (+ optional Elasticsearch / Kibana) |
+
 ## Documentation
 Docs are maintained at [docs.harmony-teams.com](https://chsakell.gitbook.io/harmony/)
 
-## Installation
+## Quick start with .NET Aspire (recommended)
+All you need is the **.NET 10 SDK** and **Docker Desktop** running.
+
+```powershell
+dotnet dev-certs https --trust
+aspire run                                    # or: dotnet run --project src/Aspire/Harmony.AppHost
+```
+
+Or open `Harmony.slnx` and run **Harmony.AppHost** as the single startup project (F5).
+
+- The AppHost starts SQL Server (or PostgreSQL), MongoDB, RabbitMQ and Redis as containers, plus every Harmony service, and opens the Aspire dashboard (resources, logs, distributed traces, metrics).
+- Database data lives in named Docker volumes (`harmony-*-data`) and survives restarts. Generated passwords are kept in the AppHost user secrets.
+- Switch the database with the `https-postgres` / `https-local-sqlserver` launch profiles or `Harmony:DatabaseProvider` (`SqlServer` | `PostgreSQL` | `LocalSqlServer`) in `src/Aspire/Harmony.AppHost/appsettings.json`.
+- Open Harmony at https://localhost:7096 and login with default user _administrator_ or _johndoe_ using the password: __Pa$$w0rd!__
+
+See the [.NET Aspire](https://chsakell.gitbook.io/harmony/configuration/aspire) guide for details.
+
+## Docker & Kubernetes
+```powershell
+docker compose build
+docker compose up -d                                                            # SQL Server
+docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d       # PostgreSQL
+kubectl apply -k .k8s/overlays/sqlserver                                        # Kubernetes, see .k8s/README.md
+```
+Harmony runs at http://localhost:7096 and traces are available in the Aspire dashboard at http://localhost:18888. See [docs/docker.md](docs/docker.md).
+
+## Manual installation (without Aspire)
 - For a detailed walkthrough on how to install and configure the dependencies, go through the [dependencies](https://chsakell.gitbook.io/harmony/configuration/dependencies) guide of the docs.
-- In a nutchel, all you need to do is have **SQL Server** or **PostgreSQL**, **MongoDB** & **RabbitMQ** installed on your machine and configure all connection strings to point to these instances.
+- In a nutshell, all you need to do is have **SQL Server** or **PostgreSQL**, **MongoDB** & **RabbitMQ** installed on your machine and configure all connection strings to point to these instances.
 - By default, the connection strings use the default ports for all above installations.
 - Redis is optional and should be used in production environment in order to configure the SignalR Redis backplane & the Redis caching.
 - Configure the startup projects as explained on the [before-running](https://chsakell.gitbook.io/harmony/configuration/before-running) guide.

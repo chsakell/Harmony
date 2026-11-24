@@ -1,0 +1,94 @@
+# Harmony.Automations - database settings (DatabaseProvider, ConnectionStrings__HarmonyJobsConnection) come from the overlay
+apiVersion: v1
+kind: Service
+metadata:
+  name: harmony-automations
+  labels:
+    app: automations
+spec:
+  selector:
+    app: automations
+  ports:
+    - name: https
+      port: 443
+      targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automations
+  labels:
+    app: automations
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: automations
+  template:
+    metadata:
+      labels:
+        app: automations
+    spec:
+      containers:
+        - name: harmony-automations
+          image: harmony-automations:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: harmony-common
+          env:
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "7277"
+            - name: OTEL_SERVICE_NAME
+              value: automations
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: cert-password }
+            - name: BrokerConfiguration__Username
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: rabbitmq-user }
+            - name: BrokerConfiguration__Password
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: rabbitmq-password }
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: mongo-user }
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: mongo-password }
+            - name: MongoDB__ConnectionURI
+              value: mongodb://$(MONGO_USER):$(MONGO_PASSWORD)@harmony-mongodb-server:27017/?authSource=admin
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: redis-password }
+            - name: CacheProvider
+              value: Redis
+            - name: RedisConnectionString
+              value: harmony-redis:6379,password=$(REDIS_PASSWORD)
+            - name: AppEndpointConfiguration__HarmonyApiEndpoint
+              value: https://harmony-api:443/
+          ports:
+            - containerPort: 443
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 120
+          volumeMounts:
+            - name: cert-config-map
+              mountPath: /https/harmony.pfx
+              subPath: harmony.pfx
+      volumes:
+        - name: cert-config-map
+          configMap:
+            name: cert-config-map

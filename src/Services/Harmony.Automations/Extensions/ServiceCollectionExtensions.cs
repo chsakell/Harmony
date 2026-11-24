@@ -10,6 +10,7 @@ using Harmony.Application.Contracts.Services.Management;
 using Harmony.Application.Notifications;
 using Harmony.Automations.Contracts;
 using Harmony.Automations.Services;
+using Harmony.Infrastructure.Extensions;
 using Harmony.Infrastructure.Mappings;
 using Harmony.Infrastructure.Repositories;
 using Harmony.Infrastructure.Seed;
@@ -163,6 +164,7 @@ namespace Harmony.Automations.Extensions
         internal static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<MongoDbConfiguration>(configuration.GetSection("MongoDb"));
+            services.AddHarmonyMongoClient();
 
             Persistence.Configurations.MongoDb.MongoDbConfiguration.Configure();
 

@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: harmony-sql-server
+  labels:
+    app: sql-server
+spec:
+  selector:
+    app: sql-server
+  ports:
+    - name: tds
+      port: 1433
+      targetPort: 1433
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sql-server
+  labels:
+    app: sql-server
+spec:
+  serviceName: harmony-sql-server
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-server
+  template:
+    metadata:
+      labels:
+        app: sql-server
+    spec:
+      securityContext:
+        # the mssql image runs as user mssql (10001); make the volume writable for it
+        fsGroup: 10001
+      containers:
+        - name: sql-server
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_SA_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: sql-sa-password }
+          ports:
+            - containerPort: 1433
+          readinessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -b -Q 'SELECT 1' -o /dev/null"]
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /var/opt/mssql
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 4Gi

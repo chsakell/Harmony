@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: harmony-integrations-sourcecontrol
+  labels:
+    app: sourcecontrol
+spec:
+  selector:
+    app: sourcecontrol
+  ports:
+    - name: https
+      port: 443
+      targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sourcecontrol
+  labels:
+    app: sourcecontrol
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: sourcecontrol
+  template:
+    metadata:
+      labels:
+        app: sourcecontrol
+    spec:
+      containers:
+        - name: harmony-integrations-sourcecontrol
+          image: harmony-integrations-sourcecontrol:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: harmony-common
+          env:
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "443"
+            - name: OTEL_SERVICE_NAME
+              value: sourcecontrol
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: cert-password }
+            - name: BrokerConfiguration__Username
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: rabbitmq-user }
+            - name: BrokerConfiguration__Password
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: rabbitmq-password }
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: mongo-user }
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: harmony-secrets, key: mongo-password }
+            - name: MongoDB__ConnectionURI
+              value: mongodb://$(MONGO_USER):$(MONGO_PASSWORD)@harmony-mongodb-server:27017/?authSource=admin
+          ports:
+            - containerPort: 443
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 120
+          volumeMounts:
+            - name: cert-config-map
+              mountPath: /https/harmony.pfx
+              subPath: harmony.pfx
+      volumes:
+        - name: cert-config-map
+          configMap:
+            name: cert-config-map
