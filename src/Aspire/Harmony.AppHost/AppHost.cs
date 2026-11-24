@@ -28,6 +28,8 @@ IResourceBuilder<IResourceWithConnectionString> harmonyDb;
 IResourceBuilder<IResourceWithConnectionString> automationsJobsDb;
 IResourceBuilder<IResourceWithConnectionString> notificationsJobsDb;
 string servicesDatabaseProvider;
+// false for LocalSqlServer: your own instance is not an Aspire resource, so there is no health to wait for
+bool databasesManagedByAspire = true;
 
 switch (databaseProvider.Trim().ToLowerInvariant())
 {
@@ -51,6 +53,7 @@ switch (databaseProvider.Trim().ToLowerInvariant())
             automationsJobsDb = builder.AddConnectionString("automations-jobs-local");
             notificationsJobsDb = builder.AddConnectionString("notifications-jobs-local");
             servicesDatabaseProvider = "SqlServer";
+            databasesManagedByAspire = false;
             break;
         }
     case "sqlserver":
@@ -118,35 +121,66 @@ if (enableElasticsearch)
 // ------------------------------------------------------------------------------------------------------------------
 // Harmony services. Each keeps its launchSettings "https" port (7097, 7277, ...), so ocelot.json and the Blazor client's
 // gatewayUrl keep working unchanged; service-to-service URLs are injected from the endpoints below.
+//
+// Startup order (WaitFor = the dependency must be Running AND Healthy before the service starts), derived from what
+// each service's appsettings.json configures and what it touches at startup:
+//
+//   service        appsettings dependency                               waits for
+//   -------------  ---------------------------------------------------  ----------------------------------------------
+//   api            ConnectionStrings:HarmonyConnection (migrate+seed),   harmony db, rabbitmq, redis
+//                  BrokerConfiguration, RedisConnectionString (cache)
+//   sourcecontrol  MongoDB:ConnectionURI (/healthz/ready), Broker        mongodb, rabbitmq
+//   automations    ConnectionStrings:HarmonyJobsConnection (Hangfire),   automations-jobs db, mongodb (seed),
+//                  MongoDB, Broker (consumer), Redis (cache),            rabbitmq, redis, api
+//                  AppEndpointConfiguration:HarmonyApiEndpoint (gRPC)
+//   notifications  ConnectionStrings:HarmonyJobsConnection (Hangfire),   notifications-jobs db, rabbitmq, api
+//                  Broker (consumers), HarmonyApiEndpoint (gRPC)
+//   signalr        BrokerConfiguration (consumer), RedisConnectionString rabbitmq, redis
+//                  (backplane)
+//   gateway        ocelot.json routes: /core /automations /sourcecontrol  api, automations, sourcecontrol, signalr
+//                  /signalRHub
+//   client         wwwroot/appsettings.json gatewayUrl                   gateway
+//
+// Api <-> Automations / SourceControl call each other over gRPC, so only one direction can be a WaitFor: the Api
+// starts first (it owns the Harmony database) and its calls to Automations / SourceControl happen per request.
+// ElasticConfiguration:Uri is not waited for - the Serilog sink is optional and logs always reach the dashboard.
 // ------------------------------------------------------------------------------------------------------------------
 var api = builder.AddProject<Projects.Harmony_Api>("api", launchProfileName: "https")
     .WithHarmonyDefaults(elasticsearchEndpoint)
-    .WithReference(harmonyDb, "HarmonyConnection").WaitFor(harmonyDb)
-    .WithEnvironment("DatabaseProvider", servicesDatabaseProvider)
+    .WithDatabase(harmonyDb, "HarmonyConnection", servicesDatabaseProvider)
     .WithMessageBroker(rabbitmq, rabbitmqUser, rabbitmqPassword)
-    .WithRedisCache(redis);
+    .WithRedisCache(redis)
+    .WaitForIf(databasesManagedByAspire, harmonyDb)
+    .WaitFor(rabbitmq)
+    .WaitFor(redis);
 
 var sourceControl = builder.AddProject<Projects.Harmony_Integrations_SourceControl>("sourcecontrol", launchProfileName: "https")
     .WithHarmonyDefaults(elasticsearchEndpoint)
     .WithMongoDb(mongodb)
-    .WithMessageBroker(rabbitmq, rabbitmqUser, rabbitmqPassword);
+    .WithMessageBroker(rabbitmq, rabbitmqUser, rabbitmqPassword)
+    .WaitFor(mongodb)
+    .WaitFor(rabbitmq);
 
 var automations = builder.AddProject<Projects.Harmony_Automations>("automations", launchProfileName: "https")
     .WithHarmonyDefaults(elasticsearchEndpoint)
-    .WithReference(automationsJobsDb, "HarmonyJobsConnection").WaitFor(automationsJobsDb)
-    .WithEnvironment("DatabaseProvider", servicesDatabaseProvider)
+    .WithDatabase(automationsJobsDb, "HarmonyJobsConnection", servicesDatabaseProvider)
     .WithMongoDb(mongodb)
     .WithMessageBroker(rabbitmq, rabbitmqUser, rabbitmqPassword)
     .WithRedisCache(redis)
     .WithEnvironment("AppEndpointConfiguration__HarmonyApiEndpoint", api.GetEndpoint("https"))
+    .WaitForIf(databasesManagedByAspire, automationsJobsDb)
+    .WaitFor(mongodb)
+    .WaitFor(rabbitmq)
+    .WaitFor(redis)
     .WaitFor(api);
 
 var notifications = builder.AddProject<Projects.Harmony_Notifications>("notifications", launchProfileName: "https")
     .WithHarmonyDefaults(elasticsearchEndpoint)
-    .WithReference(notificationsJobsDb, "HarmonyJobsConnection").WaitFor(notificationsJobsDb)
-    .WithEnvironment("DatabaseProvider", servicesDatabaseProvider)
+    .WithDatabase(notificationsJobsDb, "HarmonyJobsConnection", servicesDatabaseProvider)
     .WithMessageBroker(rabbitmq, rabbitmqUser, rabbitmqPassword)
     .WithEnvironment("AppEndpointConfiguration__HarmonyApiEndpoint", api.GetEndpoint("https"))
+    .WaitForIf(databasesManagedByAspire, notificationsJobsDb)
+    .WaitFor(rabbitmq)
     .WaitFor(api);
 
 var signalr = builder.AddProject<Projects.Harmony_SignalR>("signalr", launchProfileName: "https")
@@ -154,6 +188,7 @@ var signalr = builder.AddProject<Projects.Harmony_SignalR>("signalr", launchProf
     .WithMessageBroker(rabbitmq, rabbitmqUser, rabbitmqPassword)
     // A Redis connection string turns on the SignalR Redis backplane
     .WithEnvironment("RedisConnectionString", redis.Resource.ConnectionStringExpression)
+    .WaitFor(rabbitmq)
     .WaitFor(redis);
 
 var gateway = builder.AddProject<Projects.Harmony_ApiGateway>("gateway", launchProfileName: "https")
@@ -197,6 +232,25 @@ internal static class HarmonyResourceBuilderExtensions
             : project.WithEnvironment("ElasticConfiguration__Uri", elasticsearchEndpoint);
     }
 
+    /// <summary>
+    /// WaitFor only when <paramref name="condition"/> holds - e.g. a database that is not an Aspire resource
+    /// (LocalSqlServer) has no health check to wait for.
+    /// </summary>
+    public static IResourceBuilder<T> WaitForIf<T>(
+        this IResourceBuilder<T> builder, bool condition, IResourceBuilder<IResource> dependency)
+        where T : IResourceWithWaitSupport =>
+        condition ? builder.WaitFor(dependency) : builder;
+
+    /// <summary>Injects ConnectionStrings:{connectionName} and DatabaseProvider (SqlServer | PostgreSQL).</summary>
+    public static IResourceBuilder<ProjectResource> WithDatabase(
+        this IResourceBuilder<ProjectResource> project,
+        IResourceBuilder<IResourceWithConnectionString> database,
+        string connectionName,
+        string databaseProvider) =>
+        project
+            .WithReference(database, connectionName)
+            .WithEnvironment("DatabaseProvider", databaseProvider);
+
     /// <summary>Maps the RabbitMQ resource to the BrokerConfiguration section the services bind.</summary>
     public static IResourceBuilder<ProjectResource> WithMessageBroker(
         this IResourceBuilder<ProjectResource> project,
@@ -211,22 +265,18 @@ internal static class HarmonyResourceBuilderExtensions
             .WithEnvironment("BrokerConfiguration__Port", endpoint.Property(EndpointProperty.Port))
             .WithEnvironment("BrokerConfiguration__Username", userName)
             .WithEnvironment("BrokerConfiguration__Password", password)
-            .WithEnvironment("BrokerConfiguration__VirtualHost", "/")
-            .WaitFor(rabbitmq);
+            .WithEnvironment("BrokerConfiguration__VirtualHost", "/");
     }
 
     /// <summary>Maps the MongoDB resource to MongoDB:ConnectionURI.</summary>
     public static IResourceBuilder<ProjectResource> WithMongoDb(
         this IResourceBuilder<ProjectResource> project, IResourceBuilder<MongoDBServerResource> mongodb) =>
-        project
-            .WithEnvironment("MongoDB__ConnectionURI", mongodb.Resource.ConnectionStringExpression)
-            .WaitFor(mongodb);
+        project.WithEnvironment("MongoDB__ConnectionURI", mongodb.Resource.ConnectionStringExpression);
 
     /// <summary>Switches the EasyCaching provider to Redis.</summary>
     public static IResourceBuilder<ProjectResource> WithRedisCache(
         this IResourceBuilder<ProjectResource> project, IResourceBuilder<RedisResource> redis) =>
         project
             .WithEnvironment("CacheProvider", "Redis")
-            .WithEnvironment("RedisConnectionString", redis.Resource.ConnectionStringExpression)
-            .WaitFor(redis);
+            .WithEnvironment("RedisConnectionString", redis.Resource.ConnectionStringExpression);
 }

@@ -175,6 +175,20 @@ namespace Harmony.Automations.Services.Hosted
             return Task.CompletedTask;
         }
 
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        {
+            // Starts ExecuteAsync, which connects to the broker in the background
+            await base.StartAsync(cancellationToken);
+
+            // Hosted services start before the web server: holding back here keeps /healthz/ready from
+            // answering the first readiness probes with "RabbitMQ connection pending"
+            if (!await _rabbitMqHealthCheck.WaitForFirstConnectionAsync(RabbitMqHealthCheck.StartupConnectionTimeout, cancellationToken))
+            {
+                _logger.LogWarning("RabbitMQ {Host}:{Port} not connected after {Timeout}s - continuing startup, the consumer keeps retrying",
+                    _brokerConfiguration.Host, _brokerConfiguration.Port, RabbitMqHealthCheck.StartupConnectionTimeout.TotalSeconds);
+            }
+        }
+
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             await base.StopAsync(cancellationToken);
