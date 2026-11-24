@@ -20,7 +20,7 @@ dotnet tool install --global dotnet-ef
 ```
   "DatabaseProvider": "SqlServer",
   "ConnectionStrings": {
-    "HarmonyConnection": "Server=.;Database=Harmony;Integrated Security=True;TrustServerCertificate=True"
+    "HarmonyConnection": "Server=localhost\\SQLEXPRESS;Database=Harmony;Integrated Security=True;TrustServerCertificate=True"
   },
 ```
 - Based on your database provider, apply the alrealdy existing migrations
