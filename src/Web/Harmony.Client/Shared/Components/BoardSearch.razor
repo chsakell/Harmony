@@ -49,10 +49,10 @@
             }
         </MudSelect>
         <MudSelect MultiSelection="true" T="BoardListDto" Clearable="true"
-                   MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionBoardListsText))"
+                   MultiSelectionTextFunc="GetMultiSelectionBoardListsText"
                    @bind-SelectedValues="_selectedLists"
                    FullWidth="false"
-                   T="BoardListDto" Label="Status" AnchorOrigin="Origin.BottomCenter">
+                   Label="Status" AnchorOrigin="Origin.BottomCenter">
             @foreach (var list in BoardLists)
             {
                 <MudSelectItem Value="list">@list.Title</MudSelectItem>

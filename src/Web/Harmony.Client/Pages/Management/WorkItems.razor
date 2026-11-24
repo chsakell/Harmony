@@ -20,7 +20,7 @@
         <ToolBarContent>
             <div class="justify-center mud-text-align-center">
                 <MudSelect MultiSelection="true" T="IssueTypeDto" Clearable="true"
-                           MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionIssueTypesText))"
+                           MultiSelectionTextFunc="GetMultiSelectionIssueTypesText"
                            @bind-SelectedValues:get="_selectedIssueTypes"
                            @bind-SelectedValues:set="SetSelectedIssueTypes"
                            Label="Type" AnchorOrigin="Origin.BottomCenter">
@@ -38,11 +38,11 @@
             </div>
             <div class="justify-center mud-text-align-center">
                 <MudSelect MultiSelection="true" T="BoardListDto" Clearable="true"
-                           MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionBoardListsText))"
+                           MultiSelectionTextFunc="GetMultiSelectionBoardListsText"
                            @bind-SelectedValues:get="_selectedLists"
                            @bind-SelectedValues:set="SetSelectedLists"
                            FullWidth="false"
-                           T="BoardListDto" Label="Status" AnchorOrigin="Origin.BottomCenter">
+                           Label="Status" AnchorOrigin="Origin.BottomCenter">
                     @foreach (var list in _boardInfo.Lists)
                     {
                         <MudSelectItem Value="list">@list.Title</MudSelectItem>
@@ -53,11 +53,11 @@
             {
                 <div class="justify-center mud-text-align-center">
                     <MudSelect MultiSelection="true" T="SprintDto" Clearable="true"
-                               MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionSprintsText))"
+                               MultiSelectionTextFunc="GetMultiSelectionSprintsText"
                                @bind-SelectedValues:get="_selectedSprints"
                                @bind-SelectedValues:set="SetSelectedSprints"
                                FullWidth="false"
-                               T="BoardListDto" Label="Sprints" AnchorOrigin="Origin.BottomCenter">
+                               Label="Sprints" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var list in _boardInfo.ActiveSprints)
                         {
                             <MudSelectItem Value="list">@list.Name</MudSelectItem>

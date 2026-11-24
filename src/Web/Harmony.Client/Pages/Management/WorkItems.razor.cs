@@ -109,7 +109,7 @@ namespace Harmony.Client.Pages.Management
             _selectedSprints = new List<SprintDto>();
         }
 
-        private string GetMultiSelectionIssueTypesText(List<string> selectedValues)
+        private string GetMultiSelectionIssueTypesText(IReadOnlyList<string> selectedValues)
         {
             if (!_selectedIssueTypes.Any())
             {
@@ -119,7 +119,7 @@ namespace Harmony.Client.Pages.Management
             return string.Join(", ", _selectedIssueTypes.Select(x => x.Summary));
         }
 
-        private string GetMultiSelectionBoardListsText(List<string> selectedValues)
+        private string GetMultiSelectionBoardListsText(IReadOnlyList<string> selectedValues)
         {
             if (!_selectedLists.Any())
             {
@@ -129,9 +129,9 @@ namespace Harmony.Client.Pages.Management
             return string.Join(", ", _selectedLists.Select(x => x.Title));
         }
 
-        private string GetMultiSelectionSprintsText(List<string> selectedValues)
+        private string GetMultiSelectionSprintsText(IReadOnlyList<string> selectedValues)
         {
-            if (!_selectedLists.Any())
+            if (!_selectedSprints.Any())
             {
                 return string.Empty;
             }

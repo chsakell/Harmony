@@ -82,7 +82,7 @@ namespace Harmony.Client.Shared.Components
 
         #region Lists
 
-        private string GetMultiSelectionBoardListsText(List<string> selectedValues)
+        private string GetMultiSelectionBoardListsText(IReadOnlyList<string> selectedValues)
         {
             if (!_selectedLists.Any())
             {
