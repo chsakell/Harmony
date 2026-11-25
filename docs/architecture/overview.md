@@ -98,7 +98,7 @@ Dependencies are project references taken from the `.csproj` files.
 - **Local:** `aspire run` (or `dotnet run --project src/Aspire/Harmony.AppHost`) starts SQL Server or PostgreSQL, MongoDB, RabbitMQ, Redis and optionally Elasticsearch + Kibana as persistent containers with named volumes (`harmony-*-data`), then every service in dependency order (`WaitFor`). `Harmony:DatabaseProvider` selects `SqlServer` (default), `PostgreSQL` or `LocalSqlServer`. The client runs at https://localhost:7096.
 - **Containers:** each host has a `Dockerfile`; `docker-compose.yml` (SQL Server) and `docker-compose.postgres.yml` (PostgreSQL override) run the full stack with an Aspire dashboard container.
 - **Kubernetes:** Kustomize base in `.k8s/base` (apps and infra) with `sqlserver` and `postgres` overlays (`kubectl apply -k .k8s/overlays/<provider>`).
-- **CI/CD:** no build or release pipeline in the repository. `.github/workflows/` holds only the SDLC workflows (`sdlc-gates.yml`, `agent-evals.yml` on agent-config PRs, `copilot-setup-steps.yml`). How releases reach production and how they are rolled back is not described in the repository (inferred - confirm).
+- **CI/CD:** no build or release pipeline in the repository. `.github/workflows/` holds only the SDLC workflows (`sdlc-gates.yml`, `copilot-setup-steps.yml`). Agent evals are not run in CI; run them locally with `./evals/run-evals.ps1`. How releases reach production and how they are rolled back is not described in the repository (inferred - confirm).
 
 ## Known issues and technical debt
 
