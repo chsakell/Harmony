@@ -1,0 +1,56 @@
+# Regression-tests the agent configuration (AGENTS.md, skills, hooks, instructions) like code.
+# Needs either the secret COPILOT_EVALS_TOKEN (fine-grained PAT with the "Copilot Requests" permission)
+# or ANTHROPIC_API_KEY with the repository variable EVAL_AGENT set to "claude".
+name: Agent evals
+
+on:
+  pull_request:
+    paths:
+      - AGENTS.md
+      - CLAUDE.md
+      - REVIEW.md
+      - .claude/**
+      - .github/instructions/**
+      - .github/copilot-instructions.md
+      - evals/**
+  #  schedule:
+  #    - cron: '0 2 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-evals-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evals:
+    name: Agent evals
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: global.json
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Install agent CLI
+        env:
+          EVAL_AGENT: ${{ vars.EVAL_AGENT || 'copilot' }}
+        run: |
+          if [ "$EVAL_AGENT" = "claude" ]; then npm install -g @anthropic-ai/claude-code; else npm install -g @github/copilot; fi
+
+      - name: Run evals
+        shell: pwsh
+        env:
+          EVAL_AGENT: ${{ vars.EVAL_AGENT || 'copilot' }}
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_EVALS_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_COPILOT_PROMPT_MODE_REPO_HOOKS: "true"
+        run: ./evals/run-evals.ps1 -MinPassRate 0.8
