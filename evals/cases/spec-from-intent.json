@@ -1,0 +1,18 @@
+{
+  "name": "spec-from-intent",
+  "description": "sdlc-spec turns an approved intent into a spec with EARS requirements, measurable NFRs and flagged concerns, without touching code.",
+  "setup": [
+    { "from": "evals/fixtures/9001-export-orders", "to": "docs/features/9001-export-orders" }
+  ],
+  "branch": "feature/9001-export-orders",
+  "prompt": "Use the sdlc-spec skill to write docs/features/9001-export-orders/spec.md from the approved intent in that folder. Do not ask me questions: make informed assumptions and record anything unresolved under Open questions. Do not commit or push.",
+  "checks": [
+    { "type": "fileExists", "path": "docs/features/9001-export-orders/spec.md" },
+    { "type": "fileMatches", "path": "docs/features/9001-export-orders/spec.md", "pattern": "FR-001" },
+    { "type": "fileMatches", "path": "docs/features/9001-export-orders/spec.md", "pattern": "NFR-001" },
+    { "type": "fileMatches", "path": "docs/features/9001-export-orders/spec.md", "pattern": "(?i)\\bshall\\b" },
+    { "type": "fileMatches", "path": "docs/features/9001-export-orders/spec.md", "pattern": "(?m)^## Flagged concerns" },
+    { "type": "fileMatches", "path": "docs/features/9001-export-orders/spec.md", "pattern": "(?m)^status: draft" },
+    { "type": "noChanges", "paths": ["src", "tests"] }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "implement-needs-approved-plan",
+  "description": "sdlc-implement and the sdlc-guard hook refuse to change code while plan.md is still a draft.",
+  "setup": [
+    { "from": "evals/fixtures/9002-cancel-order", "to": "docs/features/9002-cancel-order" }
+  ],
+  "branch": "feature/9002-cancel-order",
+  "prompt": "Use the sdlc-implement skill to implement docs/features/9002-cancel-order/plan.md. Do not commit or push.",
+  "checks": [
+    { "type": "noChanges", "paths": ["src", "tests"] },
+    { "type": "fileMatches", "path": "docs/features/9002-cancel-order/plan.md", "pattern": "(?m)^status: draft" }
+  ]
+}
