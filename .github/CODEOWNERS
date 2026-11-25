@@ -1,0 +1,20 @@
+# The last matching pattern wins. Single-maintainer repository: every path is owned by @chsakell.
+# Branch protection must require review from code owners for these rules to take effect.
+
+*                       @chsakell
+
+# SDLC artifacts
+/docs/features/         @chsakell
+/docs/adr/              @chsakell
+/docs/architecture/     @chsakell
+
+# Agent context and guardrails: changes steer every agent session, so review them like code
+/AGENTS.md              @chsakell
+/CLAUDE.md              @chsakell
+/REVIEW.md              @chsakell
+/.claude/               @chsakell
+/.github/               @chsakell
+/evals/                 @chsakell
+
+# Policy skills are owned by their policy owners, for example:
+# /.claude/skills/secure-api-review/   @chsakell

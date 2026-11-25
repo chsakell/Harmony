@@ -363,3 +363,10 @@ MigrationBackup/
 FodyWeavers.xsd
 # docker compose secrets (see .env.example)
 .env
+
+# SDLC
+.claude/settings.local.json
+.claude/worktrees/
+.github/copilot/settings.local.json
+TestResults/
+docs/dotnet-sdlc.md

@@ -1,0 +1,39 @@
+{
+  "protectedPaths": [
+    ".claude/hooks/**",
+    ".claude/settings.json",
+    ".github/workflows/**",
+    ".github/scripts/**",
+    ".dotnet-instructions.lock.json",
+    ".globalconfig",
+    "BannedSymbols.txt",
+    "**/*.Designer.cs",
+    "**/Migrations/*ModelSnapshot.cs"
+  ],
+  "secretPaths": [
+    ".env",
+    ".env.*",
+    "secrets.json",
+    "appsettings.*.local.json",
+    "*.pfx",
+    "*.p12",
+    "*.pem",
+    "**/UserSecrets/**"
+  ],
+  "secretCommandPatterns": [
+    "(^|[\\s/\\\\'\"=])\\.env(\\.[\\w.-]+)?($|[\\s'\";|&)])",
+    "secrets\\.json",
+    "[\\w-]+\\.(pfx|p12|pem)\\b",
+    "user-secrets\\s+list",
+    "UserSecrets"
+  ],
+  "blockedCommandPatterns": [
+    "git\\s+push\\b.*\\s(--force|--force-with-lease|-f)\\b",
+    "git\\s+push\\b.*\\s(origin\\s+)?(main|develop)(\\s|$)",
+    "git\\s+push\\b.*:(main|develop)\\b"
+  ],
+  "planRequiredPaths": [
+    "src/**",
+    "tests/**"
+  ]
+}
