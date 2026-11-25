@@ -1,5 +1,5 @@
 # Required status check "SDLC gates" for pull requests into develop, main and release branches.
-# Local run: ./.github/scripts/sdlc-gates.ps1 -Branch feature/4711-x -Base develop -Title "AB#4711 x" -Labels sdlc:intent-approved
+# Local run: ./.github/scripts/sdlc-gates.ps1 -Branch feature/4711-x -Base develop -Title "#4711 x" -Labels sdlc:intent-approved
 
 param(
     [string]$Branch = $env:HEAD_REF,
