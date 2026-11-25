@@ -47,6 +47,7 @@ The organization's .NET standards (`dotnet-instructions`) are not installed in t
 
 This repository follows the AI-native .NET SDLC (`docs/dotnet-sdlc.md`, kept locally and git-ignored). Work items are GitHub issues, not Azure DevOps.
 
+- Backlog: [docs/roadmap.md](docs/roadmap.md). When you start an item, open a GitHub issue and fill in the item's Issue and Status columns in the same pull request.
 - Feature work lives in `docs/features/<issue>-<slug>/`: `intent.md`, then `spec.md`, then `plan.md`. Use `/sdlc-intent`, `/sdlc-spec`, `/sdlc-plan`, `/sdlc-implement`, `/sdlc-verify`, `/sdlc-review`, `/sdlc-pr`.
 - Do not change code under `src/` or `tests/` for a feature until its `plan.md` has `status: approved`.
 - Keep `plan.md` in sync: tick tasks and log deviations in the same commit as the code.
