@@ -182,7 +182,7 @@ Tasks run in order. `[P]` marks a task that shares no file with another `[P]` ta
     - `StandInTests.Configuration_TestHost_ElasticAndOtlpEmpty`
     - `StandInTests.TestEndpoint_AnonymousPost_RecordsEmailNotification`
     - `StandInTests.UploadCardFile_OwnerValidFile_WritesUnderRunFolderOnly`. It checks for the file under the temp `Files/` folder and compares a listing of `src/Services/Harmony.Api/Files` before and after.
-- [ ] **T4** [P] Users and tokens
+- [x] **T4** [P] Users and tokens
   - Covers: FR-007.
   - Files: `Harness/TestUsers.cs`, `Harness/TestTokens.cs`, `Harness/TestTokenTests.cs`.
   - Proof:
@@ -378,3 +378,4 @@ Read from the code on 2026-11-26. None of these is pinned.
 | 2026-11-26 | T0 | Instead of waiting for #24 to merge, `feature/22-mvc-testing-package` was merged into this branch locally. The content is identical, so merging `develop` after #24 merges is clean. |
 | 2026-11-26 | T1 | Concern 3(a) trial confirmed: `new WebApplicationFactory<Program>()` compiles through the generated public `Program`. No `src/` change. The linked R-03 files sit under `Harness/Linked/` in the project view and keep their `Harmony.Infrastructure.IntegrationTests.Harness` namespace. |
 | 2026-11-26 | T2 | `HarmonyApiFactory` also calls `UseContentRoot(<repo>/src/Services/Harmony.Api)`. WebApplicationFactory looks for `MvcTestingAppManifest.json` in the *current* directory, which the harness moves to the temp folder (concern 3(b)), so without this it guessed a content root that does not exist. This is a test-side change only; NFR-003 is unchanged, because the content root is the one a deployed Api uses. `UseSetting` reaches the reads before `Build()`, as planned, so no environment-variable fallback was needed. |
+| 2026-11-26 | T4 | Done before T3, because T3's upload test needs an owner token. `TestUser` also carries the user's roles, so `TestTokens` can add the role claims. `CreateClient(token?)` sets the bearer header. |

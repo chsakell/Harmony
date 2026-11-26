@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using Harmony.Infrastructure.IntegrationTests.Harness;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -22,6 +23,9 @@ namespace Harmony.Api.IntegrationTests.Harness
         private HarmonyApiFactory? factory;
         private string? databaseName;
         private string? secret;
+        private TestUser? owner;
+        private TestUser? nonMember;
+        private TestTokens? tokens;
 
         public ApiTestHost()
         {
@@ -40,6 +44,15 @@ namespace Harmony.Api.IntegrationTests.Harness
 
         /// <summary>The temporary folder that is the current directory while the host runs.</summary>
         public string Folder => Started(folder);
+
+        /// <summary>The user every fixture makes a member of its workspace and the Admin of its board.</summary>
+        public TestUser Owner => Started(owner);
+
+        /// <summary>The user no fixture gives any membership.</summary>
+        public TestUser NonMember => Started(nonMember);
+
+        /// <summary>Issues tokens signed with the run's key.</summary>
+        public TestTokens Tokens => Started(tokens);
 
         /// <summary>
         /// Starts a PostgreSQL container through <see cref="DockerGuard"/>; <paramref name="configure"/> lets a test
@@ -60,13 +73,23 @@ namespace Harmony.Api.IntegrationTests.Harness
 
         /// <summary>
         /// A client for the in-memory server. HTTPS base address and no redirects, so UseHttpsRedirection never
-        /// answers in place of the endpoint.
+        /// answers in place of the endpoint. With a <paramref name="token"/>, every request carries it as a bearer token.
         /// </summary>
-        public HttpClient CreateClient() => Started(factory).CreateClient(new WebApplicationFactoryClientOptions
+        public HttpClient CreateClient(string? token = null)
         {
-            BaseAddress = new Uri("https://localhost"),
-            AllowAutoRedirect = false,
-        });
+            var client = Started(factory).CreateClient(new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri("https://localhost"),
+                AllowAutoRedirect = false,
+            });
+
+            if (token is not null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
 
         public async ValueTask DisposeAsync()
         {
@@ -108,6 +131,10 @@ namespace Harmony.Api.IntegrationTests.Harness
 
             // Services starts the server: Program runs to app.Run(), migrating and seeding the database on the way.
             await Task.Run(() => factory.Services);
+
+            tokens = new TestTokens(secret);
+            owner = await TestUsers.CreateAsync(factory.Services, "owner");
+            nonMember = await TestUsers.CreateAsync(factory.Services, "nonmember");
         }
 
         private T Started<T>(T? value)
