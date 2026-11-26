@@ -95,6 +95,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Harmony.Application.UnitTests/Harmony.Application.UnitTests.csproj" />
+    <Project Path="tests/Harmony.Infrastructure.IntegrationTests/Harmony.Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests/Harmony.Infrastructure.UnitTests/Harmony.Infrastructure.UnitTests.csproj" />
   </Folder>
 </Solution>
