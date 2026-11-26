@@ -8,7 +8,8 @@ using Xunit.v3;
 namespace Harmony.Infrastructure.IntegrationTests.Conventions
 {
     /// <summary>
-    /// Every relational test runs once per provider, with the provider in its display name (FR-005).
+    /// Every relational test runs once per provider, with the provider in its display name (FR-005). A relational
+    /// test takes a <see cref="RelationalProvider"/> or is in a class that uses <see cref="RelationalDatabaseFixture"/>.
     /// </summary>
     [Trait("Requirement", "FR-005")]
     public class HarnessConventionTests
@@ -34,12 +35,15 @@ namespace Harmony.Infrastructure.IntegrationTests.Conventions
                 .Where(type => type.IsClass && !type.IsAbstract)
                 .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                     .Where(method => method.IsDefined(typeof(FactAttribute), inherit: true))
-                    .Where(IsRelational)
-                    .Where(method => !RunsOnBothProvidersOnly(method))
+                    .Where(method => UsesRelationalDatabaseFixture(type) || TakesProvider(method))
+                    .Where(method => !TakesProvider(method) || !RunsOnBothProvidersOnly(method))
                     .Select(method => $"{type.Name}.{method.Name}"))
                 .ToList();
 
-        private static bool IsRelational(MethodInfo method) =>
+        private static bool UsesRelationalDatabaseFixture(Type type) =>
+            type.GetInterfaces().Contains(typeof(IClassFixture<RelationalDatabaseFixture>));
+
+        private static bool TakesProvider(MethodInfo method) =>
             method.GetParameters().Any(parameter => parameter.ParameterType == typeof(RelationalProvider));
 
         private static bool RunsOnBothProvidersOnly(MethodInfo method)
