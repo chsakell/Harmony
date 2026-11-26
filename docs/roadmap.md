@@ -29,8 +29,8 @@
 | **Phase 0: Safety net** | | | | | | | |
 | [R-01](#r-01-test-foundation) | Test foundation | test | M +ADR | | - | [#5](https://github.com/chsakell/Harmony/issues/5) | done |
 | [R-02](#r-02-ci-build-workflow) | CI build workflow | improvement | S | | R-01 | [#9](https://github.com/chsakell/Harmony/issues/9) | done |
-| [R-03](#r-03-integration-test-harness) | Integration test harness (SQL Server + PostgreSQL) | test | M | | R-01 | [#19](https://github.com/chsakell/Harmony/issues/19) | in progress |
-| [R-04](#r-04-api-test-host-and-authorization-matrix) | Api test host and authorization matrix | test | M | | R-01 | | todo |
+| [R-03](#r-03-integration-test-harness) | Integration test harness (SQL Server + PostgreSQL) | test | M | | R-01 | [#19](https://github.com/chsakell/Harmony/issues/19) | done |
+| [R-04](#r-04-api-test-host-and-authorization-matrix) | Api test host and authorization matrix | test | M | | R-01 | [#22](https://github.com/chsakell/Harmony/issues/22) | in progress |
 | [R-05](#r-05-characterization-tests-for-scrum-and-automations) | Characterization tests for Scrum and automations | test | S | | R-01 | | todo |
 | [R-06](#r-06-architecture-tests) | Architecture tests | test | S | | R-01 | | todo |
 | **Phase 1: Security** | | | | | | | |
