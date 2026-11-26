@@ -152,7 +152,7 @@ Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can
     - `LoadBoard_SprintAndIssueTypeFilters_ReturnsOnlyCardsMatchingBoth`
     - `LoadBoard_SprintFilter_...`, `LoadBoard_IssueTypeFilter_...` and `LoadBoard_AssigneeFilter_...`
     - `LoadBoard_CardsPerListLimit_ReturnsAllCards_KnownIssue` (5a)
-- [ ] **T8** [P] Board access and the user's board list
+- [x] **T8** [P] Board access and the user's board list
   - Covers: FR-021, FR-031, FR-032.
   - Files: `Services/BoardServiceAccessTests.cs`.
   - Proof:
