@@ -167,7 +167,7 @@ Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can
   - Covers: FR-040, and #11 against real SQL.
   - Files: `Services/CardServiceBacklogReorderTests.cs`.
   - Proof: `PositionCard_MoveUpInBacklog_ShiftsOnlySameBoard` and `PositionCard_MoveDownInBacklog_ShiftsOnlySameBoard`.
-- [ ] **T10** [P] Workspace card search
+- [x] **T10** [P] Workspace card search
   - Covers: FR-041, FR-042, and #17.
   - Files: `Services/CardServiceSearchTests.cs`.
   - Proof:
