@@ -126,4 +126,5 @@ Recorded from one run on 2026-11-25 (`dotnet build Harmony.slnx`, SDK 10.0.404);
 | [2026-11-25-microservices-grpc-and-rabbitmq](../adr/2026-11-25-microservices-grpc-and-rabbitmq.md) | Microservices behind an Ocelot gateway; gRPC for queries, RabbitMQ for events | accepted |
 | [2026-11-25-sql-server-and-postgresql](../adr/2026-11-25-sql-server-and-postgresql.md) | Support SQL Server and PostgreSQL with one migrations project per provider | accepted |
 | [2026-11-25-aspire-local-orchestration](../adr/2026-11-25-aspire-local-orchestration.md) | .NET Aspire for local orchestration and observability; Compose and Kubernetes for deployment | accepted |
-| [2026-11-26-testing-strategy](../adr/2026-11-26-testing-strategy.md) | xUnit v3 on Microsoft.Testing.Platform with NSubstitute, Shouldly and coverlet.MTP; tests in a separate `tests/` tree | accepted |
+| [2026-11-26-testing-strategy](../adr/2026-11-26-testing-strategy.md) | xUnit v3 on Microsoft.Testing.Platform with NSubstitute, Shouldly and coverlet.MTP; tests in a separate `tests/` tree | accepted (rule 7 superseded in part) |
+| [2026-11-26-test-traceability-tags](../adr/2026-11-26-test-traceability-tags.md) | Every test carries a `Requirement` trait, or a `Bug` trait for a Track S bug fix; one shared guard in `tests/Shared/` | accepted |

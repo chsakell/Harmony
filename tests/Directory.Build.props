@@ -19,6 +19,11 @@
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --coverlet --coverlet-output-format cobertura --results-directory "$(HarmonyTestResultsDirectory)"</TestingPlatformCommandLineArguments>
   </PropertyGroup>
 
+  <!-- Helpers every test project compiles, such as the requirement-tag guard (testing ADR, rule 7). -->
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\**\*.cs" LinkBase="Shared" />
+  </ItemGroup>
+
   <!--
     AutoMapper 14.0.0 (referenced through Harmony.Application) has three high-severity advisories (NU1903).
     They are fixed only in commercially licensed releases; replacing AutoMapper is roadmap item R-14 and the

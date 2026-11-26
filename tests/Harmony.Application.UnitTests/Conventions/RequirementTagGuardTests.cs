@@ -1,3 +1,4 @@
+using Harmony.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -41,6 +42,23 @@ namespace Harmony.Application.UnitTests.Conventions
         }
 
         [Fact]
+        public void FindViolations_BugTagOnly_ReturnsNoViolation()
+        {
+            var violations = RequirementTagGuard.FindViolations([typeof(BugTaggedFixture)]);
+
+            violations.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void FindViolations_BugTagValueNotIssueNumber_ReturnsMethodName()
+        {
+            var violations = RequirementTagGuard.FindViolations([typeof(WrongBugValueFixture)]);
+
+            violations.ShouldHaveSingleItem()
+                .ShouldStartWith($"{nameof(WrongBugValueFixture)}.{nameof(WrongBugValueFixture.TaggedWithBranchName)}");
+        }
+
+        [Fact]
         public void TestAssembly_EveryTestMethod_HasRequirementTag()
         {
             var testClasses = typeof(RequirementTagGuardTests).Assembly.GetTypes()
@@ -49,7 +67,7 @@ namespace Harmony.Application.UnitTests.Conventions
             var violations = RequirementTagGuard.FindViolations(testClasses);
 
             violations.ShouldBeEmpty(
-                "Every test needs [Trait(\"Requirement\", \"FR-nnn\")] on the method or its class: "
+                "Every test needs [Trait(\"Requirement\", \"FR-nnn\")] or [Trait(\"Bug\", \"<issue>\")] on the method or its class: "
                 + string.Join(", ", violations));
         }
 
@@ -112,6 +130,30 @@ namespace Harmony.Application.UnitTests.Conventions
         {
             [Fact]
             public void InheritsClassTag()
+            {
+            }
+        }
+
+        public abstract class BugTaggedFixture
+        {
+            [Fact]
+            [Trait("Bug", "11")]
+            public void TaggedWithIssue()
+            {
+            }
+        }
+
+        public abstract class WrongBugValueFixture
+        {
+            [Fact]
+            [Trait("Bug", "bugfix/11-backlog")]
+            public void TaggedWithBranchName()
+            {
+            }
+
+            [Fact]
+            [Trait("Bug", "11")]
+            public void TaggedWithIssue()
             {
             }
         }

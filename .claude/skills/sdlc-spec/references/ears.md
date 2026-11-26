@@ -46,5 +46,7 @@ public async Task Submit_EmptyBasket_Returns400WithProblemDetails()
 Run all tests for one requirement:
 
 ```powershell
-dotnet test --solution <Solution>.slnx --filter-trait "Requirement=FR-002"
+dotnet test --solution <Solution>.slnx --filter-trait "Requirement=FR-002" --ignore-exit-code 8
 ```
+
+`--ignore-exit-code 8` keeps a test project with no matching tests from failing the run; check that the summary's `total` is above 0.
