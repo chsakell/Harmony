@@ -1,6 +1,6 @@
 ---
 title: Tag every test with a Requirement trait, or with a Bug trait for a Track S bug fix, enforced by a shared guard
-status: proposed         # proposed | accepted | rejected | superseded | deprecated
+status: accepted         # proposed | accepted | rejected | superseded | deprecated
 date: 2026-11-26
 deciders: chsakell
 work-item: "#12"
