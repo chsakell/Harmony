@@ -188,7 +188,7 @@ Tasks run in order. `[P]` marks a task that shares no file with another `[P]` ta
   - Proof:
     - `TestTokenTests.UserBoards_HarnessToken_IsNot401`
     - `TestTokenTests.UserBoards_TokenSignedWithOtherKey_IsNot2xx`. Today it gets 500, which R-11 owns.
-- [ ] **T5** [P] Matrix file parser and verdicts
+- [x] **T5** [P] Matrix file parser and verdicts
   - Covers: FR-012, FR-040, FR-041, FR-042 (parsing), FR-015 and FR-034 (verdict).
   - Files: `Authorization/MatrixFile.cs`, `Authorization/RowVerdict.cs`, `Authorization/MatrixFileTests.cs`, `Authorization/RowVerdictTests.cs`.
   - Proof:
@@ -380,3 +380,4 @@ Read from the code on 2026-11-26. None of these is pinned.
 | 2026-11-26 | T2 | `HarmonyApiFactory` also calls `UseContentRoot(<repo>/src/Services/Harmony.Api)`. WebApplicationFactory looks for `MvcTestingAppManifest.json` in the *current* directory, which the harness moves to the temp folder (concern 3(b)), so without this it guessed a content root that does not exist. This is a test-side change only; NFR-003 is unchanged, because the content root is the one a deployed Api uses. `UseSetting` reaches the reads before `Build()`, as planned, so no environment-variable fallback was needed. |
 | 2026-11-26 | T4 | Done before T3, because T3's upload test needs an owner token. `TestUser` also carries the user's roles, so `TestTokens` can add the role claims. `CreateClient(token?)` sets the bearer header. |
 | 2026-11-26 | T3 | `Harness/Fixtures.cs` (planned for T8) was brought forward: the upload test needs a real card, because the handler returns "Card not found" before it writes the file. T8 keeps `FixtureIsolationTests` and the request builder. The factory also exposes `ServiceDescriptors` (the collection after the overrides) and the `SourceControlClient` substitute, for the stand-in checks. The fixture board is `Scrum`, so the sprint and backlog endpoints apply. |
+| 2026-11-26 | T5 | Extra tests beyond the plan's list: a valid file parses (FR-042), `body=` keeps JSON that has `;` in it, malformed lines (cell count, mark, kind, `name=kind`, `body=` not last, method case), wrong header, missing baseline, and verdicts for FR-020, FR-021, FR-030 and FR-033 (owner refused means inconclusive). The parser collects every problem and throws one `MatrixFileException` that lists them. `RowVerdict.Judge` takes the owner response as an optional argument and requires it for the non-member rule. |
