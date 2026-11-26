@@ -107,7 +107,7 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - Tests cover `CardRepository`, `BoardService.LoadBoard`, `BoardService.HasUserAccessToBoard` and `GetUserBoards`.
   - MongoDB repositories for Automations and SourceControl are covered too.
 - **Evidence:** `src/Infrastructure/Harmony.Persistence/Configurations/CardConfiguration.cs:49` has a global query filter that hides every child card, a common source of surprises. `src/Infrastructure/Harmony.Infrastructure/Repositories/*.cs`.
-- **Notes:** These tests need Docker. Run them as a separate CI job (R-02).
+- **Notes:** These tests need Docker. Run them as a separate CI job (R-02). Also cover the backlog reorder query in `CardService.ReorderCardsInBacklog` fixed by R-15 (#11): its unit tests run the query in memory, so its SQL translation is unproven.
 
 ### R-04 Api test host and authorization matrix
 
