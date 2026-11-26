@@ -275,10 +275,10 @@ namespace Harmony.Infrastructure.Services.Management
                             on card.IssueTypeId equals issueType.Id
                         join board in _boardRepository.Entities
                             on issueType.BoardId equals board.Id
-                        where (board.WorkspaceId == workspaceId &&
-                            (string.IsNullOrEmpty(term) ? true : card.Title.Contains(term)) &&
+                        where board.WorkspaceId == workspaceId &&
+                            (string.IsNullOrEmpty(term) || card.Title.Contains(term)) &&
                             card.Status != CardStatus.Archived &&
-                            skipCardId.HasValue ? card.Id != skipCardId.Value : false)
+                            (!skipCardId.HasValue || card.Id != skipCardId.Value)
                         orderby card.Position
                         select new CardDto()
                         {
