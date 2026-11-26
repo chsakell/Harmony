@@ -174,6 +174,7 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - `GetBoardHandler` and `LoadBoardListHandler`: the only handlers that call `HasUserAccessToBoard`
   - `SprintsController` uses IDs from the body instead of the route.
 - **Notes:** Proven by the R-04 matrix. Update `harmony-docs/guide/boards/members.md` with the role rules.
+  - Found by R-03: `BoardService.HasUserAccessToBoard` throws a `NullReferenceException` for a board ID that does not exist, instead of refusing access. Pinned by `BoardServiceAccessTests.HasUserAccessToBoard_UnknownBoard_Throws_KnownIssue` in `Harmony.Infrastructure.IntegrationTests`; the fix changes that test to expect `false`.
 
 ### R-09 Service-to-service authentication
 
@@ -382,6 +383,9 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - `GetSprintsCardsHandler.cs:67` (page size returned as total)
   - `GetWorkItemsHandler.cs:38,43-59` (count and page disagree; Active only)
 - **Notes:** Data model change with a migration on both providers (R-03 proves it).
+  - Found by R-03 and pinned in `Harmony.Infrastructure.IntegrationTests` on both providers; the fix changes each test on purpose:
+    - The next serial number is the count of every card on the board plus one (cards in lists, backlog, subtasks, archived), so it would repeat a key if a card were ever deleted. Pinned by `CardRepositoryTests.GetNextSerialNumber_MixedCards_ReturnsCountOfAllBoardCardsPlusOne_KnownIssue`.
+    - Loading a board ignores the cards-per-list limit: `GetBoardQuery.MaxCardsPerList` reaches `BoardService.GetBoardListCards`, which returns every active card of each list. Pinned by `BoardServiceLoadBoardTests.LoadBoard_CardsPerListLimit_ReturnsAllCards_KnownIssue`.
 
 ### R-23 Reliable messaging and transactions
 
@@ -506,6 +510,17 @@ Recorded so they are not lost. Promote one into the list when its turn comes.
   - Card key extraction throws on null text (`CardHelper.GetSerialKey`, FR-007). Pinned by `CardHelperGetSerialKeyTests.GetSerialKey_NullText_Throws_KnownIssue`.
   - The issue-type filter throws on an issue type with no summary (`IssueTypeExtensions.Normal`, FR-012). Pinned by `IssueTypeExtensionsTests.Normal_TypeWithoutSummary_Throws_KnownIssue`.
   - The `CardDto → CardCreatedMessage` mapping is never used, because both handlers construct the message directly. Remove it in R-14. There is no behaviour to pin, so it has no test.
+- **Known defects found by R-03:** each behaviour defect is pinned by the `_KnownIssue` test named on its line in `Harmony.Infrastructure.IntegrationTests`, on both providers. The fix changes that test on purpose. See [spec #19](features/19-integration-test-harness/spec.md), Flagged concern 5.
+  - Workspace card search is case-sensitive on PostgreSQL: `CardService.SearchWorkspaceCards` matches titles with `Contains`, so each server's default collation applies; on PostgreSQL the term `login` does not find `Fix Login` (FR-042). Needs its own item. Pinned by `CardServiceSearchTests.SearchWorkspaceCards_TermDiffersInCase_CaseInsensitiveOnSqlServerOnly_KnownIssue`, which asserts "found" on SQL Server and "not found" on PostgreSQL.
+  - Loading a board ignores the cards-per-list limit (FR-030). Belongs to R-22, where it is noted. Pinned by `BoardServiceLoadBoardTests.LoadBoard_CardsPerListLimit_ReturnsAllCards_KnownIssue`.
+  - A board-access check for an unknown board throws instead of refusing access (FR-031). Belongs to R-08, where it is noted. Pinned by `BoardServiceAccessTests.HasUserAccessToBoard_UnknownBoard_Throws_KnownIssue`.
+  - The next serial number is a count of the board's cards, so it would repeat if a card were deleted (FR-033). Belongs to R-22, where it is noted. Pinned by `CardRepositoryTests.GetNextSerialNumber_MixedCards_ReturnsCountOfAllBoardCardsPlusOne_KnownIssue`.
+  - No context has a pending model change on either provider on 2026-11-26 (FR-011), so nothing is pinned for it.
+  - Read from the code while planning R-03 and not pinned, because the spec does not cover them:
+    - `SourceControlRepository.DeleteBranch` matches on the branch name only, across repositories.
+    - `SourceControlRepository.FindBranchByCommit` ignores its `repositoryId`.
+    - `AutomationRepository.GetAutomations(List<AutomationType>, Guid)` always returns `SyncParentAndChildIssuesAutomationDto`.
+    - `BoardService.GetBoard` includes the filtered `Workspace`, so a board in an inactive workspace probably comes back as null.
 - **Package moves:** EasyCaching to HybridCache, `Serilog.Sinks.Elasticsearch` to `Elastic.Serilog.Sinks`, Newtonsoft.Json to System.Text.Json in the publisher, MediatR replacement.
 - **Jira features:** components, versions and releases, time tracking, custom fields, configurable workflows and transitions, JQL-like and saved filters, dashboards, cumulative flow and control charts, auto-create subtasks automation.
 - **From the GitBook roadmap:** an Elasticsearch-backed search service, and Gmail and Facebook login.

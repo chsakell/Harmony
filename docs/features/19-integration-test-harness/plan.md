@@ -192,7 +192,7 @@ Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can
     - `AddTagToBranch_StoresTag`
     - `AddOrUpdatePullRequest_SameIdTwice_UpdatesNotDuplicates`
     - `DeleteBranch_RemovesIt`
-- [ ] **T13** Docs and known issues
+- [x] **T13** Docs and known issues
   - Covers: NFR-010, Flagged concern 5.
   - Files: `docs/architecture/overview.md`, `docs/roadmap.md`, `AGENTS.md` (final wording).
   - Each `_KnownIssue` test's XML comment names its roadmap line. R-03's roadmap status stays `in progress` and is set to `done` in the PR after #20 merges.
@@ -333,3 +333,4 @@ Decided by chsakell (2026-11-26): T13 adds them as unpinned lines under the road
 | 2026-11-26 | T6 | New file `Harness/TestBoard.cs`: a record with a new user, workspace, board, list and issue type, which T6-T10 share as their starting point. The CountActiveCards test is named `CountActiveCards_ListWithSubtaskAndArchivedCard_CountsActiveTopLevelOnly`. `GetMaxActivePosition_ActiveAndArchived_ReturnsHighestActive` also adds an active subtask at position 9, because FR-034 says subtasks are left out. |
 | 2026-11-26 | T7 | The three single-filter tests are named `LoadBoard_SprintFilter_ReturnsOnlyThatSprintsCards`, `LoadBoard_IssueTypeFilter_ReturnsOnlyCardsOfThoseTypes` and `LoadBoard_AssigneeFilter_ReturnsOnlyCardsAssignedToThem`. The class carries `Requirement=FR-030`; the full-board test also carries `FR-020`. Every card has an issue type, because the board load finds a board's cards through `IssueType.BoardId`. |
 | 2026-11-26 | T11 | `MongoDbFixture` is the collection fixture of `MongoDbCollection`, and it implements `IAsyncLifetime`: it starts the MongoDB container in `InitializeAsync`, which runs only when a MongoDB test runs. The per-test reset is `DropDatabasesAsync()`, which each MongoDB test class calls from its own `InitializeAsync`. `MongoDbCollectionConventionTests` treats any class whose constructor takes `MongoDbFixture` as a MongoDB test class. Rules are stored as `SumUpStoryPointsAutomationDto` and read back through `GetAutomations<T>`, as the Automations host reads them. |
+| 2026-11-26 | T13 | The overview's CI/CD line describes the `Integration tests` job as present. It is accurate only once chsakell applies the T14 draft to `ci.yml`, which the rollout requires before #20 merges. The overview's Known issues has a new bullet for the integration tests and the four pinned behaviours, and the R-01 bullet no longer lists database integration tests as missing. The four "Found while planning" items sit inside the roadmap's new "Known defects found by R-03" group, marked as not pinned. |
