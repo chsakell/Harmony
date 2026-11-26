@@ -1,4 +1,6 @@
 using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
+using NSubstitute;
 using Shouldly;
 using Testcontainers.MongoDb;
 using Xunit;
@@ -64,6 +66,24 @@ namespace Harmony.Infrastructure.IntegrationTests.Harness
 
             exception.Message.ShouldStartWith(DockerGuard.Message);
             exception.InnerException.ShouldBeOfType<DockerUnavailableException>();
+        }
+
+        /// <summary>
+        /// When Docker cannot be reached, cleaning up the container that failed to start can fail as well. That
+        /// second failure must not replace the message that names Docker.
+        /// </summary>
+        [Fact]
+        [Trait("Requirement", "FR-003")]
+        public async Task DockerGuard_StartAndCleanUpFail_ThrowsMessageNamingDocker()
+        {
+            var container = Substitute.For<IContainer>();
+            container.StartAsync(Arg.Any<CancellationToken>()).Returns(Task.FromException(new HttpRequestException("Docker is not answering.")));
+            container.DisposeAsync().Returns(ValueTask.FromException(new HttpRequestException("Docker is still not answering.")));
+
+            var exception = await Should.ThrowAsync<InvalidOperationException>(() => DockerGuard.StartAsync(() => container));
+
+            exception.Message.ShouldStartWith(DockerGuard.Message);
+            exception.InnerException.ShouldBeOfType<HttpRequestException>().Message.ShouldBe("Docker is not answering.");
         }
 
         [Fact]

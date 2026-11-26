@@ -31,8 +31,24 @@ namespace Harmony.Infrastructure.IntegrationTests.Harness
             }
             catch (Exception exception)
             {
-                await container.DisposeAsync();
+                await TryDisposeAsync(container);
                 throw Unavailable($"could not start {container.Image.FullName}", exception);
+            }
+        }
+
+        /// <summary>
+        /// Cleaning up a container that did not start can fail too when Docker is unreachable. That failure is
+        /// dropped so the Docker message is what the test reports; Ryuk removes anything left behind.
+        /// </summary>
+        private static async Task TryDisposeAsync(IContainer container)
+        {
+            try
+            {
+                await container.DisposeAsync();
+            }
+            catch (Exception)
+            {
+                // The start failure is the one to report.
             }
         }
 

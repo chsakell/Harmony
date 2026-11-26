@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace Harmony.Infrastructure.IntegrationTests.Harness
@@ -15,10 +16,11 @@ namespace Harmony.Infrastructure.IntegrationTests.Harness
         public const string LegacyTimestampSwitch = "Npgsql.EnableLegacyTimestampBehavior";
 
         /// <summary>
-        /// The switch is process-wide and read when Npgsql is first used. Every Npgsql use in the tests goes through
-        /// this class, so the static constructor sets it in time, as the hosts do before AddDbContext.
+        /// The switch is process-wide and read when Npgsql is first used, so it is set when this assembly loads,
+        /// before any test code runs, as the hosts set it before AddDbContext.
         /// </summary>
-        static ProviderSetup() => AppContext.SetSwitch(LegacyTimestampSwitch, true);
+        [ModuleInitializer]
+        internal static void EnableLegacyTimestampBehavior() => AppContext.SetSwitch(LegacyTimestampSwitch, true);
 
         public static DbContextOptions<TContext> For<TContext>(RelationalProvider provider, string connectionString)
             where TContext : DbContext
