@@ -121,10 +121,11 @@ public class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, Result<Ca
 
             var result = _mapper.Map<CardDto>(card);
 
-            var board = await _boardService.GetBoardInfo(request.BoardId);
-
             if (previousBoardListId != request.ListId)
             {
+                // Only a list change needs the board (for its search index). A backlog reorder may arrive without one.
+                var board = await _boardService.GetBoardInfo(request.BoardId);
+
                 await _notificationsPublisher
                     .PublishSearchIndexNotificationAsync(new CardListUpdatedIndexNotification()
                     {
