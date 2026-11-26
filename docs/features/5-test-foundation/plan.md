@@ -127,7 +127,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `Normal_ListWithSubTask_ReturnsListWithoutSubTask`. Input: "Story", "Bug", `IssueTypesConstants.SUBTASK`. Output: "Story", "Bug".
     - `Normal_NullList_ReturnsNull`
     - `Normal_TypeWithoutSummary_Throws_KnownIssue`, which expects `NullReferenceException` (concern 4c).
-- [ ] **T5 [P] Query-filter builder.**
+- [x] **T5 [P] Query-filter builder.**
   - **Covers:** FR-013, FR-014.
   - **File:** `Extensions/PredicateBuilderTests.cs`.
   - **Proof:**
