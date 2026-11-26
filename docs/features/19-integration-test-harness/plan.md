@@ -163,7 +163,7 @@ Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can
     - `GetUserBoards_MemberOfPrivateAndPublic_ReturnsEachOnce`
     - `GetUserBoards_WorkspaceGiven_ReturnsOnlyThatWorkspace`
     - `GetUserBoards_InactiveWorkspace_ExcludesItsBoards`
-- [ ] **T9** [P] Backlog reorder
+- [x] **T9** [P] Backlog reorder
   - Covers: FR-040, and #11 against real SQL.
   - Files: `Services/CardServiceBacklogReorderTests.cs`.
   - Proof: `PositionCard_MoveUpInBacklog_ShiftsOnlySameBoard` and `PositionCard_MoveDownInBacklog_ShiftsOnlySameBoard`.
