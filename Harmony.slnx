@@ -94,6 +94,7 @@
     <Project Path="src/Web/Harmony.Client/Harmony.Client.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Harmony.Api.IntegrationTests/Harmony.Api.IntegrationTests.csproj" />
     <Project Path="tests/Harmony.Application.UnitTests/Harmony.Application.UnitTests.csproj" />
     <Project Path="tests/Harmony.Infrastructure.IntegrationTests/Harmony.Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests/Harmony.Infrastructure.UnitTests/Harmony.Infrastructure.UnitTests.csproj" />

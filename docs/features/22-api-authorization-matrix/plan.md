@@ -147,13 +147,13 @@ File: `tests/Harmony.Api.IntegrationTests/Authorization/authorization-matrix.md`
 
 Tasks run in order. `[P]` marks a task that shares no file with another `[P]` task: T3, T4 and T5 can run in parallel after T2. Each task starts with a failing test, and its commit ticks its box here.
 
-- [ ] **T0** `build:` pull request: `Microsoft.AspNetCore.Mvc.Testing` (Flagged concern 1)
+- [x] **T0** `build:` pull request: `Microsoft.AspNetCore.Mvc.Testing` (Flagged concern 1)
   - Covers: NFR-007.
   - Files: `src/Directory.Packages.props`.
   - Branch `feature/22-mvc-testing-package` from `develop`. Commit `build(deps): add Microsoft.AspNetCore.Mvc.Testing for Api integration tests`, footer `Refs #22`. PR title `#22 build: add Microsoft.AspNetCore.Mvc.Testing`; it needs `sdlc:track-s` to pass the gate. Push and create the PR in separate commands.
   - Check: restore reports no NU1903 and no NU1109 (transitive pinning is on) for the new transitive packages. List each one's licence. After it merges, merge `develop` into this branch.
   - Proof: `dotnet build Harmony.slnx` reports 0 errors and no more than 585 code warnings; the licences are MIT.
-- [ ] **T1** Project skeleton, opt-in and tag guard
+- [x] **T1** Project skeleton, opt-in and tag guard
   - Covers: FR-002, FR-004, FR-005, NFR-006, NFR-009.
   - Files: the csproj, `Harmony.slnx`, `Conventions/RequirementTagGuardTests.cs`, `AGENTS.md` (Commands).
   - Trial (concern 3a): a throwaway `new WebApplicationFactory<Program>()` compiles. Expected: yes, through the generated public `Program`.
@@ -374,3 +374,6 @@ Read from the code on 2026-11-26. None of these is pinned.
 
 | Date | Task | What changed and why |
 |---|---|---|
+| 2026-11-26 | T0 | PR #24 (draft, needs `sdlc:track-s`). The closure has a third package, `Microsoft.Extensions.DependencyModel` 10.0.15 (MIT), as well as `Microsoft.AspNetCore.TestHost`. No NU1903 or NU1109, and no known vulnerabilities. |
+| 2026-11-26 | T0 | Instead of waiting for #24 to merge, `feature/22-mvc-testing-package` was merged into this branch locally. The content is identical, so merging `develop` after #24 merges is clean. |
+| 2026-11-26 | T1 | Concern 3(a) trial confirmed: `new WebApplicationFactory<Program>()` compiles through the generated public `Program`. No `src/` change. The linked R-03 files sit under `Harness/Linked/` in the project view and keep their `Harmony.Infrastructure.IntegrationTests.Harness` namespace. |

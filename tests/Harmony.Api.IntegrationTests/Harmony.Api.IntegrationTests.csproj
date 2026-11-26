@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Api integration tests: Harmony.Api's own startup run in memory (WebApplicationFactory) against a throwaway
+    PostgreSQL container, and the authorization matrix that runs on it. They need Docker with Linux containers.
+    See docs/features/22-api-authorization-matrix/.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <!--
+    Opt-in, copied from Harmony.Infrastructure.IntegrationTests. The solution build compiles this project, but the
+    test command (AGENTS.md, Commands) must not run it, because it needs Docker. The MTP `dotnet test` CLI runs only
+    projects whose IsTestingPlatformApplication is true; xunit.v3 sets it to true in a package .props file, which
+    this project body overrides unless HarmonyIntegrationTests is true. The Api test command in AGENTS.md passes
+    -p:HarmonyIntegrationTests=true; an IDE's test explorer sees the tests when the environment variable
+    HarmonyIntegrationTests=true is set. Always build when running: the MTP extension registration (coverage,
+    reports) is generated only when the property is true.
+  -->
+  <PropertyGroup Condition="'$(HarmonyIntegrationTests)' != 'true'">
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="coverlet.MTP" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <!--
+    GlobalPropertiesToRemove: -p:HarmonyIntegrationTests=true is a global property, so without this the src/
+    projects would be built again as a second configuration, next to the one `dotnet build Harmony.slnx` made.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Services\Harmony.Api\Harmony.Api.csproj" GlobalPropertiesToRemove="HarmonyIntegrationTests" />
+  </ItemGroup>
+
+  <!--
+    Linked from the data-layer integration tests (plan.md, Decisions). They depend on Testcontainers, so they
+    cannot live in tests/Shared/. If one is renamed or moved there, this project stops compiling.
+  -->
+  <ItemGroup>
+    <Compile Include="..\Harmony.Infrastructure.IntegrationTests\Harness\DockerGuard.cs" Link="Harness\Linked\DockerGuard.cs" />
+    <Compile Include="..\Harmony.Infrastructure.IntegrationTests\Harness\ImageTags.cs" Link="Harness\Linked\ImageTags.cs" />
+    <Compile Include="..\Harmony.Infrastructure.IntegrationTests\Harness\RepositoryRoot.cs" Link="Harness\Linked\RepositoryRoot.cs" />
+  </ItemGroup>
+
+</Project>
