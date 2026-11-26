@@ -107,7 +107,7 @@ Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can
   - Files: the csproj, `Harmony.slnx`, `Conventions/RequirementTagGuardTests.cs`, `AGENTS.md` (Commands).
   - Proof: `RequirementTagGuardTests.TestAssembly_EveryTestMethod_HasRequirementTag` passes under the integration test command. The test command's summary lists no integration test project. A filter that selects nothing exits with 8 (FR-004).
   - Also check: a second integration run right after `dotnet build Harmony.slnx` does not recompile the `src/` projects.
-- [ ] **T2** Database servers and Docker guard
+- [x] **T2** Database servers and Docker guard
   - Covers: FR-001, FR-003, NFR-002, NFR-006.
   - Files: `AssemblyInfo.cs`, `Harness/DatabaseServers.cs`, `Harness/DockerGuard.cs`, `Harness/ImageTags.cs`, `Harness/RepositoryRoot.cs`, `Harness/DatabaseServersTests.cs`, `Conventions/ImageTagTests.cs`.
   - Proof:
@@ -325,3 +325,4 @@ Decided by chsakell (2026-11-26): T13 adds them as unpinned lines under the road
 | 2026-11-26 | T0 | The transitive closure is 16 packages, not seven. It also includes BouncyCastle.Cryptography 2.7.0 and six `Docker.DotNet.Enhanced.*` sub-packages. All 16 are MIT, and none has a known vulnerability. |
 | 2026-11-26 | T0 | `develop` has no `docs/features/19-*/` folder, so #21 fails the SDLC gate once it is not a draft. chsakell adds `sdlc:track-s` to #21 to pass it. |
 | 2026-11-26 | T1 | The check "a second integration run right after `dotnet build Harmony.slnx` does not recompile the `src/` projects" cannot pass as written. Two plain `dotnet build Harmony.slnx` runs in a row already rewrite 16-17 `src/` assemblies, with or without this feature, because each `*.GeneratedMSBuildEditorConfig.editorconfig` is rewritten (it was not investigated further; that behaviour predates this feature). What the check guards against was verified instead: the build log of an integration run shows each `src/` project built once, under one set of global properties, so `GlobalPropertiesToRemove` stops a second configuration. The test project itself recompiles when you switch between the two commands, because xUnit generates a different entry point when `IsTestingPlatformApplication` is false. |
+| 2026-11-26 | T2 | One extra test, `DatabaseServersTests.DockerGuard_BuildFindsNoDocker_ThrowsMessageNamingDocker` (FR-003). Builders throw `DockerUnavailableException` from Build when there is no endpoint, while an unreachable endpoint fails in Start, so each path gets a test. The planned test covers Start, using a real builder pointed at `tcp://127.0.0.1:1`, so neither test has to stop Docker. `DockerGuard.StartAsync` takes the build step as a `Func<TContainer>`, so the Build failure goes through the guard too. |
