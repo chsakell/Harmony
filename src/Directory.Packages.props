@@ -144,4 +144,15 @@
     <PackageVersion Include="StackExchange.Redis" Version="2.13.23" />
   </ItemGroup>
 
+  <!--
+    Testing (tests/ only). xUnit v3 runs on Microsoft.Testing.Platform v2 (opted in by global.json);
+    coverlet.MTP must stay on the same MTP major version. See docs/adr/2026-11-26-testing-strategy.md.
+  -->
+  <ItemGroup>
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
+    <PackageVersion Include="coverlet.MTP" Version="10.1.1" />
+    <PackageVersion Include="NSubstitute" Version="6.2.0" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
 </Project>

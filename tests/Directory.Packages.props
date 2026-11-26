@@ -1,0 +1,6 @@
+<Project>
+
+  <!-- Central package management for tests/: the single version list lives in src/. -->
+  <Import Project="../src/Directory.Packages.props" />
+
+</Project>

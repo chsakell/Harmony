@@ -3,6 +3,8 @@
     <File Path="global.json" />
     <File Path="src/Directory.Build.props" />
     <File Path="src/Directory.Packages.props" />
+    <File Path="tests/Directory.Build.props" />
+    <File Path="tests/Directory.Packages.props" />
   </Folder>
   <Folder Name="/docker/">
     <File Path=".env.example" />
@@ -90,5 +92,8 @@
   <Folder Name="/src/Web/">
     <Project Path="src/Web/Harmony.Client.Infrastructure/Harmony.Client.Infrastructure.csproj" />
     <Project Path="src/Web/Harmony.Client/Harmony.Client.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Harmony.Application.UnitTests/Harmony.Application.UnitTests.csproj" />
   </Folder>
 </Solution>
