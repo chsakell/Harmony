@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Integration tests for the data layer: real SQL Server, PostgreSQL and MongoDB instances, started and removed
+    by Testcontainers. They need Docker with Linux containers. See docs/features/19-integration-test-harness/.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <!--
+    Opt-in. The solution build compiles this project, but the test command (AGENTS.md, Commands) must not run it,
+    because it needs Docker. The MTP `dotnet test` CLI runs only projects whose IsTestingPlatformApplication is
+    true; xunit.v3 sets it to true in a package .props file, which this project body overrides unless
+    HarmonyIntegrationTests is true. The integration test command in AGENTS.md passes -p:HarmonyIntegrationTests=true;
+    an IDE's test explorer sees the tests when the environment variable HarmonyIntegrationTests=true is set.
+    Trial on SDK 10.0.404 (plan.md, Decisions): IsTestProject=false alone does not keep the solution test run
+    from running the project. Always build when running: the MTP extension registration (coverage, reports) is
+    generated only when the property is true, so a run without a build after a plain build has neither.
+  -->
+  <PropertyGroup Condition="'$(HarmonyIntegrationTests)' != 'true'">
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="coverlet.MTP" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Testcontainers.MongoDb" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+  </ItemGroup>
+
+  <!--
+    GlobalPropertiesToRemove: -p:HarmonyIntegrationTests=true is a global property, so without this the src/
+    projects would be built again as a second configuration, next to the one `dotnet build Harmony.slnx` made.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Infrastructure\Harmony.Infrastructure\Harmony.Infrastructure.csproj" GlobalPropertiesToRemove="HarmonyIntegrationTests" />
+    <ProjectReference Include="..\..\src\Infrastructure\Harmony.Persistence.Migrations.SqlServer\Harmony.Persistence.Migrations.SqlServer.csproj" GlobalPropertiesToRemove="HarmonyIntegrationTests" />
+    <ProjectReference Include="..\..\src\Infrastructure\Harmony.Persistence.Migrations.PostgreSql\Harmony.Persistence.Migrations.PostgreSql.csproj" GlobalPropertiesToRemove="HarmonyIntegrationTests" />
+  </ItemGroup>
+
+</Project>

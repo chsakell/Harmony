@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop, main, 'release/**']
+    branches: [develop, main, "release/**"]
   push:
     # Builds on the long-lived branches warm the NuGet cache that pull requests restore from.
     branches: [develop, main]
@@ -113,3 +113,43 @@ jobs:
           Write-Output "Checking $($files.Count) file(s):"; $files | ForEach-Object { Write-Output "  $_" }
           dotnet format Harmony.slnx --verify-no-changes --no-restore --include @files
           exit $LASTEXITCODE
+
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ env.NUGET_PACKAGES }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('global.json', '**/Directory.Packages.props', '**/Directory.Build.props', '**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Integration tests
+        # Fails if a test fails, if no test ran (exit code 8) or if Docker is unavailable (FR-060).
+        run: dotnet test --project tests/Harmony.Infrastructure.IntegrationTests -p:HarmonyIntegrationTests=true --report-xunit-trx --report-xunit-markdown
+
+      - name: Publish test summary
+        if: ${{ always() }}
+        shell: pwsh
+        run: |
+          Get-ChildItem TestResults/Harmony.Infrastructure.IntegrationTests -Filter *.md -ErrorAction SilentlyContinue |
+            ForEach-Object { Get-Content $_.FullName -Raw >> $env:GITHUB_STEP_SUMMARY }
+
+      - name: Upload test results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: integration-test-results
+          path: TestResults/Harmony.Infrastructure.IntegrationTests/
+          if-no-files-found: warn
+          retention-days: 14
