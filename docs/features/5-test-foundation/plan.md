@@ -120,7 +120,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `DisplayDates_NoDates_ReturnsEmpty`
     - `DisplayDates_SameMonthDifferentYear_OmitsYear_KnownIssue` → `Jan 05 - 10` (concern 4a)
     - `DisplayDates_GreekCulture_UsesGreekMonthName_KnownIssue` (concern 4b). Expected month: `CultureInfo.GetCultureInfo("el-GR").DateTimeFormat.AbbreviatedMonthNames[2]`, and the output does not start with `Mar`.
-- [ ] **T4 [P] Issue-type filter.**
+- [x] **T4 [P] Issue-type filter.**
   - **Covers:** FR-012, as amended on 2026-11-26 to use `SubTask`.
   - **File:** `Extensions/IssueTypeExtensionsTests.cs`.
   - **Proof:**
