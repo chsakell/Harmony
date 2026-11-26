@@ -8,8 +8,9 @@ namespace Harmony.Application.UnitTests.Helpers
 {
     /// <summary>
     /// The short date range shown on a card. Every test fixes the culture, so the suite gives
-    /// the same result on any machine.
+    /// the same result on any machine (NFR-003).
     /// </summary>
+    [Trait("Requirement", "NFR-003")]
     public class CardHelperDisplayDatesTests
     {
         [Fact]
