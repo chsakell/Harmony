@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main, 'release/**']
+  push:
+    # Builds on the long-lived branches warm the NuGet cache that pull requests restore from.
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  # Superseded pull request runs are cancelled; every push to develop and main gets its own result.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  # Code warnings (everything except NuGet NUxxxx warnings, which depend on the live advisory database)
+  # reported by a clean `dotnet build Harmony.slnx` on ubuntu-latest. See Known issues in docs/architecture/overview.md.
+  # Lower it when warnings are fixed. Raise it only in a dedicated pull request that explains why,
+  # for example when an SDK update adds warnings that cannot be fixed in the same change.
+  WARNING_BASELINE: 585
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ env.NUGET_PACKAGES }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('global.json', '**/Directory.Packages.props', '**/Directory.Build.props', '**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Build
+        id: build
+        shell: pwsh
+        run: |
+          dotnet build Harmony.slnx -tl:off 2>&1 | Tee-Object -FilePath build.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          # The summary after "Build succeeded." lists every warning once; the inline copies come before it.
+          $lines = Get-Content build.log
+          $start = ($lines | Select-String -Pattern '^Build succeeded\.' | Select-Object -Last 1).LineNumber
+          if (-not $start) { Write-Error 'Could not find the build summary in the build output.'; exit 1 }
+          $all = @($lines[$start..($lines.Count - 1)] | Where-Object { $_ -match ': warning ' })
+          $nuget = @($all | Where-Object { $_ -match ': warning NU\d{4}:' })
+          $code = $all.Count - $nuget.Count
+          $baseline = [int]$env:WARNING_BASELINE
+          $sdk = dotnet --version
+
+          "### Build`n`nSDK $sdk. $code code warnings (baseline $baseline), $($nuget.Count) NuGet warnings." >> $env:GITHUB_STEP_SUMMARY
+          if ($nuget.Count -gt 0) {
+            $codes = ($nuget | ForEach-Object { if ($_ -match ': warning (NU\d{4}):') { $Matches[1] } } | Sort-Object -Unique) -join ', '
+            Write-Output "::notice title=NuGet warnings::$($nuget.Count) NuGet warnings ($codes). They are not counted against the baseline; see build.log."
+          }
+          if ($code -gt $baseline) {
+            Write-Output "::error title=Build warnings::$code code warnings, more than the baseline of $baseline. Fix the new warnings."
+            exit 1
+          }
+          if ($code -lt $baseline) {
+            Write-Output "::notice title=Build warnings::$code code warnings, fewer than the baseline of $baseline. Lower WARNING_BASELINE in .github/workflows/ci.yml."
+          }
+
+      - name: Test
+        run: dotnet test --solution Harmony.slnx --no-build --report-xunit-trx --report-xunit-markdown
+
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: |
+          Get-ChildItem TestResults -Recurse -Filter *.md -ErrorAction SilentlyContinue |
+            ForEach-Object { Get-Content $_.FullName -Raw >> $env:GITHUB_STEP_SUMMARY }
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-results
+          path: |
+            TestResults/
+            build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Check formatting of changed files
+        # Runs even when tests fail, so one push reports both.
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && steps.build.outcome == 'success' }}
+        shell: pwsh
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # The whole solution does not pass dotnet format yet, so only the files this pull request changes are checked.
+          $files = @(git diff --name-only --diff-filter=d $env:BASE_SHA HEAD -- '*.cs')
+          if ($files.Count -eq 0) { Write-Output 'No C# files changed.'; exit 0 }
+          Write-Output "Checking $($files.Count) file(s):"; $files | ForEach-Object { Write-Output "  $_" }
+          dotnet format Harmony.slnx --verify-no-changes --no-restore --include @files
+          exit $LASTEXITCODE
