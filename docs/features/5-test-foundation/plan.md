@@ -72,7 +72,7 @@ Each guard's logic is a pure function, so its failure scenarios are proven with 
 
 Tasks run in order. `[P]` marks a task that touches no file used by another `[P]` task, so it can run in a parallel session. Each task starts with a failing test that proves it.
 
-- [ ] **T0 Spike (no repository change).** Settle the open questions the spec carried forward. Work in a scratch folder outside the repository: copy `global.json` and the two `src/Directory.*.props` files, then add one scratch test project that references `src/Core/Harmony.Application` by absolute path. On SDK 10.0.404, confirm:
+- [x] **T0 Spike (no repository change).** Settle the open questions the spec carried forward. Work in a scratch folder outside the repository: copy `global.json` and the two `src/Directory.*.props` files, then add one scratch test project that references `src/Core/Harmony.Application` by absolute path. On SDK 10.0.404, confirm:
   1. **Packages:** xunit.v3 4.0.3. Check whether it uses MTP v2 by default; if not, use `xunit.v3.mtp-v2`. Check that coverlet.MTP 10.1.1, Shouldly 4.3.0 and NSubstitute 6.2.0 all restore against the **same MTP major version**. Record each package's licence expression from NuGet (NFR-004).
   2. **Runner:**
      - `dotnet test --solution <scratch.slnx>` runs the project;
@@ -271,7 +271,52 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
 
 ## Spike results
 
-To be filled in by T0: package versions and licences, MTP major version, coverage mechanism, NU1903 advisory URL, and the AutoMapper error count.
+Run on 2026-11-26 with SDK 10.0.404 in a scratch solution outside the repository. It contained copies of `global.json` (with the MTP opt-in) and both `src/Directory.*.props`, plus the planned `tests/Directory.*.props` and one test project referencing `src/Core/Harmony.Application`. The solution also listed `Harmony.Application` and an empty class library as non-test projects.
+
+**Outcome: go.** All five checks passed, with three deviations (logged below).
+
+1. **Packages.** All four are the latest stable versions on NuGet, and all restore against one MTP major version.
+
+   | Package | Version | Licence (nuspec) |
+   |---|---|---|
+   | `xunit.v3` | 4.0.3 | Apache-2.0 |
+   | `Shouldly` | 4.3.0 | BSD-3-Clause |
+   | `NSubstitute` | 6.2.0 | BSD-3-Clause |
+   | `coverlet.MTP` | 10.1.1 | MIT |
+
+   `xunit.v3` 4.0.3 uses MTP v2 by default: it brings in `xunit.v3.mtp-v2` / `xunit.v3.core.mtp-v2` 4.0.3. The resolved `Microsoft.Testing.Platform` is 2.5.2, the same one coverlet.MTP uses, so no explicit `xunit.v3.mtp-v2` reference is needed.
+2. **Runner.**
+   - `dotnet test --solution spike.slnx` ran the test project and skipped the two non-test projects without failing (exit 0).
+   - `--filter-trait "Requirement=FR-006"` ran 1 of 3 tests.
+   - A failing `ShouldBe` gave exit code 2.
+3. **Coverage (FR-004): first mechanism works.** `TestingPlatformCommandLineArguments` in `tests/Directory.Build.props` reaches the runner, so `testconfig.json` was not needed. The option names are coverlet.MTP's: `--coverlet --coverlet-output-format cobertura --results-directory <repo>/TestResults/$(MSBuildProjectName)`. The `--coverage` names in the plan belong to Microsoft's CodeCoverage extension and fail with "Unknown option".
+   - A plain run and a filtered run each wrote `TestResults/<project>/coverage.cobertura.<timestamp>.xml`.
+   - Each file lists the packages `Harmony.Application`, `Harmony.Domain` and `Harmony.Shared`, and no `*.UnitTests`.
+4. **Audit: three advisories, not one.** Restore reports NU1903 for AutoMapper 14.0.0 three times. All three are high-severity denial-of-service bugs (uncontrolled recursion), patched only in 15.1.x/16.x, which are commercially licensed.
+
+   | Advisory | Published |
+   |---|---|
+   | https://github.com/advisories/GHSA-rvv3-g6hj-g44x | 2026-03-13 |
+   | https://github.com/advisories/GHSA-6vhm-j9h7-f9gh | 2026-11-13 |
+   | https://github.com/advisories/GHSA-gpwp-5797-mjff | 2026-11-13 |
+
+   - With all three URLs in `NuGetAuditSuppress`, the test project builds under `TreatWarningsAsErrors` and adds 0 warnings. The 44 warnings in that build come from the referenced `src/` projects, which still report all three advisories.
+   - With only one URL suppressed, the other two still fail restore.
+5. **AutoMapper.** `AssertConfigurationIsValid()` throws `AutoMapperConfigurationException` with 12 errors: **12 type maps, 28 unmapped members**. This matches the spec.
+   - `TypeMap.Types` is not public in 14.0.0, so the type map name comes from `TypeMap.SourceType` and `TypeMap.DestinationType`.
+   - The 28 pairs, listed as `Source -> Destination`:
+     - `UserResponse -> UserWorkspaceResponse`: `IsMember`
+     - `Board -> GetBoardResponse`: `ActiveSprints`, `SelectedSprint`
+     - `BoardList -> BoardListDto`: `TitleEditing`
+     - `Card -> CardDto`: `BoardKey`, `IsUpdating`, `Hidden`
+     - `Card -> GetBacklogItemResponse`: `BoardKey`, `SerialKey`
+     - `CardDto -> CardCreatedMessage`: `BoardId`, `Card`, `UserId`
+     - `Card -> LoadCardResponse`: `IssueTypes`, `BoardLists`
+     - `Label -> LabelDto`: `IsChecked`
+     - `CardLabel -> LabelDto`: `Id`, `Colour`, `IsChecked`
+     - `CardActivity -> CardActivityDto`: `Actor`
+     - `UserCard -> CardMemberDto`: `FirstName`, `LastName`, `UserName`, `ProfilePicture`
+     - `Link -> LinkDetailsDto`: `SourceCardBoard`, `SourceCardSerialKey`, `TargetCardBoard`, `TargetCardTitle`, `TargetCardSerialKey`
 
 ## Deviations log
 
@@ -282,3 +327,6 @@ Update this table in the same commit as any change that departs from the plan.
 | 2026-11-26 | - | Spec FR-012 amended: the subtask marker is `SubTask` (`IssueTypesConstants.SUBTASK`, case-sensitive), not `Subtask`. The code and the seeded issue types use `SubTask`, so the original scenario would not have been filtered. Decided by chsakell. |
 | 2026-11-26 | T1 | `NuGetAuditSuppress` for the AutoMapper 14.0.0 advisory in `tests/Directory.Build.props` only, so the test project adds 0 warnings (NFR-005). Decided by chsakell. |
 | 2026-11-26 | T1 | Test packages added in this PR. This is an exception to the separate `build:` PR rule (spec Flagged concern 5, ADR decision 8). |
+| 2026-11-26 | T0, T1, T9 | AutoMapper 14.0.0 has three NU1903 advisories, not one: GHSA-rvv3-g6hj-g44x, GHSA-6vhm-j9h7-f9gh and GHSA-gpwp-5797-mjff. `tests/Directory.Build.props` suppresses all three URLs, in `tests/` only. T9 also updates the overview Known issue to name the three IDs. Decided by chsakell. |
+| 2026-11-26 | T0, T1 | Coverage options are coverlet.MTP's `--coverlet --coverlet-output-format cobertura`, passed through `TestingPlatformCommandLineArguments`. The plan's `--coverage` names belong to Microsoft's CodeCoverage extension. The report file is `coverage.cobertura.<timestamp>.xml`, so the FR-004 proof matches `TestResults/Harmony.Application.UnitTests/coverage.cobertura.*.xml`, not `*.cobertura.xml`. |
+| 2026-11-26 | T7 | Unmapped pairs are flattened from `Errors[].TypeMap.SourceType` / `DestinationType` × `UnmappedPropertyNames`, because `TypeMap.Types` is not public in AutoMapper 14.0.0. |
