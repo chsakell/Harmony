@@ -29,6 +29,9 @@ namespace Harmony.Api.IntegrationTests.Harness
         public SourceControlService.SourceControlServiceClient SourceControlClient { get; } =
             Substitute.For<SourceControlService.SourceControlServiceClient>();
 
+        /// <summary>Records which endpoint routing selected for each matrix request (FR-015).</summary>
+        public RequestRecorder Recorder { get; } = new();
+
         /// <summary>The host's service registrations after the test overrides, for checks on what is registered.</summary>
         public IReadOnlyList<ServiceDescriptor> ServiceDescriptors =>
             services?.ToList() ?? throw new InvalidOperationException("The host has not been built.");
@@ -52,6 +55,7 @@ namespace Harmony.Api.IntegrationTests.Harness
                 testServices.AddSingleton<INotificationsPublisher>(Publisher);
                 testServices.RemoveAll<SourceControlService.SourceControlServiceClient>();
                 testServices.AddSingleton(SourceControlClient);
+                testServices.AddSingleton<IStartupFilter>(Recorder);
                 services = testServices;
             });
         }

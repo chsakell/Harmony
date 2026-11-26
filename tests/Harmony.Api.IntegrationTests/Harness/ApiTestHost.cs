@@ -63,6 +63,9 @@ namespace Harmony.Api.IntegrationTests.Harness
 
         public IReadOnlyList<ServiceDescriptor> ServiceDescriptors => Started(factory).ServiceDescriptors;
 
+        /// <summary>Which endpoint routing selected for each request with <see cref="RequestRecorder.HeaderName"/>.</summary>
+        public RequestRecorder Recorder => Started(factory).Recorder;
+
         /// <summary>
         /// Starts a PostgreSQL container through <see cref="DockerGuard"/>; <paramref name="configure"/> lets a test
         /// point it at an unreachable Docker endpoint (FR-003).
