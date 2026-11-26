@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main, 'release/**']
+  push:
+    # Builds on the long-lived branches warm the NuGet cache that pull requests restore from.
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  # Warnings reported by a clean `dotnet build Harmony.slnx` on ubuntu-latest.
+  # Lower it when warnings are fixed; never raise it. See Known issues in docs/architecture/overview.md.
+  WARNING_BASELINE: 675
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ env.NUGET_PACKAGES }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('global.json', '**/Directory.Packages.props', '**/Directory.Build.props', '**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Build
+        shell: pwsh
+        run: |
+          dotnet build Harmony.slnx -tl:off 2>&1 | Tee-Object -FilePath build.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $summary = Select-String -Path build.log -Pattern '^\s*(\d+) Warning\(s\)' | Select-Object -Last 1
+          if (-not $summary) { Write-Error 'Could not find the warning count in the build output.'; exit 1 }
+          $warnings = [int]$summary.Matches[0].Groups[1].Value
+          $baseline = [int]$env:WARNING_BASELINE
+
+          "### Build`n`n$warnings warnings (baseline $baseline)" >> $env:GITHUB_STEP_SUMMARY
+          if ($warnings -gt $baseline) {
+            Write-Output "::error title=Build warnings::$warnings warnings, more than the baseline of $baseline. Fix the new warnings; do not raise the baseline."
+            exit 1
+          }
+          if ($warnings -lt $baseline) {
+            Write-Output "::notice title=Build warnings::$warnings warnings, fewer than the baseline of $baseline. Lower WARNING_BASELINE in .github/workflows/ci.yml."
+          }
+
+      - name: Test
+        run: dotnet test --solution Harmony.slnx --no-build --report-xunit-trx --report-xunit-markdown
+
+      - name: Publish test summary
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: |
+          Get-ChildItem TestResults -Recurse -Filter *.md -ErrorAction SilentlyContinue |
+            ForEach-Object { Get-Content $_.FullName -Raw >> $env:GITHUB_STEP_SUMMARY }
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-results
+          path: |
+            TestResults/
+            build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Check formatting of changed files
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: pwsh
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # The whole solution does not pass dotnet format yet, so only the files this pull request changes are checked.
+          $files = @(git diff --name-only --diff-filter=d $env:BASE_SHA HEAD -- '*.cs')
+          if ($files.Count -eq 0) { Write-Output 'No C# files changed.'; exit 0 }
+          Write-Output "Checking $($files.Count) file(s):"; $files | ForEach-Object { Write-Output "  $_" }
+          dotnet format Harmony.slnx --verify-no-changes --no-restore --include @files
+          exit $LASTEXITCODE

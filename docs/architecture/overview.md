@@ -109,8 +109,8 @@ Recorded from one run on 2026-11-25 (`dotnet build Harmony.slnx`, SDK 10.0.404);
   - the six AutoMapper mappings with custom rules, plus a ratchet on the 28 unmapped members;
   - one reference handler test (`UpdateCardTitleCommandHandler`).
 
-  Still missing: a CI build that runs them (R-02), integration tests against the databases and the broker, and tests for the other services and the Blazor client.
-- **669 build warnings, 0 errors.** Mostly nullable reference types (CS8618 x262, CS8602 x136, CS8632, CS8604, CS8625, CS8600, CS8603, CS8601), plus unused fields (CS0169, CS0414), CA2022 (inexact `Stream.ReadAsync` in `Account.razor.cs` and `EditCardModal.razor.cs`) and MUD0002 (attribute casing in `Board.razor`).
+  The CI workflow (`.github/workflows/ci.yml`, R-02) builds and runs them on every pull request. Still missing: integration tests against the databases and the broker, and tests for the other services and the Blazor client.
+- **675 build warnings, 0 errors** on a clean build, on Windows and Linux. CI fails a pull request that goes above it. The count includes duplicates: the unused-import warnings in `automations.proto` are reported once per project that compiles it, and NU1903 once per project and once for the solution. Mostly nullable reference types (CS8618 x262, CS8602 x136, CS8632, CS8604, CS8625, CS8600, CS8603, CS8601), plus unused fields (CS0169, CS0414), CA2022 (inexact `Stream.ReadAsync` in `Account.razor.cs` and `EditCardModal.razor.cs`) and MUD0002 (attribute casing in `Board.razor`).
 - **Vulnerable package:** `AutoMapper` 14.0.0 raises NU1903 for three high-severity denial-of-service advisories: [GHSA-rvv3-g6hj-g44x](https://github.com/advisories/GHSA-rvv3-g6hj-g44x), [GHSA-6vhm-j9h7-f9gh](https://github.com/advisories/GHSA-6vhm-j9h7-f9gh) and [GHSA-gpwp-5797-mjff](https://github.com/advisories/GHSA-gpwp-5797-mjff). The fixes are only in the commercially licensed 15.1.x and 16.x releases.
   - Replacing AutoMapper is R-14.
   - `tests/Directory.Build.props` suppresses the three advisories for test projects only, so `TreatWarningsAsErrors` can stay on there. `src/` projects still report them.
