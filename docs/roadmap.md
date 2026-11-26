@@ -44,7 +44,7 @@
 | [R-14](#r-14-replace-automapper) | Replace AutoMapper | security | M +ADR | | R-01 | | todo |
 | **Phase 2: Make what exists correct** | | | | | | | |
 | [R-15](#r-15-backlog-reorder-moves-cards-on-every-board) | Backlog reorder moves cards on every board | bug | S | | R-01 | [#11](https://github.com/chsakell/Harmony/issues/11) | done |
-| [R-16](#r-16-card-search-ignores-the-workspace) | Card search ignores the workspace | bug | S | | R-01 | [#17](https://github.com/chsakell/Harmony/issues/17) | in progress |
+| [R-16](#r-16-card-search-returns-nothing-without-an-excluded-card) | Card search returns nothing without an excluded card | bug | S | | R-01 | [#17](https://github.com/chsakell/Harmony/issues/17) | in progress |
 | [R-17](#r-17-sprint-lifecycle-rules) | Sprint lifecycle rules | bug | M | | R-05 | | todo |
 | [R-18](#r-18-status-categories-and-reliable-completion-dates) | Status categories and reliable completion dates | bug | M | | R-05 | | todo |
 | [R-19](#r-19-correct-burndown-chart) | Correct burndown chart | bug | M | | R-17, R-18 | | todo |
@@ -67,7 +67,7 @@
 Tests come first, so that every later fix is proven by a test and cannot quietly regress.
 
 1. **R-01, R-02.** Test projects and a CI build, so every pull request proves itself.
-2. **R-15, R-16.** Two quick bugs that corrupt or leak data, each fixed with a failing test first.
+2. **R-15, R-16.** Two quick bugs: one changes other boards' data, the other breaks card search. Each is fixed with a failing test first.
 3. **R-04, R-07, R-08.** Write the authorization matrix, watch it fail, then make it pass.
 4. **R-11, R-12.** Tokens, the seeded admin account and the webhook.
 5. **R-05, then R-17 to R-21.** Pin down today's Scrum behaviour, then correct it.
@@ -107,7 +107,7 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - Tests cover `CardRepository`, `BoardService.LoadBoard`, `BoardService.HasUserAccessToBoard` and `GetUserBoards`.
   - MongoDB repositories for Automations and SourceControl are covered too.
 - **Evidence:** `src/Infrastructure/Harmony.Persistence/Configurations/CardConfiguration.cs:49` has a global query filter that hides every child card, a common source of surprises. `src/Infrastructure/Harmony.Infrastructure/Repositories/*.cs`.
-- **Notes:** These tests need Docker. Run them as a separate CI job (R-02). Also cover the backlog reorder query in `CardService.ReorderCardsInBacklog` fixed by R-15 (#11): its unit tests run the query in memory, so its SQL translation is unproven.
+- **Notes:** These tests need Docker. Run them as a separate CI job (R-02). Also cover the backlog reorder query in `CardService.ReorderCardsInBacklog` fixed by R-15 (#11): its unit tests run the query in memory, so its SQL translation is unproven. The same applies to the card search in `CardService.GetSearchWorkspaceQuery` fixed by R-16 (#17). Check there whether the title match is case-insensitive on both providers: SQL Server's default collation is, PostgreSQL is not.
 
 ### R-04 Api test host and authorization matrix
 
@@ -266,7 +266,7 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
 - **Evidence:** `src/Infrastructure/Harmony.Infrastructure/Services/Management/CardService.cs:416` and `:430`. The filter `board.Id == issueType.BoardId` repeats the join condition and is always true; the board ID of the moved card is never applied.
 - **Notes:** Track S with `/sdlc-debug`. Called from the backlog page's up and down buttons (`src/Web/Harmony.Client/Pages/Management/Backlog.razor.cs`).
 
-### R-16 Card search ignores the workspace
+### R-16 Card search returns nothing without an excluded card
 
 - **Problem:** The search used to pick an issue to link returns no cards, and a count of 0, when no card is excluded. When a card is excluded, the result is correct. The client always excludes the source card, so only direct API calls hit the bug. An earlier version of this item said the excluded-card case returned cards from every workspace. The #17 reproduction test shows it does not, so there is no data leak.
 - **Outcome:** The search returns only non-archived cards of the current workspace that match the term, and excludes the given card.
