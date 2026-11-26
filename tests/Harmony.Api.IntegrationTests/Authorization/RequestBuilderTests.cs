@@ -95,6 +95,27 @@ namespace Harmony.Api.IntegrationTests.Authorization
         }
 
         [Fact]
+        public async Task ValueProperties_GetTheirTypeDefault()
+        {
+            using var request = RequestBuilder.ForCaller(Synthetic(typeof(BarCommand)), Line("POST", "api/Foo", string.Empty), Ids, Caller);
+
+            var body = await BodyAsync(request);
+            body["Flag"]!.GetValue<bool>().ShouldBeFalse();
+            body["Count"]!.GetValue<int>().ShouldBe(0);
+            body["Optional"].ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task RequiredTextQuery_GetsPlaceholder()
+        {
+            var (endpoint, line) = await LiveAsync("GET", "api/Board/{id:guid}/members/search", "id=board");
+
+            using var request = RequestBuilder.ForCaller(endpoint, line, Ids, Caller);
+
+            request.RequestUri!.OriginalString.ShouldContain($"term={RequestBuilder.TextPlaceholder}");
+        }
+
+        [Fact]
         public void BodyPropertyWithoutKind_FailsNamingIt()
         {
             var endpoint = Synthetic(typeof(FooCommand));
@@ -146,6 +167,17 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
             var endpoint = new RouteEndpoint(_ => Task.CompletedTask, RoutePatternFactory.Parse(route), 0, new EndpointMetadataCollection(action), "FooController.Post");
             return new DiscoveredEndpoint("POST", route, AllowAnonymous: false, action, description, endpoint);
+        }
+
+        public sealed class BarCommand
+        {
+            public Guid BoardId { get; set; }
+
+            public bool Flag { get; set; }
+
+            public int Count { get; set; }
+
+            public bool? Optional { get; set; }
         }
 
         public sealed class FooCommand

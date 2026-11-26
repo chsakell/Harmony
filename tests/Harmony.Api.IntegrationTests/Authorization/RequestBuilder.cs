@@ -84,6 +84,13 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 {
                     query.Add($"{Uri.EscapeDataString(parameter.Name)}={Uri.EscapeDataString(ids.Resolve(Singular(parameter.Name), "query parameter", parameter.Name))}");
                 }
+                else if (parameter.IsRequired || (parameter.ModelMetadata?.IsRequired == true && parameter.Type is { IsValueType: false }))
+                {
+                    // A required parameter left out makes the request a 400 for the owner too (inconclusive), so it gets
+                    // a placeholder of its type, as a route value does. MVC treats a non-nullable string as required
+                    // (ModelMetadata.IsRequired); non-nullable value types report required too but keep their default.
+                    query.Add($"{Uri.EscapeDataString(parameter.Name)}={Placeholder(parameter.Type)}");
+                }
             }
 
             var request = new HttpRequestMessage(new HttpMethod(endpoint.Method), new Uri(WithQuery(path, query), UriKind.Relative));
@@ -142,6 +149,14 @@ namespace Harmony.Api.IntegrationTests.Authorization
             return items.Count == 0 ? path : $"{path}?{string.Join('&', items)}";
         }
 
+        private static string Placeholder(Type? type)
+        {
+            var underlying = Nullable.GetUnderlyingType(type ?? typeof(string)) ?? type;
+            return underlying == typeof(bool) ? "false"
+                : underlying == typeof(int) || underlying == typeof(long) || underlying == typeof(short) || underlying == typeof(byte) ? "1"
+                : TextPlaceholder;
+        }
+
         private static bool IsIdsName(string name) => name.EndsWith("Ids", StringComparison.OrdinalIgnoreCase);
 
         /// <summary><c>ListIds</c> maps through <c>ListId</c>.</summary>
@@ -185,6 +200,11 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 }
 
                 return array;
+            }
+
+            if (underlying == typeof(bool))
+            {
+                return Nullable.GetUnderlyingType(type) is null ? JsonValue.Create(false) : null;
             }
 
             if (underlying.IsEnum || underlying.IsPrimitive || underlying == typeof(decimal))

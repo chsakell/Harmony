@@ -23,100 +23,100 @@ A new endpoint fails the tests until it has a line here. Keep the lines sorted b
 -->
 
 - Anonymous known gaps: 94
-- Non-member known gaps: 0
+- Non-member known gaps: 80
 
 ## Endpoints
 
 | Route | Method | Scope | Anonymous | Non-member | Bindings |
 |---|---|---|---|---|---|
-| api/Board | POST | resource | gap R-07 | refused |  |
+| api/Board | POST | resource | gap R-07 | gap R-08 | body={"Title":"Matrix","Description":"Matrix","WorkspaceId":"","Visibility":0,"BoardType":0,"Key":"MTRX"} |
 | api/Board/userboards | GET | self | refused | - |  |
-| api/Board/{boardId:guid}/work-items | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/archived-items | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/backlog | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/boardlists | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/info | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/issuetypes | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/lists/{listId:guid} | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/load | POST | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/members | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/members | POST | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/members/search | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/members/{userId} | DELETE | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/members/{userId}/status | PUT | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/movecardstobacklog | PUT | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/movecardstosprint | PUT | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/positions | PUT | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/reactivatecards | PUT | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/sprints | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/sprints | POST | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/sprints/details | GET | resource | gap R-07 | refused |  |
-| api/Board/{id:guid}/sprints/{sprintId:guid}/cards/pending | GET | resource | gap R-07 | refused |  |
-| api/BoardLists/{id:guid}/title | PUT | resource | gap R-07 | refused |  |
-| api/Cards | POST | resource | gap R-07 | refused |  |
-| api/Cards/backlog | POST | resource | gap R-07 | refused |  |
-| api/Cards/backlog/{id:guid} | PUT | resource | gap R-07 | refused |  |
-| api/Cards/search | GET | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid} | GET | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/activity | GET | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/attachments/{attachmentId:guid} | DELETE | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/childissue | POST | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/dates | PUT | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/description | PUT | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/issuetype | PUT | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/labels | GET | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/labels | PUT | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/links | POST | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/members | GET | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/members | POST | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/members/{userId} | DELETE | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/move | PUT | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/status | PUT | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/storypoints | PUT | resource | gap R-07 | refused |  |
-| api/Cards/{id:guid}/title | PUT | resource | gap R-07 | refused |  |
-| api/CheckListItems/{id:guid}/checked | PUT | resource | gap R-07 | refused |  |
-| api/CheckListItems/{id:guid}/description | PUT | resource | gap R-07 | refused |  |
-| api/CheckListItems/{id:guid}/duedate | PUT | resource | gap R-07 | refused |  |
-| api/CheckLists | POST | resource | gap R-07 | refused |  |
-| api/CheckLists/{id:guid} | DELETE | resource | gap R-07 | refused | id=checklist |
-| api/CheckLists/{id:guid}/items | POST | resource | gap R-07 | refused |  |
-| api/CheckLists/{id:guid}/title | PUT | resource | gap R-07 | refused |  |
-| api/Comments | POST | resource | gap R-07 | refused |  |
-| api/Comments/{cardId:guid} | GET | resource | gap R-07 | refused |  |
-| api/Comments/{commentId:guid} | POST | resource | gap R-07 | refused |  |
-| api/Comments/{commentId:guid} | PUT | resource | gap R-07 | refused |  |
-| api/Files | POST | resource | refused | refused |  |
+| api/Board/{boardId:guid}/work-items | GET | resource | gap R-07 | gap R-08 |  |
+| api/Board/{id:guid}/archived-items | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/backlog | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/boardlists | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/info | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/issuetypes | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/lists/{listId:guid} | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/members | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/members | POST | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/members/search | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/members/{userId} | DELETE | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/members/{userId}/status | PUT | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/movecardstobacklog | PUT | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/movecardstosprint | PUT | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/positions | PUT | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/reactivatecards | PUT | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/sprints | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/sprints | POST | resource | gap R-07 | gap R-08 | id=board; body={"BoardId":"","SprintId":null,"Name":"Matrix","Goal":"Matrix","StartDate":"2026-01-01T00:00:00","EndDate":"2026-01-15T00:00:00"} |
+| api/Board/{id:guid}/sprints/details | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/Board/{id:guid}/sprints/{sprintId:guid}/cards/pending | GET | resource | gap R-07 | gap R-08 | id=board |
+| api/BoardLists/{id:guid}/title | PUT | resource | gap R-07 | gap R-08 | id=list |
+| api/Cards | POST | resource | gap R-07 | gap R-08 | IssueType.Id=issuetype |
+| api/Cards/backlog | POST | resource | gap R-07 | gap R-08 | IssueType.Id=issuetype |
+| api/Cards/backlog/{id:guid} | PUT | resource | gap R-07 | gap R-08 | id=card; IssueType.Id=issuetype |
+| api/Cards/search | GET | resource | gap R-07 | gap R-08 | skipCardId=card2 |
+| api/Cards/{id:guid} | GET | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/activity | GET | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/attachments/{attachmentId:guid} | DELETE | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/childissue | POST | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/dates | PUT | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/description | PUT | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/issuetype | PUT | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/labels | GET | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/labels | PUT | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/links | POST | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/members | GET | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/members | POST | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/members/{userId} | DELETE | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/move | PUT | resource | gap R-07 | gap R-08 | id=card; UpdateId=new |
+| api/Cards/{id:guid}/status | PUT | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/storypoints | PUT | resource | gap R-07 | gap R-08 | id=card |
+| api/Cards/{id:guid}/title | PUT | resource | gap R-07 | gap R-08 | id=card |
+| api/CheckListItems/{id:guid}/checked | PUT | resource | gap R-07 | gap R-08 | id=checklistitem |
+| api/CheckListItems/{id:guid}/description | PUT | resource | gap R-07 | gap R-08 | id=checklistitem |
+| api/CheckListItems/{id:guid}/duedate | PUT | resource | gap R-07 | gap R-08 | id=checklistitem |
+| api/CheckLists | POST | resource | gap R-07 | gap R-08 |  |
+| api/CheckLists/{id:guid} | DELETE | resource | gap R-07 | gap R-08 | id=checklist |
+| api/CheckLists/{id:guid}/items | POST | resource | gap R-07 | gap R-08 | id=checklist |
+| api/CheckLists/{id:guid}/title | PUT | resource | gap R-07 | gap R-08 | id=checklist; ListId=checklist |
+| api/Comments | POST | resource | gap R-07 | gap R-08 |  |
+| api/Comments/{cardId:guid} | GET | resource | gap R-07 | gap R-08 |  |
+| api/Comments/{commentId:guid} | POST | resource | gap R-07 | gap R-08 |  |
+| api/Comments/{commentId:guid} | PUT | resource | gap R-07 | gap R-08 |  |
+| api/Files | POST | resource | refused | gap R-08 |  |
 | api/Files/profile-picture | POST | self | refused | - |  |
-| api/Labels | POST | resource | gap R-07 | refused |  |
-| api/Labels/{id:guid} | DELETE | resource | gap R-07 | refused |  |
-| api/Labels/{id:guid}/title | PUT | resource | gap R-07 | refused |  |
-| api/Links/{id:guid} | DELETE | resource | gap R-07 | refused |  |
-| api/Lists | POST | resource | gap R-07 | refused |  |
-| api/Lists/{id:guid}/status | PUT | resource | gap R-07 | refused |  |
-| api/Retrospectives | POST | resource | gap R-07 | refused |  |
+| api/Labels | POST | resource | gap R-07 | gap R-08 |  |
+| api/Labels/{id:guid} | DELETE | resource | gap R-07 | gap R-08 | id=label |
+| api/Labels/{id:guid}/title | PUT | resource | gap R-07 | gap R-08 | id=label |
+| api/Links/{id:guid} | DELETE | resource | gap R-07 | gap R-08 | id=link |
+| api/Lists | POST | resource | gap R-07 | gap R-08 |  |
+| api/Lists/{id:guid}/status | PUT | resource | gap R-07 | gap R-08 | id=list |
+| api/Retrospectives | POST | resource | gap R-07 | gap R-08 |  |
 | api/Search | GET | self | gap R-07 | - |  |
 | api/Search/advanced | GET | self | gap R-07 | - |  |
-| api/Search/advanced | POST | resource | gap R-07 | refused |  |
-| api/Sprints/{id:guid} | GET | resource | gap R-07 | refused |  |
-| api/Sprints/{id:guid}/cards | GET | resource | gap R-07 | refused |  |
-| api/Sprints/{id:guid}/cards | POST | resource | gap R-07 | refused |  |
-| api/Sprints/{id:guid}/complete | POST | resource | gap R-07 | refused |  |
-| api/Sprints/{id:guid}/reports | GET | resource | gap R-07 | refused |  |
-| api/Sprints/{id:guid}/start | PUT | resource | gap R-07 | refused |  |
+| api/Search/advanced | POST | resource | gap R-07 | gap R-08 |  |
+| api/Sprints/{id:guid} | GET | resource | gap R-07 | gap R-08 | id=sprint |
+| api/Sprints/{id:guid}/cards | GET | resource | gap R-07 | gap R-08 | id=sprint |
+| api/Sprints/{id:guid}/cards | POST | resource | gap R-07 | gap R-08 | id=sprint; IssueType.Id=issuetype |
+| api/Sprints/{id:guid}/complete | POST | resource | gap R-07 | gap R-08 | id=sprint |
+| api/Sprints/{id:guid}/reports | GET | resource | gap R-07 | gap R-08 | id=sprint |
+| api/Sprints/{id:guid}/start | PUT | resource | gap R-07 | gap R-08 | id=sprint |
 | api/Test | POST | self | gap R-07 | - |  |
 | api/UserNotifications | POST | self | gap R-07 | - |  |
 | api/UserNotifications/{userId} | GET | user | gap R-07 | - |  |
 | api/Workspace | GET | self | gap R-07 | - |  |
-| api/Workspace | POST | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid} | GET | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/boards | GET | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/info | GET | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/members | GET | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/members/add | POST | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/members/remove | POST | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/members/search | GET | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/rename | PUT | resource | gap R-07 | refused |  |
-| api/Workspace/{id:guid}/status | PUT | resource | gap R-07 | refused |  |
+| api/Workspace | POST | resource | gap R-07 | gap R-08 |  |
+| api/Workspace/{id:guid} | GET | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/boards | GET | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/info | GET | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/members | GET | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/members/add | POST | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/members/remove | POST | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/members/search | GET | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/rename | PUT | resource | gap R-07 | gap R-08 | id=workspace |
+| api/Workspace/{id:guid}/status | PUT | resource | gap R-07 | gap R-08 | id=workspace |
 | api/identity/account/ChangePassword | PUT | self | refused | - |  |
 | api/identity/account/UpdateProfile | PUT | self | refused | - |  |
 | api/identity/account/profile-picture/{userId} | POST | self | refused | - |  |
