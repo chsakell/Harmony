@@ -186,7 +186,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
   - **Covers:** DEL-2, DEL-3.
   - **Files:** `AGENTS.md`, `docs/architecture/overview.md`, `docs/roadmap.md`.
   - **Proof:** each documented command is run exactly as written and succeeds. Each roadmap defect line names an existing `_KnownIssue` method, checked with `grep`.
-- [ ] **T10 Non-functional verification**, done in `/sdlc-verify`.
+- [x] **T10 Non-functional verification**, done in `/sdlc-verify`.
   - **Covers:** NFR-001, NFR-002, NFR-003, NFR-005, NFR-007.
   - **Proof:** see Proof below; record the results in the PR verification block.
 
