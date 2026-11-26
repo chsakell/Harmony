@@ -8,7 +8,7 @@ namespace Harmony.Application.UnitTests.Conventions
     /// <summary>
     /// Finds test methods that do not carry a <c>[Trait("Requirement", "FR-nnn")]</c> tag.
     /// A test method is any method with an attribute derived from <see cref="FactAttribute"/>
-    /// (so theories count too). The tag is read from the method or, failing that, from its class.
+    /// (so theories count too). The tag may be on the method or its class; every tag found must be a requirement ID.
     /// </summary>
     public static class RequirementTagGuard
     {
@@ -25,28 +25,39 @@ namespace Harmony.Application.UnitTests.Conventions
                 var classTags = RequirementTags(testClass);
                 var testMethods = testClass
                     .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                    .Where(method => method.IsDefined(typeof(FactAttribute), inherit: true));
+                    .Where(method => method.IsDefined(typeof(FactAttribute), inherit: true))
+                    .ToList();
+
+                // xUnit merges class and method traits, so class tags are checked even when every method is tagged.
+                if (testMethods.Count > 0)
+                {
+                    AddInvalidTags(violations, testClass.Name, classTags);
+                }
 
                 foreach (var method in testMethods)
                 {
                     var methodTags = RequirementTags(method);
-                    var tags = methodTags.Count > 0 ? methodTags : classTags;
                     var name = $"{testClass.Name}.{method.Name}";
 
-                    if (tags.Count == 0)
+                    if (methodTags.Count == 0 && classTags.Count == 0)
                     {
                         violations.Add($"{name}: no {TraitName} trait");
                         continue;
                     }
 
-                    foreach (var tag in tags.Where(tag => !RequirementId.IsMatch(tag)))
-                    {
-                        violations.Add($"{name}: {TraitName} '{tag}' is not an FR-nnn or NFR-nnn ID");
-                    }
+                    AddInvalidTags(violations, name, methodTags);
                 }
             }
 
             return violations;
+        }
+
+        private static void AddInvalidTags(List<string> violations, string name, IEnumerable<string> tags)
+        {
+            foreach (var tag in tags.Where(tag => !RequirementId.IsMatch(tag)))
+            {
+                violations.Add($"{name}: {TraitName} '{tag}' is not an FR-nnn or NFR-nnn ID");
+            }
         }
 
         private static List<string> RequirementTags(MemberInfo member) =>

@@ -33,6 +33,14 @@ namespace Harmony.Application.UnitTests.Conventions
         }
 
         [Fact]
+        public void FindViolations_ClassTagValueNotRequirementId_ReturnsClassName()
+        {
+            var violations = RequirementTagGuard.FindViolations([typeof(WrongClassTagFixture)]);
+
+            violations.ShouldHaveSingleItem().ShouldStartWith($"{nameof(WrongClassTagFixture)}:");
+        }
+
+        [Fact]
         public void TestAssembly_EveryTestMethod_HasRequirementTag()
         {
             var testClasses = typeof(RequirementTagGuardTests).Assembly.GetTypes()
@@ -78,6 +86,23 @@ namespace Harmony.Application.UnitTests.Conventions
             [Fact]
             [Trait("Requirement", "NFR-002")]
             public void TaggedNfr()
+            {
+            }
+        }
+
+        // xUnit merges class and method traits, so a bad class tag reaches every method even when each method is tagged.
+        [Trait("Requirement", "TODO")]
+        public abstract class WrongClassTagFixture
+        {
+            [Fact]
+            [Trait("Requirement", "FR-005")]
+            public void TaggedMethod()
+            {
+            }
+
+            [Fact]
+            [Trait("Requirement", "FR-006")]
+            public void OtherTaggedMethod()
             {
             }
         }
