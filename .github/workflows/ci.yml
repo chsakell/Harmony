@@ -139,14 +139,14 @@ jobs:
         run: dotnet test --project tests/Harmony.Infrastructure.IntegrationTests -p:HarmonyIntegrationTests=true --report-xunit-trx --report-xunit-markdown
 
       - name: Publish test summary
-        if: ${{ !cancelled() }}
+        if: ${{ always() }}
         shell: pwsh
         run: |
           Get-ChildItem TestResults/Harmony.Infrastructure.IntegrationTests -Filter *.md -ErrorAction SilentlyContinue |
             ForEach-Object { Get-Content $_.FullName -Raw >> $env:GITHUB_STEP_SUMMARY }
 
       - name: Upload test results
-        if: ${{ !cancelled() }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: integration-test-results
