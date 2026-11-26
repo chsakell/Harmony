@@ -499,13 +499,13 @@ Recorded so they are not lost. Promote one into the list when its turn comes.
   - Run migrations as a job instead of at startup in every replica
   - Client `async void` and `ContinueWith` misuse
   - Remove the unused SQL Server-only `LoadBoardOld` code
-- **Known defects found by R-01:** each one is pinned by a `_KnownIssue` test in `Harmony.Application.UnitTests`. The fix changes that test on purpose. See [spec #5](features/5-test-foundation/spec.md), Flagged concern 4.
-  - Card date display ignores the year when the months match: 2026-01-05 to 2027-01-10 shows `Jan 05 - 10` (`CardHelper.DisplayDates`, FR-008).
-  - Card date display uses the server's culture for month names, so emails from Notifications depend on how the server is configured (`CardHelper.DisplayDates`, FR-008).
-  - The card key is not found when followed by `.` or `,`, so the commit message "Fixes HAR-42." links no issue in the GitHub integration (`CardHelper.GetSerialKey`, FR-007).
-  - Card key extraction throws on null text (`CardHelper.GetSerialKey`, FR-007).
-  - The issue-type filter throws on an issue type with no summary (`IssueTypeExtensions.Normal`, FR-012).
-  - The `CardDto → CardCreatedMessage` mapping is never used, because both handlers construct the message directly. Remove it in R-14.
+- **Known defects found by R-01:** each behaviour defect is pinned by the `_KnownIssue` test named on its line in `Harmony.Application.UnitTests`. The fix changes that test on purpose. See [spec #5](features/5-test-foundation/spec.md), Flagged concern 4.
+  - Card date display ignores the year when the months match: 2026-01-05 to 2027-01-10 shows `Jan 05 - 10` (`CardHelper.DisplayDates`, FR-008). Pinned by `CardHelperDisplayDatesTests.DisplayDates_SameMonthDifferentYear_OmitsYear_KnownIssue`.
+  - Card date display uses the server's culture for month names, so emails from Notifications depend on how the server is configured (`CardHelper.DisplayDates`, FR-008). Pinned by `CardHelperDisplayDatesTests.DisplayDates_GreekCulture_UsesGreekMonthName_KnownIssue`.
+  - The card key is not found when followed by `.` or `,`, so the commit message "Fixes HAR-42." links no issue in the GitHub integration (`CardHelper.GetSerialKey`, FR-007). Pinned by `CardHelperGetSerialKeyTests.GetSerialKey_KeyFollowedByPeriod_ReturnsNull_KnownIssue`.
+  - Card key extraction throws on null text (`CardHelper.GetSerialKey`, FR-007). Pinned by `CardHelperGetSerialKeyTests.GetSerialKey_NullText_Throws_KnownIssue`.
+  - The issue-type filter throws on an issue type with no summary (`IssueTypeExtensions.Normal`, FR-012). Pinned by `IssueTypeExtensionsTests.Normal_TypeWithoutSummary_Throws_KnownIssue`.
+  - The `CardDto → CardCreatedMessage` mapping is never used, because both handlers construct the message directly. Remove it in R-14. There is no behaviour to pin, so it has no test.
 - **Package moves:** EasyCaching to HybridCache, `Serilog.Sinks.Elasticsearch` to `Elastic.Serilog.Sinks`, Newtonsoft.Json to System.Text.Json in the publisher, MediatR replacement.
 - **Jira features:** components, versions and releases, time tracking, custom fields, configurable workflows and transitions, JQL-like and saved filters, dashboards, cumulative flow and control charts, auto-create subtasks automation.
 - **From the GitBook roadmap:** an Elasticsearch-backed search service, and Gmail and Facebook login.

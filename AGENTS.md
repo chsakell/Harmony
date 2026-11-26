@@ -7,7 +7,7 @@ Open-source project management tool (Kanban boards, Scrum sprints, automations, 
 Run these from the repository root. All must pass before any task is reported complete; paste their output.
 
 - Build: `dotnet build Harmony.slnx` - healthy output ends with `0 Error(s)`. The baseline is 669 warnings (see Known issues in the overview); do not add new ones.
-- Test: `dotnet test Harmony.slnx` - all tests pass; never skip or delete a failing test. There are no test projects yet, so this currently runs nothing. `dotnet test --solution` does not work: `global.json` does not opt into Microsoft.Testing.Platform.
+- Test: `dotnet test --solution Harmony.slnx` - all tests pass; never skip or delete a failing test. `global.json` opts into Microsoft.Testing.Platform (xUnit v3); test projects live in `tests/`. Run one requirement's tests with `dotnet test --solution Harmony.slnx --filter-trait "Requirement=FR-006"`. Every run writes a Cobertura coverage report to `TestResults/<project>/coverage.cobertura.<timestamp>.xml` (git-ignored) with no extra options.
 - Format: `dotnet format Harmony.slnx --verify-no-changes --include <changed files>` - exit code 0 for the files you changed. The whole solution does not pass yet (1,017 whitespace diagnostics in 220 files); do not reformat files you did not change.
 - Run: `dotnet run --project src/Aspire/Harmony.AppHost` (needs Docker running) - ready when the log shows `Distributed application started` and `https://localhost:7108/healthz/ready` (gateway) returns 200; the client is at https://localhost:7096. Each service has `/healthz/ready` on its launchSettings https port.
 

@@ -182,7 +182,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `Handle_NothingSaved_ReturnsFailedAndPublishesNothing`, with `Update` returning 0. It checks: result failed; no activity; no call to `INotificationsPublisher`, using `ReceivedCalls()` empty.
 
   The test class has a short header comment marking it as the pattern to copy for R-05, R-15 and R-16.
-- [ ] **T9 Documentation.**
+- [x] **T9 Documentation.**
   - **Covers:** DEL-2, DEL-3.
   - **Files:** `AGENTS.md`, `docs/architecture/overview.md`, `docs/roadmap.md`.
   - **Proof:** each documented command is run exactly as written and succeeds. Each roadmap defect line names an existing `_KnownIssue` method, checked with `grep`.
@@ -331,4 +331,5 @@ Update this table in the same commit as any change that departs from the plan.
 | 2026-11-26 | T0, T1 | Coverage options are coverlet.MTP's `--coverlet --coverlet-output-format cobertura`, passed through `TestingPlatformCommandLineArguments`. The plan's `--coverage` names belong to Microsoft's CodeCoverage extension. The report file is `coverage.cobertura.<timestamp>.xml`, so the FR-004 proof matches `TestResults/Harmony.Application.UnitTests/coverage.cobertura.*.xml`, not `*.cobertura.xml`. |
 | 2026-11-26 | T1 | `TestProjectIsolationTests` checks every `Harmony.*.dll` the build copies next to the test assembly, not only `GetReferencedAssemblies()`. Metadata references list only assemblies whose types are used, so an unused `ProjectReference` to infrastructure would pass unnoticed. The results path is held in a custom `HarmonyTestResultsDirectory` property, so it cannot clash with SDK property names. xUnit v3 adds no global `using Xunit`, so each test file has an explicit `using Xunit;`. |
 | 2026-11-26 | T7 | Unmapped pairs are flattened from `Errors[].TypeMap.SourceType` / `DestinationType` × `UnmappedPropertyNames`, because `TypeMap.Types` is not public in AutoMapper 14.0.0. |
+| 2026-11-26 | T9 | The old form `dotnet test Harmony.slnx` keeps working on SDK 10.0.404 after the MTP opt-in: it ran all 48 tests. This is contrary to the Risks table. AGENTS.md documents `dotnet test --solution Harmony.slnx` as the command and no longer claims either form fails. The overview's AutoMapper entry now names the three advisories and the `tests/`-only suppression (decided in T0). The roadmap's `CardDto → CardCreatedMessage` line says it has no pinning test (concern 4e, DEL-3). |
 | 2026-11-26 | T7 | `UnmappedMemberGuardTests` has no class-level trait; each method carries its own (FR-016, FR-017, or both). xUnit merges class and method traits, so a class-level FR-016 would also put the FR-017 test under `--filter-trait "Requirement=FR-016"`. `Compare` returns an `UnmappedMemberComparison` record (`NewUnmapped`, `NowMapped`, `MatchesBaseline`, `Message`), and reading the pairs from a configuration is `UnmappedMemberGuard.ReadUnmappedMembers`. |
