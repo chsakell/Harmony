@@ -137,7 +137,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `Or_TwoConditions_HasSingleParameter`
 
   The conditions deliberately use different parameter names, `x` and `y`.
-- [ ] **T6 [P] Mapping behaviour pairs.**
+- [x] **T6 [P] Mapping behaviour pairs.**
   - **Covers:** FR-015.
   - **Files:** `Mapping/MappingConfigurationFactory.cs`, `Mapping/WorkspaceProfileMappingTests.cs`.
   - **Approach:** one test per mapping. Each builds a source with distinct values for every rule input and asserts every rule's destination member against a hand-written value.
