@@ -164,7 +164,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `Configuration_UnmappedMembers_MatchBaseline`: the real configuration against the 28-entry baseline. Tagged with both FR-016 and FR-017.
 
   The class-level trait carries one ID. The per-method traits name the exact requirement.
-- [ ] **T8 Reference handler test.**
+- [x] **T8 Reference handler test.**
   - **Covers:** FR-018, FR-019, FR-020.
   - **File:** `Features/Cards/UpdateCardTitleCommandHandlerTests.cs`.
   - **Setup:**
