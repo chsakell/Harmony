@@ -2,9 +2,9 @@
 id: 22
 title: Api test host and authorization matrix
 artifact: spec
-status: draft            # draft | approved | superseded
+status: approved         # draft | approved | superseded
 owner: chsakell
-approved-by:             # <name>, <YYYY-MM-DD> - filled in when the sdlc:spec-approved label is added
+approved-by: chsakell, 2026-11-26   # sdlc:spec-approved label on #23
 created: 2026-11-26
 intent: ./intent.md
 ---
