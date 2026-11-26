@@ -28,7 +28,7 @@
 |---|---|---|---|---|---|---|---|
 | **Phase 0: Safety net** | | | | | | | |
 | [R-01](#r-01-test-foundation) | Test foundation | test | M +ADR | | - | [#5](https://github.com/chsakell/Harmony/issues/5) | done |
-| [R-02](#r-02-ci-build-workflow) | CI build workflow | improvement | S | | R-01 | [#9](https://github.com/chsakell/Harmony/issues/9) | in progress |
+| [R-02](#r-02-ci-build-workflow) | CI build workflow | improvement | S | | R-01 | [#9](https://github.com/chsakell/Harmony/issues/9) | done |
 | [R-03](#r-03-integration-test-harness) | Integration test harness (SQL Server + PostgreSQL) | test | M | | R-01 | | todo |
 | [R-04](#r-04-api-test-host-and-authorization-matrix) | Api test host and authorization matrix | test | M | | R-01 | | todo |
 | [R-05](#r-05-characterization-tests-for-scrum-and-automations) | Characterization tests for Scrum and automations | test | S | | R-01 | | todo |
@@ -43,7 +43,7 @@
 | [R-13](#r-13-safe-file-uploads) | Safe file uploads | security | M | high | R-04 | | todo |
 | [R-14](#r-14-replace-automapper) | Replace AutoMapper | security | M +ADR | | R-01 | | todo |
 | **Phase 2: Make what exists correct** | | | | | | | |
-| [R-15](#r-15-backlog-reorder-moves-cards-on-every-board) | Backlog reorder moves cards on every board | bug | S | | R-01 | | todo |
+| [R-15](#r-15-backlog-reorder-moves-cards-on-every-board) | Backlog reorder moves cards on every board | bug | S | | R-01 | [#11](https://github.com/chsakell/Harmony/issues/11) | in progress |
 | [R-16](#r-16-card-search-ignores-the-workspace) | Card search ignores the workspace | bug | S | | R-01 | | todo |
 | [R-17](#r-17-sprint-lifecycle-rules) | Sprint lifecycle rules | bug | M | | R-05 | | todo |
 | [R-18](#r-18-status-categories-and-reliable-completion-dates) | Status categories and reliable completion dates | bug | M | | R-05 | | todo |
