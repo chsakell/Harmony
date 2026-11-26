@@ -2,9 +2,9 @@
 id: 5
 title: Test foundation
 artifact: spec
-status: draft            # draft | approved | superseded
+status: approved         # draft | approved | superseded
 owner: chsakell
-approved-by:             # <name>, <YYYY-MM-DD> - filled in when the sdlc:spec-approved label is added
+approved-by: chsakell, 2026-11-26
 created: 2026-11-26
 intent: ./intent.md
 ---
@@ -37,7 +37,7 @@ See [intent.md](./intent.md).
 | **Card key** | The human-readable issue key in free text, for example `HAR-42`: 3 to 5 letters (any case), a hyphen, then one or more digits. It is returned exactly as written in the text. |
 | **Allowed neighbour** | The characters that may come directly before or after a card key: space, `_`, `-`, `/`, or the start or end of the text. Every other character (including `.`, `,`, `#`, letters and digits) is not allowed. |
 | **Card date display** | The Application routine that turns a card's start and due dates into short text for the UI and emails. The month is the three-letter abbreviation of the current culture, and the day is two digits, zero-padded. |
-| **Issue-type filter** | The Application routine that removes subtask types from a list of issue types. A subtask type is one whose summary (its name) contains the word "Subtask". |
+| **Issue-type filter** | The Application routine that removes subtask types from a list of issue types. A subtask type is one whose summary (its name) contains `SubTask` (case-sensitive, the value of `IssueTypesConstants.SUBTASK`). Amended 2026-11-26 during planning: the code and the seeded issue types use `SubTask`. |
 | **Query-filter builder** | The Application routine that combines two filter conditions into one with "and" or "or". |
 | **Title-update handler** | The Application request handler that changes a card's title. |
 | **Type map** | One source-to-destination mapping in the mapping configuration, for example `Card → CardDto`. |
@@ -143,7 +143,7 @@ As a contributor starting R-05, R-15 or R-16, I want one complete example of a r
 - **FR-011**
   - Given neither date, then an empty text.
 - **FR-012**
-  - Given types "Story", "Bug", "Subtask", then "Story" and "Bug".
+  - Given types "Story", "Bug", "SubTask", then "Story" and "Bug".
   - Given no list, then no list.
   - **Known-wrong (4c):** given a type with no summary, then the filter throws.
 - **FR-013**
