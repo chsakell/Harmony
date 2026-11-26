@@ -2,9 +2,9 @@
 id: 19
 title: Integration test harness
 artifact: spec
-status: draft            # draft | approved | superseded
+status: approved            # draft | approved | superseded
 owner: chsakell
-approved-by:             # <name>, <YYYY-MM-DD> - filled in when the sdlc:spec-approved label is added
+approved-by: chsakell, 2026-11-26
 created: 2026-11-26
 intent: ./intent.md
 ---
@@ -276,7 +276,7 @@ Not applicable.
 | 4 | `mcr.microsoft.com/mssql/server:2022-latest` is a floating tag, so a new cumulative update can change CI results without any change in the repository. Using the same tag as the deployment files keeps parity (NFR-006). | chsakell | Open. Proposed: keep parity now; pin all deployment files and tests to one exact tag in a later item. |
 | 5 | Known-wrong behaviours expected from reading the code on 2026-11-26. They are pinned, not fixed: <br>(a) loading a board ignores the cards-per-list limit (FR-030, R-22); <br>(b) a board-access check for an unknown board throws (FR-031, R-08); <br>(c) card search is case-sensitive on PostgreSQL (FR-042, needs a roadmap entry); <br>(d) any pending model change FR-011 finds; <br>(e) the next serial number is a count of the board's cards, so it would repeat if a card were ever deleted (FR-033, R-22). <br>Each gets a note on the matching roadmap item and a line in the overview's Known issues in this PR (NFR-010). | chsakell | Open. Recorded as each test is written. |
 | 6 | The SQL Server image has no Arm64 build. Contributors on Apple Silicon or Windows on Arm can run the SQL Server tests only through emulation, or not at all. | chsakell | Open. Proposed: accept. CI is the reference, and the PostgreSQL and MongoDB tests still run everywhere. |
-| 7 | The intent says "open-source licences only". The SQL Server container image is not open source (NFR-008). It is already the deployment image and is used only at test time, but it is an exception to the intent's constraint. | chsakell (intent owner) | Open. Needs an explicit waiver at spec approval. |
+| 7 | The intent says "open-source licences only". The SQL Server container image is not open source (NFR-008). It is already the deployment image and is used only at test time, but it is an exception to the intent's constraint. | chsakell (intent owner) | Waived by chsakell, 2026-11-26: Developer edition, test-time only, EULA accepted by Testcontainers (`ACCEPT_EULA=Y`), the same image as the deployment files. Recorded in the plan. |
 
 ## Open questions
 
