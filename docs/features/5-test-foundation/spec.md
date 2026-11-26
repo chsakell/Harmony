@@ -100,6 +100,8 @@ As a contributor starting R-05, R-15 or R-16, I want one complete example of a r
 | FR-019 | When a signed-in user updates a card title and the save changes at least one record, the title-update handler shall return a successful result. It shall also record one card activity of type "title updated", publish one search-index notification with the new title to the board's search index, and publish one real-time message of type "card title changed". | US4 |
 | FR-020 | If saving the new card title changes no records, then the title-update handler shall return a failed result, record no activity, and publish no notification or message. | US4 |
 
+> **Note (#12):** FR-005 is extended by [ADR 2026-11-26-test-traceability-tags](../../adr/2026-11-26-test-traceability-tags.md): a test may carry a `Bug` trait with a GitHub issue number instead of a requirement tag (Track S bug fixes), and the guard is shared from `tests/Shared/`. The FR-005 text above is unchanged.
+
 ### Acceptance scenarios
 
 - **FR-001**

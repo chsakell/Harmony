@@ -51,7 +51,7 @@ This repository follows the AI-native .NET SDLC (`docs/dotnet-sdlc.md`, kept loc
 - Feature work lives in `docs/features/<issue>-<slug>/`: `intent.md`, then `spec.md`, then `plan.md`. Use `/sdlc-intent`, `/sdlc-spec`, `/sdlc-plan`, `/sdlc-implement`, `/sdlc-verify`, `/sdlc-review`, `/sdlc-pr`.
 - Do not change code under `src/` or `tests/` for a feature until its `plan.md` has `status: approved`.
 - Keep `plan.md` in sync: tick tasks and log deviations in the same commit as the code.
-- Tag every test with the requirement it proves: `[Trait("Requirement", "FR-001")]`.
+- Tag every test with the requirement it proves: `[Trait("Requirement", "FR-001")]`. A Track S bug fix has no spec, so its reproduction test carries the issue instead: `[Trait("Bug", "11")]` ([ADR](docs/adr/2026-11-26-test-traceability-tags.md)).
 - Commits follow Conventional Commits with the issue in the footer: `Refs #<id>` (a footer line starting with `#` is dropped by git as a comment). PR titles start with `#<id>`; PR bodies say `Fixes #<id>`.
 - Branches follow GitFlow: `feature/<id>-<slug>` and `bugfix/<id>-<slug>` from `develop`, `hotfix/<id>-<slug>` from `main`. Never push to `main` or `develop` directly.
 

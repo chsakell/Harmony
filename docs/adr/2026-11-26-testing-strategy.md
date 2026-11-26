@@ -5,7 +5,7 @@ date: 2026-11-26
 deciders: chsakell
 work-item: "#5"
 supersedes:
-superseded-by:
+superseded-by: 2026-11-26-test-traceability-tags.md (rule 7, first bullet only)
 ---
 
 # Test with xUnit v3 on Microsoft.Testing.Platform, using NSubstitute, Shouldly and coverlet.MTP, in a separate tests/ tree
