@@ -162,7 +162,7 @@ Tasks run in order. `[P]` marks a task that shares no file with another `[P]` ta
     - The test command's summary lists no Api test project.
     - A filter that selects nothing exits non-zero (FR-004).
     - A Cobertura file appears under `TestResults/Harmony.Api.IntegrationTests/`.
-- [ ] **T2** Test host on PostgreSQL
+- [x] **T2** Test host on PostgreSQL
   - Covers: FR-001, FR-003, NFR-002, NFR-004.
   - Files: `AssemblyInfo.cs`, `Harness/ApiTestHost.cs`, `Harness/HarmonyApiFactory.cs`, `Harness/ApiTestHostTests.cs`, `Conventions/ImageTagTests.cs`.
   - Proof:
@@ -377,3 +377,4 @@ Read from the code on 2026-11-26. None of these is pinned.
 | 2026-11-26 | T0 | PR #24 (draft, needs `sdlc:track-s`). The closure has a third package, `Microsoft.Extensions.DependencyModel` 10.0.15 (MIT), as well as `Microsoft.AspNetCore.TestHost`. No NU1903 or NU1109, and no known vulnerabilities. |
 | 2026-11-26 | T0 | Instead of waiting for #24 to merge, `feature/22-mvc-testing-package` was merged into this branch locally. The content is identical, so merging `develop` after #24 merges is clean. |
 | 2026-11-26 | T1 | Concern 3(a) trial confirmed: `new WebApplicationFactory<Program>()` compiles through the generated public `Program`. No `src/` change. The linked R-03 files sit under `Harness/Linked/` in the project view and keep their `Harmony.Infrastructure.IntegrationTests.Harness` namespace. |
+| 2026-11-26 | T2 | `HarmonyApiFactory` also calls `UseContentRoot(<repo>/src/Services/Harmony.Api)`. WebApplicationFactory looks for `MvcTestingAppManifest.json` in the *current* directory, which the harness moves to the temp folder (concern 3(b)), so without this it guessed a content root that does not exist. This is a test-side change only; NFR-003 is unchanged, because the content root is the one a deployed Api uses. `UseSetting` reaches the reads before `Build()`, as planned, so no environment-variable fallback was needed. |
