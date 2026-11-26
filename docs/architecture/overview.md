@@ -98,7 +98,7 @@ Dependencies are project references taken from the `.csproj` files.
 - **Local:** `aspire run` (or `dotnet run --project src/Aspire/Harmony.AppHost`) starts SQL Server or PostgreSQL, MongoDB, RabbitMQ, Redis and optionally Elasticsearch + Kibana as persistent containers with named volumes (`harmony-*-data`), then every service in dependency order (`WaitFor`). `Harmony:DatabaseProvider` selects `SqlServer` (default), `PostgreSQL` or `LocalSqlServer`. The client runs at https://localhost:7096.
 - **Containers:** each host has a `Dockerfile`; `docker-compose.yml` (SQL Server) and `docker-compose.postgres.yml` (PostgreSQL override) run the full stack with an Aspire dashboard container.
 - **Kubernetes:** Kustomize base in `.k8s/base` (apps and infra) with `sqlserver` and `postgres` overlays (`kubectl apply -k .k8s/overlays/<provider>`).
-- **CI/CD:** no build or release pipeline in the repository. `.github/workflows/` holds only the SDLC workflows (`sdlc-gates.yml`, `copilot-setup-steps.yml`). Agent evals are not run in CI; run them locally with `./evals/run-evals.ps1`. How releases reach production and how they are rolled back is not described in the repository (inferred - confirm).
+- **CI/CD:** `.github/workflows/ci.yml` builds, tests and format-checks every pull request to `develop`, `main` and `release/**` (job `Build and test`), next to the SDLC workflows (`sdlc-gates.yml`, `copilot-setup-steps.yml`). There is no release pipeline. Agent evals are not run in CI; run them locally with `./evals/run-evals.ps1`. How releases reach production and how they are rolled back is not described in the repository (inferred - confirm).
 
 ## Known issues and technical debt
 
@@ -110,7 +110,7 @@ Recorded from one run on 2026-11-25 (`dotnet build Harmony.slnx`, SDK 10.0.404);
   - one reference handler test (`UpdateCardTitleCommandHandler`).
 
   The CI workflow (`.github/workflows/ci.yml`, R-02) builds and runs them on every pull request. Still missing: integration tests against the databases and the broker, and tests for the other services and the Blazor client.
-- **675 build warnings, 0 errors** on a clean build, on Windows and Linux. CI fails a pull request that goes above it. The count includes duplicates: the unused-import warnings in `automations.proto` are reported once per project that compiles it, and NU1903 once per project and once for the solution. Mostly nullable reference types (CS8618 x262, CS8602 x136, CS8632, CS8604, CS8625, CS8600, CS8603, CS8601), plus unused fields (CS0169, CS0414), CA2022 (inexact `Stream.ReadAsync` in `Account.razor.cs` and `EditCardModal.razor.cs`) and MUD0002 (attribute casing in `Board.razor`).
+- **675 build warnings, 0 errors** on a clean build, on Windows and Linux: 585 from code and 90 NuGet audit warnings (NU1903, see below). CI fails a pull request whose code warnings exceed the baseline of 585. NuGet warnings are reported but not counted, because they depend on the live advisory database. The count includes duplicates: the unused-import warnings in `automations.proto` are reported once per project that compiles it, and NU1903 once per project and once for the solution. Mostly nullable reference types (CS8618 x262, CS8602 x136, CS8632, CS8604, CS8625, CS8600, CS8603, CS8601), plus unused fields (CS0169, CS0414), CA2022 (inexact `Stream.ReadAsync` in `Account.razor.cs` and `EditCardModal.razor.cs`) and MUD0002 (attribute casing in `Board.razor`).
 - **Vulnerable package:** `AutoMapper` 14.0.0 raises NU1903 for three high-severity denial-of-service advisories: [GHSA-rvv3-g6hj-g44x](https://github.com/advisories/GHSA-rvv3-g6hj-g44x), [GHSA-6vhm-j9h7-f9gh](https://github.com/advisories/GHSA-6vhm-j9h7-f9gh) and [GHSA-gpwp-5797-mjff](https://github.com/advisories/GHSA-gpwp-5797-mjff). The fixes are only in the commercially licensed 15.1.x and 16.x releases.
   - Replacing AutoMapper is R-14.
   - `tests/Directory.Build.props` suppresses the three advisories for test projects only, so `TreatWarningsAsErrors` can stay on there. `src/` projects still report them.
@@ -118,7 +118,6 @@ Recorded from one run on 2026-11-25 (`dotnet build Harmony.slnx`, SDK 10.0.404);
 - **gRPC clients accept any server certificate** (`DangerousAcceptAnyServerCertificateValidator`) in the Api and Automations.
 - **CORS allows any origin with credentials** (`SetIsOriginAllowed(_ => true)`) in the Api, SignalR and the gateway.
 - **Unused SQL Server-only code:** `BoardService.LoadBoardOld` / `LoadBoardListCardsOld` (stored procedures through `SqlConnection`) and `AddHarmonyDatabase` in `Harmony.Notifications` are never called; they would fail on PostgreSQL.
-- **No CI build** for the application itself.
 
 ## Decision index
 
