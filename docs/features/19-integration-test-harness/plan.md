@@ -182,7 +182,7 @@ Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can
     - `AutomationRepository_RuleLifecycle_ReturnsLastSavedState`, which also checks that the other board's rule is never returned
     - `AutomationRepository_Templates_ListedInFullAndByNotificationType`
     - `MongoDbTests_AllInOneNonParallelCollection`
-- [ ] **T12** Source-control store
+- [x] **T12** Source-control store
   - Covers: FR-051. Runs after T11.
   - Files: `MongoDb/SourceControlRepositoryTests.cs`.
   - Proof:
