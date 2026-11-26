@@ -106,7 +106,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `GetSerialKey_NoKeyWithAllowedNeighbours_ReturnsNull`, a theory with five cases: `"no key here"`, `"#HAR-42"`, `"see HARMONY-12"`, `"HAR-42x"`, `"AB-1"`.
     - `GetSerialKey_KeyFollowedByPeriod_ReturnsNull_KnownIssue`, for `"Fixes HAR-42."` (concern 4f).
     - `GetSerialKey_NullText_Throws_KnownIssue`, which expects `ArgumentNullException` (concern 4d).
-- [ ] **T3 [P] Card date display.**
+- [x] **T3 [P] Card date display.**
   - **Covers:** FR-008, FR-009, FR-010, FR-011, NFR-003.
   - **Files:** `Helpers/CardHelperDisplayDatesTests.cs`, `TestSupport/CultureScope.cs`.
   - **Rules:**
