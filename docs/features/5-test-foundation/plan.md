@@ -98,7 +98,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `RequirementTagGuardTests.TestAssembly_EveryTestMethod_HasRequirementTag`
     - `TestProjectIsolationTests.TestAssembly_References_NoInfrastructureOrServiceAssembly` (NFR-002)
   - **Also:** run the FR-002, FR-003 and FR-004 command checks listed under Proof.
-- [ ] **T2 [P] Card key extraction.**
+- [x] **T2 [P] Card key extraction.**
   - **Covers:** FR-006, FR-007.
   - **File:** `Helpers/CardHelperGetSerialKeyTests.cs`.
   - **Proof:**
