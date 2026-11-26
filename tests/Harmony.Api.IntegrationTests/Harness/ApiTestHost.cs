@@ -1,7 +1,9 @@
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using Harmony.Infrastructure.IntegrationTests.Harness;
+using Harmony.Integrations.SourceControl.Protos;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Testcontainers.PostgreSql;
 
@@ -53,6 +55,13 @@ namespace Harmony.Api.IntegrationTests.Harness
 
         /// <summary>Issues tokens signed with the run's key.</summary>
         public TestTokens Tokens => Started(tokens);
+
+        /// <summary>Records what the Api publishes to the broker (FR-006).</summary>
+        public RecordingNotificationsPublisher Publisher => Started(factory).Publisher;
+
+        public SourceControlService.SourceControlServiceClient SourceControlClient => Started(factory).SourceControlClient;
+
+        public IReadOnlyList<ServiceDescriptor> ServiceDescriptors => Started(factory).ServiceDescriptors;
 
         /// <summary>
         /// Starts a PostgreSQL container through <see cref="DockerGuard"/>; <paramref name="configure"/> lets a test

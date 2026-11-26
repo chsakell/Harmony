@@ -1,6 +1,12 @@
+using Harmony.Application.Contracts.Messaging;
 using Harmony.Infrastructure.IntegrationTests.Harness;
+using Harmony.Integrations.SourceControl.Protos;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using NSubstitute;
 
 namespace Harmony.Api.IntegrationTests.Harness
 {
@@ -14,6 +20,19 @@ namespace Harmony.Api.IntegrationTests.Harness
         /// <summary>Not Development, so the deployed pipeline (exception handler, HSTS) applies.</summary>
         public const string EnvironmentName = "Testing";
 
+        private IServiceCollection? services;
+
+        /// <summary>Stands in for the RabbitMQ publisher (FR-006).</summary>
+        public RecordingNotificationsPublisher Publisher { get; } = new();
+
+        /// <summary>Stands in for the SourceControl gRPC client (FR-006); nothing in the Api calls it today.</summary>
+        public SourceControlService.SourceControlServiceClient SourceControlClient { get; } =
+            Substitute.For<SourceControlService.SourceControlServiceClient>();
+
+        /// <summary>The host's service registrations after the test overrides, for checks on what is registered.</summary>
+        public IReadOnlyList<ServiceDescriptor> ServiceDescriptors =>
+            services?.ToList() ?? throw new InvalidOperationException("The host has not been built.");
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             // WebApplicationFactory looks for MvcTestingAppManifest.json in the current directory, which the harness
@@ -26,6 +45,15 @@ namespace Harmony.Api.IntegrationTests.Harness
             builder.UseSetting("ElasticConfiguration:Uri", string.Empty);
             builder.UseSetting("CacheProvider", "InMemory");
             builder.UseSetting("OTEL_EXPORTER_OTLP_ENDPOINT", string.Empty);
+
+            builder.ConfigureTestServices(testServices =>
+            {
+                testServices.RemoveAll<INotificationsPublisher>();
+                testServices.AddSingleton<INotificationsPublisher>(Publisher);
+                testServices.RemoveAll<SourceControlService.SourceControlServiceClient>();
+                testServices.AddSingleton(SourceControlClient);
+                services = testServices;
+            });
         }
     }
 }

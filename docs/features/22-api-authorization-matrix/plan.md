@@ -173,7 +173,7 @@ Tasks run in order. `[P]` marks a task that shares no file with another `[P]` ta
     - `ApiTestHostTests.DockerGuard_EndpointUnreachable_ThrowsMessageNamingDocker`, which uses the container start path pointed at `tcp://127.0.0.1:1`.
     - `ApiTestHostTests.Container_NameDoesNotStartWithHarmony`
     - `ImageTagTests.PostgreSqlImage_MatchesDockerComposePostgres`
-- [ ] **T3** [P] Stand-ins, configuration and files
+- [x] **T3** [P] Stand-ins, configuration and files
   - Covers: FR-006, NFR-003.
   - Files: `Harness/HarmonyApiFactory.cs` (`ConfigureTestServices`), `Harness/RecordingNotificationsPublisher.cs`, `Harness/StandInTests.cs`.
   - Proof:
@@ -379,3 +379,4 @@ Read from the code on 2026-11-26. None of these is pinned.
 | 2026-11-26 | T1 | Concern 3(a) trial confirmed: `new WebApplicationFactory<Program>()` compiles through the generated public `Program`. No `src/` change. The linked R-03 files sit under `Harness/Linked/` in the project view and keep their `Harmony.Infrastructure.IntegrationTests.Harness` namespace. |
 | 2026-11-26 | T2 | `HarmonyApiFactory` also calls `UseContentRoot(<repo>/src/Services/Harmony.Api)`. WebApplicationFactory looks for `MvcTestingAppManifest.json` in the *current* directory, which the harness moves to the temp folder (concern 3(b)), so without this it guessed a content root that does not exist. This is a test-side change only; NFR-003 is unchanged, because the content root is the one a deployed Api uses. `UseSetting` reaches the reads before `Build()`, as planned, so no environment-variable fallback was needed. |
 | 2026-11-26 | T4 | Done before T3, because T3's upload test needs an owner token. `TestUser` also carries the user's roles, so `TestTokens` can add the role claims. `CreateClient(token?)` sets the bearer header. |
+| 2026-11-26 | T3 | `Harness/Fixtures.cs` (planned for T8) was brought forward: the upload test needs a real card, because the handler returns "Card not found" before it writes the file. T8 keeps `FixtureIsolationTests` and the request builder. The factory also exposes `ServiceDescriptors` (the collection after the overrides) and the `SourceControlClient` substitute, for the stand-in checks. The fixture board is `Scrum`, so the sprint and backlog endpoints apply. |
