@@ -202,20 +202,20 @@ See [docs/architecture/overview.md](../../architecture/overview.md). No runtime 
 
 - **New `tests/` folder:**
   - `tests/Directory.Build.props` holds the settings shared by test projects (for example, not packable, test-runner opt-in). It also imports `src/Directory.Build.props`, so the target framework stays defined once.
-  - Central package management must reach `tests/` (see Flagged concern 2).
+  - `tests/Directory.Packages.props` imports `src/Directory.Packages.props`, so central package management reaches `tests/` (Flagged concern 2).
 - **New `Harmony.Application.UnitTests`:**
   - references `Harmony.Application` only (Domain and Shared come through it);
   - is added to `Harmony.slnx` under a `/tests/` solution folder.
 - **`global.json`:** opts the solution into Microsoft.Testing.Platform, so `dotnet test --solution` and `--filter-trait` work.
 - **Central package versions:**
-  - the test framework (xUnit v3 on Microsoft.Testing.Platform), NSubstitute, Shouldly and a coverage extension (coverlet.MTP assumed, confirmed in the ADR);
+  - the test framework (xUnit v3 on Microsoft.Testing.Platform), NSubstitute, Shouldly and coverlet.MTP for coverage (all decided in the ADR);
   - added in this PR as a logged exception to the separate-`build:`-PR rule, decided 2026-11-26.
 - **AGENTS.md:** the Test command line is updated, and so is the overview's Known issues entry "No automated tests".
 - **Production code:**
   - unchanged by default;
   - any change made only for testability (for example, internals made visible to the test project) must be listed and justified in `plan.md`.
 
-The testing strategy is recorded in an ADR, `docs/adr/2026-11-26-testing-strategy.md` (to be written with `/sdlc-adr` before this spec is approved). It covers:
+The testing strategy is recorded in the ADR [2026-11-26-testing-strategy](../../adr/2026-11-26-testing-strategy.md) (status: proposed). It covers:
 - the runner, frameworks and assertion and coverage libraries;
 - the test project layout and naming for later items (`*.UnitTests`, `*.IntegrationTests` for R-03 and R-04, `Harmony.ArchitectureTests` for R-06);
 - the requirement-tag convention;
@@ -252,8 +252,8 @@ Not applicable.
 | # | Concern | Owner | Resolution |
 |---|---|---|---|
 | 1 | The AutoMapper configuration is invalid today. `AssertConfigurationIsValid()` reports 12 type maps with unmapped destination members (checked 2026-11-26 with a scratch program against `Harmony.Application`), so a plain validity test would fail. | chsakell | **Resolved 2026-11-26:** use behaviour pairs (FR-015) plus a ratcheting baseline (FR-016, FR-017). No profile changes in R-01. |
-| 2 | Central package management lives in `src/Directory.Packages.props`. MSBuild looks for it by walking up from the project folder, so a project under `tests/` will not find it. | chsakell | Open, design choice for the plan. **Recommended:** a `tests/Directory.Packages.props` that only imports `../src/Directory.Packages.props`, keeping one list of versions. The alternative is moving both `src/` props files to the root. |
-| 3 | Opting into Microsoft.Testing.Platform changes the documented test command to `dotnet test --solution Harmony.slnx`. Every future test project (R-03, R-04, R-06) must also run on that platform, and CI (R-02) must use the new command. | chsakell | **Resolved 2026-11-26:** adopt Microsoft.Testing.Platform. To be recorded in the testing-strategy ADR. |
+| 2 | Central package management lives in `src/Directory.Packages.props`. MSBuild looks for it by walking up from the project folder, so a project under `tests/` will not find it. | chsakell | **Resolved 2026-11-26:** `tests/Directory.Packages.props` and `tests/Directory.Build.props` import their `src/` counterparts, so there is one version list and no file moves. Recorded in the testing-strategy ADR. |
+| 3 | Opting into Microsoft.Testing.Platform changes the documented test command to `dotnet test --solution Harmony.slnx`. Every future test project (R-03, R-04, R-06) must also run on that platform, and CI (R-02) must use the new command. | chsakell | **Resolved 2026-11-26:** adopt Microsoft.Testing.Platform. Recorded in the testing-strategy ADR. |
 | 4 | Probable defects found while specifying, pinned as known-wrong and not fixed here: <br>(a) date display ignores the year when the months match; <br>(b) date display uses the server's culture for month names, which affects emails sent by Notifications; <br>(c) the issue-type filter throws on a type with no summary; <br>(d) the card helper throws on empty (null) text; <br>(e) the `CardDto → CardCreatedMessage` mapping is never used, because both handlers construct that message directly; <br>(f) the card helper finds no key when it is followed by `.` or `,`, for example the commit message "Fixes HAR-42.". | chsakell | Open: where to record them (DEL-3). **Recommended:** a "Known defects found by R-01" bullet in the roadmap's Later section, added in this PR. (e) is also input for R-14, and (f) matters for the GitHub integration. |
 | 5 | Adding test packages in this PR departs from the SDLC guide's separate-`build:`-PR rule. | chsakell | **Resolved 2026-11-26:** accepted exception. Logged in `plan.md` and the ADR. |
 
@@ -262,8 +262,8 @@ Not applicable.
 | Question (from intent or new) | Answer, or "carried forward" | Owner |
 |---|---|---|
 | Microsoft.Testing.Platform or VSTest? | Microsoft.Testing.Platform. Decided 2026-11-26 because it supports the SDLC kit's `--solution` and `--filter-trait` commands. | chsakell |
-| Assertion library? | Shouldly (MIT). Decided 2026-11-26. | chsakell |
-| Coverage tool? | Assumed: coverlet.MTP (MIT), since coverlet.collector works only with VSTest. The ADR confirms it, and the plan checks that it works with the chosen xUnit v3 package and SDK 10.0.404. | chsakell |
+| Assertion library? | Shouldly (BSD-3-Clause). Decided 2026-11-26. | chsakell |
+| Coverage tool? | coverlet.MTP (MIT), decided in the testing-strategy ADR, since coverlet.collector works only with VSTest. The plan checks that it works with the chosen xUnit v3 package and SDK 10.0.404. | chsakell |
 | Which handler is the reference example? | The card title update handler. It depends only on interfaces, covers the success, unauthenticated and nothing-saved paths, and is changed later by R-08 (authorization) and R-24 (missing card returns not-found). The missing-card crash is left to R-24 and not pinned here. | chsakell |
 | Can mapping tests survive the R-14 mapper swap? | Yes for FR-015, which asserts on inputs and outputs only. FR-016 and FR-017 are AutoMapper-specific and are expected to be removed or replaced by R-14. | chsakell |
 | Separate `build:` PR for packages? | No. Accepted exception, decided 2026-11-26. | chsakell |
