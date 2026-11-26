@@ -43,8 +43,8 @@
 | [R-13](#r-13-safe-file-uploads) | Safe file uploads | security | M | high | R-04 | | todo |
 | [R-14](#r-14-replace-automapper) | Replace AutoMapper | security | M +ADR | | R-01 | | todo |
 | **Phase 2: Make what exists correct** | | | | | | | |
-| [R-15](#r-15-backlog-reorder-moves-cards-on-every-board) | Backlog reorder moves cards on every board | bug | S | | R-01 | [#11](https://github.com/chsakell/Harmony/issues/11) | in progress |
-| [R-16](#r-16-card-search-ignores-the-workspace) | Card search ignores the workspace | bug | S | | R-01 | | todo |
+| [R-15](#r-15-backlog-reorder-moves-cards-on-every-board) | Backlog reorder moves cards on every board | bug | S | | R-01 | [#11](https://github.com/chsakell/Harmony/issues/11) | done |
+| [R-16](#r-16-card-search-ignores-the-workspace) | Card search ignores the workspace | bug | S | | R-01 | [#17](https://github.com/chsakell/Harmony/issues/17) | in progress |
 | [R-17](#r-17-sprint-lifecycle-rules) | Sprint lifecycle rules | bug | M | | R-05 | | todo |
 | [R-18](#r-18-status-categories-and-reliable-completion-dates) | Status categories and reliable completion dates | bug | M | | R-05 | | todo |
 | [R-19](#r-19-correct-burndown-chart) | Correct burndown chart | bug | M | | R-17, R-18 | | todo |
@@ -268,9 +268,9 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
 
 ### R-16 Card search ignores the workspace
 
-- **Problem:** The search used to pick an issue to link returns nothing in the normal case. When a card is excluded, it returns cards from **every workspace**, including archived ones. That is a data leak.
+- **Problem:** The search used to pick an issue to link returns no cards, and a count of 0, when no card is excluded. When a card is excluded, the result is correct. The client always excludes the source card, so only direct API calls hit the bug. An earlier version of this item said the excluded-card case returned cards from every workspace. The #17 reproduction test shows it does not, so there is no data leak.
 - **Outcome:** The search returns only non-archived cards of the current workspace that match the term, and excludes the given card.
-- **Evidence:** `src/Infrastructure/Harmony.Infrastructure/Services/Management/CardService.cs:278-281`. `&&` binds tighter than `?:`, so the whole condition becomes `(workspace && term && notArchived && skip.HasValue) ? card.Id != skip : false`. Used by `SearchCardsHandler`.
+- **Evidence:** `src/Infrastructure/Harmony.Infrastructure/Services/Management/CardService.cs:278-281`. `&&` binds tighter than `?:`, so the whole condition becomes `(workspace && term && notArchived && skip.HasValue) ? card.Id != skip : false`, which is always false when no card is skipped. Used by `SearchCardsHandler`.
 - **Notes:** Track S with `/sdlc-debug`.
 
 ### R-17 Sprint lifecycle rules
