@@ -27,7 +27,7 @@ The rest of the testing ADR (runner, libraries, layout, the `_KnownIssue` and cl
 2. Any `Requirement` or `Bug` value that does not match its format fails the guard, even when another valid tag is present.
 3. The guard (`RequirementTagGuard`) lives in `tests/Shared/`. `tests/Directory.Build.props` compiles every file in that folder into every test project. Each test project has one test that applies the guard to its own assembly. The guard's own behaviour is tested once, in `Harmony.Application.UnitTests`.
 
-Select a bug's tests with `dotnet test --solution Harmony.slnx --filter-trait "Bug=<id>"`.
+Select a bug's tests with `dotnet test --solution Harmony.slnx --filter-trait "Bug=<id>" --ignore-exit-code 8`. Microsoft.Testing.Platform exits with code 8 for a test project in which no test matches, which is the normal case once there are several test projects; check that the summary's `total` is above 0.
 
 ## Alternatives considered
 

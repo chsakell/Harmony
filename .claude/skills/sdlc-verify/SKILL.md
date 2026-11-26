@@ -35,11 +35,13 @@ Read the whole output, not only the last line. Record the exact command, exit co
 
 ## 3. Trace requirements to tests
 
-For a feature (track M or L), read the IDs from `spec.md` and check each one:
+For a feature (track M or L), read the IDs from `spec.md` and check each one. For a track S bug fix, check its `Bug` trait instead (`--filter-trait "Bug=<id>"`):
 
 ```powershell
-dotnet test --solution <Solution>.slnx --filter-trait "Requirement=FR-001"
+dotnet test --solution <Solution>.slnx --filter-trait "Requirement=FR-001" --ignore-exit-code 8
 ```
+
+`--ignore-exit-code 8` stops a test project with no matching tests ("Zero tests ran") from failing the run, so the command also exits 0 when nothing matched at all: read the summary and check that `total` is above 0.
 
 Every FR and NFR must have at least one passing test. An NFR that cannot be proven by an automated test (for example a load target) needs the evidence named in the plan's Proof section.
 
