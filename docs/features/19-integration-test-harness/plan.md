@@ -93,7 +93,7 @@ spec: ./spec.md
 
 Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can run in parallel once T5 is done. Each task starts with a failing test, and its commit ticks its box in this plan.
 
-- [ ] **T0** `build:` pull request, Testcontainers packages (Flagged concern 1)
+- [x] **T0** `build:` pull request, Testcontainers packages (Flagged concern 1)
   - Covers: NFR-008.
   - Files: `src/Directory.Packages.props`.
   - Work:
@@ -321,3 +321,6 @@ Decided by chsakell (2026-11-26): T13 adds them as unpinned lines under the road
 
 | Date | Task | What changed and why |
 |---|---|---|
+| 2026-11-26 | T0 | The `build:` PR is #21. Its branch was merged into this branch before #21 merged, so T1-T13 could start (chsakell's decision). The change is identical, so merging `develop` after #21 merges brings nothing new; that merge is still to do. |
+| 2026-11-26 | T0 | The transitive closure is 16 packages, not seven. It also includes BouncyCastle.Cryptography 2.7.0 and six `Docker.DotNet.Enhanced.*` sub-packages. All 16 are MIT, and none has a known vulnerability. |
+| 2026-11-26 | T0 | `develop` has no `docs/features/19-*/` folder, so #21 fails the SDLC gate once it is not a draft. chsakell adds `sdlc:track-s` to #21 to pass it. |
