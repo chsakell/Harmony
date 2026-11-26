@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Unit tests for Harmony.Infrastructure: no Docker, database, broker or network.
+    Queries run over in-memory lists (TestSupport/AsyncQueryable.cs), so they prove the LINQ logic,
+    not its SQL translation; that is the job of Harmony.Infrastructure.IntegrationTests (roadmap R-03).
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="coverlet.MTP" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Infrastructure\Harmony.Infrastructure\Harmony.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
