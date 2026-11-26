@@ -154,7 +154,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
     - `Map_AttachmentToAttachmentDto_BuildsFilesUrl`: `files/<description of Type>/<FileName>`. The expected text is written out by hand, not computed with `ToDescriptionString`.
     - `Map_UserCardToCardMemberDto_UsesUserIdAsId`
   - **Starting point:** the six `CreateMap` statements in `src/Core/Harmony.Application/Mappings/Management/ManagementProfile.cs`.
-- [ ] **T7 Unmapped-member guard.**
+- [x] **T7 Unmapped-member guard.**
   - **Covers:** FR-016, FR-017.
   - **Files:** `Mapping/UnmappedMemberGuard.cs`, `Mapping/UnmappedMemberBaseline.cs`, `Mapping/UnmappedMemberGuardTests.cs`. It also uses `MappingConfigurationFactory.cs` from T6, so it runs after T6.
   - **Actual pairs:** catch `AutoMapperConfigurationException` from `AssertConfigurationIsValid()` and flatten `Errors[].TypeMap.Types` × `UnmappedPropertyNames`.
@@ -331,3 +331,4 @@ Update this table in the same commit as any change that departs from the plan.
 | 2026-11-26 | T0, T1 | Coverage options are coverlet.MTP's `--coverlet --coverlet-output-format cobertura`, passed through `TestingPlatformCommandLineArguments`. The plan's `--coverage` names belong to Microsoft's CodeCoverage extension. The report file is `coverage.cobertura.<timestamp>.xml`, so the FR-004 proof matches `TestResults/Harmony.Application.UnitTests/coverage.cobertura.*.xml`, not `*.cobertura.xml`. |
 | 2026-11-26 | T1 | `TestProjectIsolationTests` checks every `Harmony.*.dll` the build copies next to the test assembly, not only `GetReferencedAssemblies()`. Metadata references list only assemblies whose types are used, so an unused `ProjectReference` to infrastructure would pass unnoticed. The results path is held in a custom `HarmonyTestResultsDirectory` property, so it cannot clash with SDK property names. xUnit v3 adds no global `using Xunit`, so each test file has an explicit `using Xunit;`. |
 | 2026-11-26 | T7 | Unmapped pairs are flattened from `Errors[].TypeMap.SourceType` / `DestinationType` × `UnmappedPropertyNames`, because `TypeMap.Types` is not public in AutoMapper 14.0.0. |
+| 2026-11-26 | T7 | `UnmappedMemberGuardTests` has no class-level trait; each method carries its own (FR-016, FR-017, or both). xUnit merges class and method traits, so a class-level FR-016 would also put the FR-017 test under `--filter-trait "Requirement=FR-016"`. `Compare` returns an `UnmappedMemberComparison` record (`NewUnmapped`, `NowMapped`, `MatchesBaseline`, `Message`), and reading the pairs from a configuration is `UnmappedMemberGuard.ReadUnmappedMembers`. |
