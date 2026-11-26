@@ -215,7 +215,7 @@ See [docs/architecture/overview.md](../../architecture/overview.md). No runtime 
   - unchanged by default;
   - any change made only for testability (for example, internals made visible to the test project) must be listed and justified in `plan.md`.
 
-The testing strategy is recorded in the ADR [2026-11-26-testing-strategy](../../adr/2026-11-26-testing-strategy.md) (status: proposed). It covers:
+The testing strategy is recorded in the ADR [2026-11-26-testing-strategy](../../adr/2026-11-26-testing-strategy.md) (status: accepted). It covers:
 - the runner, frameworks and assertion and coverage libraries;
 - the test project layout and naming for later items (`*.UnitTests`, `*.IntegrationTests` for R-03 and R-04, `Harmony.ArchitectureTests` for R-06);
 - the requirement-tag convention;
