@@ -78,7 +78,7 @@ A new endpoint fails the tests until it has a line here. Keep the lines sorted b
 | api/CheckListItems/{id:guid}/description | PUT | resource | gap R-07 | refused |  |
 | api/CheckListItems/{id:guid}/duedate | PUT | resource | gap R-07 | refused |  |
 | api/CheckLists | POST | resource | gap R-07 | refused |  |
-| api/CheckLists/{id:guid} | DELETE | resource | gap R-07 | refused |  |
+| api/CheckLists/{id:guid} | DELETE | resource | gap R-07 | refused | id=checklist |
 | api/CheckLists/{id:guid}/items | POST | resource | gap R-07 | refused |  |
 | api/CheckLists/{id:guid}/title | PUT | resource | gap R-07 | refused |  |
 | api/Comments | POST | resource | gap R-07 | refused |  |
