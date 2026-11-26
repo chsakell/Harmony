@@ -29,7 +29,7 @@
 | **Phase 0: Safety net** | | | | | | | |
 | [R-01](#r-01-test-foundation) | Test foundation | test | M +ADR | | - | [#5](https://github.com/chsakell/Harmony/issues/5) | done |
 | [R-02](#r-02-ci-build-workflow) | CI build workflow | improvement | S | | R-01 | [#9](https://github.com/chsakell/Harmony/issues/9) | done |
-| [R-03](#r-03-integration-test-harness) | Integration test harness (SQL Server + PostgreSQL) | test | M | | R-01 | | todo |
+| [R-03](#r-03-integration-test-harness) | Integration test harness (SQL Server + PostgreSQL) | test | M | | R-01 | [#19](https://github.com/chsakell/Harmony/issues/19) | in progress |
 | [R-04](#r-04-api-test-host-and-authorization-matrix) | Api test host and authorization matrix | test | M | | R-01 | | todo |
 | [R-05](#r-05-characterization-tests-for-scrum-and-automations) | Characterization tests for Scrum and automations | test | S | | R-01 | | todo |
 | [R-06](#r-06-architecture-tests) | Architecture tests | test | S | | R-01 | | todo |
@@ -44,7 +44,7 @@
 | [R-14](#r-14-replace-automapper) | Replace AutoMapper | security | M +ADR | | R-01 | | todo |
 | **Phase 2: Make what exists correct** | | | | | | | |
 | [R-15](#r-15-backlog-reorder-moves-cards-on-every-board) | Backlog reorder moves cards on every board | bug | S | | R-01 | [#11](https://github.com/chsakell/Harmony/issues/11) | done |
-| [R-16](#r-16-card-search-returns-nothing-without-an-excluded-card) | Card search returns nothing without an excluded card | bug | S | | R-01 | [#17](https://github.com/chsakell/Harmony/issues/17) | in progress |
+| [R-16](#r-16-card-search-returns-nothing-without-an-excluded-card) | Card search returns nothing without an excluded card | bug | S | | R-01 | [#17](https://github.com/chsakell/Harmony/issues/17) | done |
 | [R-17](#r-17-sprint-lifecycle-rules) | Sprint lifecycle rules | bug | M | | R-05 | | todo |
 | [R-18](#r-18-status-categories-and-reliable-completion-dates) | Status categories and reliable completion dates | bug | M | | R-05 | | todo |
 | [R-19](#r-19-correct-burndown-chart) | Correct burndown chart | bug | M | | R-17, R-18 | | todo |
