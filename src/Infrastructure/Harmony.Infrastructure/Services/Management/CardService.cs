@@ -46,7 +46,7 @@ namespace Harmony.Infrastructure.Services.Management
             {
                 if (card.BoardList == null && card.Status == CardStatus.Backlog)
                 {
-                    await ReorderCardsInBacklog(card.Id, card.Position, newPosition);
+                    await ReorderCardsInBacklog(card.IssueTypeId, card.Position, newPosition);
                 }
                 else if (card.BoardListId.HasValue)
                 {
@@ -110,7 +110,7 @@ namespace Harmony.Infrastructure.Services.Management
             return await Result<List<Card>>.FailAsync("Failed to move cards");
         }
 
-        public async Task<IResult<Card>> AddCardToSprint(Guid boardId, string userId, Guid sprintId, 
+        public async Task<IResult<Card>> AddCardToSprint(Guid boardId, string userId, Guid sprintId,
                                                         Guid issueTypeId, Guid boardListId, string title)
         {
             // Get the last index in the board list id
@@ -251,7 +251,7 @@ namespace Harmony.Infrastructure.Services.Management
             return result;
         }
 
-        public async Task<List<CardDto>> SearchWorkspaceCards(Guid workspaceId, string term, 
+        public async Task<List<CardDto>> SearchWorkspaceCards(Guid workspaceId, string term,
             int pageNumber, int pageSize, Guid? skipCardId = null)
         {
             var result = await GetSearchWorkspaceQuery(workspaceId, term, skipCardId)
@@ -400,8 +400,19 @@ namespace Harmony.Infrastructure.Services.Management
             }
         }
 
-        private async Task ReorderCardsInBacklog(Guid cardId, short previousPosition, short newPosition)
+        private async Task ReorderCardsInBacklog(Guid? issueTypeId, short previousPosition, short newPosition)
         {
+            // Backlog positions are numbered per board: only the moved card's board is renumbered.
+            var boardId = await _issueTypeRepository.Entities
+                .Where(issueType => issueType.Id == issueTypeId)
+                .Select(issueType => (Guid?)issueType.BoardId)
+                .FirstOrDefaultAsync();
+
+            if (boardId == null)
+            {
+                return;
+            }
+
             var offSet = newPosition < previousPosition ? 1 : -1;
 
             List<Card>? cardsToReOrder = null;
@@ -413,7 +424,7 @@ namespace Harmony.Infrastructure.Services.Management
                                             on card.IssueTypeId equals issueType.Id
                                         join board in _boardRepository.Entities
                                             on issueType.BoardId equals board.Id
-                                        where (board.Id == issueType.BoardId
+                                        where (board.Id == boardId
                                                && card.Status == CardStatus.Backlog
                                                && card.Position >= newPosition
                                                && card.Position < previousPosition)
@@ -427,7 +438,7 @@ namespace Harmony.Infrastructure.Services.Management
                                             on card.IssueTypeId equals issueType.Id
                                         join board in _boardRepository.Entities
                                             on issueType.BoardId equals board.Id
-                                        where (board.Id == issueType.BoardId
+                                        where (board.Id == boardId
                                                && card.Status == CardStatus.Backlog
                                                && card.Position <= newPosition
                                                && card.Position > previousPosition)
