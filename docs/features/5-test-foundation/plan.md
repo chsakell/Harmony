@@ -84,7 +84,7 @@ Tasks run in order. `[P]` marks a task that touches no file used by another `[P]
   5. **AutoMapper:** `new MapperConfiguration(cfg => cfg.AddMaps(appAssembly)).AssertConfigurationIsValid()` throws `AutoMapperConfigurationException`, and its `Errors` give 28 unmapped members across 12 type maps. **If the numbers differ from the spec, stop and report.**
 
   Record the outcome, package versions and chosen mechanism in "Spike results" in this plan. Commit as `docs(plan): record test-foundation spike`. Covers: the open question carried forward in the spec, and NFR-004.
-- [ ] **T1 Test infrastructure and requirement-tag guard.**
+- [x] **T1 Test infrastructure and requirement-tag guard.**
   - **Covers:** FR-001, FR-002, FR-003, FR-004, FR-005, NFR-002, NFR-005, NFR-006.
   - **Files:**
     - `global.json`, `src/Directory.Packages.props`, `tests/Directory.Build.props`, `tests/Directory.Packages.props`, `Harmony.slnx`;
@@ -329,4 +329,5 @@ Update this table in the same commit as any change that departs from the plan.
 | 2026-11-26 | T1 | Test packages added in this PR. This is an exception to the separate `build:` PR rule (spec Flagged concern 5, ADR decision 8). |
 | 2026-11-26 | T0, T1, T9 | AutoMapper 14.0.0 has three NU1903 advisories, not one: GHSA-rvv3-g6hj-g44x, GHSA-6vhm-j9h7-f9gh and GHSA-gpwp-5797-mjff. `tests/Directory.Build.props` suppresses all three URLs, in `tests/` only. T9 also updates the overview Known issue to name the three IDs. Decided by chsakell. |
 | 2026-11-26 | T0, T1 | Coverage options are coverlet.MTP's `--coverlet --coverlet-output-format cobertura`, passed through `TestingPlatformCommandLineArguments`. The plan's `--coverage` names belong to Microsoft's CodeCoverage extension. The report file is `coverage.cobertura.<timestamp>.xml`, so the FR-004 proof matches `TestResults/Harmony.Application.UnitTests/coverage.cobertura.*.xml`, not `*.cobertura.xml`. |
+| 2026-11-26 | T1 | `TestProjectIsolationTests` checks every `Harmony.*.dll` the build copies next to the test assembly, not only `GetReferencedAssemblies()`. Metadata references list only assemblies whose types are used, so an unused `ProjectReference` to infrastructure would pass unnoticed. The results path is held in a custom `HarmonyTestResultsDirectory` property, so it cannot clash with SDK property names. xUnit v3 adds no global `using Xunit`, so each test file has an explicit `using Xunit;`. |
 | 2026-11-26 | T7 | Unmapped pairs are flattened from `Errors[].TypeMap.SourceType` / `DestinationType` × `UnmappedPropertyNames`, because `TypeMap.Types` is not public in AutoMapper 14.0.0. |

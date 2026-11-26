@@ -1,0 +1,34 @@
+<Project>
+
+  <!-- Settings shared by every test project. The target framework comes from src/. -->
+  <Import Project="../src/Directory.Build.props" />
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!--
+    Coverage on every run, with no command-line options: coverlet.MTP writes a Cobertura report
+    to <repository root>/TestResults/<project>/coverage.cobertura.<timestamp>.xml (git-ignored).
+  -->
+  <PropertyGroup>
+    <HarmonyTestResultsDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..', 'TestResults', '$(MSBuildProjectName)'))</HarmonyTestResultsDirectory>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --coverlet --coverlet-output-format cobertura --results-directory "$(HarmonyTestResultsDirectory)"</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
+  <!--
+    AutoMapper 14.0.0 (referenced through Harmony.Application) has three high-severity advisories (NU1903).
+    They are fixed only in commercially licensed releases; replacing AutoMapper is roadmap item R-14 and the
+    issue stays listed under Known issues in docs/architecture/overview.md. They are suppressed here, for
+    test projects only, so TreatWarningsAsErrors can stay on. src/ projects still report them.
+  -->
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-6vhm-j9h7-f9gh" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-gpwp-5797-mjff" />
+  </ItemGroup>
+
+</Project>
