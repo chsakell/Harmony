@@ -175,7 +175,7 @@ Tasks run in order, except the `[P]` tasks: T6-T10 and T11 share no file and can
     - `SearchWorkspaceCards_SkippedCard_LeavesItOut`
     - `SearchWorkspaceCards_Paging_SplitsAndCountsAll`
     - `SearchWorkspaceCards_TermDiffersInCase_CaseInsensitiveOnSqlServerOnly_KnownIssue` (5c): `[BothProviders]`, asserting "found" on SQL Server and "not found" on PostgreSQL. This keeps FR-005 (every case on both providers) and pins only the PostgreSQL defect. The fix changes it to "found" on both.
-- [ ] **T11** [P] MongoDB harness and automation store
+- [x] **T11** [P] MongoDB harness and automation store
   - Covers: FR-050, NFR-003 (MongoDB part).
   - Files: `Harness/MongoDbFixture.cs`, `Harness/MongoDbCollection.cs`, `MongoDb/AutomationRepositoryTests.cs`, `Conventions/MongoDbCollectionConventionTests.cs`.
   - Proof:
@@ -332,3 +332,4 @@ Decided by chsakell (2026-11-26): T13 adds them as unpinned lines under the road
 | 2026-11-26 | T6-T12 | These tasks pin existing behaviour and change no production code, so their tests passed on the first run; there was no red step to watch. Each assertion is on a value that would differ if the behaviour under test were missing (for example, `CountCards` gives 2 instead of 1 if subtasks were counted). T6 ran in sequence in one session, not in a parallel worktree. |
 | 2026-11-26 | T6 | New file `Harness/TestBoard.cs`: a record with a new user, workspace, board, list and issue type, which T6-T10 share as their starting point. The CountActiveCards test is named `CountActiveCards_ListWithSubtaskAndArchivedCard_CountsActiveTopLevelOnly`. `GetMaxActivePosition_ActiveAndArchived_ReturnsHighestActive` also adds an active subtask at position 9, because FR-034 says subtasks are left out. |
 | 2026-11-26 | T7 | The three single-filter tests are named `LoadBoard_SprintFilter_ReturnsOnlyThatSprintsCards`, `LoadBoard_IssueTypeFilter_ReturnsOnlyCardsOfThoseTypes` and `LoadBoard_AssigneeFilter_ReturnsOnlyCardsAssignedToThem`. The class carries `Requirement=FR-030`; the full-board test also carries `FR-020`. Every card has an issue type, because the board load finds a board's cards through `IssueType.BoardId`. |
+| 2026-11-26 | T11 | `MongoDbFixture` is the collection fixture of `MongoDbCollection`, and it implements `IAsyncLifetime`: it starts the MongoDB container in `InitializeAsync`, which runs only when a MongoDB test runs. The per-test reset is `DropDatabasesAsync()`, which each MongoDB test class calls from its own `InitializeAsync`. `MongoDbCollectionConventionTests` treats any class whose constructor takes `MongoDbFixture` as a MongoDB test class. Rules are stored as `SumUpStoryPointsAutomationDto` and read back through `GetAutomations<T>`, as the Automations host reads them. |
