@@ -138,18 +138,28 @@ jobs:
         # Fails if a test fails, if no test ran (exit code 8) or if Docker is unavailable (FR-060).
         run: dotnet test --project tests/Harmony.Infrastructure.IntegrationTests -p:HarmonyIntegrationTests=true --report-xunit-trx --report-xunit-markdown
 
+      - name: Api integration tests
+        # Api host and authorization matrix (#22). Fails if a test fails, if no test ran (exit code 8) or if Docker is
+        # unavailable (FR-050).
+        if: ${{ !cancelled() }}
+        run: dotnet test --project tests/Harmony.Api.IntegrationTests -p:HarmonyIntegrationTests=true --report-xunit-trx --report-xunit-markdown
+
       - name: Publish test summary
         if: ${{ always() }}
         shell: pwsh
         run: |
-          Get-ChildItem TestResults/Harmony.Infrastructure.IntegrationTests -Filter *.md -ErrorAction SilentlyContinue |
-            ForEach-Object { Get-Content $_.FullName -Raw >> $env:GITHUB_STEP_SUMMARY }
+          foreach ($folder in 'TestResults/Harmony.Infrastructure.IntegrationTests', 'TestResults/Harmony.Api.IntegrationTests') {
+            Get-ChildItem $folder -Filter *.md -ErrorAction SilentlyContinue |
+              ForEach-Object { Get-Content $_.FullName -Raw >> $env:GITHUB_STEP_SUMMARY }
+          }
 
       - name: Upload test results
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: integration-test-results
-          path: TestResults/Harmony.Infrastructure.IntegrationTests/
+          path: |
+            TestResults/Harmony.Infrastructure.IntegrationTests/
+            TestResults/Harmony.Api.IntegrationTests/
           if-no-files-found: warn
           retention-days: 14
