@@ -109,8 +109,12 @@ namespace Harmony.Api.IntegrationTests.Authorization
             return request;
         }
 
-        /// <summary>A name that ends in <c>Id</c> (any case) names an ID.</summary>
-        public static bool IsIdName(string name) => name.EndsWith("Id", StringComparison.OrdinalIgnoreCase);
+        /// <summary>
+        /// A name that is <c>id</c> (any case) or ends in <c>Id</c> (exact case) names an ID: <c>id</c>, <c>boardId</c>,
+        /// <c>BoardId</c>, but not <c>Valid</c>, <c>Paid</c> or <c>Guid</c>.
+        /// </summary>
+        public static bool IsIdName(string name) =>
+            name.Equals("id", StringComparison.OrdinalIgnoreCase) || name.EndsWith("Id", StringComparison.Ordinal);
 
         internal static IReadOnlyList<ApiParameterDescription> Parameters(DiscoveredEndpoint endpoint) =>
             endpoint.Api?.ParameterDescriptions.ToList()
@@ -157,7 +161,9 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 : TextPlaceholder;
         }
 
-        private static bool IsIdsName(string name) => name.EndsWith("Ids", StringComparison.OrdinalIgnoreCase);
+        /// <summary>The plural of <see cref="IsIdName"/>: <c>ids</c> (any case) or a name ending in <c>Ids</c>, not <c>Kids</c>.</summary>
+        private static bool IsIdsName(string name) =>
+            name.Equals("ids", StringComparison.OrdinalIgnoreCase) || name.EndsWith("Ids", StringComparison.Ordinal);
 
         /// <summary><c>ListIds</c> maps through <c>ListId</c>.</summary>
         private static string Singular(string name) => IsIdsName(name) ? name[..^1] : name;
@@ -171,8 +177,16 @@ namespace Harmony.Api.IntegrationTests.Authorization
             var name = path.Length == 0 ? string.Empty : path[(path.LastIndexOf('.') + 1)..];
             var underlying = Nullable.GetUnderlyingType(type) ?? type;
 
-            if (name.Length > 0 && IsIdName(name) && (underlying == typeof(Guid) || underlying == typeof(string)))
+            if (name.Length > 0 && IsIdName(name))
             {
+                if (underlying != typeof(Guid) && underlying != typeof(string))
+                {
+                    // A fixture ID is a GUID, so it cannot go in this property; a default would hide the gap (FR-031).
+                    throw new InvalidOperationException(
+                        $"{ids.EndpointName}: the body property '{path}' names an ID, but its type {underlying.Name} cannot hold a fixture ID. "
+                        + "Give the line a 'body=' with the value to send.");
+                }
+
                 return JsonValue.Create(ids.Resolve(name, "body property", path));
             }
 
@@ -283,6 +297,8 @@ namespace Harmony.Api.IntegrationTests.Authorization
         /// <summary>Maps a value's name or path to its kind through the line's bindings, then the name map.</summary>
         private sealed class IdResolver(DiscoveredEndpoint endpoint, MatrixLine line, Fixture fixture, TestUser caller)
         {
+            public string EndpointName => endpoint.Name;
+
             /// <param name="name">The value's own name, used for the name map (singular for a list of IDs).</param>
             /// <param name="where">What the value is, for the failure message.</param>
             /// <param name="path">The value's full name for bindings (a body property path); defaults to <paramref name="name"/>.</param>

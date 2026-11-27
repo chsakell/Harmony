@@ -111,5 +111,35 @@ namespace Harmony.Api.IntegrationTests.Harness
 
             api.ContainerName.TrimStart('/').ShouldNotStartWith("harmony-", Case.Insensitive);
         }
+
+        [Fact]
+        [Trait("Requirement", "FR-001")]
+        public async Task Cleanup_StepThrows_LaterStepsStillRunAndItIsRethrown()
+        {
+            var ran = new List<int>();
+
+            var exception = await Should.ThrowAsync<IOException>(async () => await ApiTestHost.RunAllAsync(
+                () => { ran.Add(1); return ValueTask.CompletedTask; },
+                () => { ran.Add(2); throw new IOException("locked"); },
+                () => { ran.Add(3); return ValueTask.CompletedTask; }));
+
+            exception.Message.ShouldBe("locked");
+            ran.ShouldBe([1, 2, 3]);
+        }
+
+        [Fact]
+        [Trait("Requirement", "FR-001")]
+        public async Task Cleanup_SeveralStepsThrow_AllRunAndAllAreReported()
+        {
+            var ran = new List<int>();
+
+            var exception = await Should.ThrowAsync<AggregateException>(async () => await ApiTestHost.RunAllAsync(
+                () => { ran.Add(1); throw new IOException("first"); },
+                () => { ran.Add(2); throw new InvalidOperationException("second"); },
+                () => { ran.Add(3); return ValueTask.CompletedTask; }));
+
+            exception.InnerExceptions.Select(inner => inner.Message).ShouldBe(["first", "second"]);
+            ran.ShouldBe([1, 2, 3]);
+        }
     }
 }

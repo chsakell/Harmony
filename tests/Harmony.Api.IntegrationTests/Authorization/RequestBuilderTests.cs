@@ -136,6 +136,43 @@ namespace Harmony.Api.IntegrationTests.Authorization
             exception.Message.ShouldContain("'id'");
         }
 
+        [Theory]
+        [InlineData("id", true)]
+        [InlineData("Id", true)]
+        [InlineData("boardId", true)]
+        [InlineData("BoardId", true)]
+        [InlineData("Valid", false)]
+        [InlineData("Paid", false)]
+        [InlineData("Guid", false)]
+        [InlineData("squid", false)]
+        public void IsIdName_EndsInIdOrIsId(string name, bool expected)
+        {
+            RequestBuilder.IsIdName(name).ShouldBe(expected);
+        }
+
+        [Fact]
+        public async Task WordsEndingInId_AreNotIds()
+        {
+            using var request = RequestBuilder.ForCaller(Synthetic(typeof(WordsCommand)), Line("POST", "api/Foo", string.Empty), Ids, Caller);
+
+            var body = await BodyAsync(request);
+            body["Paid"]!.GetValue<string>().ShouldBe(RequestBuilder.TextPlaceholder);
+            body["Valid"]!.GetValue<bool>().ShouldBeFalse();
+            body["Kids"]!.AsArray().ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void IdPropertyOfOtherType_FailsNamingIt()
+        {
+            var endpoint = Synthetic(typeof(NumberIdCommand));
+
+            var exception = Should.Throw<InvalidOperationException>(() => RequestBuilder.ForCaller(endpoint, Line("POST", "api/Foo", string.Empty), Ids, Caller));
+
+            exception.Message.ShouldContain("'BoardId'");
+            exception.Message.ShouldContain("Int32");
+            exception.Message.ShouldContain("POST api/Foo");
+        }
+
         private async Task<(DiscoveredEndpoint Endpoint, MatrixLine Line)> LiveAsync(string method, string route, string bindings)
         {
             var api = await host.GetAsync();
@@ -178,6 +215,20 @@ namespace Harmony.Api.IntegrationTests.Authorization
             public int Count { get; set; }
 
             public bool? Optional { get; set; }
+        }
+
+        public sealed class WordsCommand
+        {
+            public string? Paid { get; set; }
+
+            public bool Valid { get; set; }
+
+            public List<string> Kids { get; set; } = [];
+        }
+
+        public sealed class NumberIdCommand
+        {
+            public int BoardId { get; set; }
         }
 
         public sealed class FooCommand

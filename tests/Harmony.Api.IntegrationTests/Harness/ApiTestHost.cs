@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
 using Harmony.Infrastructure.IntegrationTests.Harness;
 using Harmony.Integrations.SourceControl.Protos;
@@ -103,26 +104,67 @@ namespace Harmony.Api.IntegrationTests.Harness
             return client;
         }
 
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync() => RunAllAsync(
+            async () =>
+            {
+                if (factory is not null)
+                {
+                    await factory.DisposeAsync();
+                }
+            },
+            () =>
+            {
+                if (previousDirectory is not null)
+                {
+                    Directory.SetCurrentDirectory(previousDirectory);
+                }
+
+                return ValueTask.CompletedTask;
+            },
+            () =>
+            {
+                if (folder is not null && Directory.Exists(folder))
+                {
+                    Directory.Delete(folder, recursive: true);
+                }
+
+                return ValueTask.CompletedTask;
+            },
+            async () =>
+            {
+                if (container is not null)
+                {
+                    await container.DisposeAsync();
+                }
+            });
+
+        /// <summary>
+        /// Runs every cleanup step, even after one throws (a locked file on Windows must not leave the container or the
+        /// current directory behind), then rethrows: the one exception as it was, or several as an AggregateException.
+        /// </summary>
+        internal static async ValueTask RunAllAsync(params Func<ValueTask>[] steps)
         {
-            if (factory is not null)
+            var failures = new List<Exception>();
+            foreach (var step in steps)
             {
-                await factory.DisposeAsync();
+                try
+                {
+                    await step();
+                }
+                catch (Exception exception)
+                {
+                    failures.Add(exception);
+                }
             }
 
-            if (previousDirectory is not null)
+            if (failures.Count == 1)
             {
-                Directory.SetCurrentDirectory(previousDirectory);
+                ExceptionDispatchInfo.Throw(failures[0]);
             }
 
-            if (folder is not null && Directory.Exists(folder))
+            if (failures.Count > 1)
             {
-                Directory.Delete(folder, recursive: true);
-            }
-
-            if (container is not null)
-            {
-                await container.DisposeAsync();
+                throw new AggregateException(failures);
             }
         }
 
