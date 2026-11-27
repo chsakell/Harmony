@@ -153,6 +153,8 @@ All scenarios run on the test host with the Api test command unless they say oth
 
 ## Design
 
+The authorization model behind this design is recorded in [ADR 2026-11-27-api-authorization-model](../../adr/2026-11-27-api-authorization-model.md) (proposed). It covers the login-required default, anonymous access only by explicit marker, and administration by permission policy.
+
 ### Components affected
 
 See the [overview](../../architecture/overview.md).
@@ -282,12 +284,12 @@ No change. The permissions are existing role claims. The roles seeder gives ever
 | 5 | A user with `Permissions.Users.Edit` who is not an administrator can give themselves any role except `Administrator`, including a custom role with more permissions. Today only the `Administrator` role holds permissions, so the risk exists only once an administrator delegates. | chsakell | Open. Proposed: accept, and record it in the overview. A stricter rule (granting only roles whose permissions you hold) would be a new item. |
 | 6 | Spec #22's FR-006 scenario and its test `StandInTests.TestEndpoint_OwnerPost_RecordsEmailNotification` use `POST api/Test`, which this feature removes. The test must move to another endpoint that publishes an email notification. This is a deliberate change to an approved spec's scenario, not a fix to make a failing test pass. | chsakell | Open. Proposed: amend spec #22's FR-006 scenario in this PR with a dated note. The plan picks the endpoint. |
 | 7 | Removing `GET api/identity/user/{id}` and `GET api/UserNotifications/{userId}` breaks any outside script that uses them, with no deprecation period. A browser that still runs a cached old client gets 404 on the account page until it reloads. | chsakell (product owner) | Open. Proposed: accept. The intent marks the contract change as intended, and client and API deploy together. Mention it in the PR's upgrade notes. |
-| 8 | "Authenticated by default, anonymous only by explicit marker, administration by permission policy" is a lasting authorization model that R-08 to R-11 build on. No ADR records it. | chsakell (tech lead) | Open. Proposed: write it with `/sdlc-adr` (for example `docs/adr/2026-11-27-api-authorization-model.md`) before the plan is approved, and link it from Design. |
+| 8 | "Authenticated by default, anonymous only by explicit marker, administration by permission policy" is a lasting authorization model that R-08 to R-11 build on. No ADR records it. | chsakell (tech lead) | Written: [ADR 2026-11-27-api-authorization-model](../../adr/2026-11-27-api-authorization-model.md), `status: proposed`, linked from Design. Open until the ADR is accepted in this PR. |
 | 9 | R-06 plans an architecture rule, "every controller action has `[Authorize]` or `[AllowAnonymous]`". With the login-required default that rule is redundant, and it would push attributes back onto every action. | chsakell | Open. Proposed: update R-06's note in this PR. R-06 should check instead that the fallback policy exists and that the only anonymous markers are on the explicitly anonymous list. |
 | 10 | Requirement IDs in one test project now come from two specs. | chsakell | Decided by chsakell, 2026-11-27: this spec numbers from FR-101 and NFR-101. No ADR change. |
 | 11 | The intent's constraint "prove every change with a failing matrix row first" fits only FR-101 and FR-110 to FR-113. FR-104 to FR-109, FR-114, FR-120 to FR-122, FR-130 and FR-131 are separate Api tests. FR-102, FR-107, FR-113 and FR-132 are partly proven during verification only. | chsakell | Proposed: each committed requirement gets a failing test before its code. The plan orders tasks that way and lists the verification-only checks for the PR. |
 
-**Before approval:** concern 8 (the ADR) must be written, and the product owner and the tech lead record a decision on each open row (2 to 7, 9 and 11). Accepting a proposal is a decision.
+**Before approval:** the ADR of concern 8 must be accepted, and the product owner and the tech lead record a decision on each open row (2 to 7, 9 and 11). Accepting a proposal is a decision.
 
 ## Open questions
 
