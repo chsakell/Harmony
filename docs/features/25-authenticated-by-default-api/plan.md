@@ -2,9 +2,9 @@
 id: 25
 title: Authenticated-by-default API
 artifact: plan
-status: draft            # draft | approved | superseded
+status: approved         # draft | approved | superseded
 owner: chsakell
-approved-by:             # <name>, <YYYY-MM-DD> - filled in when the sdlc:plan-approved label is added
+approved-by: chsakell, 2026-11-27   # <name>, <YYYY-MM-DD> - filled in when the sdlc:plan-approved label is added
 created: 2026-11-27
 spec: ./spec.md
 ---
