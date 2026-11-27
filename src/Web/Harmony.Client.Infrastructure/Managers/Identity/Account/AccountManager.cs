@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Features.Users.Commands.UpdatePassword;
 using Harmony.Application.Features.Users.Commands.UpdateProfile;
 using Harmony.Application.Requests.Identity;
+using Harmony.Application.Responses;
 using Harmony.Client.Infrastructure.Extensions;
 using Harmony.Client.Infrastructure.Routes;
 using Harmony.Shared.Wrapper;
@@ -15,6 +16,12 @@ namespace Harmony.Client.Infrastructure.Managers.Identity.Account
         public AccountManager(HttpClient httpClient)
         {
             _httpClient = httpClient;
+        }
+
+        public async Task<IResult<UserResponse>> GetAsync()
+        {
+            var response = await _httpClient.GetAsync(AccountEndpoints.Get);
+            return await response.ToResult<UserResponse>();
         }
 
         public async Task<IResult<UpdatePasswordResponse>> ChangePasswordAsync(UpdatePasswordCommand command)

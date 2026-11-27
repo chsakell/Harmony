@@ -21,12 +21,6 @@ namespace Harmony.Client.Infrastructure.Managers.Identity.Users
             return await response.ToResult<List<UserResponse>>();
         }
 
-        public async Task<IResult<UserResponse>> GetAsync(string userId)
-        {
-            var response = await _httpClient.GetAsync(Routes.UserEndpoints.Get(userId));
-            return await response.ToResult<UserResponse>();
-        }
-
         public async Task<IResult> RegisterUserAsync(RegisterRequest request)
         {
             var response = await _httpClient.PostAsJsonAsync(Routes.UserEndpoints.Register, request);

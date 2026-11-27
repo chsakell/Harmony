@@ -105,8 +105,8 @@ A new endpoint fails the tests until it has a line here. Keep the lines sorted b
 | api/Sprints/{id:guid}/reports | GET | resource | refused | gap R-08 | - | id=sprint |
 | api/Sprints/{id:guid}/start | PUT | resource | refused | gap R-08 | - | id=sprint |
 | api/Test | POST | self | refused | - | - |  |
+| api/UserNotifications | GET | self | refused | - | - |  |
 | api/UserNotifications | POST | self | refused | - | - |  |
-| api/UserNotifications/{userId} | GET | user | refused | - | - |  |
 | api/Workspace | GET | self | refused | - | - |  |
 | api/Workspace | POST | resource | refused | gap R-08 | - |  |
 | api/Workspace/{id:guid} | GET | resource | refused | gap R-08 | - | id=workspace |
@@ -118,6 +118,7 @@ A new endpoint fails the tests until it has a line here. Keep the lines sorted b
 | api/Workspace/{id:guid}/members/search | GET | resource | refused | gap R-08 | - | id=workspace |
 | api/Workspace/{id:guid}/rename | PUT | resource | refused | gap R-08 | - | id=workspace |
 | api/Workspace/{id:guid}/status | PUT | resource | refused | gap R-08 | - | id=workspace |
+| api/identity/account | GET | self | refused | - | - |  |
 | api/identity/account/ChangePassword | PUT | self | refused | - | - |  |
 | api/identity/account/UpdateProfile | PUT | self | refused | - | - |  |
 | api/identity/account/profile-picture/{userId} | POST | self | refused | - | - |  |
@@ -135,4 +136,3 @@ A new endpoint fails the tests until it has a line here. Keep the lines sorted b
 | api/identity/user/reset-password | POST | public | - | - | - |  |
 | api/identity/user/roles/{id} | GET | administration | refused | - | refused | permission=Permissions.Users.View |
 | api/identity/user/roles/{id} | PUT | administration | refused | - | refused | permission=Permissions.Users.Edit |
-| api/identity/user/{id} | GET | user | refused | - | - |  |

@@ -6,11 +6,6 @@ namespace Harmony.Client.Infrastructure.Routes
     {
         public static string GetAll = $"{GatewayConstants.CoreApiPrefix}/identity/user";
 
-        public static string Get(string userId)
-        {
-            return $"{GatewayConstants.CoreApiPrefix}/identity/user/{userId}";
-        }
-
         public static string GetUserRoles(string userId)
         {
             return $"{GatewayConstants.CoreApiPrefix}/identity/user/roles/{userId}";

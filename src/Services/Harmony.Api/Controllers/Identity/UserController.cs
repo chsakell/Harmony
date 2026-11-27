@@ -31,13 +31,6 @@ namespace Harmony.Api.Controllers.Identity
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id)
-        {
-            var user = await _userService.GetAsync(id);
-            return Ok(user);
-        }
-
         [HttpGet("roles/{id}")]
         [Authorize(Policy = Permissions.Users.View)]
         public async Task<IActionResult> GetRolesAsync(string id)

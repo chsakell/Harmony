@@ -9,10 +9,11 @@ namespace Harmony.Api.Controllers.Management
     /// </summary>
     public class UserNotificationsController : BaseApiController<UserNotificationsController>
     {
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> Get(string userId)
+        /// <summary>The logged-in user's own notification settings.</summary>
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
-            return Ok(await _mediator.Send(new GetUserNotificationsQuery(userId)));
+            return Ok(await _mediator.Send(new GetUserNotificationsQuery()));
         }
 
         [HttpPost]
