@@ -1,6 +1,6 @@
 ---
 title: The core API requires a login by default, opens endpoints only by explicit marker, and guards administration with permission policies
-status: proposed         # proposed | accepted | rejected | superseded | deprecated
+status: accepted         # proposed | accepted | rejected | superseded | deprecated
 date: 2026-11-27
 deciders: chsakell
 work-item: "#25"
