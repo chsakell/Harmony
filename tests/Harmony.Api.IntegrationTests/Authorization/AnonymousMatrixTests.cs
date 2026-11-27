@@ -12,12 +12,14 @@ namespace Harmony.Api.IntegrationTests.Authorization
     {
         [Theory]
         [Trait("Requirement", "FR-020")]
+        [Trait("Requirement", "FR-101")]
         [MemberData(nameof(MatrixRows.AnonymousRefused), MemberType = typeof(MatrixRows))]
         public Task AnonymousRequest_ProtectedEndpoint_Returns401(string method, string route) =>
             RunAsync(method, route, Mark.Refused);
 
         [Theory]
         [Trait("Requirement", "FR-021")]
+        [Trait("Requirement", "FR-103")]
         [MemberData(nameof(MatrixRows.AnonymousPublic), MemberType = typeof(MatrixRows))]
         public Task AnonymousRequest_PublicEndpoint_IsNot401(string method, string route) =>
             RunAsync(method, route, Mark.NotApplicable);

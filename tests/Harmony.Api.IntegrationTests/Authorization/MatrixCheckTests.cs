@@ -138,7 +138,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 Action("POST", "api/identity/user", new AllowAnonymousAttribute()));
 
             var problems = MatrixCheck.Problems(discovery, Document(
-                "| api/identity/user | GET | administration | gap R-07 | - | refused | permission=Permissions.Users.View |",
+                "| api/identity/user | GET | administration | refused | - | refused | permission=Permissions.Users.View |",
                 "| api/identity/user | POST | public | - | - | - |  |"));
 
             var problem = problems.ShouldHaveSingleItem();

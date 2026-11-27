@@ -23,6 +23,7 @@ using Harmony.Shared.Constants.Application;
 using Harmony.Shared.Constants.Permission;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -58,7 +59,7 @@ namespace Harmony.Api.Extensions
                 .GetSection(nameof(AppEndpointConfiguration));
 
             services.Configure<AppEndpointConfiguration>(endpointConfiguration);
-            
+
             return services;
         }
 
@@ -85,14 +86,14 @@ namespace Harmony.Api.Extensions
 
         internal static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHttpClient(EndpointConstants.Automation, (provider , httpClient) =>
+            services.AddHttpClient(EndpointConstants.Automation, (provider, httpClient) =>
             {
-                var endpointConfiguration = provider.GetService<IOptions<AppEndpointConfiguration>> ();
+                var endpointConfiguration = provider.GetService<IOptions<AppEndpointConfiguration>>();
                 var automationEndpoint = endpointConfiguration.Value.AutomationEndpoint;
 
                 httpClient.BaseAddress = new Uri(automationEndpoint);
 
-                httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");                
+                httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             });
 
             return services;
@@ -233,6 +234,10 @@ namespace Harmony.Api.Extensions
 
             services.AddAuthorization(options =>
             {
+                // Login-required default: every endpoint needs an authenticated user unless it is marked anonymous
+                // where it is declared or mapped (ADR 2026-11-27-api-authorization-model, rules 1-2).
+                options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
                 // Here I stored necessary permissions/roles in a constant
                 foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
                 {
@@ -286,9 +291,9 @@ namespace Harmony.Api.Extensions
                         .AddDbContext<HarmonyContext>(options =>
                         {
                             options.UseNpgsql(configuration
-                                .GetConnectionString("HarmonyConnection"), 
+                                .GetConnectionString("HarmonyConnection"),
                                 options => options.MigrationsAssembly("Harmony.Persistence.Migrations.PostgreSql"));
-                            
+
                             options.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
                             options.EnableDetailedErrors(true);
                             options.EnableSensitiveDataLogging(true);

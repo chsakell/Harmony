@@ -14,7 +14,9 @@ namespace Harmony.Api.IntegrationTests.Authorization
         public void AnonymousRows_CoverEveryLineOnceWithDisplayName()
         {
             var lines = MatrixFile.Load().Lines;
-            var rows = MatrixRows.AnonymousRefused().Concat(MatrixRows.AnonymousPublic()).Concat(MatrixRows.AnonymousKnownGaps()).ToList();
+            var rows = MatrixRows.AnonymousRefused().Concat(MatrixRows.AnonymousPublic()).Concat(MatrixRows.AnonymousKnownGaps())
+                .Where(row => !MatrixRows.IsPlaceholder(row.Data.Item1))
+                .ToList();
 
             rows.Count.ShouldBe(lines.Count);
             rows.Select(row => row.TestDisplayName).ShouldBeUnique();

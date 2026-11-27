@@ -260,6 +260,11 @@ namespace Harmony.Api.IntegrationTests.Authorization
                     : $"has the Non-member mark '{cells[4]}', but only a resource endpoint has one; use '-'");
             }
 
+            if (scope == Scope.Administration && anonymous == Mark.KnownGap)
+            {
+                problems.Add($"has the Anonymous mark '{cells[3]}', but an administration endpoint ships closed and may have no known gap (FR-113)");
+            }
+
             var nonAdmin = ParseNonAdminMark(cells[5], scope, problems);
             var (bindings, fixedBody, permission) = ParseBindings(cells[6], problems);
 

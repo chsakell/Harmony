@@ -14,7 +14,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         [
             "| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | - | id=board |",
             "| api/CheckLists/{id:guid}/title | PUT | resource | gap R-07 | refused | - | id=checklist; ListId=checklist |",
-            "| api/identity/role/{id} | DELETE | administration | gap R-07 | - | refused | permission=Permissions.Roles.Delete |",
+            "| api/identity/role/{id} | DELETE | administration | refused | - | refused | permission=Permissions.Roles.Delete |",
             "| api/identity/token | POST | public | - | - | - |  |",
         ];
 
@@ -53,6 +53,20 @@ namespace Harmony.Api.IntegrationTests.Authorization
             role.Bindings.ShouldBeEmpty();
             document.Lines[0].NonAdmin.ShouldBe(Mark.NotApplicable);
             document.Lines[0].Permission.ShouldBeNull();
+        }
+
+        /// <summary>An administration endpoint ships closed: no rule may carry a known gap on its line (FR-113).</summary>
+        [Fact]
+        [Trait("Requirement", "FR-113")]
+        public void Parse_AdministrationLineWithKnownGap_FailsNamingLine()
+        {
+            var line = "| api/identity/role/{id} | DELETE | administration | gap R-07 | - | refused | permission=Permissions.Roles.Delete |";
+
+            var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 1, 0)));
+
+            exception.Message.ShouldContain("administration endpoint");
+            exception.Message.ShouldContain("known gap");
+            exception.Message.ShouldContain(line);
         }
 
         [Fact]
