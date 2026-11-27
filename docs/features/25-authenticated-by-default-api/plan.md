@@ -177,7 +177,7 @@ Tasks run in order. `[P]` marks a task that shares no file with another `[P]` ta
     - "Later": "Run Compose and Kubernetes deployments as Production (Development-only API explorer, exception handler, HSTS; gateway Swagger)".
   - `AGENTS.md`: the Api test command's filter note adds `"Requirement=FR-110"` to `FR-112` (admin rule).
   - Proof: the links resolve (`docs/` relative paths checked by reading), and `harmony-docs` needs no change (spec, NFR-107).
-- [ ] **T9** Verification and smoke run (`/sdlc-verify`)
+- [x] **T9** Verification and smoke run (`/sdlc-verify`)
   - Covers: NFR-102, NFR-103, NFR-104, NFR-105, and the verification-only parts of FR-102, FR-107, FR-113 and FR-132.
   - Local, not committed, recorded in the PR:
     - FR-102: a throwaway attribute-less action and a `MapGet` both get 401 anonymously.
