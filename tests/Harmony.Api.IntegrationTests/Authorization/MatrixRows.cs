@@ -25,6 +25,27 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
         public static IEnumerable<TheoryDataRow<string, string>> NonMemberKnownGaps() => For(Rule.NonMember, Mark.KnownGap);
 
+        public static IEnumerable<TheoryDataRow<string, string>> AdminPlainUser() => Admin(AdminCaller.PlainUser, MatrixFile.Load().Lines);
+
+        public static IEnumerable<TheoryDataRow<string, string>> AdminAllButRequired() => Admin(AdminCaller.AllButRequired, MatrixFile.Load().Lines);
+
+        public static IEnumerable<TheoryDataRow<string, string>> AdminOnlyRequired() => Admin(AdminCaller.OnlyRequired, MatrixFile.Load().Lines);
+
+        /// <summary>One row per administration line, named <c>Admin (&lt;caller&gt;) &lt;METHOD&gt; &lt;route&gt;</c> (FR-110 to FR-112).</summary>
+        public static IEnumerable<TheoryDataRow<string, string>> Admin(AdminCaller caller, IEnumerable<MatrixLine> lines)
+        {
+            var rows = lines
+                .Where(line => line.Scope == Scope.Administration)
+                .Select(line => new TheoryDataRow<string, string>(line.Method, line.Route) { TestDisplayName = AdminDisplayName(caller, line.Method, line.Route) })
+                .ToList();
+
+            return rows.Count > 0
+                ? rows
+                : [new TheoryDataRow<string, string>(PlaceholderMethod, string.Empty) { TestDisplayName = $"Admin ({CallerName(caller)}) (no administration line)" }];
+        }
+
+        public static string AdminDisplayName(AdminCaller caller, string method, string route) => $"Admin ({CallerName(caller)}) {method} {route}";
+
         public static IEnumerable<TheoryDataRow<string, string>> For(Rule rule, Mark mark, IEnumerable<MatrixLine> lines)
         {
             var rows = lines
@@ -47,6 +68,18 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
         private static IEnumerable<TheoryDataRow<string, string>> For(Rule rule, Mark mark) => For(rule, mark, MatrixFile.Load().Lines);
 
-        private static string RuleName(Rule rule) => rule == Rule.Anonymous ? "Anonymous" : "Non-member";
+        private static string RuleName(Rule rule) => rule switch
+        {
+            Rule.Anonymous => "Anonymous",
+            Rule.NonMember => "Non-member",
+            _ => "Admin",
+        };
+
+        private static string CallerName(AdminCaller caller) => caller switch
+        {
+            AdminCaller.PlainUser => "plain user",
+            AdminCaller.AllButRequired => "all but required",
+            _ => "only required",
+        };
     }
 }

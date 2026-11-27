@@ -105,7 +105,7 @@ namespace Harmony.Client.Shared
 
                     Email = user.GetEmail();
 
-                    var currentUserResult = await _userManager.GetAsync(CurrentUserId);
+                    var currentUserResult = await _accountManager.GetAsync();
                     if (currentUserResult.Succeeded && currentUserResult.Data != null)
                     {
                         ImageDataUrl = currentUserResult.Data.ProfilePicture;

@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
+using Grpc.Net.Client;
 using Harmony.Infrastructure.IntegrationTests.Harness;
 using Harmony.Integrations.SourceControl.Protos;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -103,6 +104,13 @@ namespace Harmony.Api.IntegrationTests.Harness
 
             return client;
         }
+
+        /// <summary>
+        /// A gRPC channel to the in-memory server, with no credentials (FR-105). HTTPS address, for the same reason as
+        /// <see cref="CreateClient"/>.
+        /// </summary>
+        public GrpcChannel CreateGrpcChannel() =>
+            GrpcChannel.ForAddress("https://localhost", new GrpcChannelOptions { HttpHandler = Started(factory).Server.CreateHandler() });
 
         public ValueTask DisposeAsync() => RunAllAsync(
             async () =>

@@ -105,6 +105,10 @@ app.UseCors("wasm");
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+
+    // The API explorer, in Development only. It runs before routing, so that the login-required default (the
+    // fallback policy), which also covers requests that match no endpoint, does not hide it.
+    app.ConfigureSwagger();
 }
 else
 {
@@ -124,28 +128,29 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseRouting();
 
+// Probes from Aspire, Compose and Kubernetes send no token.
 app.MapHealthChecks("/healthz/ready", new HealthCheckOptions
 {
     Predicate = healthCheck => healthCheck.Tags.Contains("ready")
-});
+}).AllowAnonymous();
 
 app.MapHealthChecks("/healthz/live", new HealthCheckOptions
 {
     Predicate = _ => false
-});
+}).AllowAnonymous();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGrpcService<CardService>();
-app.MapGrpcService<UserCardService>();
-app.MapGrpcService<BoardService>();
-app.MapGrpcService<WorkspaceService>();
-app.MapGrpcService<UserService>();
-app.MapGrpcService<UserNotificationService>();
+// Automations and Notifications call these without a login. R-09 adds service authentication and removes the markers.
+app.MapGrpcService<CardService>().AllowAnonymous();
+app.MapGrpcService<UserCardService>().AllowAnonymous();
+app.MapGrpcService<BoardService>().AllowAnonymous();
+app.MapGrpcService<WorkspaceService>().AllowAnonymous();
+app.MapGrpcService<UserService>().AllowAnonymous();
+app.MapGrpcService<UserNotificationService>().AllowAnonymous();
 
 app.UseEndpoints();
-app.ConfigureSwagger();
 await app.InitializeDatabase(builder.Configuration);
 
 app.Run();

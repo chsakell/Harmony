@@ -2,6 +2,7 @@
 using Harmony.Application.Contracts.Services.Account;
 using Harmony.Application.Features.Users.Commands.UpdatePassword;
 using Harmony.Application.Features.Users.Commands.UpdateProfile;
+using Harmony.Application.Features.Users.Queries.GetUser;
 using Harmony.Application.Requests.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,16 @@ namespace Harmony.Api.Controllers.Identity
             _accountService = accountService;
             _currentUser = currentUser;
             _sender = sender;
+        }
+
+        /// <summary>
+        /// The logged-in user's own account details
+        /// </summary>
+        /// <returns>Status 200 OK</returns>
+        [HttpGet]
+        public async Task<ActionResult> Get()
+        {
+            return Ok(await _sender.Send(new GetUserQuery()));
         }
 
         /// <summary>

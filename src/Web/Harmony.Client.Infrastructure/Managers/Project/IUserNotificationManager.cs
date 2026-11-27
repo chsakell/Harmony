@@ -5,7 +5,8 @@ namespace Harmony.Client.Infrastructure.Managers.Project
 {
     public interface IUserNotificationManager : IManager
     {
-        Task<IResult<List<EmailNotificationType>>> GetNotificationsAsync(string userId);
+        /// <summary>The logged-in user's own notification settings.</summary>
+        Task<IResult<List<EmailNotificationType>>> GetNotificationsAsync();
         Task<IResult<bool>> SetNotificationsAsync(List<EmailNotificationType> notifications);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmony.Api.Controllers.Identity
@@ -25,6 +26,7 @@ namespace Harmony.Api.Controllers.Identity
         /// <param name="model"></param>
         /// <returns>Status 200 OK</returns>
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult> Get(TokenRequest model)
         {
             var response = await _identityService.LoginAsync(model);
@@ -37,6 +39,7 @@ namespace Harmony.Api.Controllers.Identity
         /// <param name="model"></param>
         /// <returns>Status 200 OK</returns>
         [HttpPost("refresh")]
+        [AllowAnonymous]
         public async Task<ActionResult> Refresh([FromBody] RefreshTokenRequest model)
         {
             var response = await _identityService.GetRefreshTokenAsync(model);

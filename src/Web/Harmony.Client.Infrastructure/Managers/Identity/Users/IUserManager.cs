@@ -12,8 +12,6 @@ namespace Harmony.Client.Infrastructure.Managers.Identity.Users
 
         Task<IResult> ResetPasswordAsync(ResetPasswordRequest request);
 
-        Task<IResult<UserResponse>> GetAsync(string userId);
-
         Task<IResult<UserRolesResponse>> GetRolesAsync(string userId);
 
         Task<IResult> RegisterUserAsync(RegisterRequest request);

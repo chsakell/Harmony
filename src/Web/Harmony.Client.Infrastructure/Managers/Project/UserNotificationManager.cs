@@ -19,10 +19,10 @@ namespace Harmony.Client.Infrastructure.Managers.Project
             _httpClient = client;
         }
 
-        public async Task<IResult<List<EmailNotificationType>>> GetNotificationsAsync(string userId)
+        public async Task<IResult<List<EmailNotificationType>>> GetNotificationsAsync()
         {
             var response = await _httpClient
-                .GetAsync(Routes.UserNotificationsEndpoints.User(userId));
+                .GetAsync(Routes.UserNotificationsEndpoints.Index);
 
             return await response.ToResult<List<EmailNotificationType>>();
         }
@@ -30,7 +30,7 @@ namespace Harmony.Client.Infrastructure.Managers.Project
         public async Task<IResult<bool>> SetNotificationsAsync(List<EmailNotificationType> notifications)
         {
             var response = await _httpClient
-                .PostAsJsonAsync(Routes.UserNotificationsEndpoints.Index, 
+                .PostAsJsonAsync(Routes.UserNotificationsEndpoints.Index,
                 new UpdateUserNotificationsCommand(notifications));
 
             return await response.ToResult<bool>();

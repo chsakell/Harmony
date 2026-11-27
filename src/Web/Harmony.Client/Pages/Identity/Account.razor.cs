@@ -7,7 +7,6 @@ using Harmony.Domain.Enums;
 using Harmony.Shared.Wrapper;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace Harmony.Client.Pages.Identity
@@ -38,19 +37,15 @@ namespace Harmony.Client.Pages.Identity
 
         protected async override Task OnInitializedAsync()
         {
-            var user = await _authenticationManager.CurrentUser();
-            var userId = user.Claims
-                    .FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
+            var result = await _accountManager.GetAsync();
 
-            var result = await _userManager.GetAsync(userId) ;
-            
             if (result.Succeeded)
             {
-                var userNotificationsResult = await _userNotificationManager.GetNotificationsAsync(userId);
+                var userNotificationsResult = await _userNotificationManager.GetNotificationsAsync();
 
                 _user = _mapper.Map<UserModel>(result.Data);
 
-                if(userNotificationsResult.Succeeded)
+                if (userNotificationsResult.Succeeded)
                 {
                     selectedNotifications = userNotificationsResult.Data.ToHashSet();
                 }
@@ -109,7 +104,7 @@ namespace Harmony.Client.Pages.Identity
             var extension = Path.GetExtension(file.Name);
             var fileName = file.Name;
             var buffer = new byte[file.Size];
-            await file.OpenReadStream(maxAllowedImageSize).ReadAsync(buffer);
+            await file.OpenReadStream(maxAllowedImageSize).ReadExactlyAsync(buffer);
             var request = new UploadProfilePictureCommand
             {
                 Data = buffer,
@@ -200,16 +195,16 @@ namespace Harmony.Client.Pages.Identity
 
         private void OnSearch(string text)
         {
-            if(string.IsNullOrEmpty(text.Trim()))
+            if (string.IsNullOrEmpty(text.Trim()))
             {
                 _notifications = Enum.GetValues<EmailNotificationType>().ToList();
             }
             else
             {
                 var filteredNotifications = new List<EmailNotificationType>();
-                foreach(var notification in Enum.GetValues<EmailNotificationType>().AsEnumerable())
+                foreach (var notification in Enum.GetValues<EmailNotificationType>().AsEnumerable())
                 {
-                    if(ToSentenceCase(notification.ToString().ToLower())
+                    if (ToSentenceCase(notification.ToString().ToLower())
                         .Contains(text.Trim().ToLower()))
                     {
                         filteredNotifications.Add(notification);

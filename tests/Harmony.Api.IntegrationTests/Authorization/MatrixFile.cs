@@ -15,7 +15,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         User,
     }
 
-    /// <summary>A line's mark for one rule: <c>refused</c>, <c>gap R-07</c>/<c>gap R-08</c>, or <c>-</c>.</summary>
+    /// <summary>A line's mark for one rule: <c>refused</c>, <c>gap R-07</c>/<c>gap R-08</c>, or <c>-</c>. The admin rule has no known gap.</summary>
     public enum Mark
     {
         Refused,
@@ -30,6 +30,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
     public sealed record Baselines(int AnonymousGaps, int NonMemberGaps);
 
     /// <summary>One line of the matrix file: one endpoint.</summary>
+    /// <param name="Permission">The required permission (<c>permission=</c>) of an administration line; null on other lines.</param>
     public sealed record MatrixLine(
         int LineNumber,
         string Text,
@@ -38,8 +39,10 @@ namespace Harmony.Api.IntegrationTests.Authorization
         Scope Scope,
         Mark Anonymous,
         Mark NonMember,
+        Mark NonAdmin,
         IReadOnlyList<Binding> Bindings,
-        string? FixedBody)
+        string? FixedBody,
+        string? Permission)
     {
         /// <summary><c>METHOD route</c>, as rows and messages name the endpoint.</summary>
         public string Endpoint => $"{Method} {Route}";
@@ -54,11 +57,18 @@ namespace Harmony.Api.IntegrationTests.Authorization
     public sealed class MatrixFileException(string message) : Exception(message);
 
     /// <summary>
-    /// Reads and validates the checked-in matrix file (plan, <i>Matrix file contract</i>; FR-012, FR-040, FR-042).
+    /// Reads and validates the checked-in matrix file (plan #22, <i>Matrix file contract</i>; FR-012, FR-040, FR-042; and
+    /// plan #25, <i>Decisions</i>, Q5: the Non-admin column and the <c>permission=</c> binding, FR-113).
     /// </summary>
     public static class MatrixFile
     {
-        public const string Header = "| Route | Method | Scope | Anonymous | Non-member | Bindings |";
+        public const string Header = "| Route | Method | Scope | Anonymous | Non-member | Non-admin | Bindings |";
+
+        /// <summary>The binding that names an administration line's required permission; it is not a request binding.</summary>
+        public const string PermissionBinding = "permission";
+
+        private static readonly IReadOnlySet<string> RegisteredPermissions =
+            new HashSet<string>(Harmony.Shared.Constants.Permission.Permissions.GetRegisteredPermissions(), StringComparer.Ordinal);
 
         public const string AnonymousGap = "gap R-07";
 
@@ -84,9 +94,19 @@ namespace Harmony.Api.IntegrationTests.Authorization
         /// <summary>The checked-in file, parsed once per run.</summary>
         public static MatrixDocument Load() => Checked.Value;
 
-        public static Mark MarkFor(this MatrixLine line, Rule rule) => rule == Rule.Anonymous ? line.Anonymous : line.NonMember;
+        public static Mark MarkFor(this MatrixLine line, Rule rule) => rule switch
+        {
+            Rule.Anonymous => line.Anonymous,
+            Rule.NonMember => line.NonMember,
+            _ => line.NonAdmin,
+        };
 
-        public static string GapMark(Rule rule) => rule == Rule.Anonymous ? AnonymousGap : NonMemberGap;
+        public static string GapMark(Rule rule) => rule switch
+        {
+            Rule.Anonymous => AnonymousGap,
+            Rule.NonMember => NonMemberGap,
+            _ => throw new ArgumentOutOfRangeException(nameof(rule), rule, "The admin rule has no known gap (FR-113)."),
+        };
 
         public static MatrixDocument Parse(string text)
         {
@@ -197,9 +217,10 @@ namespace Harmony.Api.IntegrationTests.Authorization
         private static MatrixLine? ParseLine(int lineNumber, string text, List<string> errors)
         {
             var cells = text.Trim('|').Split('|').Select(cell => cell.Trim()).ToArray();
-            if (cells.Length != 6)
+            if (cells.Length != 7)
             {
-                errors.Add(At(lineNumber, text, $"has {cells.Length} cells; a line has 6 cells (Route, Method, Scope, Anonymous, Non-member, Bindings)"));
+                errors.Add(At(lineNumber, text,
+                    $"has {cells.Length} cells; a line has 7 cells (Route, Method, Scope, Anonymous, Non-member, Non-admin, Bindings)"));
                 return null;
             }
 
@@ -239,7 +260,24 @@ namespace Harmony.Api.IntegrationTests.Authorization
                     : $"has the Non-member mark '{cells[4]}', but only a resource endpoint has one; use '-'");
             }
 
-            var (bindings, fixedBody) = ParseBindings(cells[5], problems);
+            if (scope == Scope.Administration && anonymous == Mark.KnownGap)
+            {
+                problems.Add($"has the Anonymous mark '{cells[3]}', but an administration endpoint ships closed and may have no known gap (FR-113)");
+            }
+
+            var nonAdmin = ParseNonAdminMark(cells[5], scope, problems);
+            var (bindings, fixedBody, permission) = ParseBindings(cells[6], problems);
+
+            if (scope == Scope.Administration && permission is null)
+            {
+                problems.Add($"names no required permission; an administration endpoint names one with {PermissionBinding}=<value>, "
+                    + "for example permission=Permissions.Roles.View");
+            }
+
+            if (scope is not null && scope != Scope.Administration && permission is not null)
+            {
+                problems.Add($"names the permission '{permission}', but only an administration endpoint names a permission");
+            }
 
             foreach (var problem in problems)
             {
@@ -248,7 +286,39 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
             return problems.Count > 0
                 ? null
-                : new MatrixLine(lineNumber, text, route, method, scope!.Value, anonymous!.Value, nonMember!.Value, bindings, fixedBody);
+                : new MatrixLine(lineNumber, text, route, method, scope!.Value, anonymous!.Value, nonMember!.Value, nonAdmin!.Value, bindings,
+                    fixedBody, permission);
+        }
+
+        /// <summary>
+        /// The Non-admin mark is <c>refused</c> on an administration line and <c>-</c> on every other. The admin rule has
+        /// no known gap: an administration endpoint ships closed (FR-113).
+        /// </summary>
+        private static Mark? ParseNonAdminMark(string text, Scope? scope, List<string> problems)
+        {
+            Mark? mark = text switch
+            {
+                "refused" => Mark.Refused,
+                "-" => Mark.NotApplicable,
+                _ => null,
+            };
+
+            if (mark is null)
+            {
+                problems.Add(text.StartsWith("gap ", StringComparison.Ordinal)
+                    ? $"has the Non-admin mark '{text}', but the admin rule has no known gap: an administration endpoint ships refused (FR-113)"
+                    : $"has an unknown mark '{text}' in Non-admin (refused or -)");
+                return null;
+            }
+
+            if (scope is not null && (scope == Scope.Administration) != (mark == Mark.Refused))
+            {
+                problems.Add(scope == Scope.Administration
+                    ? "has the Non-admin mark '-', but an administration endpoint's Non-admin mark is 'refused'"
+                    : $"has the Non-admin mark '{text}', but only an administration endpoint has one; use '-'");
+            }
+
+            return mark;
         }
 
         /// <summary>Scopes are written exactly in lower case; numbers and other spellings are unknown.</summary>
@@ -290,10 +360,12 @@ namespace Harmony.Api.IntegrationTests.Authorization
             }
         }
 
-        private static (IReadOnlyList<Binding> Bindings, string? FixedBody) ParseBindings(string text, List<string> problems)
+        /// <returns>The permission as written, even when it is not a registered one, so that only one problem names it.</returns>
+        private static (IReadOnlyList<Binding> Bindings, string? FixedBody, string? Permission) ParseBindings(string text, List<string> problems)
         {
             var bindings = new List<Binding>();
             string? fixedBody = null;
+            string? permission = null;
             var rest = text.Trim();
             while (rest.Length > 0)
             {
@@ -326,6 +398,21 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
                 var name = item[..equals].Trim();
                 var kind = item[(equals + 1)..].Trim();
+                if (name == PermissionBinding)
+                {
+                    if (permission is not null)
+                    {
+                        problems.Add($"names {PermissionBinding}= twice");
+                    }
+                    else if (!RegisteredPermissions.Contains(kind))
+                    {
+                        problems.Add($"names an unknown permission '{kind}' (a value of Permissions.GetRegisteredPermissions())");
+                    }
+
+                    permission ??= kind;
+                    continue;
+                }
+
                 if (!Kinds.Contains(kind))
                 {
                     problems.Add($"has an unknown kind '{kind}' in '{item}' ({string.Join(", ", Kinds)})");
@@ -341,7 +428,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 bindings.Add(new Binding(name, kind));
             }
 
-            return (bindings, fixedBody);
+            return (bindings, fixedBody, permission);
         }
 
         private static string At(int lineNumber, string text, string problem) =>

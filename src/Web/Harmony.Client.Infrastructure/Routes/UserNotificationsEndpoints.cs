@@ -4,8 +4,7 @@ namespace Harmony.Client.Infrastructure.Routes
 {
     public static class UserNotificationsEndpoints
     {
+        /// <summary>GET reads, and POST sets, the logged-in user's own notification settings.</summary>
         public static string Index = $"{GatewayConstants.CoreApiPrefix}/usernotifications";
-
-        public static string User(string userId) => $"{Index}/{userId}/";
     }
 }
