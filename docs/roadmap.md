@@ -29,8 +29,8 @@
 | **Phase 0: Safety net** | | | | | | | |
 | [R-01](#r-01-test-foundation) | Test foundation | test | M +ADR | | - | [#5](https://github.com/chsakell/Harmony/issues/5) | done |
 | [R-02](#r-02-ci-build-workflow) | CI build workflow | improvement | S | | R-01 | [#9](https://github.com/chsakell/Harmony/issues/9) | done |
-| [R-03](#r-03-integration-test-harness) | Integration test harness (SQL Server + PostgreSQL) | test | M | | R-01 | [#19](https://github.com/chsakell/Harmony/issues/19) | in progress |
-| [R-04](#r-04-api-test-host-and-authorization-matrix) | Api test host and authorization matrix | test | M | | R-01 | | todo |
+| [R-03](#r-03-integration-test-harness) | Integration test harness (SQL Server + PostgreSQL) | test | M | | R-01 | [#19](https://github.com/chsakell/Harmony/issues/19) | done |
+| [R-04](#r-04-api-test-host-and-authorization-matrix) | Api test host and authorization matrix | test | M | | R-01 | [#22](https://github.com/chsakell/Harmony/issues/22) | in progress |
 | [R-05](#r-05-characterization-tests-for-scrum-and-automations) | Characterization tests for Scrum and automations | test | S | | R-01 | | todo |
 | [R-06](#r-06-architecture-tests) | Architecture tests | test | S | | R-01 | | todo |
 | **Phase 1: Security** | | | | | | | |
@@ -117,6 +117,7 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - A reflection-driven **authorization matrix**: every endpoint returns 401 when anonymous unless it is `[AllowAnonymous]`, and a non-member is refused on another user's board, card, list and workspace.
 - **Evidence:** `src/Services/Harmony.Api/Controllers/**`.
 - **Notes:** The matrix fails today. Land it together with R-07 and R-08 (each fix turns its rows green), or check in the expected-failure list as data that R-07 and R-08 empty. Never skip a failing test.
+  - Delivered by #22 as the second option: [`authorization-matrix.md`](../tests/Harmony.Api.IntegrationTests/Authorization/authorization-matrix.md) has one line per endpoint (106) with its scope and known-gap marks. Endpoints come from the host's routing, not from reflection. Baselines on merge: 94 anonymous gaps (R-07) and 80 non-member gaps (R-08).
 
 ### R-05 Characterization tests for Scrum and automations
 
@@ -159,6 +160,9 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - `src/Services/Harmony.Api/Controllers/TestController.cs`
   - `src/Services/Harmony.Api/Program.cs` (Swagger always on)
 - **Notes:** The gateway forwards `/core/{everything}`, so the API itself must enforce this.
+  - Proven by the R-04 matrix: [`authorization-matrix.md`](../tests/Harmony.Api.IntegrationTests/Authorization/authorization-matrix.md) marks **94 anonymous known gaps** (`gap R-07`). Each endpoint fixed here changes its mark to `refused` and lowers the anonymous baseline by one. The tests fail until both are done.
+  - With a fallback policy, `POST api/identity/token` and `POST api/identity/token/refresh` need `[AllowAnonymous]`, or their public rows fail (they have no attribute today).
+  - Add an **admin rule** to the matrix (#22, Flagged concern 5). Today the 8 `administration` and 2 `user` endpoints are checked only for anonymous callers. The rule should prove that a logged-in user without the administrator permission is refused there; the scope column already marks those endpoints.
 
 ### R-08 Board, card and workspace authorization
 
@@ -174,6 +178,8 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - `GetBoardHandler` and `LoadBoardListHandler`: the only handlers that call `HasUserAccessToBoard`
   - `SprintsController` uses IDs from the body instead of the route.
 - **Notes:** Proven by the R-04 matrix. Update `harmony-docs/guide/boards/members.md` with the role rules.
+  - [`authorization-matrix.md`](../tests/Harmony.Api.IntegrationTests/Authorization/authorization-matrix.md) marks **80 non-member known gaps** (`gap R-08`), one per resource endpoint. Each fix changes its mark to `refused` and lowers the non-member baseline by one.
+  - A refusal must be **HTTP 403 or 404**. A 200 with `Succeeded=false` counts as let in (decided on #22, Flagged concern 4), so `POST api/Board/{id:guid}/load` stays a gap until it returns a real status code. This overlaps R-24.
   - Found by R-03: `BoardService.HasUserAccessToBoard` throws a `NullReferenceException` for a board ID that does not exist, instead of refusing access. Pinned by `BoardServiceAccessTests.HasUserAccessToBoard_UnknownBoard_Throws_KnownIssue` in `Harmony.Infrastructure.IntegrationTests`; the fix changes that test to expect `false`.
 
 ### R-09 Service-to-service authentication
@@ -420,6 +426,7 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - `src/Services/Harmony.Api/Controllers/Management/BoardController.cs`, `src/Services/Harmony.Automations/Controllers/AutomationsController.cs` (route ID ignored)
   - `UpdateCardTitleCommandHandler.cs:54-56` (null card)
 - **Notes:** Changes the HTTP contract. The Blazor client's `ResultExtensions.ToResult` must handle non-2xx responses.
+  - #22 (Flagged concern 4): R-08 already needs membership refusals as 403 or 404, because the R-04 matrix treats 200 with `Succeeded=false` as let in. Whichever item lands first sets the status codes, and the other follows them.
 
 ## Phase 3: Agile model done right
 
