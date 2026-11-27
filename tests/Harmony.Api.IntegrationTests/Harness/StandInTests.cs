@@ -64,13 +64,14 @@ namespace Harmony.Api.IntegrationTests.Harness
 
         /// <summary>
         /// <c>POST api/Test</c> is a debug endpoint mapped in every environment that publishes an email notification.
+        /// The request carries the owner's token, so this test does not depend on the anonymous gap that R-07 closes.
         /// </summary>
         [Fact]
         [Trait("Requirement", "FR-006")]
-        public async Task TestEndpoint_AnonymousPost_RecordsEmailNotification()
+        public async Task TestEndpoint_OwnerPost_RecordsEmailNotification()
         {
             var api = await host.GetAsync();
-            using var client = api.CreateClient();
+            using var client = api.CreateClient(api.Tokens.For(api.Owner));
 
             using var response = await client.PostAsync("api/Test", content: null, TestContext.Current.CancellationToken);
 
