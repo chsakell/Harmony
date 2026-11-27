@@ -105,6 +105,10 @@ app.UseCors("wasm");
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+
+    // The API explorer, in Development only. It runs before routing, so that the login-required default (the
+    // fallback policy), which also covers requests that match no endpoint, does not hide it.
+    app.ConfigureSwagger();
 }
 else
 {
@@ -121,10 +125,6 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Files")),
     RequestPath = new PathString("/Files")
 });
-
-// Before routing, so that the login-required default (the fallback policy), which also covers requests that match
-// no endpoint, does not hide the API explorer.
-app.ConfigureSwagger();
 
 app.UseRouting();
 

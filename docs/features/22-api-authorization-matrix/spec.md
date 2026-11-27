@@ -117,6 +117,7 @@ All scenarios run on the test host with the Api test command unless they say oth
 - **FR-005** - The shared guard runs in the Api test project. An untagged method added locally makes it fail and name the method. This is proven during verification, not committed.
 - **FR-006**
   - Given the anonymous row for `POST api/test` (a debug endpoint mapped in every environment, which publishes an email notification), when it runs, then the recording stand-in holds that message and no broker connection is attempted.
+    - *Amended 2026-11-27 by [#25](../25-authenticated-by-default-api/spec.md) (Flagged concern 6):* #25 removes `POST api/test`. The publisher check moved to the owner's `PUT api/Cards/{id}/dates` on a new fixture, which publishes an email notification for that card (`StandInTests.UpdateCardDates_OwnerPut_RecordsEmailNotification`).
   - Given the test host, then a test confirms that:
     - the broker publisher and the SourceControl gRPC client are the stand-ins;
     - the search service is the database search, and no Algolia client is registered;

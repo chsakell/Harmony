@@ -153,7 +153,7 @@ Tasks run in order. `[P]` marks a task that shares no file with another `[P]` ta
     - In the matrix file, the two `user` lines are replaced by `| api/UserNotifications | GET | self | refused | - | - |  |` and `| api/identity/account | GET | self | refused | - | - |  |` in sort order. `TestHostAndMatrixFile_AreConsistent` fails until the code lands.
   - Code: per *Files that change*. `IUserService.GetAsync` stays, because `GetUserHandler` uses it. The discovered action count stays 106 (two removed, two added).
   - Proof: the Api test command filtered to FR-120, FR-121, FR-122, plus `TestHostAndMatrixFile_AreConsistent`. `dotnet build Harmony.slnx` compiles the client, which proves no caller still uses the removed members.
-- [ ] **T7** Leftovers removed (US4)
+- [x] **T7** Leftovers removed (US4)
   - Covers: FR-130, FR-131 (FR-132 in T9), Flagged concern 6.
   - Files: `StandInTests.cs`, `Authorization/AttackSurfaceTests.cs` (new), `TestController.cs` (delete), `Program.cs`, `authorization-matrix.md`, `MatrixCheckTests.cs`, `docs/features/22-api-authorization-matrix/spec.md`.
   - First, still green on today's code: replace `StandInTests.TestEndpoint_OwnerPost_RecordsEmailNotification` with `StandInTests.UpdateCardDates_OwnerPut_RecordsEmailNotification` (FR-006). The owner sends `PUT api/Cards/{fixture.CardId}/dates` with a due date. Expected: 200, and a `CardDueTimeUpdatedNotification` whose `Id` is the fixture's card. Add a dated note to spec #22's FR-006 scenario.

@@ -37,7 +37,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
             discoveredMethods.ShouldBeUnique();
             discoveredMethods.ShouldBe(actionMethods, ignoreOrder: true);
-            discovery.Actions.Count.ShouldBe(106, "the count on 2026-11-26 (spec, FR-010); update it with the matrix file");
+            discovery.Actions.Count.ShouldBe(105, "the count on 2026-11-27, after #25 removed POST api/Test (spec #22, FR-010); update it with the matrix file");
             discovery.Actions.ShouldAllBe(action => action.Api != null);
         }
 

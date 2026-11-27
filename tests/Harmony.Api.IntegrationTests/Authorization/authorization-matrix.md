@@ -104,7 +104,6 @@ A new endpoint fails the tests until it has a line here. Keep the lines sorted b
 | api/Sprints/{id:guid}/complete | POST | resource | refused | gap R-08 | - | id=sprint |
 | api/Sprints/{id:guid}/reports | GET | resource | refused | gap R-08 | - | id=sprint |
 | api/Sprints/{id:guid}/start | PUT | resource | refused | gap R-08 | - | id=sprint |
-| api/Test | POST | self | refused | - | - |  |
 | api/UserNotifications | GET | self | refused | - | - |  |
 | api/UserNotifications | POST | self | refused | - | - |  |
 | api/Workspace | GET | self | refused | - | - |  |

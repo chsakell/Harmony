@@ -63,21 +63,31 @@ namespace Harmony.Api.IntegrationTests.Harness
         }
 
         /// <summary>
-        /// <c>POST api/Test</c> is a debug endpoint mapped in every environment that publishes an email notification.
-        /// The request carries the owner's token, so this test does not depend on the anonymous gap that R-07 closes.
+        /// Changing a card's dates publishes an email notification for that card. This replaced the test on
+        /// <c>POST api/Test</c>, which #25 removes (spec #25, Flagged concern 6). Matching on the fixture's card keeps it
+        /// independent of other tests that publish in parallel.
         /// </summary>
         [Fact]
         [Trait("Requirement", "FR-006")]
-        public async Task TestEndpoint_OwnerPost_RecordsEmailNotification()
+        public async Task UpdateCardDates_OwnerPut_RecordsEmailNotification()
         {
             var api = await host.GetAsync();
+            var fixture = await FixtureFactory.CreateAsync(api.Services, api.Owner);
             using var client = api.CreateClient(api.Tokens.For(api.Owner));
 
-            using var response = await client.PostAsync("api/Test", content: null, TestContext.Current.CancellationToken);
+            using var response = await client.PutAsJsonAsync($"api/Cards/{fixture.CardId}/dates", new
+            {
+                fixture.BoardId,
+                fixture.CardId,
+                StartDate = (DateTime?)null,
+                DueDate = new DateTime(2026, 12, 31, 12, 0, 0, DateTimeKind.Utc),
+                DueDateReminderType = (DueDateReminderType?)null,
+            }, TestContext.Current.CancellationToken);
 
             ((int)response.StatusCode).ShouldBe(200);
             api.Publisher.Published.ShouldContain(message =>
-                message.Kind == PublishedKind.Email && message.Payload is CardDueTimeUpdatedNotification);
+                message.Kind == PublishedKind.Email && message.Payload is CardDueTimeUpdatedNotification
+                && ((CardDueTimeUpdatedNotification)message.Payload).Id == fixture.CardId);
         }
 
         [Fact]
