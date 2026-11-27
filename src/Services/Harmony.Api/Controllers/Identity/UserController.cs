@@ -1,6 +1,7 @@
 ﻿using Harmony.Application.Contracts.Services;
 using Harmony.Application.Contracts.Services.Identity;
 using Harmony.Application.Requests.Identity;
+using Harmony.Shared.Constants.Permission;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,7 @@ namespace Harmony.Api.Controllers.Identity
         }
 
         [HttpGet]
+        [Authorize(Policy = Permissions.Users.View)]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAllAsync();
@@ -37,6 +39,7 @@ namespace Harmony.Api.Controllers.Identity
         }
 
         [HttpGet("roles/{id}")]
+        [Authorize(Policy = Permissions.Users.View)]
         public async Task<IActionResult> GetRolesAsync(string id)
         {
             var userRoles = await _userService.GetRolesAsync(id);
@@ -44,6 +47,7 @@ namespace Harmony.Api.Controllers.Identity
         }
 
         [HttpPut("roles/{id}")]
+        [Authorize(Policy = Permissions.Users.Edit)]
         public async Task<IActionResult> UpdateRolesAsync(UpdateUserRolesRequest request)
         {
             return Ok(await _userService.UpdateRolesAsync(request, _currentUserService.UserId));

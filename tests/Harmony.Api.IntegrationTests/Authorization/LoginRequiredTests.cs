@@ -155,7 +155,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         }
 
         /// <summary>The result envelope's messages; the body must be exactly one envelope (NFR-106).</summary>
-        private static async Task<List<string>> MessagesAsync(HttpResponseMessage response)
+        internal static async Task<List<string>> MessagesAsync(HttpResponseMessage response)
         {
             var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
             Result? result = null;
