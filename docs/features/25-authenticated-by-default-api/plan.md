@@ -83,7 +83,7 @@ The Api gets an authorization **fallback policy** that requires an authenticated
 
 Tasks run in order. `[P]` marks a task that shares no file with another `[P]` task: T1, T2 and T3 can run in parallel. Each task starts with a failing test, or, for T3, with guard tests that T4 turns red. Its commit ticks its box here. Commits: `test:`/`feat:`/`refactor:`/`docs:` with footer `Refs #25`.
 
-- [ ] **T1** [P] Harness users and tokens carry permissions
+- [x] **T1** [P] Harness users and tokens carry permissions
   - Covers: FR-140 (and the harness that FR-108, FR-110 to FR-112 and FR-114 need).
   - Files: `Harness/TestUsers.cs`, `Harness/TestTokens.cs`, `Harness/PermissionUsers.cs` (new), `Harness/TestTokenTests.cs`.
   - Red first: `TestTokenTests.Tokens_AdministratorUser_HarnessAndLoginCarrySamePermissionClaims`. It creates a user in `Administrator` with a known password, logs in through `POST api/identity/token`, and compares the permission claim values of both tokens (`JwtSecurityTokenHandler.ReadJwtToken`). It fails today: the harness token has none.
@@ -292,3 +292,4 @@ Update this table in the same commit as any change that departs from the plan.
 
 | Date | Task | What changed and why |
 |---|---|---|
+| 2026-11-27 | T1 | `TestUser` keeps its six positional parameters. `Password` and `Permissions` are init properties with empty defaults, so `RequestBuilderTests`, which builds a `TestUser` positionally, does not change. The optional `expires` on `TestTokens` moves to T4, next to the FR-108 test that uses it. The login helper is `TestTokenTests.LoginAsync`, public so that T5's FR-112 test can reuse it. `PermissionUsers` is used as the extension `ApiTestHost.UserWithPermissionsAsync(params string[])`. |
