@@ -48,6 +48,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         [Trait("Requirement", "FR-013")]
         [Trait("Requirement", "FR-022")]
         [Trait("Requirement", "FR-042")]
+        [Trait("Requirement", "NFR-101")]
         public async Task TestHostAndMatrixFile_AreConsistent()
         {
             var api = await host.GetAsync();
