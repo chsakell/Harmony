@@ -2,9 +2,9 @@
 id: 25
 title: Authenticated-by-default API
 artifact: intent
-status: draft            # draft | approved | superseded
+status: approved         # draft | approved | superseded
 owner: chsakell
-approved-by:             # <name>, <YYYY-MM-DD> - filled in when the sdlc:intent-approved label is added
+approved-by: chsakell, 2026-11-27
 created: 2026-11-27
 source: "#25 (roadmap R-07)"
 ---
