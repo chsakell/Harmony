@@ -8,14 +8,14 @@ namespace Harmony.Api.IntegrationTests.Authorization
     /// </summary>
     public class MatrixFileTests
     {
-        private const string Header = "| Route | Method | Scope | Anonymous | Non-member | Bindings |";
+        private const string Header = "| Route | Method | Scope | Anonymous | Non-member | Non-admin | Bindings |";
 
         private static readonly string[] ValidLines =
         [
-            "| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | id=board |",
-            "| api/CheckLists/{id:guid}/title | PUT | resource | gap R-07 | refused | id=checklist; ListId=checklist |",
-            "| api/identity/role/{id} | DELETE | administration | gap R-07 | - |  |",
-            "| api/identity/token | POST | public | - | - |  |",
+            "| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | - | id=board |",
+            "| api/CheckLists/{id:guid}/title | PUT | resource | gap R-07 | refused | - | id=checklist; ListId=checklist |",
+            "| api/identity/role/{id} | DELETE | administration | gap R-07 | - | refused | permission=Permissions.Roles.Delete |",
+            "| api/identity/token | POST | public | - | - | - |  |",
         ];
 
         [Fact]
@@ -41,10 +41,87 @@ namespace Harmony.Api.IntegrationTests.Authorization
         }
 
         [Fact]
+        [Trait("Requirement", "FR-113")]
+        public void Parse_AdministrationLine_ReadsPermissionOutsideBindings()
+        {
+            var document = MatrixFile.Parse(Document(ValidLines, anonymousGaps: 3, nonMemberGaps: 1));
+
+            var role = document.Lines[2];
+            role.Scope.ShouldBe(Scope.Administration);
+            role.NonAdmin.ShouldBe(Mark.Refused);
+            role.Permission.ShouldBe("Permissions.Roles.Delete");
+            role.Bindings.ShouldBeEmpty();
+            document.Lines[0].NonAdmin.ShouldBe(Mark.NotApplicable);
+            document.Lines[0].Permission.ShouldBeNull();
+        }
+
+        [Fact]
+        [Trait("Requirement", "FR-113")]
+        public void Parse_AdministrationLineWithoutPermission_FailsNamingLine()
+        {
+            var line = "| api/identity/role/{id} | DELETE | administration | refused | - | refused |  |";
+
+            var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 0, 0)));
+
+            exception.Message.ShouldContain("permission=");
+            exception.Message.ShouldContain(line);
+        }
+
+        [Fact]
+        [Trait("Requirement", "FR-113")]
+        public void Parse_UnknownPermission_FailsNamingLine()
+        {
+            var line = "| api/identity/role/{id} | DELETE | administration | refused | - | refused | permission=Permissions.Roles.Remove |";
+
+            var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 0, 0)));
+
+            exception.Message.ShouldContain("unknown permission 'Permissions.Roles.Remove'");
+            exception.Message.ShouldContain(line);
+        }
+
+        [Theory]
+        [Trait("Requirement", "FR-113")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | refused | refused | - | id=board; permission=Permissions.Roles.View |")]
+        [InlineData("| api/identity/token | POST | public | - | - | - | permission=Permissions.Users.View |")]
+        public void Parse_PermissionOnOtherScope_FailsNamingLine(string line)
+        {
+            var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 0, 0)));
+
+            exception.Message.ShouldContain("only an administration endpoint names a permission");
+            exception.Message.ShouldContain(line);
+        }
+
+        [Theory]
+        [Trait("Requirement", "FR-113")]
+        [InlineData("| api/identity/role/{id} | DELETE | administration | refused | - | gap R-07 | permission=Permissions.Roles.Delete |")]
+        [InlineData("| api/identity/role/{id} | DELETE | administration | refused | - | gap R-08 | permission=Permissions.Roles.Delete |")]
+        public void Parse_NonAdminKnownGap_FailsNamingLine(string line)
+        {
+            var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 0, 0)));
+
+            exception.Message.ShouldContain("Non-admin");
+            exception.Message.ShouldContain("no known gap");
+            exception.Message.ShouldContain(line);
+        }
+
+        [Theory]
+        [Trait("Requirement", "FR-113")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | refused | refused | refused | id=board |")]
+        [InlineData("| api/identity/account/UpdateProfile | PUT | self | refused | - | refused |  |")]
+        [InlineData("| api/identity/role/{id} | DELETE | administration | refused | - | - | permission=Permissions.Roles.Delete |")]
+        public void Parse_NonAdminMarkOnOtherScope_FailsNamingLine(string line)
+        {
+            var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 0, 0)));
+
+            exception.Message.ShouldContain("Non-admin mark");
+            exception.Message.ShouldContain(line);
+        }
+
+        [Fact]
         [Trait("Requirement", "FR-012")]
         public void Parse_FixedBodyAsLastBinding_KeepsJsonWithSemicolons()
         {
-            var line = "| api/Board | POST | resource | gap R-07 | gap R-08 | WorkspaceId=workspace; body={\"Key\":\"MTRX\",\"Title\":\"a;b\"} |";
+            var line = "| api/Board | POST | resource | gap R-07 | gap R-08 | - | WorkspaceId=workspace; body={\"Key\":\"MTRX\",\"Title\":\"a;b\"} |";
 
             var document = MatrixFile.Parse(Document([line], anonymousGaps: 1, nonMemberGaps: 1));
 
@@ -80,7 +157,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         [Trait("Requirement", "FR-012")]
         public void Parse_UnknownScope_FailsNamingLine()
         {
-            var line = "| api/Board/{id:guid}/load | POST | board | gap R-07 | gap R-08 | id=board |";
+            var line = "| api/Board/{id:guid}/load | POST | board | gap R-07 | gap R-08 | - | id=board |";
 
             var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 1, 1)));
 
@@ -91,9 +168,9 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
         [Theory]
         [Trait("Requirement", "FR-040")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-08 | gap R-08 | id=board |")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-07 | id=board |")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-24 | gap R-08 | id=board |")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-08 | gap R-08 | - | id=board |")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-07 | - | id=board |")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-24 | gap R-08 | - | id=board |")]
         public void Parse_GapMarkNamesWrongItem_Fails(string line)
         {
             var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 1, 1)));
@@ -104,11 +181,11 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
         [Theory]
         [Trait("Requirement", "FR-012")]
-        [InlineData("| api/identity/account/UpdateProfile | PUT | self | refused | refused |  |", "Non-member")]
-        [InlineData("| api/identity/account/UpdateProfile | PUT | self | refused | gap R-08 |  |", "Non-member")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | - | id=board |", "Non-member")]
-        [InlineData("| api/identity/token | POST | public | refused | - |  |", "Anonymous")]
-        [InlineData("| api/identity/user | GET | administration | - | - |  |", "Anonymous")]
+        [InlineData("| api/identity/account/UpdateProfile | PUT | self | refused | refused | - |  |", "Non-member")]
+        [InlineData("| api/identity/account/UpdateProfile | PUT | self | refused | gap R-08 | - |  |", "Non-member")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | - | - | id=board |", "Non-member")]
+        [InlineData("| api/identity/token | POST | public | refused | - | - |  |", "Anonymous")]
+        [InlineData("| api/identity/user | GET | administration | - | - | refused | permission=Permissions.Users.View |", "Anonymous")]
         public void Parse_NonMemberMarkOnSelfScope_Fails(string line, string column)
         {
             var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 0, 0)));
@@ -119,13 +196,13 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
         [Theory]
         [Trait("Requirement", "FR-012")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 |", "6 cells")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | maybe | gap R-08 | id=board |", "unknown mark 'maybe'")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | id=team |", "unknown kind 'team'")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | id |", "name=kind")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | body={}; id=board |", "body=")]
-        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | body={ |", "JSON")]
-        [InlineData("| api/Board/{id:guid}/load | post | resource | gap R-07 | gap R-08 | id=board |", "method")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | id=board |", "7 cells")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | maybe | gap R-08 | - | id=board |", "unknown mark 'maybe'")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | - | id=team |", "unknown kind 'team'")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | - | id |", "name=kind")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | - | body={}; id=board |", "body=")]
+        [InlineData("| api/Board/{id:guid}/load | POST | resource | gap R-07 | gap R-08 | - | body={ |", "JSON")]
+        [InlineData("| api/Board/{id:guid}/load | post | resource | gap R-07 | gap R-08 | - | id=board |", "method")]
         public void Parse_MalformedLine_FailsNamingLine(string line, string expected)
         {
             var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(Document([line], 1, 1)));
@@ -138,7 +215,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         [Trait("Requirement", "FR-012")]
         public void Parse_WrongHeader_Fails()
         {
-            var text = Document(ValidLines, 3, 1).Replace(Header, "| Route | Method | Scope | Anonymous | Bindings |", StringComparison.Ordinal);
+            var text = Document(ValidLines, 3, 1).Replace(Header, "| Route | Method | Scope | Anonymous | Non-member | Bindings |", StringComparison.Ordinal);
 
             var exception = Should.Throw<MatrixFileException>(() => MatrixFile.Parse(text));
 
@@ -171,7 +248,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 "",
                 "## Endpoints",
                 Header,
-                "|---|---|---|---|---|---|",
+                "|---|---|---|---|---|---|---|",
                 .. lines,
                 "",
             ]);

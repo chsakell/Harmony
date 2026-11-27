@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace Harmony.Api.IntegrationTests.Authorization
 {
-    /// <summary>The two rules the matrix checks.</summary>
+    /// <summary>The three rules the matrix checks.</summary>
     public enum Rule
     {
         /// <summary>No Authorization header: 401 unless the endpoint is public (FR-020, FR-021).</summary>
@@ -10,6 +10,22 @@ namespace Harmony.Api.IntegrationTests.Authorization
 
         /// <summary>A logged-in user with no membership: 403 or 404 on resource endpoints (FR-030).</summary>
         NonMember,
+
+        /// <summary>A logged-in user without the required permission: 403 on administration endpoints (FR-110 to FR-112).</summary>
+        Admin,
+    }
+
+    /// <summary>The three callers of the admin rule.</summary>
+    public enum AdminCaller
+    {
+        /// <summary>A user whose only role is Basic, which holds no permission (FR-110).</summary>
+        PlainUser,
+
+        /// <summary>A user holding every permission except the line's required one (FR-111).</summary>
+        AllButRequired,
+
+        /// <summary>A user holding only the line's required permission (FR-112).</summary>
+        OnlyRequired,
     }
 
     /// <summary>A row outcome (spec, Definitions, <i>Row outcome</i>).</summary>
@@ -53,13 +69,48 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 Rule.NonMember when response.Status is 403 or 404 => Outcome.Refused,
                 Rule.NonMember when NonMemberInconclusive.Contains(response.Status) => Outcome.Inconclusive,
                 Rule.NonMember => Outcome.LetIn,
+                Rule.Admin when response.Status == 401 => Outcome.Inconclusive,
+                Rule.Admin when response.Status == 403 => Outcome.Refused,
+                Rule.Admin => Outcome.LetIn,
                 _ => throw new ArgumentOutOfRangeException(nameof(rule), rule, null),
+            };
+        }
+
+        /// <summary>
+        /// The admin rule (FR-110 to FR-112). A 401 means the login was not accepted, so the row proves nothing about the
+        /// permission and is inconclusive, like a 405 or a request that did not reach the endpoint. The plain user and the
+        /// user with every other permission pass only on 403; the user with only <paramref name="permission"/> passes on
+        /// any other status.
+        /// </summary>
+        public static Verdict JudgeAdmin(AdminCaller caller, RowResponse response, string row, string permission)
+        {
+            var outcome = Classify(Rule.Admin, response);
+            if (outcome == Outcome.Inconclusive)
+            {
+                return Fail($"{row} is inconclusive: {Describe(response)}. "
+                    + "A 401 means the harness login was not accepted; fix the request or the harness user.");
+            }
+
+            var status = response.Status.ToString(CultureInfo.InvariantCulture);
+            return (caller, outcome) switch
+            {
+                (AdminCaller.OnlyRequired, Outcome.Refused) => Fail($"{row} was refused with 403 to a user holding {permission}, "
+                    + "the line's required permission; the endpoint needs another permission, or its line names the wrong one (FR-112)."),
+                (AdminCaller.OnlyRequired, _) => Pass($"{row} lets in a user holding {permission} with {status}."),
+                (_, Outcome.Refused) => Pass($"{row} is refused with 403 without {permission}."),
+                _ => Fail($"{row} was let in with {status} without {permission}; expected 403. "
+                    + $"Add [Authorize(Policy = {permission})] to the action (FR-110, FR-111)."),
             };
         }
 
         /// <param name="owner">The owner's request on its own fixture (FR-033); required for the non-member rule.</param>
         public static Verdict Judge(Rule rule, Mark mark, RowResponse response, string row, RowResponse? owner = null)
         {
+            if (rule == Rule.Admin)
+            {
+                throw new ArgumentException("The admin rule is judged by JudgeAdmin.", nameof(rule));
+            }
+
             if (rule == Rule.NonMember && mark == Mark.NotApplicable)
             {
                 throw new ArgumentException("Only resource endpoints have non-member rows.", nameof(mark));

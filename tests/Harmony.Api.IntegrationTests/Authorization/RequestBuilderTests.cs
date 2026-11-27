@@ -189,8 +189,8 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 "- Anonymous known gaps: 1",
                 "- Non-member known gaps: 1",
                 MatrixFile.Header,
-                "|---|---|---|---|---|---|",
-                $"| {route} | {method} | resource | gap R-07 | gap R-08 | {bindings} |",
+                "|---|---|---|---|---|---|---|",
+                $"| {route} | {method} | resource | gap R-07 | gap R-08 | - | {bindings} |",
             ])).Lines.Single();
 
         private static DiscoveredEndpoint Synthetic(Type? bodyType, string route = "api/Foo")

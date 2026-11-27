@@ -6,8 +6,8 @@ namespace Harmony.Api.IntegrationTests.Authorization
 {
     /// <summary>
     /// Compares the discovered endpoints with the matrix file: FR-011 (endpoint without a line), FR-012 (line without
-    /// an endpoint), FR-013 (other endpoint outside the allowed set), FR-022 ([AllowAnonymous] on a non-public scope)
-    /// and FR-042 (known-gap counts against the baselines). Pure code: it returns the problems, each naming its subject.
+    /// an endpoint), FR-013 (other endpoint outside the allowed set), FR-022 ([AllowAnonymous] on a non-public scope),
+    /// FR-042 (known-gap counts against the baselines) and FR-107 (the public lines are exactly the six public endpoints). Pure code: it returns the problems, each naming its subject.
     /// </summary>
     public static class MatrixCheck
     {
@@ -15,6 +15,17 @@ namespace Harmony.Api.IntegrationTests.Authorization
         public static readonly IReadOnlySet<string> GrpcServices = new HashSet<string>(StringComparer.Ordinal)
         {
             "CardService", "UserCardService", "BoardService", "WorkspaceService", "UserService", "UserNotificationService",
+        };
+
+        /// <summary>The six public endpoints (spec #22, Design, <i>Public endpoints</i>), as <c>METHOD route</c> (FR-107).</summary>
+        public static readonly IReadOnlySet<string> PublicEndpoints = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "POST api/identity/token",
+            "POST api/identity/token/refresh",
+            "POST api/identity/user",
+            "GET api/identity/user/confirm-email",
+            "POST api/identity/user/forgot-password",
+            "POST api/identity/user/reset-password",
         };
 
         private const string GrpcServiceNamespace = "Harmony.Api.Services.gRPC";
@@ -35,7 +46,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 {
                     problems.Add($"The endpoint {action.Name} ({action.Action.DisplayName}) has no line in the matrix file. State its scope: "
                         + $"add this line in sort order and set its scope (public, self, resource, administration or user) and marks: "
-                        + $"| {action.Route} | {action.Method} | resource | refused | refused |  |");
+                        + $"| {action.Route} | {action.Method} | resource | refused | refused | - |  |");
                     continue;
                 }
 
@@ -50,6 +61,21 @@ namespace Harmony.Api.IntegrationTests.Authorization
             foreach (var line in document.Lines.Where(line => !endpoints.Contains((line.Route, line.Method))))
             {
                 problems.Add($"Line {line.LineNumber.ToString(CultureInfo.InvariantCulture)} names no endpoint the host serves: {line.Text}");
+            }
+
+            foreach (var line in document.Lines)
+            {
+                var isOneOfTheSix = PublicEndpoints.Contains(line.Endpoint);
+                if (line.Scope == Scope.Public && !isOneOfTheSix)
+                {
+                    problems.Add($"Line {line.LineNumber.ToString(CultureInfo.InvariantCulture)} is public, but {line.Endpoint} is not one of the six "
+                        + $"public endpoints ({string.Join(", ", PublicEndpoints)}). A new public endpoint is a spec change (FR-107): {line.Text}");
+                }
+                else if (line.Scope != Scope.Public && isOneOfTheSix)
+                {
+                    problems.Add($"Line {line.LineNumber.ToString(CultureInfo.InvariantCulture)} has scope {line.Scope.ToString().ToLowerInvariant()}, "
+                        + $"but {line.Endpoint} is one of the six public endpoints and must be public (FR-107): {line.Text}");
+                }
             }
 
             foreach (var other in discovery.Others.Where(other => !IsAllowed(other)))

@@ -63,7 +63,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         {
             var discovery = Discover(Action("GET", "api/Alpha"), Action("POST", "api/Beta/{id:guid}"));
 
-            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused |  |"));
+            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused | - |  |"));
 
             var problem = problems.ShouldHaveSingleItem();
             problem.ShouldContain("POST api/Beta/{id:guid}");
@@ -75,10 +75,10 @@ namespace Harmony.Api.IntegrationTests.Authorization
         [Trait("Requirement", "FR-012")]
         public void Check_LineWithoutEndpoint_FailsNamingLine()
         {
-            const string stale = "| api/Gone | DELETE | resource | gap R-07 | refused |  |";
+            const string stale = "| api/Gone | DELETE | resource | gap R-07 | refused | - |  |";
             var discovery = Discover(Action("GET", "api/Alpha"));
 
-            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused |  |", stale));
+            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused | - |  |", stale));
 
             var problem = problems.ShouldHaveSingleItem();
             problem.ShouldContain("no endpoint");
@@ -99,7 +99,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 Other("{unimplementedService}/{unimplementedMethod:grpcunimplemented}", "gRPC - Unimplemented service"),
                 Other("CardService/{unimplementedMethod:grpcunimplemented}", "gRPC - Unimplemented method for CardService"));
 
-            MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused |  |")).ShouldBeEmpty();
+            MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused | - |  |")).ShouldBeEmpty();
         }
 
         [Fact]
@@ -108,7 +108,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
         {
             var discovery = Discover(Action("GET", "api/Alpha"), Other("/minimal", "HTTP: GET /minimal", new HttpMethodMetadata(["GET"])));
 
-            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused |  |"));
+            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused | - |  |"));
 
             var problem = problems.ShouldHaveSingleItem();
             problem.ShouldContain("/minimal");
@@ -124,7 +124,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
             var other = withMetadata ? Other(route, displayName, Grpc(typeof(AuditService))) : Other(route, displayName);
             var discovery = Discover(Action("GET", "api/Alpha"), other);
 
-            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused |  |"));
+            var problems = MatrixCheck.Problems(discovery, Document("| api/Alpha | GET | resource | gap R-07 | refused | - |  |"));
 
             problems.ShouldHaveSingleItem().ShouldContain("AuditService");
         }
@@ -138,8 +138,8 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 Action("POST", "api/identity/user", new AllowAnonymousAttribute()));
 
             var problems = MatrixCheck.Problems(discovery, Document(
-                "| api/identity/user | GET | administration | gap R-07 | - |  |",
-                "| api/identity/user | POST | public | - | - |  |"));
+                "| api/identity/user | GET | administration | gap R-07 | - | refused | permission=Permissions.Users.View |",
+                "| api/identity/user | POST | public | - | - | - |  |"));
 
             var problem = problems.ShouldHaveSingleItem();
             problem.ShouldContain("GET api/identity/user");
@@ -148,11 +148,39 @@ namespace Harmony.Api.IntegrationTests.Authorization
         }
 
         [Fact]
+        [Trait("Requirement", "FR-107")]
+        public void Check_PublicLineOutsideTheSix_FailsNamingLine()
+        {
+            const string seventh = "| api/identity/account | PUT | public | - | - | - |  |";
+            var discovery = Discover(Action("POST", "api/identity/token"), Action("PUT", "api/identity/account"));
+
+            var problems = MatrixCheck.Problems(discovery, Document(seventh, "| api/identity/token | POST | public | - | - | - |  |"));
+
+            var problem = problems.ShouldHaveSingleItem();
+            problem.ShouldContain(seventh);
+            problem.ShouldContain("not one of the six public endpoints");
+        }
+
+        [Fact]
+        [Trait("Requirement", "FR-107")]
+        public void Check_OneOfTheSixNotPublic_FailsNamingLine()
+        {
+            const string token = "| api/identity/token | POST | self | refused | - | - |  |";
+            var discovery = Discover(Action("POST", "api/identity/token"));
+
+            var problems = MatrixCheck.Problems(discovery, Document(token));
+
+            var problem = problems.ShouldHaveSingleItem();
+            problem.ShouldContain(token);
+            problem.ShouldContain("must be public");
+        }
+
+        [Fact]
         [Trait("Requirement", "FR-042")]
         public void Check_BaselineDiffers_FailsGivingBothNumbers()
         {
             var discovery = Discover(Action("GET", "api/Alpha"), Action("GET", "api/Beta"));
-            var document = Document(anonymousGaps: 1, nonMemberGaps: 2, "| api/Alpha | GET | resource | refused | gap R-08 |  |", "| api/Beta | GET | resource | refused | refused |  |");
+            var document = Document(anonymousGaps: 1, nonMemberGaps: 2, "| api/Alpha | GET | resource | refused | gap R-08 | - |  |", "| api/Beta | GET | resource | refused | refused | - |  |");
 
             var problems = MatrixCheck.Problems(discovery, document);
 
@@ -196,7 +224,7 @@ namespace Harmony.Api.IntegrationTests.Authorization
                 $"- Non-member known gaps: {nonMemberGaps}",
                 "## Endpoints",
                 MatrixFile.Header,
-                "|---|---|---|---|---|---|",
+                "|---|---|---|---|---|---|---|",
                 .. lines,
             ]));
 
