@@ -34,7 +34,7 @@
 | [R-05](#r-05-characterization-tests-for-scrum-and-automations) | Characterization tests for Scrum and automations | test | S | | R-01 | | todo |
 | [R-06](#r-06-architecture-tests) | Architecture tests | test | S | | R-01 | | todo |
 | **Phase 1: Security** | | | | | | | |
-| [R-07](#r-07-authenticated-by-default-api) | Authenticated-by-default API | security | M | high | R-04 | [#25](https://github.com/chsakell/Harmony/issues/25) | in progress |
+| [R-07](#r-07-authenticated-by-default-api) | Authenticated-by-default API | security | M | high | R-04 | [#25](https://github.com/chsakell/Harmony/issues/25) | done |
 | [R-08](#r-08-board-card-and-workspace-authorization) | Board, card and workspace authorization | security | M | high | R-04, R-07 | | todo |
 | [R-09](#r-09-service-to-service-authentication) | Service-to-service authentication | security | M +ADR | high | R-07 | | todo |
 | [R-10](#r-10-authenticate-automations-sourcecontrol-and-signalr) | Authenticate Automations, SourceControl and SignalR | security | M | high | R-07 | | todo |
@@ -139,10 +139,10 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
 - **Outcome:** `Harmony.ArchitectureTests` (NetArchTest or ArchUnitNET) checks four rules:
   - Domain has no outward dependencies.
   - Application does not reference Persistence or Infrastructure.
-  - Every controller action has `[Authorize]` or `[AllowAnonymous]`.
+  - The Api has an authorization fallback policy that requires an authenticated user, and the only anonymous markers (`[AllowAnonymous]`, `.AllowAnonymous()`) are on the explicitly anonymous list: the six public endpoints, the health checks, `/Error` and, until R-09, the six gRPC services.
   - `DangerousAcceptAnyServerCertificateValidator` is not used outside Development.
 - **Evidence:** AGENTS.md (Architecture). `docs/architecture/overview.md` (Known issues).
-- **Notes:** The authorization rule fails until R-07 is done. Order the work accordingly.
+- **Notes:** The authorization rule changed with R-07 (#25, spec Flagged concern 9). The login-required default makes "every action has `[Authorize]` or `[AllowAnonymous]`" redundant, and that rule would push attributes back onto every action. Check the fallback policy and the list of anonymous markers instead.
 
 ## Phase 1: Security
 
@@ -163,6 +163,12 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - Proven by the R-04 matrix: [`authorization-matrix.md`](../tests/Harmony.Api.IntegrationTests/Authorization/authorization-matrix.md) marks **94 anonymous known gaps** (`gap R-07`). Each endpoint fixed here changes its mark to `refused` and lowers the anonymous baseline by one. The tests fail until both are done.
   - With a fallback policy, `POST api/identity/token` and `POST api/identity/token/refresh` need `[AllowAnonymous]`, or their public rows fail (they have no attribute today).
   - Add an **admin rule** to the matrix (#22, Flagged concern 5). Today the 8 `administration` and 2 `user` endpoints are checked only for anonymous callers. The rule should prove that a logged-in user without the administrator permission is refused there; the scope column already marks those endpoints.
+  - Delivered by #25 ([spec](features/25-authenticated-by-default-api/spec.md), [ADR](adr/2026-11-27-api-authorization-model.md)):
+    - A fallback policy requires a login on every endpoint. The anonymous baseline is 0.
+    - The explicitly anonymous list: the six public endpoints, the health checks, `/Error` and the six gRPC services (until R-09).
+    - Role and user administration need their permission (for example `Permissions.Roles.View`), proven by the matrix's admin rule (24 rows). A role rename also needs `Permissions.Roles.Edit`.
+    - The two `user` endpoints became `GET api/identity/account` and `GET api/UserNotifications`, which read the caller from the login.
+    - `POST api/Test` is removed, and the API explorer is served only in Development. Compose and Kubernetes still run as Development (see [Later](#later-not-in-the-30)).
 
 ### R-08 Board, card and workspace authorization
 
@@ -193,6 +199,7 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - `src/Services/Harmony.Automations/Services/SmartAutoAssignAutomationService.cs` sends the header.
   - `src/Services/Harmony.Api/Services/gRPC/UserService.cs` returns user emails to any caller.
 - **Notes:** ADR needed for the mechanism. It must also work under Aspire, Docker Compose and Kubernetes.
+  - Since R-07 (#25) the six gRPC services are explicitly anonymous under the Api's login-required default. Remove the six `.AllowAnonymous()` markers on `MapGrpcService` in `src/Services/Harmony.Api/Program.cs`, and change `GrpcAnonymousTests` (FR-105 of #25) to expect a refusal without service authentication.
 
 ### R-10 Authenticate Automations, SourceControl and SignalR
 
@@ -231,6 +238,8 @@ Tests come first, so that every later fix is proven by a test and cannot quietly
   - `src/Web/Harmony.Client.Infrastructure/Managers/Identity/Authentication/AuthenticationManager.cs`
   - `src/Web/Harmony.Client.Infrastructure/Interceptors/HttpInterceptorManager.cs`
 - **Notes:** Self-hosters need clear upgrade notes. Update `harmony-docs/configuration/before-running.md`.
+  - Since R-07 (#25), permissions travel in the access token, so a user who loses a permission keeps it until the token expires or is refreshed. Shorter access tokens shrink that window (#25, spec Flagged concern 4).
+  - Found while planning #25: on an anonymous endpoint (for example `POST api/identity/token/refresh` sent with an expired `Authorization` header), `OnAuthenticationFailed` writes a 401 body and the action then runs against a response that has already started. A wrongly signed or malformed token gets 500 from the same handler.
 
 ### R-12 GitHub webhook signature and locking
 
@@ -510,6 +519,8 @@ Recorded so they are not lost. Promote one into the list when its turn comes.
   - Run migrations as a job instead of at startup in every replica
   - Client `async void` and `ContinueWith` misuse
   - Remove the unused SQL Server-only `LoadBoardOld` code
+- **Deployment:**
+  - Run Compose and Kubernetes deployments as Production. `docker-compose.yml` and `.k8s/base/kustomization.yaml` set `ASPNETCORE_ENVIRONMENT=Development` for every service, so the Api still serves its API explorer there, and skips the exception handler and HSTS. In Production the gateway's aggregated Swagger cannot load the core API's document, which the Api serves only in Development (#25, spec Flagged concerns 1 and 2).
 - **Known defects found by R-01:** each behaviour defect is pinned by the `_KnownIssue` test named on its line in `Harmony.Application.UnitTests`. The fix changes that test on purpose. See [spec #5](features/5-test-foundation/spec.md), Flagged concern 4.
   - Card date display ignores the year when the months match: 2026-01-05 to 2027-01-10 shows `Jan 05 - 10` (`CardHelper.DisplayDates`, FR-008). Pinned by `CardHelperDisplayDatesTests.DisplayDates_SameMonthDifferentYear_OmitsYear_KnownIssue`.
   - Card date display uses the server's culture for month names, so emails from Notifications depend on how the server is configured (`CardHelper.DisplayDates`, FR-008). Pinned by `CardHelperDisplayDatesTests.DisplayDates_GreekCulture_UsesGreekMonthName_KnownIssue`.

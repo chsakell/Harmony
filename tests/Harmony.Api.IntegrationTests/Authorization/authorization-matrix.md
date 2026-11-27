@@ -1,13 +1,13 @@
 # Authorization matrix
 
-Which `Harmony.Api` endpoints need a login, and which ones a user who is not a member of a workspace or board can still use. The Api tests check every line against the running Api (`dotnet test --project tests/Harmony.Api.IntegrationTests -p:HarmonyIntegrationTests=true`, see `AGENTS.md`). The rules and the format are in `docs/features/22-api-authorization-matrix/` (spec and plan).
+Which `Harmony.Api` endpoints need a login, which ones a user who is not a member of a workspace or board can still use, and which permission each administration endpoint needs. The Api tests check every line against the running Api (`dotnet test --project tests/Harmony.Api.IntegrationTests -p:HarmonyIntegrationTests=true`, see `AGENTS.md`). The rules and the format are in `docs/features/22-api-authorization-matrix/` and `docs/features/25-authenticated-by-default-api/` (spec and plan).
 
 - **Scope** says what the endpoint acts on:
   - `public`: open without a login, on purpose;
   - `self`: the caller's own data;
   - `resource`: a workspace, or a board and anything in it;
   - `administration`: roles and user administration;
-  - `user`: another user's account or settings.
+  - `user`: another user's account or settings. No endpoint has this scope since #25: a read of another user's data by ID is `administration` or `resource`, or takes the user from the login (`self`).
 - **Anonymous** is the result with no login. `refused` means 401 is expected: every endpoint needs a login unless it is one of the six public endpoints, which have `-`. A known gap would be marked `gap R-07`; R-07 closed the last one, and an `administration` endpoint may never have one.
 - **Non-member** is the result for a logged-in user who is not a member. It applies to `resource` endpoints only. `refused` means 403 or 404 is expected, and `gap R-08` means it is open today and R-08 closes it.
 - **Non-admin** is the result for a logged-in user who does not hold the endpoint's required permission. It applies to `administration` endpoints only, where it is always `refused`: 403 is expected, and there is no known gap. Other endpoints have `-`. The rules are in `docs/features/25-authenticated-by-default-api/`.
