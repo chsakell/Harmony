@@ -106,7 +106,7 @@ Tasks run in order. `[P]` marks a task that shares no file with another `[P]` ta
     - `RowVerdictTests.Admin_Refusing403_PassesForPlainAndAllBut`, `Admin_LetIn_FailsForPlainAndAllBut`, `Admin_OnlyRequired403_FailsNamingPermission`, `Admin_OnlyRequiredOtherStatus_IsLetIn` (200, 400, 500), `Admin_401Or405OrNotReached_IsInconclusive` (FR-110 to FR-112)
     - `MatrixRowsTests.AdminRows_OneRowPerAdministrationLinePerCaller`
     - `MatrixCheckTests.TestHostAndMatrixFile_AreConsistent` stays green with the reformatted file.
-- [ ] **T3** [P] Guards for the explicitly anonymous list
+- [x] **T3** [P] Guards for the explicitly anonymous list
   - Covers: FR-104, FR-105, FR-106.
   - Files: `Harness/ApiTestHost.cs`, `Authorization/ExplicitlyAnonymousTests.cs` (new), `Authorization/GrpcAnonymousTests.cs` (new).
   - These pass on today's code, because nothing requires a login yet. T4 proves they catch the regression (see T4, *Early check*).
